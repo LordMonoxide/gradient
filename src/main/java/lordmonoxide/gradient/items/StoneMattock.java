@@ -27,7 +27,6 @@ public class StoneMattock extends GradientItemTool implements GradientItemCrafta
   public void addRecipe() {
     GameRegistry.addRecipe(
       new ItemStack(this),
-      "   ",
       "PFP",
       " S ",
       Character.valueOf('P'), GradientBlocks.PEBBLE,

@@ -1,7 +1,7 @@
 package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.inventory.OverrideInventory;
+import lordmonoxide.gradient.overrides.OverrideInventory;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

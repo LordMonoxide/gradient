@@ -3,6 +3,7 @@ item.fibre.name=Fibre
 
 # Tools
 item.stone_hammer.name=Stone Hammer
+item.stone_mattock.name=Stone Mattock
 
 # Blocks
 tile.pebble.name=Pebble

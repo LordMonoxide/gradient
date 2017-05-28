@@ -18,7 +18,8 @@ public class GradientItems {
   
   public static final GradientItem FIBRE = register(new Fibre());
   
-  public static final GradientItem STONE_HAMMER = register(new StoneHammer());
+  public static final GradientItem STONE_HAMMER  = register(new StoneHammer());
+  public static final GradientItem STONE_MATTOCK = register(new StoneMattock());
   
   @SideOnly(Side.CLIENT)
   public static void addModels() {

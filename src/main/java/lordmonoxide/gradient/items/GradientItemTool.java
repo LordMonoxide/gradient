@@ -1,23 +1,27 @@
 package lordmonoxide.gradient.items;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class GradientItemTool extends GradientItem {
-  private float harvestSpeed;
+  private final float harvestSpeed;
+  private final float attackSpeed;
+  private final int damage;
   
-  public GradientItemTool(String name, float baseSpeed) {
+  public GradientItemTool(String name, float harvestSpeed, float attackSpeed, int damage) {
     super(name, CreativeTabs.TOOLS);
     this.maxStackSize = 1;
-    this.setHarvestSpeed(baseSpeed);
-  }
-  
-  public void setHarvestSpeed(float harvestSpeed) {
     this.harvestSpeed = harvestSpeed;
+    this.attackSpeed  = attackSpeed;
+    this.damage       = damage;
   }
   
   @Override
@@ -53,5 +57,17 @@ public class GradientItemTool extends GradientItem {
     }
     
     return true;
+  }
+  
+  @Override
+  public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot equipmentSlot, ItemStack stack) {
+    Multimap<String, AttributeModifier> modifiers = super.getAttributeModifiers(equipmentSlot, stack);
+    
+    if(equipmentSlot == EntityEquipmentSlot.MAINHAND) {
+      modifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.damage, 0));
+      modifiers.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", this.attackSpeed, 0));
+    }
+    
+    return modifiers;
   }
 }

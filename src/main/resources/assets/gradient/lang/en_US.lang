@@ -1,5 +1,8 @@
 # Items
 item.fibre.name=Fibre
 
+# Tools
+item.stone_hammer.name=Stone Hammer
+
 # Blocks
 tile.pebble.name=Pebble

@@ -25,8 +25,11 @@ public class CommonProxy {
     MinecraftForge.EVENT_BUS.register(DisableVanillaTools.instance);
     MinecraftForge.EVENT_BUS.register(DisableBreakingBlocksWithoutTools.instance);
     MinecraftForge.EVENT_BUS.register(AddExtraDrops.instance);
-  
+    
     GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
+    
+    GradientBlocks.addRecipes();
+    GradientItems.addRecipes();
   }
   
   @Mod.EventHandler

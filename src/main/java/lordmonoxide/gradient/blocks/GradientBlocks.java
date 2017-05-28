@@ -14,6 +14,7 @@ import java.util.List;
 
 public class GradientBlocks {
   private static final List<GradientBlock> blocks = new ArrayList<>();
+  private static final List<GradientBlockCraftable> craftables = new ArrayList<>();
   
   public static final Pebble PEBBLE = register(new Pebble());
   
@@ -21,6 +22,12 @@ public class GradientBlocks {
   public static void addModels() {
     for(GradientBlock block : blocks) {
       ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory")); //$NON-NLS-1$
+    }
+  }
+  
+  public static void addRecipes() {
+    for(GradientBlockCraftable craftable : craftables) {
+      craftable.addRecipe();
     }
   }
   
@@ -33,6 +40,10 @@ public class GradientBlocks {
   private static <T extends GradientBlock> T registerWithoutItem(T block) {
     blocks.add(block);
     GameRegistry.register(block);
+  
+    if(block instanceof GradientBlockCraftable) {
+      craftables.add((GradientBlockCraftable)block);
+    }
     
     if(block instanceof ITileEntityProvider) {
       GameRegistry.registerTileEntity(((ITileEntityProvider)block).createNewTileEntity(null, 0).getClass(), block.getRegistryName().toString());

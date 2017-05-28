@@ -14,8 +14,11 @@ import java.util.List;
 
 public class GradientItems {
   private static final List<Item> items = new ArrayList<>();
+  private static final List<GradientItemCraftable> craftables = new ArrayList<>();
   
   public static final GradientItem FIBRE = register(new Fibre());
+  
+  public static final GradientItem STONE_HAMMER = register(new StoneHammer());
   
   @SideOnly(Side.CLIENT)
   public static void addModels() {
@@ -39,9 +42,19 @@ public class GradientItems {
     }
   }
   
+  public static void addRecipes() {
+    for(GradientItemCraftable craftable : craftables) {
+      craftable.addRecipe();
+    }
+  }
+  
   private static <T extends Item> T register(T item) {
     items.add(item);
     GameRegistry.register(item);
+  
+    if(item instanceof GradientItemCraftable) {
+      craftables.add((GradientItemCraftable)item);
+    }
     
     return item;
   }

@@ -8,6 +8,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,15 @@ public class GradientItems {
   private static final List<Item> items = new ArrayList<>();
   private static final List<GradientItemCraftable> craftables = new ArrayList<>();
   
-  public static final GradientItem FIBRE = register(new Fibre());
+  public static final GradientItem FIBRE        = register(new Fibre());
+  public static final GradientItem FIRE_STARTER = register(new FireStarter());
   
   public static final GradientItem STONE_HAMMER  = register(new StoneHammer());
   public static final GradientItem STONE_MATTOCK = register(new StoneMattock());
+  
+  static {
+    OreDictionary.registerOre("string", FIBRE);
+  }
   
   @SideOnly(Side.CLIENT)
   public static void addModels() {

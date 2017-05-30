@@ -1,5 +1,6 @@
 # Items
 item.fibre.name=Fibre
+item.fire_starter.name=Fire Starter
 
 # Tools
 item.stone_hammer.name=Stone Hammer
@@ -7,3 +8,6 @@ item.stone_mattock.name=Stone Mattock
 
 # Blocks
 tile.pebble.name=Pebble
+tile.fire_pit.name=Fire Pit
+tile.fire_pit.fuel=Fuel
+tile.fire_pit.input=Food

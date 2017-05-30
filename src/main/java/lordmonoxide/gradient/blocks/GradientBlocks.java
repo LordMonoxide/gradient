@@ -18,6 +18,8 @@ public class GradientBlocks {
   
   public static final Pebble PEBBLE = register(new Pebble());
   
+  public static final FirePit FIRE_PIT = register(new FirePit());
+  
   @SideOnly(Side.CLIENT)
   public static void addModels() {
     for(GradientBlock block : blocks) {

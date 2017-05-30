@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
@@ -19,6 +20,8 @@ public class CommonProxy {
     // Trigger loading
     System.out.println("Fibre: " + GradientItems.FIBRE);
     System.out.println("Pebble: " + GradientBlocks.PEBBLE);
+    
+    NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
   }
   
   @Mod.EventHandler

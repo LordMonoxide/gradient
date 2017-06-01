@@ -11,3 +11,4 @@ tile.pebble.name=Pebble
 tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
+tile.fire_pit.heat=Heat: %.2f°

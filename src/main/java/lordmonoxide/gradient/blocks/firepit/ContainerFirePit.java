@@ -4,6 +4,7 @@ import lordmonoxide.gradient.containers.GradientContainer;
 import lordmonoxide.gradient.containers.SlotFood;
 import lordmonoxide.gradient.containers.SlotFuel;
 import lordmonoxide.gradient.containers.SlotOutput;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 public class ContainerFirePit extends GradientContainer {
@@ -24,6 +25,7 @@ public class ContainerFirePit extends GradientContainer {
         @Override public void onSlotChanged() {
           firepit.markDirty();
         }
+        @Override public boolean canTakeStack(EntityPlayer playerIn) { return !firepit.isBurning(); }
       });
     }
     

@@ -3,6 +3,7 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
+import lordmonoxide.gradient.items.FireStarter;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -75,9 +76,15 @@ public class FirePit extends GradientBlock implements GradientBlockCraftable, IT
   @Override
   public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
     if(!world.isRemote) {
-      //TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
-  
       if(!player.isSneaking()) {
+        if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof FireStarter) {
+          TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
+          
+          if(!tile.isBurning()) {
+            tile.light();
+          }
+        }
+        
         player.openGui(GradientMod.instance, GradientGuiHandler.FIRE_PIT, world, pos.getX(), pos.getY(), pos.getZ());
       }
     }

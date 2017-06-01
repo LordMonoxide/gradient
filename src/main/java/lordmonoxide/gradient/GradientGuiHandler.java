@@ -26,7 +26,7 @@ public class GradientGuiHandler implements IGuiHandler {
   public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
     switch(id) {
       case FIRE_PIT:
-        return new GuiFirePit(getServerGuiElement(id, player, world, x, y, z), player.inventory);
+        return new GuiFirePit(getServerGuiElement(id, player, world, x, y, z), (TileFirePit)world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
     }
     
     return null;

@@ -13,10 +13,10 @@ public class GradientFuel {
   
   private GradientFuel() {
     this.add("string",        10,  50,  125, 1.000f);
-    this.add("stickWood",     60, 100,  250, 0.141f);
-    this.add("treeSapling",  120, 150,  250, 0.069f);
-    this.add("plankWood",    600, 230,  750, 0.042f);
-    this.add("logWood",      900, 300,  750, 0.028f);
+    this.add("stickWood",     60, 100,  350, 0.141f);
+    this.add("treeSapling",  120, 150,  350, 0.069f);
+    this.add("plankWood",    600, 230,  750, 0.052f);
+    this.add("logWood",      900, 300,  750, 0.038f);
     this.add("oreCoal",     1200, 700, 2700, 0.075f);
   }
   

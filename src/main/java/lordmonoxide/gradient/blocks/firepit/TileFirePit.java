@@ -3,13 +3,16 @@ package lordmonoxide.gradient.blocks.firepit;
 import lordmonoxide.gradient.GradientFuel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -31,6 +34,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   private BurningFuel[] fuels = new BurningFuel[FUEL_SLOTS_COUNT];
   
   private float heat;
+  private int lastLight;
   private long nextSync;
   
   public float getHeat() {
@@ -53,6 +57,14 @@ public class TileFirePit extends TileEntity implements ITickable {
   
   public BurningFuel getBurningFuel(int slot) {
     return fuels[slot];
+  }
+  
+  public int getLightLevel() {
+    if(this.getHeat() == 0) {
+      return 0;
+    }
+    
+    return Math.min((int)(this.getHeat() / 1000 * 11) + 4, 15);
   }
   
   public void light() {
@@ -78,9 +90,15 @@ public class TileFirePit extends TileEntity implements ITickable {
     }
     
     this.igniteFuel();
+    this.coolDown();
     this.heatUp();
+    //this.cook();
+    this.updateLight();
   
-    if(!this.getWorld().isRemote) {
+    if(this.getWorld().isRemote) {
+      this.generateParticles();
+      this.playSounds();
+    } else {
       if(Minecraft.getSystemTime() >= this.nextSync) {
         this.nextSync = Minecraft.getSystemTime() + 10000;
         this.sync();
@@ -98,6 +116,11 @@ public class TileFirePit extends TileEntity implements ITickable {
         }
       }
     }
+  }
+  
+  private void coolDown() {
+    float loss = this.calculateHeatLoss() / 20f;
+    this.heat = Math.max(this.getHeat() - loss, 0);
   }
   
   private void heatUp() {
@@ -121,6 +144,51 @@ public class TileFirePit extends TileEntity implements ITickable {
     this.heat += temperatureChange;
   }
   
+  private void updateLight() {
+    if(this.lastLight != this.getLightLevel()) {
+      this.getWorld().markBlockRangeForRenderUpdate(this.pos, this.pos);
+      this.getWorld().checkLight(this.pos);
+      
+      this.lastLight = this.getLightLevel();
+    }
+  }
+  
+  private void generateParticles() {
+    if(this.heat > 0) {
+      if(this.isBurning()) { // Fire
+        double radius = this.getWorld().rand.nextDouble() * 0.25;
+        double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
+        
+        double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
+        double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
+        
+        this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+      }
+      
+      { // Smoke
+        double radius = this.getWorld().rand.nextDouble() * 0.35;
+        double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
+        
+        double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
+        double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
+        
+        this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+      }
+    }
+  }
+  
+  private void playSounds() {
+    if(this.getHeat() > 0) {
+      if(this.getWorld().rand.nextInt(40) == 0) {
+        this.getWorld().playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 0.8f + this.getWorld().rand.nextFloat(), this.getWorld().rand.nextFloat() * 0.7f + 0.3f, false);
+      }
+    }
+  }
+  
+  protected float calculateHeatLoss() {
+    return (float)Math.pow((this.getHeat() / 500) + 1, 2) / 1.5f;
+  }
+  
   private ItemStack getFuelSlot(int slot) {
     return this.inventory.getStackInSlot(slot);
   }
@@ -142,6 +210,8 @@ public class TileFirePit extends TileEntity implements ITickable {
   
   @Override
   public void readFromNBT(NBTTagCompound compound) {
+    this.lastLight = this.getLightLevel();
+    
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.heat = compound.getFloat("heat");
     super.readFromNBT(compound);

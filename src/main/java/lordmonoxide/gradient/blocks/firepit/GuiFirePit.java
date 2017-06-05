@@ -29,6 +29,12 @@ public class GuiFirePit extends GuiContainer {
     int x = (width - xSize) / 2;
     int y = (height - ySize) / 2;
     drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+    
+    if(this.firePit.isCooking(0)) {
+      float percent = this.firePit.getCookingFood(0).cookPercent();
+      
+      drawTexturedModalRect(x + 122, y + 35, 176, 0, (int)(16 * percent), 14);
+    }
   }
   
   @Override
@@ -47,13 +53,13 @@ public class GuiFirePit extends GuiContainer {
     String fuel = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".fuel");
     String food = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".input");
     
-    String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", this.firePit.getHeat());
+    String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.firePit.getHeat());
     
     fontRendererObj.drawString(name, xSize / 2 - fontRendererObj.getStringWidth(name) / 2, 6, 0x404040);
     fontRendererObj.drawString(fuel, ContainerFirePit.FUEL_SLOTS_X, ContainerFirePit.FUEL_SLOTS_Y - fontRendererObj.FONT_HEIGHT - 2, 0x404040);
     fontRendererObj.drawString(food, ContainerFirePit.INPUT_SLOTS_X, ContainerFirePit.INPUT_SLOTS_Y - fontRendererObj.FONT_HEIGHT - 2, 0x404040);
     fontRendererObj.drawString(playerInv.getDisplayName().getUnformattedText(), 8, ySize - 94, 0x404040);
     
-    fontRendererObj.drawString(heat, 103, 55, 0x404040);
+    fontRendererObj.drawString(heat, ContainerFirePit.FUEL_SLOTS_X, 55, 0x404040);
   }
 }

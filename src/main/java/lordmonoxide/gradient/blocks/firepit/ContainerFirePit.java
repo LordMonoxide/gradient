@@ -21,22 +21,27 @@ public class ContainerFirePit extends GradientContainer {
     super(firepit);
     
     for(int i = 0; i < TileFirePit.FUEL_SLOTS_COUNT; i++) {
+      final int i2 = i;
+      
       addSlotToContainer(new SlotFuel(this.inventory, TileFirePit.FIRST_FUEL_SLOT + i, FUEL_SLOTS_X + (i % 3) * (SLOT_X_SPACING + 8), FUEL_SLOTS_Y + (i / 3) * (SLOT_Y_SPACING + 8)) {
         @Override public void onSlotChanged() {
           firepit.markDirty();
         }
-        @Override public boolean canTakeStack(EntityPlayer playerIn) { return !firepit.isBurning(); }
+        @Override public boolean canTakeStack(EntityPlayer playerIn) { return !firepit.isBurning(i2); }
       });
     }
     
     for(int i = 0; i < TileFirePit.INPUT_SLOTS_COUNT; i++) {
+      final int i2 = i;
+      
       addSlotToContainer(new SlotFood(this.inventory, TileFirePit.FIRST_INPUT_SLOT + i, INPUT_SLOTS_X + SLOT_X_SPACING * i, INPUT_SLOTS_Y) {
         @Override public void onSlotChanged() {
           firepit.markDirty();
         }
+        @Override public boolean canTakeStack(EntityPlayer playerIn) { return !firepit.isCooking(i2); }
       });
     }
-  
+    
     for(int i = 0; i < TileFirePit.INPUT_SLOTS_COUNT; i++) {
       addSlotToContainer(new SlotOutput(this.inventory, TileFirePit.FIRST_OUTPUT_SLOT + i, OUTPUT_SLOTS_X + SLOT_X_SPACING * i, OUTPUT_SLOTS_Y) {
         @Override public void onSlotChanged() {

@@ -1,11 +1,13 @@
 package lordmonoxide.gradient.blocks.firepit;
 
+import lordmonoxide.gradient.GradientFood;
 import lordmonoxide.gradient.GradientFuel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -14,10 +16,12 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
 public class TileFirePit extends TileEntity implements ITickable {
   public static final int FUEL_SLOTS_COUNT = 3;
@@ -32,6 +36,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   private ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   
   private BurningFuel[] fuels = new BurningFuel[FUEL_SLOTS_COUNT];
+  private CookingFood[] foods = new CookingFood[INPUT_SLOTS_COUNT];
   
   private float heat;
   private int lastLight;
@@ -59,12 +64,30 @@ public class TileFirePit extends TileEntity implements ITickable {
     return fuels[slot];
   }
   
+  public boolean isCooking() {
+    for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
+      if(this.isCooking(i)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  public boolean isCooking(int slot) {
+    return this.foods[slot] != null;
+  }
+  
+  public CookingFood getCookingFood(int slot) {
+    return foods[slot];
+  }
+  
   public int getLightLevel() {
     if(this.getHeat() == 0) {
       return 0;
     }
     
-    return Math.min((int)(this.getHeat() / 1000 * 11) + 4, 15);
+    return Math.min((int)(this.getHeat() / 800 * 11) + 4, 15);
   }
   
   public void light() {
@@ -92,7 +115,7 @@ public class TileFirePit extends TileEntity implements ITickable {
     this.igniteFuel();
     this.coolDown();
     this.heatUp();
-    //this.cook();
+    this.cook();
     this.updateLight();
   
     if(this.getWorld().isRemote) {
@@ -113,6 +136,28 @@ public class TileFirePit extends TileEntity implements ITickable {
         
         if(this.canIgnite(fuel)) {
           this.fuels[i] = new BurningFuel(fuel);
+        }
+      }
+    }
+  }
+  
+  private void cook() {
+    for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
+      if(!this.isCooking(i) && this.getFoodSlot(i) != null) {
+        GradientFood.Food food = GradientFood.instance.get(this.getFoodSlot(i));
+      
+        if(this.canCook(food)) {
+          this.foods[i] = new CookingFood(food);
+        }
+      }
+      
+      if(this.isCooking(i)) {
+        CookingFood food = this.getCookingFood(i);
+        
+        if(food.isCooked()) {
+          this.foods[i] = null;
+          this.setFoodSlot(i, null);
+          this.setCookedSlot(i, food.food.cooked);
         }
       }
     }
@@ -190,7 +235,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   }
   
   private ItemStack getFuelSlot(int slot) {
-    return this.inventory.getStackInSlot(slot);
+    return this.inventory.getStackInSlot(FIRST_FUEL_SLOT + slot);
   }
   
   private void setFuelSlot(int slot, ItemStack stack) {
@@ -201,10 +246,57 @@ public class TileFirePit extends TileEntity implements ITickable {
     return this.heat >= fuel.ignitionTemp;
   }
   
+  private ItemStack getFoodSlot(int slot) {
+    return this.inventory.getStackInSlot(FIRST_INPUT_SLOT + slot);
+  }
+  
+  private void setFoodSlot(int slot, ItemStack stack) {
+    this.inventory.setStackInSlot(FIRST_INPUT_SLOT + slot, stack);
+  }
+  
+  private boolean canCook(GradientFood.Food food) {
+    return this.heat >= food.cookTemp;
+  }
+  
+  private void setCookedSlot(int slot, ItemStack stack) {
+    this.inventory.setStackInSlot(FIRST_OUTPUT_SLOT + slot, stack);
+  }
+  
   @Override
   public NBTTagCompound writeToNBT(NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setFloat("heat", this.heat);
+    
+    NBTTagList fuels = new NBTTagList();
+    NBTTagList foods = new NBTTagList();
+    
+    for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
+      if(this.isBurning(i)) {
+        BurningFuel fuel = this.getBurningFuel(i);
+        
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setInteger("slot", i);
+        tag.setLong("start", fuel.burnStart - Minecraft.getSystemTime());
+        tag.setLong("until", fuel.burnUntil - Minecraft.getSystemTime());
+        fuels.appendTag(tag);
+      }
+    }
+    
+    for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
+      if(this.isCooking(i)) {
+        CookingFood food = this.getCookingFood(i);
+        
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setInteger("slot", i);
+        tag.setLong("start", food.cookStart - Minecraft.getSystemTime());
+        tag.setLong("until", food.cookUntil - Minecraft.getSystemTime());
+        foods.appendTag(tag);
+      }
+    }
+    
+    compound.setTag("fuel", fuels);
+    compound.setTag("food", foods);
+    
     return super.writeToNBT(compound);
   }
   
@@ -212,8 +304,39 @@ public class TileFirePit extends TileEntity implements ITickable {
   public void readFromNBT(NBTTagCompound compound) {
     this.lastLight = this.getLightLevel();
     
+    Arrays.fill(this.fuels, null);
+    Arrays.fill(this.foods, null);
+    
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.heat = compound.getFloat("heat");
+    
+    NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
+    NBTTagList foods = compound.getTagList("food", Constants.NBT.TAG_COMPOUND);
+    
+    for(int i = 0; i < fuels.tagCount(); i++) {
+      NBTTagCompound tag = fuels.getCompoundTagAt(i);
+      
+      int slot = tag.getInteger("slot");
+      
+      if(slot < FUEL_SLOTS_COUNT) {
+        this.fuels[slot] = new BurningFuel(GradientFuel.instance.get(this.getFuelSlot(slot)));
+        this.fuels[slot].burnStart = tag.getLong("start") + Minecraft.getSystemTime();
+        this.fuels[slot].burnUntil = tag.getLong("until") + Minecraft.getSystemTime();
+      }
+    }
+    
+    for(int i = 0; i < foods.tagCount(); i++) {
+      NBTTagCompound tag = foods.getCompoundTagAt(i);
+      
+      int slot = tag.getInteger("slot");
+      
+      if(slot < INPUT_SLOTS_COUNT) {
+        this.foods[slot] = new CookingFood(GradientFood.instance.get(this.getFoodSlot(slot)));
+        this.foods[slot].cookStart = tag.getLong("start") + Minecraft.getSystemTime();
+        this.foods[slot].cookUntil = tag.getLong("until") + Minecraft.getSystemTime();
+      }
+    }
+    
     super.readFromNBT(compound);
   }
   
@@ -245,8 +368,8 @@ public class TileFirePit extends TileEntity implements ITickable {
   
   public class BurningFuel {
     public final GradientFuel.Fuel fuel;
-    public final long burnStart;
-    public final long burnUntil;
+    private long burnStart;
+    private long burnUntil;
     
     private BurningFuel(GradientFuel.Fuel fuel) {
       this.fuel = fuel;
@@ -260,6 +383,26 @@ public class TileFirePit extends TileEntity implements ITickable {
     
     public float burnPercent() {
       return (float)(Minecraft.getSystemTime() - this.burnStart) / (this.burnUntil - this.burnStart);
+    }
+  }
+  
+  public class CookingFood {
+    public final GradientFood.Food food;
+    private long cookStart;
+    private long cookUntil;
+    
+    private CookingFood(GradientFood.Food food) {
+      this.food = food;
+      this.cookStart = Minecraft.getSystemTime();
+      this.cookUntil = this.cookStart + food.duration * 1000;
+    }
+  
+    public boolean isCooked() {
+      return Minecraft.getSystemTime() >= this.cookUntil;
+    }
+  
+    public float cookPercent() {
+      return (float)(Minecraft.getSystemTime() - this.cookStart) / (this.cookUntil - this.cookStart);
     }
   }
 }

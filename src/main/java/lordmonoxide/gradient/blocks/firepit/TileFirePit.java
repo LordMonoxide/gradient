@@ -230,7 +230,7 @@ public class TileFirePit extends TileEntity implements ITickable {
     }
   }
   
-  protected float calculateHeatLoss() {
+  private float calculateHeatLoss() {
     return (float)Math.pow((this.getHeat() / 500) + 1, 2) / 1.5f;
   }
   

@@ -1,15 +1,22 @@
 package lordmonoxide.gradient.recipes;
 
 import com.google.common.collect.Lists;
+import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockLog;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -54,12 +61,13 @@ public final class RecipeRemover {
     };
     
     Block[] blocks = {
-      Blocks.PLANKS,
+      //Blocks.PLANKS,
     };
     
     removeRecipes(tools);
     removeRecipes(items);
     removeRecipes(blocks);
+    replacePlankRecipes();
   }
   
   private static void removeRecipes(Item[] items) {
@@ -89,6 +97,60 @@ public final class RecipeRemover {
           it.remove();
         }
       }
+    }
+  }
+  
+  private static void replacePlankRecipes() {
+    // This would all be so much easier if logs weren't split up into LOG and LOG2
+    
+    List<IRecipe> toAdd = new ArrayList<>();
+    
+    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+  
+    while(it.hasNext()) {
+      IRecipe recipe = it.next();
+      
+      ItemStack output = recipe.getRecipeOutput();
+      
+      // Is the result planks?
+      if(!output.isEmpty() && output.getItem() instanceof ItemBlock) {
+        if(((ItemBlock)output.getItem()).block instanceof BlockPlanks) {
+          ItemStack component = ItemStack.EMPTY;
+          
+          // Grab the component so we can check if it's a single log
+          if(recipe instanceof ShapelessRecipes) {
+            List<ItemStack> components = ((ShapelessRecipes)recipe).recipeItems;
+            
+            if(components.size() == 1) {
+              component = components.get(0);
+            }
+          } else if(recipe instanceof ShapedRecipes) {
+            ItemStack[] components = ((ShapedRecipes)recipe).recipeItems;
+            
+            if(components.length == 1) {
+              component = components[0];
+            }
+          }
+          
+          // Is the component logs?
+          if(!component.isEmpty() && component.getItem() instanceof ItemBlock) {
+            if(((ItemBlock)component.getItem()).block instanceof BlockLog) {
+              // Add the new recipe
+              toAdd.add(new ShapelessRecipes(
+                new ItemStack(output.getItem(), 2, output.getMetadata()),
+                Lists.newArrayList(component, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
+              ));
+              
+              // Remove the old one
+              it.remove();
+            }
+          }
+        }
+      }
+    }
+    
+    for(IRecipe recipe : toAdd) {
+      GameRegistry.addRecipe(recipe);
     }
   }
 }

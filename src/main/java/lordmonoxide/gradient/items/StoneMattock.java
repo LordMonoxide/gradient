@@ -11,12 +11,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import java.util.Random;
+import java.util.Stack;
+
 public class StoneMattock extends GradientItemTool implements GradientItemCraftable {
   public StoneMattock() {
     super("stone_mattock", 0.5f, -2.4f, 4);
     this.setHarvestLevel("axe", 0);
     this.setHarvestLevel("shovel", 0);
     this.setMaxDamage(19);
+    
+    this.setContainerItem(this);
+  }
+  
+  // This causes the mattock to take damage every time it is used in a recipe
+  public ItemStack getContainerItem(ItemStack itemStack) {
+    ItemStack stack = itemStack.copy();
+    stack.attemptDamageItem(1, new Random());
+    return stack;
   }
   
   @Override

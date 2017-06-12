@@ -1,9 +1,12 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -12,13 +15,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GradientBlocks {
+public final class GradientBlocks {
   private static final List<GradientBlock> blocks = new ArrayList<>();
   private static final List<GradientBlockCraftable> craftables = new ArrayList<>();
   
-  public static final Pebble PEBBLE = register(new Pebble());
+  public static final BlockPebble PEBBLE = register(new BlockPebble());
   
-  public static final FirePit FIRE_PIT = register(new FirePit());
+  public static final BlockFirePit FIRE_PIT = register(new BlockFirePit());
+  
+  private GradientBlocks() {
+    
+  }
   
   @SideOnly(Side.CLIENT)
   public static void addModels() {
@@ -48,7 +55,12 @@ public class GradientBlocks {
     }
     
     if(block instanceof ITileEntityProvider) {
-      GameRegistry.registerTileEntity(((ITileEntityProvider)block).createNewTileEntity(null, 0).getClass(), block.getRegistryName().toString());
+      try {
+        //noinspection unchecked
+        GameRegistry.registerTileEntity((Class<? extends TileEntity>)((ITileEntityProvider)block).getClass().getMethod("createNewTileEntity", World.class, int.class).getReturnType(), block.getRegistryName().toString());
+      } catch(NoSuchMethodException ignored) {
+        
+      }
     }
     
     return block;

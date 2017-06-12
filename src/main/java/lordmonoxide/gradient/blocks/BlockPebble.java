@@ -14,10 +14,10 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class Pebble extends GradientBlock {
+public class BlockPebble extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.25d, 0.0d, 0.25d, 0.75d, 0.25d, 0.75d);
   
-  public Pebble() {
+  public BlockPebble() {
     super("pebble", CreativeTabs.MATERIALS, Material.GROUND, MapColor.GRAY); //$NON-NLS-1$
     this.setHardness(0.0f);
     this.setResistance(0.0f);
@@ -49,23 +49,27 @@ public class Pebble extends GradientBlock {
    * Used to determine ambient occlusion and culling when rebuilding chunks for render
    */
   @Override
+  @SuppressWarnings("deprecation")
   public boolean isOpaqueCube(IBlockState state) {
     return false;
   }
   
   @Override
+  @SuppressWarnings("deprecation")
   public boolean isFullCube(IBlockState state) {
     return false;
   }
   
   @Override
+  @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
     return AABB;
   }
   
   @Override
   @Nullable
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+  @SuppressWarnings("deprecation")
+  public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
     return NULL_AABB;
   }
   

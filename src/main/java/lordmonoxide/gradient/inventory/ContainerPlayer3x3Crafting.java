@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 
 public class ContainerPlayer3x3Crafting extends ContainerPlayer {
-  private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] {EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
+  private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = {EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
   
   private static final int CRAFT_SIZE = 3;
   
@@ -41,11 +41,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
         
         @Override
         public boolean isItemValid(@Nullable ItemStack stack) {
-          if(stack == null) {
-            return false;
-          }
-          
-          return stack.getItem().isValidArmor(stack, entityequipmentslot, player);
+          return stack != null && stack.getItem().isValidArmor(stack, entityequipmentslot, player);
         }
         
         @Override
@@ -69,12 +65,6 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
     
     this.addSlotToContainer(new Slot(playerInventory, 40, 77, 62) {
       @Override
-      public boolean isItemValid(@Nullable ItemStack stack) {
-        return super.isItemValid(stack);
-      }
-      
-      @Override
-      @Nullable
       @SideOnly(Side.CLIENT)
       public String getSlotTexture() {
         return "minecraft:items/empty_armor_slot_shield"; //$NON-NLS-1$
@@ -99,11 +89,11 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
     for(int i = 0; i < CRAFT_SIZE * CRAFT_SIZE; i++) {
       ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
       
-      if(itemstack != null) {
+      if(!itemstack.isEmpty()) {
         playerIn.dropItem(itemstack, false);
       }
     }
     
-    this.craftResult.setInventorySlotContents(0, null);
+    this.craftResult.clear();
   }
 }

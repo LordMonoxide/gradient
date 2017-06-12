@@ -1,8 +1,9 @@
-package lordmonoxide.gradient.blocks;
+package lordmonoxide.gradient.blocks.firepit;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.firepit.TileFirePit;
+import lordmonoxide.gradient.blocks.GradientBlock;
+import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.items.FireStarter;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -22,13 +23,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
-public class FirePit extends GradientBlock implements GradientBlockCraftable, ITileEntityProvider {
+public class BlockFirePit extends GradientBlock implements GradientBlockCraftable, ITileEntityProvider {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
   
-  public FirePit() {
+  public BlockFirePit() {
     super("fire_pit", CreativeTabs.TOOLS, Material.WOOD, MapColor.RED); //$NON-NLS-1$
     this.setHardness(0.0f);
     this.setResistance(0.0f);
@@ -55,16 +55,19 @@ public class FirePit extends GradientBlock implements GradientBlockCraftable, IT
    * Used to determine ambient occlusion and culling when rebuilding chunks for render
    */
   @Override
+  @SuppressWarnings("deprecation")
   public boolean isOpaqueCube(IBlockState state) {
     return false;
   }
   
   @Override
+  @SuppressWarnings("deprecation")
   public boolean isFullCube(IBlockState state) {
     return false;
   }
   
   @Override
+  @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
     return AABB;
   }
@@ -93,10 +96,10 @@ public class FirePit extends GradientBlock implements GradientBlockCraftable, IT
   }
   
   @Override
-  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof FireStarter) {
+        if(player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof FireStarter) {
           TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
           
           if(!tile.isBurning()) {

@@ -7,8 +7,10 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GradientFood {
-  public final static GradientFood instance = new GradientFood();
+public final class GradientFood {
+  public static final GradientFood instance = new GradientFood();
+  
+  public static final Food INVALID_FOOD = new Food(ItemStack.EMPTY, 0, 0);
   
   private final Map<ItemStack, Food> foods = new HashMap<>();
   
@@ -30,20 +32,16 @@ public class GradientFood {
   
   public Food get(ItemStack item) {
     for(Map.Entry<ItemStack, Food> entry : this.foods.entrySet()) {
-      if(this.compareItemStacks(item, entry.getKey())) {
+      if(ItemStack.areItemStacksEqual(item, entry.getKey())) {
         return entry.getValue();
       }
     }
     
-    return null;
+    return INVALID_FOOD;
   }
   
   public boolean has(ItemStack itemStack) {
-    return this.get(itemStack) != null;
-  }
-  
-  private boolean compareItemStacks(ItemStack stack1, ItemStack stack2) {
-    return stack2.getItem() == stack1.getItem() && (stack2.getMetadata() == 32767 || stack2.getMetadata() == stack1.getMetadata());
+    return this.get(itemStack) != INVALID_FOOD;
   }
   
   public static class Food {

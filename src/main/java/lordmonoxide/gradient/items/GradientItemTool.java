@@ -41,7 +41,7 @@ public class GradientItemTool extends GradientItem {
   
   @Override
   public float getStrVsBlock(ItemStack stack, IBlockState state) {
-    return canHarvestBlock(state) ? this.harvestSpeed : 0.0f;
+    return this.canHarvestBlock(state) ? this.harvestSpeed : 0.0f;
   }
   
   @Override
@@ -64,8 +64,8 @@ public class GradientItemTool extends GradientItem {
     Multimap<String, AttributeModifier> modifiers = super.getAttributeModifiers(equipmentSlot, stack);
     
     if(equipmentSlot == EntityEquipmentSlot.MAINHAND) {
-      modifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.damage, 0));
-      modifiers.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", this.attackSpeed, 0));
+      modifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.damage, 0));
+      modifiers.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", this.attackSpeed, 0));
     }
     
     return modifiers;

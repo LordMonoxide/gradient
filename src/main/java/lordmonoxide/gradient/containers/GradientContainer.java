@@ -45,34 +45,34 @@ public class GradientContainer extends Container {
   
   @Override
   public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-    ItemStack itemstack = null;
-    Slot slot = inventorySlots.get(index);
+    ItemStack itemstack = ItemStack.EMPTY;
+    Slot slot = this.inventorySlots.get(index);
     
     if(slot != null && slot.getHasStack()) {
       ItemStack itemstack1 = slot.getStack();
       itemstack = itemstack1.copy();
       
-      int containerSlots = inventorySlots.size() - player.inventory.mainInventory.length;
+      int containerSlots = this.inventorySlots.size() - player.inventory.mainInventory.size();
       
       if(index < containerSlots) {
-        if(!this.mergeItemStack(itemstack1, containerSlots, inventorySlots.size(), true)) {
-          return null;
+        if(!this.mergeItemStack(itemstack1, containerSlots, this.inventorySlots.size(), true)) {
+          return ItemStack.EMPTY;
         }
       } else if(!this.mergeItemStack(itemstack1, 0, containerSlots, false)) {
-        return null;
+        return ItemStack.EMPTY;
       }
       
-      if(itemstack1.stackSize == 0) {
-        slot.putStack(null);
+      if(itemstack1.isEmpty()) {
+        slot.putStack(ItemStack.EMPTY);
       } else {
         slot.onSlotChanged();
       }
       
-      if(itemstack1.stackSize == itemstack.stackSize) {
-        return null;
+      if(itemstack1.getCount() == itemstack.getCount()) {
+        return ItemStack.EMPTY;
       }
       
-      slot.onPickupFromSlot(player, itemstack1);
+      slot.onTake(player, itemstack1);
     }
     
     return itemstack;
@@ -91,22 +91,22 @@ public class GradientContainer extends Container {
     }
     
     if(stack.isStackable()) {
-      while(stack.stackSize > 0 && (!reverseDirection && i < endIndex || reverseDirection && i >= startIndex)) {
+      while(!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
         Slot slot = this.inventorySlots.get(i);
         ItemStack itemstack = slot.getStack();
         
-        if(itemstack != null && areItemStacksEqual(stack, itemstack)) {
-          int j = itemstack.stackSize + stack.stackSize;
+        if(areItemStacksEqual(stack, itemstack)) {
+          int j = itemstack.getCount() + stack.getCount();
           int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
           
           if(j <= maxSize) {
-            stack.stackSize = 0;
-            itemstack.stackSize = j;
+            stack.setCount(0);
+            itemstack.setCount(j);
             slot.onSlotChanged();
             flag = true;
-          } else if(itemstack.stackSize < maxSize) {
-            stack.stackSize -= maxSize - itemstack.stackSize;
-            itemstack.stackSize = maxSize;
+          } else if(itemstack.getCount() < maxSize) {
+            stack.setCount(stack.getCount() - (maxSize - itemstack.getCount()));
+            itemstack.setCount(maxSize);
             slot.onSlotChanged();
             flag = true;
           }
@@ -120,23 +120,19 @@ public class GradientContainer extends Container {
       }
     }
     
-    if(stack.stackSize > 0) {
-      if(reverseDirection) {
-        i = endIndex - 1;
-      } else {
-        i = startIndex;
-      }
+    if(!stack.isEmpty()) {
+      i = reverseDirection ? endIndex - 1 : startIndex;
       
-      while(!reverseDirection && i < endIndex || reverseDirection && i >= startIndex) {
+      while(reverseDirection ? i >= startIndex : i < endIndex) {
         Slot slot1 = this.inventorySlots.get(i);
         ItemStack itemstack1 = slot1.getStack();
         
-        if(itemstack1 == null && slot1.isItemValid(stack)) { // Forge: Make sure to respect isItemValid in the slot.
+        if(itemstack1.isEmpty() && slot1.isItemValid(stack)) { // Forge: Make sure to respect isItemValid in the slot.
           slot1.putStack(stack.splitStack(slot1.getItemStackLimit(stack)));
           slot1.onSlotChanged();
           flag = true;
           
-          if(stack.stackSize == 0) {
+          if(stack.isEmpty()) {
             break;
           }
         }

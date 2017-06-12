@@ -6,8 +6,10 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GradientFuel {
-  public final static GradientFuel instance = new GradientFuel();
+public final class GradientFuel {
+  public static final GradientFuel instance = new GradientFuel();
+  
+  public static final Fuel INVALID_FUEL = new Fuel(0, 0, 0, 0.0f);
   
   private final Map<Integer, Fuel> fuels = new HashMap<>();
   
@@ -24,38 +26,20 @@ public class GradientFuel {
     this.fuels.put(OreDictionary.getOreID(oreDictName), new Fuel(duration, ignitionTemp, burnTemp, heatPerTick));
   }
   
-  public Fuel get(int oreDictId) {
-    return this.fuels.get(oreDictId);
-  }
-  
-  public Fuel get(String oreDictName) {
-    return this.get(OreDictionary.getOreID(oreDictName));
-  }
-  
   public Fuel get(ItemStack stack) {
     for(int id : OreDictionary.getOreIDs(stack)) {
-      return get(id);
-    }
-    
-    return null;
-  }
-  
-  public boolean has(int oreDictId) {
-    return get(oreDictId) != null;
-  }
-  
-  public boolean has(String oreDictName) {
-    return this.has(OreDictionary.getOreID(oreDictName));
-  }
-  
-  public boolean has(ItemStack stack) {
-    for(int id : OreDictionary.getOreIDs(stack)) {
-      if(this.has(id)) {
-        return true;
+      Fuel fuel = this.fuels.get(id);
+      
+      if(fuel != null) {
+        return fuel;
       }
     }
     
-    return false;
+    return INVALID_FUEL;
+  }
+  
+  public boolean has(ItemStack stack) {
+    return this.get(stack) != INVALID_FUEL;
   }
   
   public static class Fuel {

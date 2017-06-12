@@ -13,7 +13,9 @@ import net.minecraft.item.crafting.IRecipe;
 import java.util.Iterator;
 import java.util.List;
 
-public class RecipeRemover {
+public final class RecipeRemover {
+  private RecipeRemover() { }
+  
   public static void remove() {
     Item[] tools = {
       Items.WOODEN_PICKAXE,
@@ -68,7 +70,7 @@ public class RecipeRemover {
     while(it.hasNext()) {
       ItemStack stack = it.next().getRecipeOutput();
       
-      if(stack != null && itemsList.contains(stack.getItem())) {
+      if(!stack.isEmpty() && itemsList.contains(stack.getItem())) {
         it.remove();
       }
     }
@@ -82,7 +84,7 @@ public class RecipeRemover {
     while(it.hasNext()) {
       ItemStack stack = it.next().getRecipeOutput();
       
-      if(stack != null && stack.getItem() instanceof ItemBlock) {
+      if(!stack.isEmpty() && stack.getItem() instanceof ItemBlock) {
         if(blocksList.contains(((ItemBlock)stack.getItem()).getBlock())) {
           it.remove();
         }

@@ -19,7 +19,7 @@ public final class DisableVanillaTools {
   public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
     ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
     
-    if(held != null) {
+    if(held.isEmpty()) {
       if(held.getItem() instanceof ItemTool) {
         event.setCanceled(true);
       }

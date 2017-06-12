@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class OverrideInventory {
+public final class OverrideInventory {
   public static final OverrideInventory instance = new OverrideInventory();
   
   private OverrideInventory() { }
@@ -20,7 +20,7 @@ public class OverrideInventory {
   @SubscribeEvent
   public void onGuiOpen(GuiOpenEvent event) {
     if(event.getGui() != null && event.getGui().getClass() == GuiInventory.class) {
-      event.setGui(new GuiInventory3x3Crafting(Minecraft.getMinecraft().thePlayer));
+      event.setGui(new GuiInventory3x3Crafting(Minecraft.getMinecraft().player));
     }
   }
   
@@ -29,7 +29,7 @@ public class OverrideInventory {
     if(event.getEntity() instanceof EntityPlayer) {
       EntityPlayer player = (EntityPlayer)event.getEntity();
       
-      player.inventoryContainer = new ContainerPlayer3x3Crafting(player.inventory, !player.worldObj.isRemote, player);
+      player.inventoryContainer = new ContainerPlayer3x3Crafting(player.inventory, !player.world.isRemote, player);
       player.openContainer = player.inventoryContainer;
     }
   }

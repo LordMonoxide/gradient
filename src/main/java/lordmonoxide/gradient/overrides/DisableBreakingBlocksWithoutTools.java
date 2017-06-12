@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class DisableBreakingBlocksWithoutTools {
+public final class DisableBreakingBlocksWithoutTools {
   public static final DisableBreakingBlocksWithoutTools instance = new DisableBreakingBlocksWithoutTools();
   
   private DisableBreakingBlocksWithoutTools() { }
@@ -18,7 +18,7 @@ public class DisableBreakingBlocksWithoutTools {
   public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
     ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
     
-    if(held != null) {
+    if(held.isEmpty()) {
       if(!held.getItem().canHarvestBlock(event.getState()) && event.getState().getBlockHardness(event.getEntity().getEntityWorld(), event.getPos()) > 1.0f) {
         event.setCanceled(true);
       }

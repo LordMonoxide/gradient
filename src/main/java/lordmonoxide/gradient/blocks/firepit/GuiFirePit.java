@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiFirePit extends GuiContainer {
@@ -25,15 +26,15 @@ public class GuiFirePit extends GuiContainer {
   @Override
   protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
     GlStateManager.color(1, 1, 1, 1);
-    mc.getTextureManager().bindTexture(BG_TEXTURE);
-    int x = (width - xSize) / 2;
-    int y = (height - ySize) / 2;
-    drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+    this.mc.getTextureManager().bindTexture(BG_TEXTURE);
+    int x = (this.width  - this.xSize) / 2;
+    int y = (this.height - this.ySize) / 2;
+    this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
     
     if(this.firePit.isCooking(0)) {
       float percent = this.firePit.getCookingFood(0).cookPercent();
-      
-      drawTexturedModalRect(x + 122, y + 35, 176, 0, (int)(16 * percent), 14);
+  
+      this.drawTexturedModalRect(x + 122, y + 35, 176, 0, (int)(16 * percent), 14);
     }
   }
   
@@ -55,11 +56,11 @@ public class GuiFirePit extends GuiContainer {
     
     String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.firePit.getHeat());
     
-    fontRendererObj.drawString(name, xSize / 2 - fontRendererObj.getStringWidth(name) / 2, 6, 0x404040);
-    fontRendererObj.drawString(fuel, ContainerFirePit.FUEL_SLOTS_X, ContainerFirePit.FUEL_SLOTS_Y - fontRendererObj.FONT_HEIGHT - 2, 0x404040);
-    fontRendererObj.drawString(food, ContainerFirePit.INPUT_SLOTS_X, ContainerFirePit.INPUT_SLOTS_Y - fontRendererObj.FONT_HEIGHT - 2, 0x404040);
-    fontRendererObj.drawString(playerInv.getDisplayName().getUnformattedText(), 8, ySize - 94, 0x404040);
+    this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
+    this.fontRenderer.drawString(fuel, ContainerFirePit.FUEL_SLOTS_X, ContainerFirePit.FUEL_SLOTS_Y - this.fontRenderer.FONT_HEIGHT - 2, 0x404040);
+    this.fontRenderer.drawString(food, ContainerFirePit.INPUT_SLOTS_X, ContainerFirePit.INPUT_SLOTS_Y - this.fontRenderer.FONT_HEIGHT - 2, 0x404040);
+    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
     
-    fontRendererObj.drawString(heat, ContainerFirePit.FUEL_SLOTS_X, 55, 0x404040);
+    this.fontRenderer.drawString(heat, ContainerFirePit.FUEL_SLOTS_X, 55, 0x404040);
   }
 }

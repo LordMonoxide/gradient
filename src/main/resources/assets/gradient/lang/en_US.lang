@@ -12,3 +12,13 @@ tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
 tile.fire_pit.heat=Heat: %d °C
+
+# Fuel
+fuel.ignition_temp=Ignition Temperature: %f °C
+fuel.burn_temp=Burn Temperature: %f °C
+fuel.duration=Burn Duration: %d
+
+# Food
+food.cook_temp=Cook Temperature: %f °C
+food.duration=Cook Duration: %d
+food.cooked=Cooked: %s

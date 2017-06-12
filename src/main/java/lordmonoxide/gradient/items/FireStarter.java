@@ -27,15 +27,14 @@ public class FireStarter extends GradientItem implements GradientItemCraftable {
     
     if(!playerIn.canPlayerEdit(pos, facing, stack)) {
       return EnumActionResult.FAIL;
-    } else {
-      if(worldIn.isAirBlock(pos)) {
-        worldIn.playSound(playerIn, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
-        worldIn.setBlockState(pos, Blocks.FIRE.getDefaultState(), 11);
-      }
-      
-      stack.damageItem(1, playerIn);
-      return EnumActionResult.SUCCESS;
     }
+    
+    if(worldIn.isAirBlock(pos)) {
+      worldIn.playSound(playerIn, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, itemRand.nextFloat() * 0.4f + 0.8f);
+    }
+    
+    stack.damageItem(1, playerIn);
+    return EnumActionResult.SUCCESS;
   }
   
   @Override

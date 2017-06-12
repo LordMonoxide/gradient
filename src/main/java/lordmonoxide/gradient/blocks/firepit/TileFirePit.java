@@ -20,6 +20,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
@@ -61,7 +62,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   }
   
   public BurningFuel getBurningFuel(int slot) {
-    return fuels[slot];
+    return this.fuels[slot];
   }
   
   public boolean isCooking() {
@@ -79,7 +80,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   }
   
   public CookingFood getCookingFood(int slot) {
-    return foods[slot];
+    return this.foods[slot];
   }
   
   public int getLightLevel() {
@@ -131,7 +132,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   
   private void igniteFuel() {
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
-      if(!this.isBurning(i) && this.getFuelSlot(i) != null) {
+      if(!this.isBurning(i) && !this.getFuelSlot(i).isEmpty()) {
         GradientFuel.Fuel fuel = GradientFuel.instance.get(this.getFuelSlot(i));
         
         if(this.canIgnite(fuel)) {
@@ -143,7 +144,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   
   private void cook() {
     for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
-      if(!this.isCooking(i) && this.getFoodSlot(i) != null) {
+      if(!this.isCooking(i) && !this.getFoodSlot(i).isEmpty()) {
         GradientFood.Food food = GradientFood.instance.get(this.getFoodSlot(i));
       
         if(this.canCook(food)) {
@@ -156,7 +157,7 @@ public class TileFirePit extends TileEntity implements ITickable {
         
         if(food.isCooked()) {
           this.foods[i] = null;
-          this.setFoodSlot(i, null);
+          this.setFoodSlot(i, ItemStack.EMPTY);
           this.setCookedSlot(i, food.food.cooked);
         }
       }
@@ -164,7 +165,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   }
   
   private void coolDown() {
-    float loss = this.calculateHeatLoss() / 20f;
+    float loss = this.calculateHeatLoss() / 20.0f;
     this.heat = Math.max(this.getHeat() - loss, 0);
   }
   
@@ -177,7 +178,7 @@ public class TileFirePit extends TileEntity implements ITickable {
         
         if(fuel.isDepleted()) {
           this.fuels[slot] = null;
-          this.setFuelSlot(slot, null);
+          this.setFuelSlot(slot, ItemStack.EMPTY);
         }
         
         if(fuel.fuel.burnTemp > this.heat) {
@@ -348,7 +349,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   @Nullable
   @Override
   public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-    return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)inventory : super.getCapability(capability, facing);
+    return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory : super.getCapability(capability, facing);
   }
   
   @Override
@@ -366,7 +367,7 @@ public class TileFirePit extends TileEntity implements ITickable {
     this.readFromNBT(pkt.getNbtCompound());
   }
   
-  public class BurningFuel {
+  public static final class BurningFuel {
     public final GradientFuel.Fuel fuel;
     private long burnStart;
     private long burnUntil;
@@ -374,7 +375,7 @@ public class TileFirePit extends TileEntity implements ITickable {
     private BurningFuel(GradientFuel.Fuel fuel) {
       this.fuel = fuel;
       this.burnStart = Minecraft.getSystemTime();
-      this.burnUntil = this.burnStart + fuel.duration * 1000;
+      this.burnUntil = this.burnStart + fuel.duration * 1000L;
     }
     
     public boolean isDepleted() {
@@ -386,7 +387,7 @@ public class TileFirePit extends TileEntity implements ITickable {
     }
   }
   
-  public class CookingFood {
+  public static final class CookingFood {
     public final GradientFood.Food food;
     private long cookStart;
     private long cookUntil;
@@ -394,7 +395,7 @@ public class TileFirePit extends TileEntity implements ITickable {
     private CookingFood(GradientFood.Food food) {
       this.food = food;
       this.cookStart = Minecraft.getSystemTime();
-      this.cookUntil = this.cookStart + food.duration * 1000;
+      this.cookUntil = this.cookStart + food.duration * 1000L;
     }
   
     public boolean isCooked() {

@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,7 +14,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GradientItems {
+public final class GradientItems {
   private static final List<Item> items = new ArrayList<>();
   private static final List<GradientItemCraftable> craftables = new ArrayList<>();
   
@@ -27,13 +28,17 @@ public class GradientItems {
     OreDictionary.registerOre("string", FIBRE);
   }
   
+  private GradientItems() {
+    
+  }
+  
   @SideOnly(Side.CLIENT)
   public static void addModels() {
     for(Item item : items) {
       if(!item.getHasSubtypes()) {
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory")); //$NON-NLS-1$
       } else {
-        List<ItemStack> stacks = new ArrayList<>();
+        NonNullList<ItemStack> stacks = NonNullList.create();
         item.getSubItems(item, null, stacks);
         
         if(item instanceof ItemBlock) {

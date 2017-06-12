@@ -10,7 +10,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class AddExtraDrops {
+public final class AddExtraDrops {
   public static final AddExtraDrops instance = new AddExtraDrops();
   
   private AddExtraDrops() {
@@ -48,7 +48,7 @@ public class AddExtraDrops {
     
     ItemStack hand = event.getHarvester().getHeldItemMainhand();
     
-    if(hand == null) {
+    if(hand.isEmpty()) {
       return;
     }
     

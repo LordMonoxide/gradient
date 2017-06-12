@@ -19,8 +19,9 @@ public class StoneMattock extends GradientItemTool implements GradientItemCrafta
     this.setMaxDamage(19);
   }
   
-  public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-    return Items.STONE_HOE.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+  @Override
+  public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    return Items.STONE_HOE.onItemUse(playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
   }
   
   @Override

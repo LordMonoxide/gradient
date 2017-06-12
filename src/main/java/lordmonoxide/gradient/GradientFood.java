@@ -1,5 +1,7 @@
 package lordmonoxide.gradient;
 
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -20,19 +22,30 @@ public final class GradientFood {
         this.add(e.getKey(), e.getValue(), 120, 200);
       }
     }
+    
+    this.add(Items.PORKCHOP, Items.COOKED_PORKCHOP, 120, 200);
+    this.add(Items.BEEF,     Items.COOKED_BEEF,     120, 200);
+    this.add(Items.CHICKEN,  Items.COOKED_CHICKEN,  120, 200);
+    this.add(Items.RABBIT,   Items.COOKED_RABBIT,   120, 200);
+    this.add(Items.MUTTON,   Items.COOKED_MUTTON,   120, 200);
+    this.add(Items.POTATO,   Items.BAKED_POTATO,    120, 200);
   }
   
-  public void add(ItemStack item, ItemStack cooked, int duration, float cookTemp) {
-    this.add(item, new Food(cooked, duration, cookTemp));
+  public void add(Item raw, Item cooked, int duration, float cookTemp) {
+    this.add(raw.getDefaultInstance(), cooked.getDefaultInstance(), duration, cookTemp);
   }
   
-  public void add(ItemStack item, Food food) {
-    this.foods.put(item, food);
+  public void add(ItemStack raw, ItemStack cooked, int duration, float cookTemp) {
+    this.add(raw, new Food(cooked, duration, cookTemp));
   }
   
-  public Food get(ItemStack item) {
+  public void add(ItemStack raw, Food food) {
+    this.foods.put(raw, food);
+  }
+  
+  public Food get(ItemStack raw) {
     for(Map.Entry<ItemStack, Food> entry : this.foods.entrySet()) {
-      if(ItemStack.areItemStacksEqual(item, entry.getKey())) {
+      if(ItemStack.areItemStacksEqual(raw, entry.getKey())) {
         return entry.getValue();
       }
     }

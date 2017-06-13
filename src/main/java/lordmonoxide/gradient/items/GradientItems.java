@@ -1,11 +1,17 @@
 package lordmonoxide.gradient.items;
 
+import lordmonoxide.gradient.items.armour.ClothPants;
+import lordmonoxide.gradient.items.armour.ClothShirt;
+import lordmonoxide.gradient.items.armour.GradientArmour;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,19 +24,30 @@ public final class GradientItems {
   private static final List<Item> items = new ArrayList<>();
   private static final List<GradientItemCraftable> craftables = new ArrayList<>();
   
-  public static final GradientItem FIBRE        = register(new Fibre());
-  public static final GradientItem FIRE_STARTER = register(new FireStarter());
+  public static final ItemArmor.ArmorMaterial MATERIAL_CLOTH = EnumHelper.addArmorMaterial("cloth", "cloth", 5, new int[] {0, 1, 2, 0}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
   
+  public static final GradientItem FIBRE = register(new Fibre());
+  public static final GradientItem CLOTH = register(new Cloth());
+  
+  public static final GradientItem BONE_NEEDLE = register(new BoneNeedle());
+  
+  public static final GradientItem FIRE_STARTER  = register(new FireStarter());
   public static final GradientItem STONE_HAMMER  = register(new StoneHammer());
   public static final GradientItem STONE_MATTOCK = register(new StoneMattock());
   
+  public static final GradientArmour CLOTH_SHIRT = register(new ClothShirt());
+  public static final GradientArmour CLOTH_PANTS = register(new ClothPants());
+  
   static {
     OreDictionary.registerOre("string", FIBRE);
+    OreDictionary.registerOre("cloth",  CLOTH);
+    
+    OreDictionary.registerOre("needle", new ItemStack(BONE_NEEDLE, 1, OreDictionary.WILDCARD_VALUE));
+    
+    MATERIAL_CLOTH.setRepairItem(CLOTH.getDefaultInstance());
   }
   
-  private GradientItems() {
-    
-  }
+  private GradientItems() { }
   
   @SideOnly(Side.CLIENT)
   public static void addModels() {

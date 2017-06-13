@@ -54,6 +54,11 @@ public final class RecipeRemover {
       Items.IRON_AXE,
       Items.GOLDEN_AXE,
       Items.DIAMOND_AXE,
+      
+      Items.LEATHER_HELMET,
+      Items.LEATHER_CHESTPLATE,
+      Items.LEATHER_LEGGINGS,
+      Items.LEATHER_BOOTS,
     };
     
     Item[] items = {

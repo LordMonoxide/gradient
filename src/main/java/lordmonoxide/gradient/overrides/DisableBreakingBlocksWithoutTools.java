@@ -16,13 +16,13 @@ public final class DisableBreakingBlocksWithoutTools {
    */
   @SubscribeEvent
   public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
+    if(event.getState().getBlockHardness(event.getEntity().getEntityWorld(), event.getPos()) <= 1.0f) {
+      return;
+    }
+    
     ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
     
-    if(held.isEmpty()) {
-      if(!held.getItem().canHarvestBlock(event.getState()) && event.getState().getBlockHardness(event.getEntity().getEntityWorld(), event.getPos()) > 1.0f) {
-        event.setCanceled(true);
-      }
-    } else if(event.getState().getBlockHardness(event.getEntity().getEntityWorld(), event.getPos()) > 1.0f) {
+    if(held.isEmpty() || !held.getItem().canHarvestBlock(event.getState())) {
       event.setCanceled(true);
     }
   }

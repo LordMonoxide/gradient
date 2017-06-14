@@ -1,10 +1,17 @@
 # Items
 item.fibre.name=Fibre
-item.fire_starter.name=Fire Starter
+item.cloth.name=Cloth
 
 # Tools
+item.bone_needle.name=Bone Needle
 item.stone_hammer.name=Stone Hammer
 item.stone_mattock.name=Stone Mattock
+item.fire_starter.name=Fire Starter
+item.flint_knife.name=Flint Knife
+
+# Armour
+item.cloth_shirt.name=Cloth Shirt
+item.cloth_pants.name=Cloth Pants
 
 # Blocks
 tile.pebble.name=Pebble

@@ -34,6 +34,7 @@ public final class GradientItems {
   public static final GradientItem FIRE_STARTER  = register(new FireStarter());
   public static final GradientItem STONE_HAMMER  = register(new StoneHammer());
   public static final GradientItem STONE_MATTOCK = register(new StoneMattock());
+  public static final GradientItem FLINT_KNIFE   = register(new FlintKnife());
   
   public static final GradientArmour CLOTH_SHIRT = register(new ClothShirt());
   public static final GradientArmour CLOTH_PANTS = register(new ClothPants());
@@ -80,7 +81,7 @@ public final class GradientItems {
   private static <T extends Item> T register(T item) {
     items.add(item);
     GameRegistry.register(item);
-  
+    
     if(item instanceof GradientItemCraftable) {
       craftables.add((GradientItemCraftable)item);
     }

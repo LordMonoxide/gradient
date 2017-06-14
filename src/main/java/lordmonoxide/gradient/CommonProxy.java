@@ -6,6 +6,7 @@ import lordmonoxide.gradient.overrides.AddExtraDrops;
 import lordmonoxide.gradient.overrides.DisableBreakingBlocksWithoutTools;
 import lordmonoxide.gradient.overrides.DisableVanillaTools;
 import lordmonoxide.gradient.overrides.GeneratePebbles;
+import lordmonoxide.gradient.recipes.ExtraRecipes;
 import lordmonoxide.gradient.recipes.RecipeRemover;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -31,11 +32,12 @@ public class CommonProxy {
     MinecraftForge.EVENT_BUS.register(AddExtraDrops.instance);
     
     GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
-  
+    
     RecipeRemover.remove();
     
     GradientBlocks.addRecipes();
     GradientItems.addRecipes();
+    ExtraRecipes.addRecipes();
   }
   
   @Mod.EventHandler

@@ -4,6 +4,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class BoneNeedle extends GradientItemTool implements GradientItemCraftable {
   public BoneNeedle() {
@@ -13,10 +14,10 @@ public class BoneNeedle extends GradientItemTool implements GradientItemCraftabl
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapelessRecipe(
-      new ItemStack(this, 4),
-      Items.BONE,
-      new ItemStack(GradientItems.STONE_HAMMER, 1, OreDictionary.WILDCARD_VALUE)
-    );
+    GameRegistry.addRecipe(new ShapelessOreRecipe(
+      this.getItemStack(4),
+      "bone",
+      "toolHammer"
+    ));
   }
 }

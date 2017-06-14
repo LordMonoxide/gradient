@@ -10,6 +10,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class StoneMattock extends GradientItemTool implements GradientItemCraftable {
   public StoneMattock() {
@@ -26,13 +27,13 @@ public class StoneMattock extends GradientItemTool implements GradientItemCrafta
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(
-      new ItemStack(this),
+    GameRegistry.addRecipe(new ShapedOreRecipe(
+      this,
       "PFP",
       " S ",
-      Character.valueOf('P'), GradientBlocks.PEBBLE,
-      Character.valueOf('F'), GradientItems.FIBRE,
-      Character.valueOf('S'), Items.STICK
-    );
+      'P', GradientBlocks.PEBBLE,
+      'F', "string",
+      'S', "stickWood"
+    ));
   }
 }

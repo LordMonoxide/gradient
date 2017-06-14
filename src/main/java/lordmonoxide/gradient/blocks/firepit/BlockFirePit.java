@@ -22,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.Random;
 
@@ -116,13 +117,13 @@ public class BlockFirePit extends GradientBlock implements GradientBlockCraftabl
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapelessRecipe(
-      new ItemStack(this),
-      Items.STICK,
-      Items.STICK,
-      Items.STICK,
-      Items.STICK,
-      Items.STICK
-    );
+    GameRegistry.addRecipe(new ShapelessOreRecipe(
+      this,
+      "stickWood",
+      "stickWood",
+      "stickWood",
+      "stickWood",
+      "stickWood"
+    ));
   }
 }

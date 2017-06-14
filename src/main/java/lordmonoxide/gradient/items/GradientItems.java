@@ -29,12 +29,12 @@ public final class GradientItems {
   public static final GradientItem FIBRE = register(new Fibre());
   public static final GradientItem CLOTH = register(new Cloth());
   
-  public static final GradientItem BONE_NEEDLE = register(new BoneNeedle());
+  public static final GradientItemTool BONE_NEEDLE = register(new BoneNeedle());
   
-  public static final GradientItem FIRE_STARTER  = register(new FireStarter());
-  public static final GradientItem STONE_HAMMER  = register(new StoneHammer());
-  public static final GradientItem STONE_MATTOCK = register(new StoneMattock());
-  public static final GradientItem FLINT_KNIFE   = register(new FlintKnife());
+  public static final GradientItem     FIRE_STARTER  = register(new FireStarter());
+  public static final GradientItemTool STONE_HAMMER  = register(new StoneHammer());
+  public static final GradientItemTool STONE_MATTOCK = register(new StoneMattock());
+  public static final GradientItemTool FLINT_KNIFE   = register(new FlintKnife());
   
   public static final GradientArmour CLOTH_SHIRT = register(new ClothShirt());
   public static final GradientArmour CLOTH_PANTS = register(new ClothPants());
@@ -43,7 +43,9 @@ public final class GradientItems {
     OreDictionary.registerOre("string", FIBRE);
     OreDictionary.registerOre("cloth",  CLOTH);
     
-    OreDictionary.registerOre("needle", new ItemStack(BONE_NEEDLE, 1, OreDictionary.WILDCARD_VALUE));
+    OreDictionary.registerOre("needle", BONE_NEEDLE.getWildcardItemStack());
+    OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
+    OreDictionary.registerOre("toolMattock", STONE_MATTOCK.getWildcardItemStack());
     
     MATERIAL_CLOTH.setRepairItem(CLOTH.getDefaultInstance());
   }

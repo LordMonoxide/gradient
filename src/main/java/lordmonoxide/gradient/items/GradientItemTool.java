@@ -10,6 +10,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Random;
 
@@ -29,10 +30,15 @@ public class GradientItemTool extends GradientItem {
   }
   
   // This causes the mattock to take damage every time it is used in a recipe
+  @Override
   public ItemStack getContainerItem(ItemStack itemStack) {
     ItemStack stack = itemStack.copy();
     stack.attemptDamageItem(1, new Random());
     return stack;
+  }
+  
+  public ItemStack getWildcardItemStack() {
+    return this.getItemStack(1, OreDictionary.WILDCARD_VALUE);
   }
   
   @Override

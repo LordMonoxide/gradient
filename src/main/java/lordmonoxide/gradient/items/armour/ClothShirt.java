@@ -15,7 +15,7 @@ public class ClothShirt extends GradientArmour implements GradientItemCraftable 
   @Override
   public void addRecipe() {
     GameRegistry.addRecipe(new ShapedOreRecipe(
-      this.getDefaultInstance(),
+      this,
       "CNC",
       "CSC",
       "CCC",

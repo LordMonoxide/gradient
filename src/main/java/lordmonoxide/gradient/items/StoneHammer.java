@@ -1,9 +1,8 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class StoneHammer extends GradientItemTool implements GradientItemCraftable {
   public StoneHammer() {
@@ -15,14 +14,14 @@ public class StoneHammer extends GradientItemTool implements GradientItemCraftab
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(
-      new ItemStack(this),
+    GameRegistry.addRecipe(new ShapedOreRecipe(
+      this,
       "P",
       "F",
       "S",
-      Character.valueOf('P'), GradientBlocks.PEBBLE,
-      Character.valueOf('F'), GradientItems.FIBRE,
-      Character.valueOf('S'), Items.STICK
-    );
+      'P', GradientBlocks.PEBBLE,
+      'F', "string",
+      'S', "stickWood"
+    ));
   }
 }

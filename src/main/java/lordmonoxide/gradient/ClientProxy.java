@@ -12,10 +12,12 @@ public class ClientProxy extends CommonProxy {
   @Override
   public void preInit(FMLPreInitializationEvent e) {
     super.preInit(e);
-  
+    
     MinecraftForge.EVENT_BUS.register(OverrideInventory.instance);
     MinecraftForge.EVENT_BUS.register(BurningTooltips.instance);
     MinecraftForge.EVENT_BUS.register(CookingTooltips.instance);
+    
+    MinecraftForge.EVENT_BUS.register(KeyBindings.instance);
     
     GradientItems.addModels();
     GradientBlocks.addModels();

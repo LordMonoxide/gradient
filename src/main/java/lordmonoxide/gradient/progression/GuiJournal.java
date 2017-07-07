@@ -3,7 +3,6 @@ package lordmonoxide.gradient.progression;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -106,6 +105,12 @@ public class GuiJournal extends GuiScreen {
     GlStateManager.enableDepth();
     GlStateManager.enableLighting();
     RenderHelper.disableStandardItemLighting();
+    
+    for(GuiButton button : this.buttonList) {
+      if(button.isMouseOver()) {
+        ((JournalButton)button).drawText(mouseX, mouseY);
+      }
+    }
   }
   
   private TextureAtlasSprite getTexture(Block blockIn) {
@@ -152,7 +157,7 @@ public class GuiJournal extends GuiScreen {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
       if(this.visible) {
-        this.hovered = (mouseX - GuiJournal.this.frameX) >= this.xPosition && (mouseY - GuiJournal.this.frameY) >= this.yPosition && (mouseX - GuiJournal.this.frameX) < this.xPosition + this.width && (mouseY - GuiJournal.this.frameY) < this.yPosition + this.height;
+        this.hovered = (mouseX - this.scaledX()) >= this.xPosition && (mouseY - this.scaledY()) >= this.yPosition && (mouseX - this.scaledX()) < this.xPosition + this.width && (mouseY - this.scaledY()) < this.yPosition + this.height;
         
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableBlend();
@@ -164,16 +169,24 @@ public class GuiJournal extends GuiScreen {
         GuiJournal.this.itemRender.renderItemAndEffectIntoGUI(this.icon,this.xPosition + (this.width - TEXEL_SIZE) / 2, this.yPosition + (this.height - TEXEL_SIZE) / 2);
         
         this.mouseDragged(mc, mouseX, mouseY);
-        
-        if(this.getHoverState(this.hovered) == 2) {
-          GuiJournal.this.drawHoveringText(this.name, 0, 0);
-        }
       }
+    }
+    
+    public void drawText(int mouseX, int mouseY) {
+      GuiJournal.this.drawHoveringText(this.name, mouseX, mouseY);
     }
     
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-      return super.mousePressed(mc, mouseX - (GuiJournal.this.frameX + GuiJournal.this.scrollX + TEXEL_SIZE), mouseY - (GuiJournal.this.frameY + GuiJournal.this.scrollY + (TEXEL_SIZE + 1)));
+      return super.mousePressed(mc, mouseX - this.scaledX(), mouseY - this.scaledY());
+    }
+    
+    private int scaledX() {
+      return GuiJournal.this.frameX + GuiJournal.this.scrollX + TEXEL_SIZE;
+    }
+    
+    private int scaledY() {
+      return GuiJournal.this.frameY + GuiJournal.this.scrollY + TEXEL_SIZE + 1;
     }
   }
 }

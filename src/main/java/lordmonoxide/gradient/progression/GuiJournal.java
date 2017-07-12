@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -24,6 +25,7 @@ public class GuiJournal extends GuiScreen {
   private static final int INNER_HEIGHT = 153;
   private static final int CONTENT_SIZE = 288;
   private static final int TEXEL_SIZE   = 16;
+  private static final int CELL_SIZE    = 26;
   
   private int mouseDownX;
   private int mouseDownY;
@@ -34,13 +36,18 @@ public class GuiJournal extends GuiScreen {
   private int frameX;
   private int frameY;
   
+  private JournalEntry clickedEntry;
+  
   @Override
   public void initGui() {
     this.frameX = (this.width  - FRAME_WIDTH)  / 2;
     this.frameY = (this.height - FRAME_HEIGHT) / 2;
     
     for(JournalEntry entry : Journal.instance.entries) {
-      this.addButton(new JournalButton(entry.name, 0, entry.x, entry.y, entry.icon, entry.type));
+      JournalButton button = new JournalButton(0, entry);
+      button.enabled = entry.isAvailable();
+      
+      this.addButton(button);
     }
   }
   
@@ -50,9 +57,6 @@ public class GuiJournal extends GuiScreen {
   }
   
   protected void drawJournal(int mouseX, int mouseY, float partialTicks) {
-    this.zLevel = 0.0F;
-    
-    //GlStateManager.depthFunc(GL11.GL_GEQUAL);
     GlStateManager.enableTexture2D();
     GlStateManager.disableLighting();
     GlStateManager.enableRescaleNormal();
@@ -87,18 +91,10 @@ public class GuiJournal extends GuiScreen {
     
     GlStateManager.popMatrix();
     
-    //GlStateManager.enableDepth();
-    //GlStateManager.depthFunc(GL11.GL_LEQUAL);
-    
-    //GlStateManager.disableDepth();
     GlStateManager.enableBlend();
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     this.mc.getTextureManager().bindTexture(BACKGROUND);
     this.drawTexturedModalRect(this.frameX, this.frameY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT);
-    //this.zLevel = 0.0F;
-    //GlStateManager.depthFunc(GL11.GL_LEQUAL);
-    //GlStateManager.disableDepth();
-    //GlStateManager.enableTexture2D();
     
     //super.drawScreen(mouseX, mouseY, partialTicks);
     
@@ -136,22 +132,31 @@ public class GuiJournal extends GuiScreen {
     this.mouseDownY = mouseY;
   }
   
+  protected void mouseReleased(int mouseX, int mouseY, int state) {
+    super.mouseReleased(mouseX, mouseY, state);
+    
+    if(this.clickedEntry != null) {
+      this.mc.displayGuiScreen(new GuiJournalEntry(this.clickedEntry, this));
+      this.clickedEntry = null;
+    }
+  }
+  
   @Override
   protected void actionPerformed(GuiButton button) throws IOException {
-    System.out.println(button);
+    this.clickedEntry = ((JournalButton)button).entry;
   }
   
   protected class JournalButton extends GuiButton {
     private final String name;
     private final ItemStack icon;
-    private final JournalEntry.EntryType type;
+    private final JournalEntry entry;
     
-    public JournalButton(String name, int id, int x, int y, ItemStack icon, JournalEntry.EntryType type) {
-      super(id, x - type.textureW / 2, y - type.textureH / 2, type.textureW, type.textureH, "");
+    public JournalButton(int id, JournalEntry entry) {
+      super(id, entry.x * CELL_SIZE - entry.type.textureW / 2, entry.y * CELL_SIZE - entry.type.textureH / 2, entry.type.textureW, entry.type.textureH, "");
       
-      this.name = name;
-      this.icon = icon;
-      this.type = type;
+      this.name  = entry.name;
+      this.icon  = entry.icon;
+      this.entry = entry;
     }
     
     @Override
@@ -164,7 +169,7 @@ public class GuiJournal extends GuiScreen {
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         
         mc.getTextureManager().bindTexture(BACKGROUND);
-        this.drawTexturedModalRect(this.xPosition, this.yPosition, this.type.textureX, this.type.textureY, this.width, this.height);
+        this.drawTexturedModalRect(this.xPosition, this.yPosition, this.entry.type.textureX, this.entry.type.textureY + this.getHoverState(this.hovered) * this.height, this.width, this.height);
         
         GuiJournal.this.itemRender.renderItemAndEffectIntoGUI(this.icon,this.xPosition + (this.width - TEXEL_SIZE) / 2, this.yPosition + (this.height - TEXEL_SIZE) / 2);
         
@@ -173,7 +178,7 @@ public class GuiJournal extends GuiScreen {
     }
     
     public void drawText(int mouseX, int mouseY) {
-      GuiJournal.this.drawHoveringText(this.name, mouseX, mouseY);
+      GuiJournal.this.drawHoveringText(I18n.format("journal." + this.name), mouseX, mouseY);
     }
     
     @Override

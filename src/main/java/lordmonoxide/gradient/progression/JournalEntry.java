@@ -1,7 +1,11 @@
 package lordmonoxide.gradient.progression;
 
-import javafx.geometry.Pos;
+import com.google.common.collect.Lists;
+import lordmonoxide.gradient.progression.components.JournalComponent;
 import net.minecraft.item.ItemStack;
+
+import java.util.Collections;
+import java.util.List;
 
 public class JournalEntry {
   public final String name;
@@ -9,13 +13,27 @@ public class JournalEntry {
   public final EntryType type;
   public final int x;
   public final int y;
+  public final List<JournalComponent> components;
   
-  public JournalEntry(String name, ItemStack icon, EntryType type, int x, int y) {
+  public JournalEntry(String name, ItemStack icon, EntryType type, int x, int y, JournalComponent... components) {
     this.name = name;
     this.icon = icon;
     this.type = type;
     this.x = x;
     this.y = y;
+    this.components = Collections.unmodifiableList(Lists.newArrayList(components));
+  }
+  
+  public boolean isAvailable() {
+    return this.components.stream().allMatch(JournalComponent::isAvailable);
+  }
+  
+  public boolean isCompletable() {
+    return this.components.stream().allMatch(JournalComponent::isCompletable);
+  }
+  
+  public boolean isCompleted() {
+    return this.components.stream().allMatch(JournalComponent::isCompleted);
   }
   
   public enum EntryType  {

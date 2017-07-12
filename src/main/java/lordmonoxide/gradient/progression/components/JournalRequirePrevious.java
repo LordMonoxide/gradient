@@ -8,7 +8,8 @@ import java.util.Arrays;
 public class JournalRequirePrevious extends JournalComponent {
   private final JournalEntry[] entries;
   
-  public JournalRequirePrevious(JournalEntry... entries) {
+  public JournalRequirePrevious(String id, JournalEntry... entries) {
+    super(id);
     this.entries = entries;
   }
   

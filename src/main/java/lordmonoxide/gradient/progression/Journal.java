@@ -26,10 +26,11 @@ public final class Journal {
         JournalEntry.EntryType.UNLOCKABLE,
         0, 0,
         
-        paragraph("getting_started_p1"),
-        paragraph("getting_started_p2"),
+        paragraph("getting_started.p1"),
+        paragraph("getting_started.p2"),
         
         gather(
+          "getting_started.gather1",
           new ItemStack(GradientItems.FIBRE, 10),
           new ItemStack(Items.STICK, 10),
           new ItemStack(GradientBlocks.PEBBLE, 5)
@@ -45,6 +46,7 @@ public final class Journal {
         -3, 0,
         
         requirePrevious(
+          "textiles.req1",
           this.gettingStarted
         )
       )
@@ -56,15 +58,15 @@ public final class Journal {
     return entry;
   }
   
-  private static JournalParagraph paragraph(String text) {
-    return new JournalParagraph(text);
+  private static JournalParagraph paragraph(String id) {
+    return new JournalParagraph(id);
   }
   
-  private static JournalGather gather(ItemStack... stacks) {
-    return new JournalGather(Minecraft.getMinecraft().player, stacks);
+  private static JournalGather gather(String id, ItemStack... stacks) {
+    return new JournalGather(id, Minecraft.getMinecraft().player, stacks);
   }
   
-  private static JournalRequirePrevious requirePrevious(JournalEntry... entries) {
-    return new JournalRequirePrevious(entries);
+  private static JournalRequirePrevious requirePrevious(String id, JournalEntry... entries) {
+    return new JournalRequirePrevious(id, entries);
   }
 }

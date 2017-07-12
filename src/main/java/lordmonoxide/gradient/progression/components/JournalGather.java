@@ -10,7 +10,8 @@ public class JournalGather extends JournalComponent {
   private final EntityPlayer player;
   private final ItemStack[] stacks;
   
-  public JournalGather(EntityPlayer player, ItemStack... stacks) {
+  public JournalGather(String id, EntityPlayer player, ItemStack... stacks) {
+    super(id);
     this.player = player;
     this.stacks = stacks;
   }

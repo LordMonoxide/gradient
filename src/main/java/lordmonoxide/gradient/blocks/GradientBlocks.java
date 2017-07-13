@@ -1,5 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
+import lordmonoxide.gradient.blocks.claybucket.BlockClayBucketUnhardened;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -22,6 +24,9 @@ public final class GradientBlocks {
   public static final BlockPebble PEBBLE = register(new BlockPebble());
   
   public static final BlockFirePit FIRE_PIT = register(new BlockFirePit());
+  
+  public static final BlockClayBucketUnhardened CLAY_BUCKET_UNHARDENED = register(new BlockClayBucketUnhardened());
+  public static final BlockClayBucket           CLAY_BUCKET            = register(new BlockClayBucket());
   
   private GradientBlocks() {
     

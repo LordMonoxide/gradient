@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.items.FireStarter;
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -13,7 +14,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -100,7 +100,7 @@ public class BlockFirePit extends GradientBlock implements GradientBlockCraftabl
   public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        if(player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof FireStarter) {
+        if(player.getHeldItemMainhand().getItem() instanceof FireStarter) {
           TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
           
           if(!tile.isBurning()) {
@@ -113,6 +113,16 @@ public class BlockFirePit extends GradientBlock implements GradientBlockCraftabl
     }
     
     return true;
+  }
+  
+  @Override
+  @SuppressWarnings("deprecation")
+  public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos neighbor) {
+    TileEntity te = world.getTileEntity(pos);
+    
+    if(te instanceof TileFirePit) {
+      ((TileFirePit)te).updateHardenable(neighbor);
+    }
   }
   
   @Override

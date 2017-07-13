@@ -2,6 +2,8 @@ package lordmonoxide.gradient.blocks.firepit;
 
 import lordmonoxide.gradient.GradientFood;
 import lordmonoxide.gradient.GradientFuel;
+import lordmonoxide.gradient.blocks.Hardenable;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
@@ -11,18 +13,19 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TileFirePit extends TileEntity implements ITickable {
   public static final int FUEL_SLOTS_COUNT = 3;
@@ -34,10 +37,14 @@ public class TileFirePit extends TileEntity implements ITickable {
   public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
   public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT;
   
-  private ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   
-  private BurningFuel[] fuels = new BurningFuel[FUEL_SLOTS_COUNT];
-  private CookingFood[] foods = new CookingFood[INPUT_SLOTS_COUNT];
+  private final BurningFuel[] fuels = new BurningFuel[FUEL_SLOTS_COUNT];
+  private final CookingFood[] foods = new CookingFood[INPUT_SLOTS_COUNT];
+  
+  private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
+  
+  private boolean firstTick = true;
   
   private float heat;
   private int lastLight;
@@ -107,6 +114,35 @@ public class TileFirePit extends TileEntity implements ITickable {
     }
   }
   
+  public void updateHardenable(BlockPos pos) {
+    if(this.world.isRemote) {
+      return;
+    }
+    
+    Block block = this.getWorld().getBlockState(pos).getBlock();
+    
+    if(!(block instanceof Hardenable)) {
+      this.hardenables.remove(pos);
+      return;
+    }
+    
+    this.hardenables.put(pos, new Hardening((Hardenable)block, pos));
+  }
+  
+  private void findSurroundingHardenables() {
+    BlockPos north = this.pos.north();
+    BlockPos south = this.pos.south();
+    
+    this.updateHardenable(north.east());
+    this.updateHardenable(north);
+    this.updateHardenable(north.west());
+    this.updateHardenable(this.pos.east());
+    this.updateHardenable(this.pos.west());
+    this.updateHardenable(south.east());
+    this.updateHardenable(south);
+    this.updateHardenable(south.west());
+  }
+  
   @Override
   public void update() {
     if(this.heat == 0) {
@@ -123,6 +159,13 @@ public class TileFirePit extends TileEntity implements ITickable {
       this.generateParticles();
       this.playSounds();
     } else {
+      if(this.firstTick) {
+        this.findSurroundingHardenables();
+        this.firstTick = false;
+      }
+      
+      this.hardenHardenables();
+      
       if(Minecraft.getSystemTime() >= this.nextSync) {
         this.nextSync = Minecraft.getSystemTime() + 10000;
         this.sync();
@@ -162,6 +205,18 @@ public class TileFirePit extends TileEntity implements ITickable {
         }
       }
     }
+  }
+  
+  private void hardenHardenables() {
+    if(this.hardenables.isEmpty()) {
+      return;
+    }
+    
+    this.hardenables.keySet().removeIf(pos -> !(this.getWorld().getBlockState(pos).getBlock() instanceof Hardenable));
+    this.hardenables.values().stream()
+      .filter(Hardening::isHardened)
+      .collect(Collectors.toList()) // Gotta decouple here to avoid concurrent modification exceptions
+      .forEach(hardenable -> this.getWorld().setBlockState(hardenable.pos, hardenable.block.getHardened().getDefaultState()));
   }
   
   private void coolDown() {
@@ -397,13 +452,31 @@ public class TileFirePit extends TileEntity implements ITickable {
       this.cookStart = Minecraft.getSystemTime();
       this.cookUntil = this.cookStart + food.duration * 1000L;
     }
-  
+    
     public boolean isCooked() {
       return Minecraft.getSystemTime() >= this.cookUntil;
     }
-  
+    
     public float cookPercent() {
       return (float)(Minecraft.getSystemTime() - this.cookStart) / (this.cookUntil - this.cookStart);
+    }
+  }
+  
+  public static final class Hardening {
+    public final Hardenable block;
+    public final BlockPos pos;
+    private long hardenStart;
+    private long hardenUntil;
+    
+    private Hardening(Hardenable block, BlockPos pos) {
+      this.block = block;
+      this.pos = pos;
+      this.hardenStart = Minecraft.getSystemTime();
+      this.hardenUntil = this.hardenStart + block.getHardeningTime() * 1000L;
+    }
+    
+    public boolean isHardened() {
+      return Minecraft.getSystemTime() >= this.hardenUntil;
     }
   }
 }

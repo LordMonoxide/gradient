@@ -2,8 +2,12 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucketUnhardened;
+import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
+import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnaceUnhardened;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.MapColor;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -21,12 +25,17 @@ public final class GradientBlocks {
   private static final List<GradientBlock> blocks = new ArrayList<>();
   private static final List<GradientBlockCraftable> craftables = new ArrayList<>();
   
+  public static final Material MATERIAL_CLAY_MACHINE = new Material(MapColor.BROWN);
+  
   public static final BlockPebble PEBBLE = register(new BlockPebble());
   
   public static final BlockFirePit FIRE_PIT = register(new BlockFirePit());
   
   public static final BlockClayBucketUnhardened CLAY_BUCKET_UNHARDENED = register(new BlockClayBucketUnhardened());
   public static final BlockClayBucket           CLAY_BUCKET            = register(new BlockClayBucket());
+  
+  public static final BlockClayFurnaceUnhardened CLAY_FURNACE_UNHARDENED = register(new BlockClayFurnaceUnhardened());
+  public static final BlockClayFurnace           CLAY_FURNACE            = register(new BlockClayFurnace());
   
   private GradientBlocks() {
     

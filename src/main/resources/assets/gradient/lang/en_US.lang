@@ -11,6 +11,8 @@ item.flint_knife.name=Flint Knife
 
 item.clay_bucket_unhardened.name="Unhardened Clay Bucket"
 item.clay_bucket.name="Clay Bucket"
+item.clay_furnace_unhardened.name="Unhardened Clay Furnace"
+item.clay_furnace.name="Clay Furnace"
 
 # Armour
 item.cloth_shirt.name=Cloth Shirt

@@ -114,6 +114,7 @@ public class TileFirePit extends HeatProducer {
   
   public void attachFurnace() {
     this.hasFurnace = true;
+    this.sync();
   }
   
   protected void sync() {

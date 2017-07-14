@@ -14,16 +14,16 @@ public final class GradientFuel {
   private final Map<Integer, Fuel> fuels = new HashMap<>();
   
   private GradientFuel() {
-    this.add("string",        10,  50,  125, 1.000f);
-    this.add("stickWood",     30, 100,  350, 0.108f);
-    this.add("treeSapling",   60, 150,  350, 0.069f);
-    this.add("plankWood",    600, 230,  750, 0.052f);
-    this.add("logWood",      900, 300,  750, 0.038f);
-    this.add("oreCoal",     1200, 700, 2700, 0.075f);
+    this.add("string",        10,  50,  125, 20.00f);
+    this.add("stickWood",     30, 100,  350,  2.16f);
+    this.add("treeSapling",   60, 150,  350,  1.38f);
+    this.add("plankWood",    600, 230,  750,  1.04f);
+    this.add("logWood",      900, 300,  750,  0.76f);
+    this.add("coal",        1200, 700, 2700,  1.50f);
   }
   
-  public void add(String oreDictName, int duration, float ignitionTemp, float burnTemp, float heatPerTick) {
-    this.fuels.put(OreDictionary.getOreID(oreDictName), new Fuel(duration, ignitionTemp, burnTemp, heatPerTick));
+  public void add(String oreDictName, int duration, float ignitionTemp, float burnTemp, float heatPerSec) {
+    this.fuels.put(OreDictionary.getOreID(oreDictName), new Fuel(duration, ignitionTemp, burnTemp, heatPerSec));
   }
   
   public Fuel get(ItemStack stack) {
@@ -46,13 +46,13 @@ public final class GradientFuel {
     public final int   duration;
     public final float ignitionTemp;
     public final float burnTemp;
-    public final float heatPerTick;
+    public final float heatPerSec;
     
-    public Fuel(int duration, float ignitionTemp, float burnTemp, float heatPerTick) {
+    public Fuel(int duration, float ignitionTemp, float burnTemp, float heatPerSec) {
       this.duration     = duration;
       this.ignitionTemp = ignitionTemp;
       this.burnTemp     = burnTemp;
-      this.heatPerTick  = heatPerTick;
+      this.heatPerSec   = heatPerSec;
     }
   }
 }

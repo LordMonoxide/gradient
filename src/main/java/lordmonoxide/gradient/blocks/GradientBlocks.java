@@ -2,6 +2,8 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucketUnhardened;
+import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucible;
+import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnaceUnhardened;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
@@ -31,11 +33,13 @@ public final class GradientBlocks {
   
   public static final BlockFirePit FIRE_PIT = register(new BlockFirePit());
   
-  public static final BlockClayBucketUnhardened CLAY_BUCKET_UNHARDENED = register(new BlockClayBucketUnhardened());
-  public static final BlockClayBucket           CLAY_BUCKET            = register(new BlockClayBucket());
+  public static final BlockClayBucketUnhardened   CLAY_BUCKET_UNHARDENED   = register(new BlockClayBucketUnhardened());
+  public static final BlockClayFurnaceUnhardened  CLAY_FURNACE_UNHARDENED  = register(new BlockClayFurnaceUnhardened());
+  public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = register(new BlockClayCrucibleUnhardened());
   
-  public static final BlockClayFurnaceUnhardened CLAY_FURNACE_UNHARDENED = register(new BlockClayFurnaceUnhardened());
-  public static final BlockClayFurnace           CLAY_FURNACE            = register(new BlockClayFurnace());
+  public static final BlockClayBucket   CLAY_BUCKET   = register(new BlockClayBucket());
+  public static final BlockClayFurnace  CLAY_FURNACE  = register(new BlockClayFurnace());
+  public static final BlockClayCrucible CLAY_CRUCIBLE = register(new BlockClayCrucible());
   
   private GradientBlocks() {
     

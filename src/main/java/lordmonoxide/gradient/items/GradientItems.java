@@ -4,6 +4,7 @@ import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -40,6 +41,8 @@ public final class GradientItems {
   public static final GradientArmour CLOTH_PANTS = register(new ClothPants());
   
   static {
+    OreDictionary.registerOre("coal", Items.COAL);
+    
     OreDictionary.registerOre("string", FIBRE);
     OreDictionary.registerOre("cloth",  CLOTH);
     

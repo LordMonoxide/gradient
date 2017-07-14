@@ -3,6 +3,7 @@ package lordmonoxide.gradient.blocks.firepit;
 import lordmonoxide.gradient.GradientFood;
 import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.blocks.Hardenable;
+import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -12,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,12 +22,11 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class TileFirePit extends TileEntity implements ITickable {
+public class TileFirePit extends HeatProducer {
   public static final int FUEL_SLOTS_COUNT = 3;
   public static final int INPUT_SLOTS_COUNT = 1;
   public static final int OUTPUT_SLOTS_COUNT = 1;
@@ -46,12 +45,13 @@ public class TileFirePit extends TileEntity implements ITickable {
   
   private boolean firstTick = true;
   
-  private float heat;
+  private boolean hasFurnace;
+  
   private int lastLight;
   private long nextSync;
   
-  public float getHeat() {
-    return this.heat;
+  public boolean hasFurnace() {
+    return this.hasFurnace;
   }
   
   public boolean isBurning() {
@@ -95,7 +95,12 @@ public class TileFirePit extends TileEntity implements ITickable {
       return 0;
     }
     
-    return Math.min((int)(this.getHeat() / 800 * 11) + 4, 15);
+    return Math.min(
+      !this.hasFurnace ?
+        (int)(this.getHeat() / 800 * 11) + 4 :
+        (int)(this.getHeat() / 1000 * 9) + 2,
+      15
+    );
   }
   
   public void light() {
@@ -103,8 +108,12 @@ public class TileFirePit extends TileEntity implements ITickable {
       return;
     }
     
-    this.heat = Math.max(50, this.heat);
+    this.setHeat(Math.max(50, this.getHeat()));
     this.sync();
+  }
+  
+  public void attachFurnace() {
+    this.hasFurnace = true;
   }
   
   protected void sync() {
@@ -144,17 +153,17 @@ public class TileFirePit extends TileEntity implements ITickable {
   }
   
   @Override
-  public void update() {
-    if(this.heat == 0) {
-      return;
-    }
-    
+  protected void tickBeforeCooldown() {
     this.igniteFuel();
-    this.coolDown();
-    this.heatUp();
+  }
+  
+  @Override
+  protected void tickAfterCooldown() {
+    super.tickAfterCooldown();
+    
     this.cook();
     this.updateLight();
-  
+    
     if(this.getWorld().isRemote) {
       this.generateParticles();
       this.playSounds();
@@ -219,32 +228,6 @@ public class TileFirePit extends TileEntity implements ITickable {
       .forEach(hardenable -> this.getWorld().setBlockState(hardenable.pos, hardenable.block.getHardened().getDefaultState()));
   }
   
-  private void coolDown() {
-    float loss = this.calculateHeatLoss() / 20.0f;
-    this.heat = Math.max(this.getHeat() - loss, 0);
-  }
-  
-  private void heatUp() {
-    float temperatureChange = 0;
-    
-    for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
-      if(this.isBurning(slot)) {
-        BurningFuel fuel = this.fuels[slot];
-        
-        if(fuel.isDepleted()) {
-          this.fuels[slot] = null;
-          this.setFuelSlot(slot, ItemStack.EMPTY);
-        }
-        
-        if(fuel.fuel.burnTemp > this.heat) {
-          temperatureChange += fuel.fuel.heatPerTick;
-        }
-      }
-    }
-    
-    this.heat += temperatureChange;
-  }
-  
   private void updateLight() {
     if(this.lastLight != this.getLightLevel()) {
       this.getWorld().markBlockRangeForRenderUpdate(this.pos, this.pos);
@@ -255,9 +238,9 @@ public class TileFirePit extends TileEntity implements ITickable {
   }
   
   private void generateParticles() {
-    if(this.heat > 0) {
+    if(this.hasHeat()) {
       if(this.isBurning()) { // Fire
-        double radius = this.getWorld().rand.nextDouble() * 0.25;
+        double radius = this.getWorld().rand.nextDouble() * 0.25d;
         double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
         
         double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
@@ -267,7 +250,7 @@ public class TileFirePit extends TileEntity implements ITickable {
       }
       
       { // Smoke
-        double radius = this.getWorld().rand.nextDouble() * 0.35;
+        double radius = this.getWorld().rand.nextDouble() * 0.35d;
         double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
         
         double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
@@ -286,8 +269,33 @@ public class TileFirePit extends TileEntity implements ITickable {
     }
   }
   
-  private float calculateHeatLoss() {
-    return (float)Math.pow((this.getHeat() / 500) + 1, 2) / 1.5f;
+  @Override
+  protected float calculateHeatGain() {
+    float temperatureChange = 0;
+    
+    for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
+      if(this.isBurning(slot)) {
+        BurningFuel fuel = this.fuels[slot];
+        
+        if(fuel.isDepleted()) {
+          this.fuels[slot] = null;
+          this.setFuelSlot(slot, ItemStack.EMPTY);
+        }
+        
+        if(fuel.fuel.burnTemp > this.getHeat()) {
+          temperatureChange += fuel.fuel.heatPerSec;
+        }
+      }
+    }
+    
+    return temperatureChange;
+  }
+  
+  @Override
+  protected float calculateHeatLoss() {
+    return !this.hasFurnace ?
+      (float)Math.pow((this.getHeat() / 500) + 1, 2) / 1.5f :
+      (float)Math.pow((this.getHeat() / 1600) + 1, 2);
   }
   
   private ItemStack getFuelSlot(int slot) {
@@ -299,7 +307,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   }
   
   private boolean canIgnite(GradientFuel.Fuel fuel) {
-    return this.heat >= fuel.ignitionTemp;
+    return this.getHeat() >= fuel.ignitionTemp;
   }
   
   private ItemStack getFoodSlot(int slot) {
@@ -311,7 +319,7 @@ public class TileFirePit extends TileEntity implements ITickable {
   }
   
   private boolean canCook(GradientFood.Food food) {
-    return this.heat >= food.cookTemp;
+    return this.getHeat() >= food.cookTemp;
   }
   
   private void setCookedSlot(int slot, ItemStack stack) {
@@ -321,7 +329,8 @@ public class TileFirePit extends TileEntity implements ITickable {
   @Override
   public NBTTagCompound writeToNBT(NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
-    compound.setFloat("heat", this.heat);
+    compound.setBoolean("hasFurnace", this.hasFurnace);
+    compound.setFloat("heat", this.getHeat());
     
     NBTTagList fuels = new NBTTagList();
     NBTTagList foods = new NBTTagList();
@@ -364,7 +373,8 @@ public class TileFirePit extends TileEntity implements ITickable {
     Arrays.fill(this.foods, null);
     
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
-    this.heat = compound.getFloat("heat");
+    this.hasFurnace = compound.getBoolean("hasFurnace");
+    this.setHeat(compound.getFloat("heat"));
     
     NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
     NBTTagList foods = compound.getTagList("food", Constants.NBT.TAG_COMPOUND);

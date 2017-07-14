@@ -50,7 +50,7 @@ public class GuiFirePit extends GuiContainer {
       }
     }
     
-    String name = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".name");
+    String name = I18n.format((this.firePit.hasFurnace() ? GradientBlocks.CLAY_FURNACE : GradientBlocks.FIRE_PIT).getUnlocalizedName() + ".name");
     String fuel = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".fuel");
     String food = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".input");
     

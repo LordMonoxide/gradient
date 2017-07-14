@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlockCraftable;
+import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.items.FireStarter;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -14,6 +15,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -100,12 +103,19 @@ public class BlockFirePit extends GradientBlock implements GradientBlockCraftabl
   public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        if(player.getHeldItemMainhand().getItem() instanceof FireStarter) {
+        ItemStack stack = player.getHeldItem(hand);
+        
+        if(stack.getItem() instanceof FireStarter) {
           TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
           
           if(!tile.isBurning()) {
             tile.light();
           }
+        }
+        
+        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).block instanceof BlockClayFurnace) {
+          ((TileFirePit)world.getTileEntity(pos)).attachFurnace();
+          stack.shrink(1);
         }
         
         player.openGui(GradientMod.instance, GradientGuiHandler.FIRE_PIT, world, pos.getX(), pos.getY(), pos.getZ());

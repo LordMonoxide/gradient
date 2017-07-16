@@ -115,8 +115,9 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientBlockCrafta
         }
         
         if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).block instanceof BlockClayFurnace) {
-          ((TileFirePit)world.getTileEntity(pos)).attachFurnace();
-          stack.shrink(1);
+          if(((TileFirePit)world.getTileEntity(pos)).attachFurnace()) {
+            stack.shrink(1);
+          }
         }
         
         player.openGui(GradientMod.instance, GradientGuiHandler.FIRE_PIT, world, pos.getX(), pos.getY(), pos.getZ());

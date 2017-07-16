@@ -115,9 +115,17 @@ public class TileFirePit extends HeatProducer {
     this.sync();
   }
   
-  public void attachFurnace() {
+  /**
+   * @return  True if the furnace was attached, false if there already was one
+   */
+  public boolean attachFurnace() {
+    if(this.hasFurnace) {
+      return false;
+    }
+    
     this.hasFurnace = true;
     this.sync();
+    return true;
   }
   
   public void updateHardenable(BlockPos pos) {

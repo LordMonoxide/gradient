@@ -41,7 +41,7 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientBlockCrafta
   
   @Override
   public int quantityDropped(Random rand) {
-    return rand.nextInt(5);
+    return rand.nextInt(3) + 2;
   }
   
   @Override

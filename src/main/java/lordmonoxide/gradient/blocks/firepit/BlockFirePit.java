@@ -2,7 +2,6 @@ package lordmonoxide.gradient.blocks.firepit;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
@@ -40,25 +39,16 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientBlockCrafta
     this.setLightOpacity(0);
   }
   
-  /**
-   * Returns the quantity of items to drop on block destruction.
-   */
   @Override
   public int quantityDropped(Random rand) {
     return rand.nextInt(5);
   }
   
-  /**
-   * Get the Item that this Block should drop when harvested.
-   */
   @Override
   public Item getItemDropped(IBlockState state, Random rand, int fortune) {
     return Items.STICK;
   }
   
-  /**
-   * Used to determine ambient occlusion and culling when rebuilding chunks for render
-   */
   @Override
   @SuppressWarnings("deprecation")
   public boolean isOpaqueCube(IBlockState state) {

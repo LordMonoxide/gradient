@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
+import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -29,7 +30,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.Random;
 
-public class BlockFirePit extends GradientBlock implements GradientBlockCraftable, ITileEntityProvider {
+public class BlockFirePit extends HeatSinkerBlock implements GradientBlockCraftable, ITileEntityProvider {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
   
   public BlockFirePit() {
@@ -128,6 +129,8 @@ public class BlockFirePit extends GradientBlock implements GradientBlockCraftabl
   @Override
   @SuppressWarnings("deprecation")
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos neighbor) {
+    super.neighborChanged(state, world, pos, blockIn, neighbor);
+    
     TileEntity te = world.getTileEntity(pos);
     
     if(te instanceof TileFirePit) {

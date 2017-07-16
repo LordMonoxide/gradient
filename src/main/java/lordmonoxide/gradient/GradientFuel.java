@@ -20,6 +20,8 @@ public final class GradientFuel {
     this.add("plankWood",    600, 230,  750,  1.04f);
     this.add("logWood",      900, 300,  750,  0.76f);
     this.add("coal",        1200, 700, 2700,  1.50f);
+    
+    this.add("infinicoal", Integer.MAX_VALUE, 0, 2700, 1.50f);
   }
   
   public void add(String oreDictName, int duration, float ignitionTemp, float burnTemp, float heatPerSec) {

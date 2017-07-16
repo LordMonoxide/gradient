@@ -5,7 +5,6 @@ import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.blocks.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -25,6 +24,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+// With a single furnace, a crucible will heat up to 1038 degrees
+// Two furnaces, 1152
+// Two layers of furnaces, 1693
+// Three layers of furnaces, 1725
 
 public class TileFirePit extends HeatProducer {
   public static final int FUEL_SLOTS_COUNT = 3;
@@ -48,7 +52,6 @@ public class TileFirePit extends HeatProducer {
   private boolean hasFurnace;
   
   private int lastLight;
-  private long nextSync;
   
   public boolean hasFurnace() {
     return this.hasFurnace;
@@ -117,13 +120,6 @@ public class TileFirePit extends HeatProducer {
     this.sync();
   }
   
-  protected void sync() {
-    if(!this.getWorld().isRemote) {
-      IBlockState state = this.getWorld().getBlockState(this.getPos());
-      this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
-    }
-  }
-  
   public void updateHardenable(BlockPos pos) {
     if(this.world.isRemote) {
       return;
@@ -175,11 +171,6 @@ public class TileFirePit extends HeatProducer {
       }
       
       this.hardenHardenables();
-      
-      if(Minecraft.getSystemTime() >= this.nextSync) {
-        this.nextSync = Minecraft.getSystemTime() + 10000;
-        this.sync();
-      }
     }
   }
   
@@ -299,6 +290,11 @@ public class TileFirePit extends HeatProducer {
       (float)Math.pow((this.getHeat() / 1600) + 1, 2);
   }
   
+  @Override
+  protected float heatTransferEfficiency() {
+    return 0.6f;
+  }
+  
   private ItemStack getFuelSlot(int slot) {
     return this.inventory.getStackInSlot(FIRST_FUEL_SLOT + slot);
   }
@@ -331,7 +327,6 @@ public class TileFirePit extends HeatProducer {
   public NBTTagCompound writeToNBT(NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setBoolean("hasFurnace", this.hasFurnace);
-    compound.setFloat("heat", this.getHeat());
     
     NBTTagList fuels = new NBTTagList();
     NBTTagList foods = new NBTTagList();
@@ -375,7 +370,6 @@ public class TileFirePit extends HeatProducer {
     
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.hasFurnace = compound.getBoolean("hasFurnace");
-    this.setHeat(compound.getFloat("heat"));
     
     NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
     NBTTagList foods = compound.getTagList("food", Constants.NBT.TAG_COMPOUND);
@@ -416,21 +410,6 @@ public class TileFirePit extends HeatProducer {
   @Override
   public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
     return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory : super.getCapability(capability, facing);
-  }
-  
-  @Override
-  public SPacketUpdateTileEntity getUpdatePacket() {
-    return new SPacketUpdateTileEntity(this.pos, 0, this.getUpdateTag());
-  }
-  
-  @Override
-  public NBTTagCompound getUpdateTag() {
-    return this.writeToNBT(new NBTTagCompound());
-  }
-  
-  @Override
-  public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-    this.readFromNBT(pkt.getNbtCompound());
   }
   
   public static final class BurningFuel {

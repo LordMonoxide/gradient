@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
+import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,7 +15,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockClayCrucible extends GradientBlock implements ITileEntityProvider {
+public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityProvider {
   public BlockClayCrucible() {
     super("clay_crucible", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
   }

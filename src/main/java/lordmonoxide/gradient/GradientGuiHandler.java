@@ -47,10 +47,10 @@ public class GradientGuiHandler implements IGuiHandler {
     
     switch(id) {
       case FIRE_PIT:
-        return new GuiFirePit(this.getServerGuiElement(id, player, world, x, y, z), (TileFirePit)te, player.inventory);
+        return new GuiFirePit((ContainerFirePit)this.getServerGuiElement(id, player, world, x, y, z), (TileFirePit)te, player.inventory);
         
       case CLAY_CRUCIBLE:
-        return new GuiClayCrucible(this.getServerGuiElement(id, player, world, x, y ,z), (TileClayCrucible)te, player.inventory);
+        return new GuiClayCrucible((ContainerClayCrucible)this.getServerGuiElement(id, player, world, x, y ,z), (TileClayCrucible)te, player.inventory);
     }
     
     return null;

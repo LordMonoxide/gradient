@@ -17,7 +17,7 @@ public class GuiFirePit extends GuiContainer {
   private TileFirePit firePit;
   private InventoryPlayer playerInv;
   
-  public GuiFirePit(Container container, TileFirePit firePit, InventoryPlayer playerInv) {
+  public GuiFirePit(ContainerFirePit container, TileFirePit firePit, InventoryPlayer playerInv) {
     super(container);
     this.firePit = firePit;
     this.playerInv = playerInv;

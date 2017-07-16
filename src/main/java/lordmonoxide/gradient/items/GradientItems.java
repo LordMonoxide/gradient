@@ -27,6 +27,8 @@ public final class GradientItems {
   
   public static final ItemArmor.ArmorMaterial MATERIAL_CLOTH = EnumHelper.addArmorMaterial("cloth", "cloth", 5, new int[] {0, 1, 2, 0}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
   
+  public static final GradientItem INFINICOAL = register(new Infinicoal());
+  
   public static final GradientItem FIBRE = register(new Fibre());
   public static final GradientItem CLOTH = register(new Cloth());
   
@@ -41,6 +43,8 @@ public final class GradientItems {
   public static final GradientArmour CLOTH_PANTS = register(new ClothPants());
   
   static {
+    OreDictionary.registerOre("infinicoal", INFINICOAL);
+    
     OreDictionary.registerOre("coal", Items.COAL);
     
     OreDictionary.registerOre("string", FIBRE);

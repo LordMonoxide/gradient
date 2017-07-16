@@ -14,7 +14,12 @@ public final class GradientMetals {
   private final Map<Integer, GradientMetals.Metal> metals = new HashMap<>();
   
   private GradientMetals() {
-    this.add("ingotCopper", 10, 1085);
+    this.add("ingotTin",      10,  231.93f);
+    this.add("ingotCopper",   10, 1085.00f);
+    this.add("ingotIron",     10, 1538.00f);
+    this.add("ingotSilver",   10,  961.78f);
+    this.add("ingotGold",     10, 1064.00f);
+    this.add("ingotTitanium", 10, 1668.00f);
   }
   
   public void add(String oreDictName, int duration, float meltTemp) {

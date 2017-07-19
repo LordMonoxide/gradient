@@ -13,7 +13,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiClayCrucible extends GuiContainer {
-  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/fire_pit.png");
+  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_crucible.png");
   
   private TileClayCrucible te;
   private InventoryPlayer playerInv;
@@ -35,12 +35,22 @@ public class GuiClayCrucible extends GuiContainer {
   
   @Override
   protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    for(int slot = 0; slot < TileClayCrucible.METAL_SLOTS_COUNT; slot++) {
+      if(this.te.isMelting(slot)) {
+        int x = ContainerClayCrucible.METAL_SLOTS_X + (slot % 5) * (GradientContainer.SLOT_X_SPACING + 8) + 20;
+        int y = ContainerClayCrucible.METAL_SLOTS_Y + (slot / 5) * (GradientContainer.SLOT_Y_SPACING + 8);
+        float percent = this.te.getMeltingMetal(slot).meltPercent();
+      
+        drawRect(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
+      }
+    }
+    
     String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".name");
     String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.te.getHeat());
     
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
     
-    this.fontRenderer.drawString(heat, ContainerFirePit.FUEL_SLOTS_X, 55, 0x404040);
+    this.fontRenderer.drawString(heat, ContainerFirePit.FUEL_SLOTS_X, 58, 0x404040);
   }
 }

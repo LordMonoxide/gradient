@@ -8,6 +8,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -38,6 +39,24 @@ public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityPro
   @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
     return AABB;
+  }
+  
+  @Override
+  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+    IBlockState other = world.getBlockState(pos);
+    if(other.getBlock() != this) {
+      return other.getLightValue(world, pos);
+    }
+    
+    TileEntity te = world.getTileEntity(pos);
+    
+    if(te instanceof TileClayCrucible) {
+      return ((TileClayCrucible)te).getLightLevel();
+    }
+    
+    @SuppressWarnings("deprecation")
+    int light = state.getLightValue();
+    return light;
   }
   
   @Override

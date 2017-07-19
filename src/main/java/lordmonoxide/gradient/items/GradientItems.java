@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.items;
 
+import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,9 @@ public final class GradientItems {
   public static final GradientArmour CLOTH_SHIRT = register(new ClothShirt());
   public static final GradientArmour CLOTH_PANTS = register(new ClothPants());
   
+  public static final GradientItem INGOT  = register(new Ingot());
+  public static final GradientItem NUGGET = register(new Nugget());
+  
   static {
     OreDictionary.registerOre("infinicoal", INFINICOAL);
     
@@ -53,6 +58,13 @@ public final class GradientItems {
     OreDictionary.registerOre("needle", BONE_NEEDLE.getWildcardItemStack());
     OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
     OreDictionary.registerOre("toolMattock", STONE_MATTOCK.getWildcardItemStack());
+    
+    for(GradientMetals.Metal metal : GradientMetals.instance.get().values()) {
+      String caps = StringUtils.capitalize(metal.name);
+      
+      OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));
+      OreDictionary.registerOre("nugget" + caps, NUGGET.getItemStack(1, metal.id));
+    }
     
     MATERIAL_CLOTH.setRepairItem(CLOTH.getDefaultInstance());
   }

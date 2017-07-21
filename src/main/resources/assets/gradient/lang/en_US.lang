@@ -13,6 +13,14 @@ item.flint_knife.name=Flint Knife
 item.cloth_shirt.name=Cloth Shirt
 item.cloth_pants.name=Cloth Pants
 
+# Metals
+item.ingot.invalid.name=Invalid Ingot
+item.ingot.copper.name=Copper Ingot
+item.ingot.iron.name=Iron Ingot
+item.nugget.invalid.name=Invalid Nugget
+item.nugget.copper.name=Copper Nugget
+item.nugget.iron.name=Iron Nugget
+
 # Blocks
 tile.pebble.name=Pebble
 tile.fire_pit.name=Fire Pit
@@ -43,3 +51,6 @@ journal.getting_started=Getting Started
 journal.getting_started.p1=I woke up in a strange land today.  I don't know where I am or how I got here, but gods, it feels like I've been asleep for a month.  I need to find shelter and take in my surroundings.  Maybe then I'll be able to figure out what's going on.  What can I do?  If I can make some tools and start a fire, I might be in better shape.
 journal.getting_started.p2=I can gather up some sticks by breaking leaves, and there are small rocks all over the ground.  Maybe I could lash them with some of the longer strands of grass?
 journal.textiles=Textiles
+
+# Debug
+item.infinicoal.name=Infinicoal (debug)

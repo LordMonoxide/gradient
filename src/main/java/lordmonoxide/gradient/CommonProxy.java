@@ -38,6 +38,8 @@ public class CommonProxy {
     GradientBlocks.addRecipes();
     GradientItems.addRecipes();
     ExtraRecipes.addRecipes();
+    
+    GradientMetals.instance.registerMeltables();
   }
   
   @Mod.EventHandler

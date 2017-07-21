@@ -38,11 +38,21 @@ public class GuiClayCrucible extends GuiContainer {
     for(int slot = 0; slot < TileClayCrucible.METAL_SLOTS_COUNT; slot++) {
       if(this.te.isMelting(slot)) {
         int x = ContainerClayCrucible.METAL_SLOTS_X + (slot % 5) * (GradientContainer.SLOT_X_SPACING + 8) + 20;
-        int y = ContainerClayCrucible.METAL_SLOTS_Y + (slot / 5) * (GradientContainer.SLOT_Y_SPACING + 8);
+        int y = ContainerClayCrucible.METAL_SLOTS_Y + (slot / 5) * (GradientContainer.SLOT_Y_SPACING + 2);
         float percent = this.te.getMeltingMetal(slot).meltPercent();
-      
+        
         drawRect(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
       }
+    }
+    
+    int x = ContainerClayCrucible.METAL_SLOTS_X + (GradientContainer.SLOT_X_SPACING + 8) * 5;
+    int y = ContainerClayCrucible.METAL_SLOTS_Y;
+    
+    for(TileClayCrucible.MoltenMetal molten : this.te.getMoltenMetals()) {
+      //TODO: lang for metal name
+      String text = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".molten", molten.metal.name, molten.amount());
+      this.fontRenderer.drawString(text, x, y, 0x404040);
+      y += this.fontRenderer.FONT_HEIGHT;
     }
     
     String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".name");

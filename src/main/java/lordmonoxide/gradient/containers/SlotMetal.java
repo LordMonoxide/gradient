@@ -12,7 +12,7 @@ public class SlotMetal extends SlotItemHandler {
   
   @Override
   public boolean isItemValid(ItemStack stack) {
-    return GradientMetals.instance.has(stack.getMetadata()) && super.isItemValid(stack);
+    return GradientMetals.instance.hasMeltable(stack) && super.isItemValid(stack);
   }
   
   @Override

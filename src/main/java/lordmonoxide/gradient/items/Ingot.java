@@ -21,12 +21,12 @@ public class Ingot extends GradientItem {
   
   @Override
   public String getUnlocalizedName(ItemStack stack) {
-    return super.getUnlocalizedName() + '.' + GradientMetals.instance.get(stack.getMetadata()).name;
+    return super.getUnlocalizedName() + '.' + GradientMetals.instance.getMetal(stack.getMetadata()).name;
   }
   
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
-    GradientMetals.instance.get().forEach((a, ore) -> list.add(this.getItemStack(1, ore.id)));
+    GradientMetals.instance.getMetals().forEach(ore -> list.add(this.getItemStack(1, ore.id)));
   }
 }

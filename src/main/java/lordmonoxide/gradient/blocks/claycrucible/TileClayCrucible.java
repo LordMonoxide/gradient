@@ -1,15 +1,22 @@
 package lordmonoxide.gradient.blocks.claycrucible;
 
+import lordmonoxide.gradient.GradientFood;
+import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +53,10 @@ public class TileClayCrucible extends HeatSinker {
   
   @Override
   protected void tickBeforeCooldown() {
-    this.meltMetal();
-    this.checkForMoltenMetal();
+    if(!this.world.isRemote) {
+      this.meltMetal();
+      this.checkForMoltenMetal();
+    }
   }
   
   @Override
@@ -56,38 +65,58 @@ public class TileClayCrucible extends HeatSinker {
   }
   
   private void meltMetal() {
+    boolean update = false;
+    
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(!this.isMelting(slot) && !this.getMetalSlot(slot).isEmpty()) {
-        GradientMetals.Metal metal = GradientMetals.instance.get(this.getMetalSlot(slot).getMetadata());
+        GradientMetals.Metal metal = GradientMetals.instance.getMeltable(this.getMetalSlot(slot)).metal;
         
         if(this.canMelt(metal)) {
           this.melting[slot] = new MeltingMetal(metal);
+          update = true;
         }
       }
+    }
+    
+    if(update) {
+      this.sync();
     }
   }
   
   private void checkForMoltenMetal() {
+    boolean update = false;
+    
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(this.isMelting(slot)) {
         MeltingMetal melting = this.getMeltingMetal(slot);
         
         if(melting.isMelted()) {
+          ItemStack stack = this.getMetalSlot(slot);
+          
           this.melting[slot] = null;
           this.setMetalSlot(slot, ItemStack.EMPTY);
           
           MoltenMetal molten = this.molten.get(melting.metal);
           
           if(molten == null) {
-            //TODO
-            molten = new MoltenMetal(melting.metal, 1);
+            molten = new MoltenMetal(melting.metal, 0);
             this.molten.put(molten.metal, molten);
           }
           
+          molten.addMetal(GradientMetals.instance.hasMeltable(stack) ? GradientMetals.instance.getMeltable(stack).amount : 1);
           
+          update = true;
         }
       }
     }
+    
+    if(update) {
+      this.sync();
+    }
+  }
+  
+  public Collection<MoltenMetal> getMoltenMetals() {
+    return this.molten.values();
   }
   
   private ItemStack getMetalSlot(int slot) {
@@ -119,6 +148,72 @@ public class TileClayCrucible extends HeatSinker {
       
       this.lastLight = this.getLightLevel();
     }
+  }
+  
+  @Override
+  public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    compound.setTag("inventory", this.inventory.serializeNBT());
+    
+    NBTTagList meltings = new NBTTagList();
+    NBTTagList moltens  = new NBTTagList();
+    
+    for(int i = 0; i < METAL_SLOTS_COUNT; i++) {
+      if(this.isMelting(i)) {
+        MeltingMetal melting = this.getMeltingMetal(i);
+        
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setInteger("slot", i);
+        tag.setLong("start", melting.meltStart - Minecraft.getSystemTime());
+        tag.setLong("until", melting.meltUntil - Minecraft.getSystemTime());
+        meltings.appendTag(tag);
+      }
+    }
+    
+    for(MoltenMetal molten : this.molten.values()) {
+      NBTTagCompound tag = new NBTTagCompound();
+      tag.setString("metal", molten.metal.name);
+      tag.setFloat("amount", molten.amount);
+      moltens.appendTag(tag);
+    }
+    
+    compound.setTag("melting", meltings);
+    compound.setTag("molten", moltens);
+    
+    return super.writeToNBT(compound);
+  }
+  
+  @Override
+  public void readFromNBT(NBTTagCompound compound) {
+    this.lastLight = this.getLightLevel();
+    
+    Arrays.fill(this.melting, null);
+    this.molten.clear();
+    
+    this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
+    
+    NBTTagList meltings = compound.getTagList("melting", Constants.NBT.TAG_COMPOUND);
+    NBTTagList moltens = compound.getTagList("molten", Constants.NBT.TAG_COMPOUND);
+    
+    for(int i = 0; i < meltings.tagCount(); i++) {
+      NBTTagCompound tag = meltings.getCompoundTagAt(i);
+      
+      int slot = tag.getInteger("slot");
+      
+      if(slot < METAL_SLOTS_COUNT) {
+        this.melting[slot] = new MeltingMetal(GradientMetals.instance.getMeltable(this.getMetalSlot(slot)).metal);
+        this.melting[slot].meltStart = tag.getLong("start") + Minecraft.getSystemTime();
+        this.melting[slot].meltUntil = tag.getLong("until") + Minecraft.getSystemTime();
+      }
+    }
+    
+    for(int i = 0; i < moltens.tagCount(); i++) {
+      NBTTagCompound tag = moltens.getCompoundTagAt(i);
+      
+      GradientMetals.Metal metal = GradientMetals.instance.getMetal(tag.getString("metal"));
+      this.molten.put(metal, new MoltenMetal(metal, tag.getFloat("amount")));
+    }
+    
+    super.readFromNBT(compound);
   }
   
   @Override

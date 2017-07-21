@@ -26,6 +26,7 @@ tile.clay_furnace_unhardened.name=Unhardened Clay Furnace
 tile.clay_furnace.name=Clay Furnace
 tile.clay_crucible_unhardened.name=Unhardened Clay Crucible
 tile.clay_crucible.name=Clay Crucible
+tile.clay_crucible.molten=%s: %f
 
 # Fuel
 fuel.ignition_temp=Ignition Temperature: %f °C

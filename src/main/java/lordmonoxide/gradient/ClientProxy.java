@@ -4,6 +4,7 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.overrides.BurningTooltips;
 import lordmonoxide.gradient.overrides.CookingTooltips;
+import lordmonoxide.gradient.overrides.MetalTooltips;
 import lordmonoxide.gradient.overrides.OverrideInventory;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -16,6 +17,7 @@ public class ClientProxy extends CommonProxy {
     MinecraftForge.EVENT_BUS.register(OverrideInventory.instance);
     MinecraftForge.EVENT_BUS.register(BurningTooltips.instance);
     MinecraftForge.EVENT_BUS.register(CookingTooltips.instance);
+    MinecraftForge.EVENT_BUS.register(MetalTooltips.instance);
     
     MinecraftForge.EVENT_BUS.register(KeyBindings.instance);
     

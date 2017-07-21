@@ -39,12 +39,17 @@ tile.clay_crucible.molten=%s: %f
 # Fuel
 fuel.ignition_temp=Ignition Temperature: %f °C
 fuel.burn_temp=Burn Temperature: %f °C
-fuel.duration=Burn Duration: %d
+fuel.duration=Burn Duration: %d sec
 
 # Food
 food.cook_temp=Cook Temperature: %f °C
-food.duration=Cook Duration: %d
+food.duration=Cook Duration: %d sec
 food.cooked=Cooked: %s
+
+# Metal
+metal.melt_temp=Melting Point: %f °C
+metal.melt_time=Melting Time: %d sec
+metal.amount=Amount: %d buckets
 
 # Journal
 journal.getting_started=Getting Started

@@ -1,6 +1,8 @@
 package lordmonoxide.gradient.items;
 
+import com.sun.prism.paint.Gradient;
 import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
@@ -12,6 +14,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -75,18 +78,18 @@ public final class GradientItems {
   public static void addModels() {
     for(Item item : items) {
       if(!item.getHasSubtypes()) {
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory")); //$NON-NLS-1$
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
       } else {
         NonNullList<ItemStack> stacks = NonNullList.create();
         item.getSubItems(item, null, stacks);
         
         if(item instanceof ItemBlock) {
           for(ItemStack stack : stacks) {
-            ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(item.getRegistryName(), "inventory")); //$NON-NLS-1$
+            ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(item.getRegistryName(), "inventory"));
           }
         } else {
           for(ItemStack stack : stacks) {
-            ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(item.getUnlocalizedName(stack).substring(5), "inventory")); //$NON-NLS-1$
+            ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory"));
           }
         }
       }

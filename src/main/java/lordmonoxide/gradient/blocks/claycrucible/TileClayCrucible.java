@@ -1,7 +1,5 @@
 package lordmonoxide.gradient.blocks.claycrucible;
 
-import lordmonoxide.gradient.GradientFood;
-import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import net.minecraft.client.Minecraft;
@@ -69,10 +67,10 @@ public class TileClayCrucible extends HeatSinker {
     
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(!this.isMelting(slot) && !this.getMetalSlot(slot).isEmpty()) {
-        GradientMetals.Metal metal = GradientMetals.instance.getMeltable(this.getMetalSlot(slot)).metal;
+        GradientMetals.Meltable meltable = GradientMetals.instance.getMeltable(this.getMetalSlot(slot));
         
-        if(this.canMelt(metal)) {
-          this.melting[slot] = new MeltingMetal(metal);
+        if(this.canMelt(meltable)) {
+          this.melting[slot] = new MeltingMetal(meltable);
           update = true;
         }
       }
@@ -96,10 +94,10 @@ public class TileClayCrucible extends HeatSinker {
           this.melting[slot] = null;
           this.setMetalSlot(slot, ItemStack.EMPTY);
           
-          MoltenMetal molten = this.molten.get(melting.metal);
+          MoltenMetal molten = this.molten.get(melting.meltable.metal);
           
           if(molten == null) {
-            molten = new MoltenMetal(melting.metal, 0);
+            molten = new MoltenMetal(melting.meltable.metal, 0);
             this.molten.put(molten.metal, molten);
           }
           
@@ -127,8 +125,8 @@ public class TileClayCrucible extends HeatSinker {
     this.inventory.setStackInSlot(FIRST_METAL_SLOT + slot, stack);
   }
   
-  private boolean canMelt(GradientMetals.Metal metal) {
-    return this.getHeat() >= metal.meltTemp;
+  private boolean canMelt(GradientMetals.Meltable meltable) {
+    return this.getHeat() >= meltable.metal.meltTemp;
   }
   
   @Override
@@ -200,7 +198,7 @@ public class TileClayCrucible extends HeatSinker {
       int slot = tag.getInteger("slot");
       
       if(slot < METAL_SLOTS_COUNT) {
-        this.melting[slot] = new MeltingMetal(GradientMetals.instance.getMeltable(this.getMetalSlot(slot)).metal);
+        this.melting[slot] = new MeltingMetal(GradientMetals.instance.getMeltable(this.getMetalSlot(slot)));
         this.melting[slot].meltStart = tag.getLong("start") + Minecraft.getSystemTime();
         this.melting[slot].meltUntil = tag.getLong("until") + Minecraft.getSystemTime();
       }
@@ -228,14 +226,14 @@ public class TileClayCrucible extends HeatSinker {
   }
   
   public static final class MeltingMetal {
-    public final GradientMetals.Metal metal;
+    public final GradientMetals.Meltable meltable;
     private long meltStart;
     private long meltUntil;
     
-    private MeltingMetal(GradientMetals.Metal metal) {
-      this.metal = metal;
+    private MeltingMetal(GradientMetals.Meltable meltable) {
+      this.meltable  = meltable;
       this.meltStart = Minecraft.getSystemTime();
-      this.meltUntil = this.meltStart + metal.meltTime * 1000L;
+      this.meltUntil = (long)(this.meltStart + meltable.metal.meltTime * meltable.meltModifier * 1000L);
     }
     
     public boolean isMelted() {

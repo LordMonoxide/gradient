@@ -3,13 +3,11 @@ package lordmonoxide.gradient.blocks.claycrucible;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.firepit.ContainerFirePit;
-import lordmonoxide.gradient.blocks.firepit.TileFirePit;
 import lordmonoxide.gradient.containers.GradientContainer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiClayCrucible extends GuiContainer {

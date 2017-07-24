@@ -24,24 +24,34 @@ public final class GradientMetals {
   
   public void registerMeltables() {
     for(String oreName : OreDictionary.getOreNames()) {
-      if(oreName.startsWith("ingot")) {
-        this.addMeltable(oreName, oreName.substring(5, 6).toLowerCase() + oreName.substring(6), 1, 1);
+      if(oreName.startsWith("ore")) {
+        this.addMeltable(oreName, oreName.substring(3).toLowerCase(), 1, 1);
+      } else if(oreName.startsWith("ingot")) {
+        this.addMeltable(oreName, oreName.substring(5).toLowerCase(), 1, 1);
       } else if(oreName.startsWith("nugget")) {
-        this.addMeltable(oreName, oreName.substring(6, 7).toLowerCase() + oreName.substring(7), 1.0f / 9.0f, 1.0f / 9.0f);
+        Meltable meltable = this.addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, 1.0f / 4.0f);
+        
+        if(meltable != INVALID_MELTABLE) {
+          meltable.metal.nugget = OreDictionary.getOres(oreName).get(0);
+        }
       }
     }
   }
   
-  private void addMeltable(String oreName, String metal, float meltModifier, float amount) {
+  private Meltable addMeltable(String oreName, String metal, float meltModifier, float amount) {
     Metal m = this.getMetal(metal);
     
     if(m != INVALID_METAL) {
-      this.addMeltable(oreName, m, meltModifier, amount);
+      return this.addMeltable(oreName, m, meltModifier, amount);
     }
+    
+    return INVALID_MELTABLE;
   }
   
-  private void addMeltable(String oreDict, Metal metal, float meltModifier, float amount) {
-    this.meltables.put(OreDictionary.getOreID(oreDict), new Meltable(metal, meltModifier, amount));
+  private Meltable addMeltable(String oreDict, Metal metal, float meltModifier, float amount) {
+    Meltable meltable = new Meltable(metal, meltModifier, amount);
+    this.meltables.put(OreDictionary.getOreID(oreDict), meltable);
+    return meltable;
   }
   
   public Metal addMetal(String name, int meltTime, float meltTemp) {
@@ -96,11 +106,17 @@ public final class GradientMetals {
     public final int    meltTime;
     public final float  meltTemp;
     
+    private ItemStack nugget;
+    
     public Metal(String name, int meltTime, float meltTemp) {
       this.id = currentId++;
       this.name = name;
       this.meltTime = meltTime;
       this.meltTemp = meltTemp;
+    }
+  
+    public ItemStack getNugget() {
+      return this.nugget;
     }
   }
   

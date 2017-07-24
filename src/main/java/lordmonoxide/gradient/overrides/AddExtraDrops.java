@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.overrides;
 
+import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.BlockLeaves;
@@ -9,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.List;
 
 public final class AddExtraDrops {
   public static final AddExtraDrops instance = new AddExtraDrops();
@@ -52,13 +55,28 @@ public final class AddExtraDrops {
       return;
     }
     
-    if(hand.getItem().getHarvestLevel(hand, "hammer", event.getHarvester(), event.getState()) != -1) { //$NON-NLS-1$
-      event.getDrops().clear();
-      event.setDropChance(0.5f);
-      event.getDrops().add(new ItemStack(GradientBlocks.PEBBLE));
-      event.getDrops().add(new ItemStack(GradientBlocks.PEBBLE));
-      event.getDrops().add(new ItemStack(GradientBlocks.PEBBLE));
-      event.getDrops().add(new ItemStack(GradientBlocks.PEBBLE));
+    if(hand.getItem().getHarvestLevel(hand, "hammer", event.getHarvester(), event.getState()) != -1) {
+      List<ItemStack> drops = event.getDrops();
+      
+      drops.clear();
+      
+      int pebbleCount = event.getHarvester().getEntityWorld().rand.nextInt(4) + 2;
+      
+      for(int i = 0; i < pebbleCount; i++) {
+        drops.add(new ItemStack(GradientBlocks.PEBBLE));
+      }
+      
+      ItemStack metalStack = event.getState().getBlock().getItem(event.getWorld(), event.getPos(), event.getState());
+      
+      if(GradientMetals.instance.hasMeltable(metalStack)) {
+        GradientMetals.Meltable meltable = GradientMetals.instance.getMeltable(metalStack);
+        
+        int nuggetCount = event.getHarvester().getEntityWorld().rand.nextInt((int)(meltable.amount * 4) + 1) + 2;
+        
+        for(int i = 0; i < nuggetCount; i++) {
+          drops.add(meltable.metal.getNugget().copy());
+        }
+      }
     }
   }
 }

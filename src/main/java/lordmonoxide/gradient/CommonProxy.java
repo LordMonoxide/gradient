@@ -22,6 +22,8 @@ public class CommonProxy {
     System.out.println("Fibre: " + GradientItems.FIBRE);
     System.out.println("Pebble: " + GradientBlocks.PEBBLE);
     
+    GradientMetals.instance.registerFluids();
+    
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
   }
   

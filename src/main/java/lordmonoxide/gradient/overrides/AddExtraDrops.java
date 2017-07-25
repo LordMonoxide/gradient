@@ -71,10 +71,10 @@ public final class AddExtraDrops {
       if(GradientMetals.instance.hasMeltable(metalStack)) {
         GradientMetals.Meltable meltable = GradientMetals.instance.getMeltable(metalStack);
         
-        int nuggetCount = event.getHarvester().getEntityWorld().rand.nextInt((int)(meltable.amount * 4) + 1) + 2;
+        int nuggetCount = event.getHarvester().getEntityWorld().rand.nextInt(meltable.amount * 4 / 1000 + 1) + 2;
         
         for(int i = 0; i < nuggetCount; i++) {
-          drops.add(meltable.metal.getNugget().copy());
+          drops.add(meltable.metal.getNugget());
         }
       }
     }

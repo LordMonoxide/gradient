@@ -9,26 +9,26 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TileClayCrucible extends HeatSinker {
-  public static final int METAL_SLOTS_COUNT = 10;
+  public static final int METAL_SLOTS_COUNT = 1;
   public static final int TOTAL_SLOTS_COUNT = METAL_SLOTS_COUNT;
   
   public static final int FIRST_METAL_SLOT = 0;
   
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
+  private final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * 8);
   
   private final MeltingMetal[] melting = new MeltingMetal[METAL_SLOTS_COUNT];
-  
-  private final Map<GradientMetals.Metal, MoltenMetal> molten = new HashMap<>();
   
   private int lastLight;
   
@@ -38,6 +38,11 @@ public class TileClayCrucible extends HeatSinker {
   
   public MeltingMetal getMeltingMetal(int slot) {
     return this.melting[slot];
+  }
+  
+  @Nullable
+  public FluidStack getMoltenMetal() {
+    return this.tank.getFluid();
   }
   
   //TODO
@@ -94,14 +99,9 @@ public class TileClayCrucible extends HeatSinker {
           this.melting[slot] = null;
           this.setMetalSlot(slot, ItemStack.EMPTY);
           
-          MoltenMetal molten = this.molten.get(melting.meltable.metal);
+          FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), GradientMetals.instance.getMeltable(stack).amount);
           
-          if(molten == null) {
-            molten = new MoltenMetal(melting.meltable.metal, 0);
-            this.molten.put(molten.metal, molten);
-          }
-          
-          molten.addMetal(GradientMetals.instance.hasMeltable(stack) ? GradientMetals.instance.getMeltable(stack).amount : 1);
+          this.tank.fill(fluid, true);
           
           update = true;
         }
@@ -113,10 +113,6 @@ public class TileClayCrucible extends HeatSinker {
     }
   }
   
-  public Collection<MoltenMetal> getMoltenMetals() {
-    return this.molten.values();
-  }
-  
   private ItemStack getMetalSlot(int slot) {
     return this.inventory.getStackInSlot(FIRST_METAL_SLOT + slot);
   }
@@ -126,7 +122,7 @@ public class TileClayCrucible extends HeatSinker {
   }
   
   private boolean canMelt(GradientMetals.Meltable meltable) {
-    return this.getHeat() >= meltable.metal.meltTemp;
+    return (this.tank.getFluid() == null || this.tank.getFluid().getFluid() == meltable.metal.getFluid()) && this.getHeat() >= meltable.metal.meltTemp;
   }
   
   @Override
@@ -151,9 +147,9 @@ public class TileClayCrucible extends HeatSinker {
   @Override
   public NBTTagCompound writeToNBT(NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
+    this.tank.writeToNBT(compound);
     
     NBTTagList meltings = new NBTTagList();
-    NBTTagList moltens  = new NBTTagList();
     
     for(int i = 0; i < METAL_SLOTS_COUNT; i++) {
       if(this.isMelting(i)) {
@@ -167,15 +163,7 @@ public class TileClayCrucible extends HeatSinker {
       }
     }
     
-    for(MoltenMetal molten : this.molten.values()) {
-      NBTTagCompound tag = new NBTTagCompound();
-      tag.setString("metal", molten.metal.name);
-      tag.setFloat("amount", molten.amount);
-      moltens.appendTag(tag);
-    }
-    
     compound.setTag("melting", meltings);
-    compound.setTag("molten", moltens);
     
     return super.writeToNBT(compound);
   }
@@ -185,12 +173,10 @@ public class TileClayCrucible extends HeatSinker {
     this.lastLight = this.getLightLevel();
     
     Arrays.fill(this.melting, null);
-    this.molten.clear();
-    
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
+    this.tank.readFromNBT(compound);
     
     NBTTagList meltings = compound.getTagList("melting", Constants.NBT.TAG_COMPOUND);
-    NBTTagList moltens = compound.getTagList("molten", Constants.NBT.TAG_COMPOUND);
     
     for(int i = 0; i < meltings.tagCount(); i++) {
       NBTTagCompound tag = meltings.getCompoundTagAt(i);
@@ -204,25 +190,24 @@ public class TileClayCrucible extends HeatSinker {
       }
     }
     
-    for(int i = 0; i < moltens.tagCount(); i++) {
-      NBTTagCompound tag = moltens.getCompoundTagAt(i);
-      
-      GradientMetals.Metal metal = GradientMetals.instance.getMetal(tag.getString("metal"));
-      this.molten.put(metal, new MoltenMetal(metal, tag.getFloat("amount")));
-    }
-    
     super.readFromNBT(compound);
   }
   
   @Override
   public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-    return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    return
+      capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
+      capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
+      super.hasCapability(capability, facing);
   }
   
   @Nullable
   @Override
   public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-    return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory : super.getCapability(capability, facing);
+    return
+      capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory :
+      capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T)this.tank :
+      super.getCapability(capability, facing);
   }
   
   public static final class MeltingMetal {
@@ -242,24 +227,6 @@ public class TileClayCrucible extends HeatSinker {
     
     public float meltPercent() {
       return (float)(Minecraft.getSystemTime() - this.meltStart) / (this.meltUntil - this.meltStart);
-    }
-  }
-  
-  public static final class MoltenMetal {
-    public final GradientMetals.Metal metal;
-    private float amount;
-    
-    private MoltenMetal(GradientMetals.Metal metal, float amount) {
-      this.metal  = metal;
-      this.amount = amount;
-    }
-    
-    public float amount() {
-      return this.amount;
-    }
-    
-    private void addMetal(float amount) {
-      this.amount += amount;
     }
   }
 }

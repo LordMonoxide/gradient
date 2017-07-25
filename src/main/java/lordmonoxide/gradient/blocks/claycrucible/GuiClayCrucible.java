@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 public class GuiClayCrucible extends GuiContainer {
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_crucible.png");
@@ -43,14 +44,14 @@ public class GuiClayCrucible extends GuiContainer {
       }
     }
     
-    int x = ContainerClayCrucible.METAL_SLOTS_X + (GradientContainer.SLOT_X_SPACING + 8) * 5;
+    int x = ContainerClayCrucible.METAL_SLOTS_X + (GradientContainer.SLOT_X_SPACING + 8);
     int y = ContainerClayCrucible.METAL_SLOTS_Y;
     
-    for(TileClayCrucible.MoltenMetal molten : this.te.getMoltenMetals()) {
-      //TODO: lang for metal name
-      String text = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".molten", molten.metal.name, molten.amount());
+    FluidStack molten = this.te.getMoltenMetal();
+    
+    if(molten != null) {
+      String text = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".molten", molten.getFluid().getLocalizedName(molten), molten.amount);
       this.fontRenderer.drawString(text, x, y, 0x404040);
-      y += this.fontRenderer.FONT_HEIGHT;
     }
     
     String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".name");

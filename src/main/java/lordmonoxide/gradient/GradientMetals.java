@@ -1,6 +1,9 @@
 package lordmonoxide.gradient;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -22,14 +25,14 @@ public final class GradientMetals {
     instance.addMetal("iron",   30, 1538.00f);
   }
   
-  public void registerMeltables() {
+  void registerMeltables() {
     for(String oreName : OreDictionary.getOreNames()) {
       if(oreName.startsWith("ore")) {
-        this.addMeltable(oreName, oreName.substring(3).toLowerCase(), 1, 1);
+        this.addMeltable(oreName, oreName.substring(3).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
       } else if(oreName.startsWith("ingot")) {
-        this.addMeltable(oreName, oreName.substring(5).toLowerCase(), 1, 1);
+        this.addMeltable(oreName, oreName.substring(5).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
       } else if(oreName.startsWith("nugget")) {
-        Meltable meltable = this.addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, 1.0f / 4.0f);
+        Meltable meltable = this.addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
         
         if(meltable != INVALID_MELTABLE) {
           meltable.metal.nugget = OreDictionary.getOres(oreName).get(0);
@@ -38,7 +41,22 @@ public final class GradientMetals {
     }
   }
   
-  private Meltable addMeltable(String oreName, String metal, float meltModifier, float amount) {
+  void registerFluids() {
+    for(Metal metal : this.metals) {
+      Fluid fluid;
+      
+      if(FluidRegistry.isFluidRegistered(metal.name)) {
+        fluid = FluidRegistry.getFluid(metal.name);
+      } else {
+        fluid = new Fluid(metal.name, new ResourceLocation(GradientMod.MODID, "a"), new ResourceLocation(GradientMod.MODID, "b"));
+        FluidRegistry.registerFluid(fluid);
+      }
+      
+      metal.fluid = fluid;
+    }
+  }
+  
+  private Meltable addMeltable(String oreName, String metal, float meltModifier, int amount) {
     Metal m = this.getMetal(metal);
     
     if(m != INVALID_METAL) {
@@ -48,7 +66,7 @@ public final class GradientMetals {
     return INVALID_MELTABLE;
   }
   
-  private Meltable addMeltable(String oreDict, Metal metal, float meltModifier, float amount) {
+  private Meltable addMeltable(String oreDict, Metal metal, float meltModifier, int amount) {
     Meltable meltable = new Meltable(metal, meltModifier, amount);
     this.meltables.put(OreDictionary.getOreID(oreDict), meltable);
     return meltable;
@@ -107,6 +125,7 @@ public final class GradientMetals {
     public final float  meltTemp;
     
     private ItemStack nugget;
+    private Fluid fluid;
     
     public Metal(String name, int meltTime, float meltTemp) {
       this.id = currentId++;
@@ -114,18 +133,22 @@ public final class GradientMetals {
       this.meltTime = meltTime;
       this.meltTemp = meltTemp;
     }
-  
+    
     public ItemStack getNugget() {
-      return this.nugget;
+      return this.nugget.copy();
+    }
+    
+    public Fluid getFluid() {
+      return this.fluid;
     }
   }
   
   public static class Meltable {
     public final Metal metal;
     public final float meltModifier;
-    public final float amount;
+    public final int   amount;
     
-    public Meltable(Metal metal, float meltModifier, float amount) {
+    public Meltable(Metal metal, float meltModifier, int amount) {
       this.metal        = metal;
       this.meltModifier = meltModifier;
       this.amount       = amount;

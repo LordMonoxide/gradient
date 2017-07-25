@@ -21,6 +21,11 @@ item.nugget.invalid.name=Invalid Nugget
 item.nugget.copper.name=Copper Nugget
 item.nugget.iron.name=Iron Nugget
 
+# Fluids
+fluid.invalid=Invalid Molten Metal
+fluid.copper=Molten Copper
+fluid.iron=Molten Iron
+
 # Blocks
 tile.pebble.name=Pebble
 tile.fire_pit.name=Fire Pit

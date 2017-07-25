@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.blocks.claycrucible;
 
-import lordmonoxide.gradient.blocks.firepit.TileFirePit;
 import lordmonoxide.gradient.containers.GradientContainer;
 import lordmonoxide.gradient.containers.SlotMetal;
 import net.minecraft.entity.player.EntityPlayer;

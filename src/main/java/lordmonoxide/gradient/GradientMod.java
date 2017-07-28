@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -17,6 +18,10 @@ public class GradientMod {
   
   @SidedProxy(serverSide = "lordmonoxide.gradient.CommonProxy", clientSide = "lordmonoxide.gradient.ClientProxy")
   public static CommonProxy proxy;
+  
+  static {
+    FluidRegistry.enableUniversalBucket();
+  }
   
   @Mod.EventHandler
   public void preInit(FMLPreInitializationEvent event) {

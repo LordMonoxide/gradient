@@ -1,7 +1,5 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.overrides.BurningTooltips;
 import lordmonoxide.gradient.overrides.CookingTooltips;
 import lordmonoxide.gradient.overrides.MetalTooltips;
@@ -20,8 +18,5 @@ public class ClientProxy extends CommonProxy {
     MinecraftForge.EVENT_BUS.register(MetalTooltips.instance);
     
     MinecraftForge.EVENT_BUS.register(KeyBindings.instance);
-    
-    GradientItems.addModels();
-    GradientBlocks.addModels();
   }
 }

@@ -1,0 +1,29 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "forge:fluid"
+  },
+  "variants": {
+    "invalid": [
+      {
+        "custom": {
+          "fluid": "invalid"
+        }
+      }
+    ],
+    "copper": [
+      {
+        "custom": {
+          "fluid": "copper"
+        }
+      }
+    ],
+    "iron": [
+      {
+        "custom": {
+          "fluid": "iron"
+        }
+      }
+    ]
+  }
+}

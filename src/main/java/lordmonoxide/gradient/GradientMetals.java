@@ -1,9 +1,7 @@
 package lordmonoxide.gradient;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -38,21 +36,6 @@ public final class GradientMetals {
           meltable.metal.nugget = OreDictionary.getOres(oreName).get(0);
         }
       }
-    }
-  }
-  
-  void registerFluids() {
-    for(Metal metal : this.metals) {
-      Fluid fluid;
-      
-      if(FluidRegistry.isFluidRegistered(metal.name)) {
-        fluid = FluidRegistry.getFluid(metal.name);
-      } else {
-        fluid = new Fluid(metal.name, new ResourceLocation(GradientMod.MODID, "a"), new ResourceLocation(GradientMod.MODID, "b"));
-        FluidRegistry.registerFluid(fluid);
-      }
-      
-      metal.fluid = fluid;
     }
   }
   
@@ -125,7 +108,7 @@ public final class GradientMetals {
     public final float  meltTemp;
     
     private ItemStack nugget;
-    private Fluid fluid;
+    Fluid fluid;
     
     public Metal(String name, int meltTime, float meltTemp) {
       this.id = currentId++;

@@ -11,11 +11,15 @@ public class GradientItem extends Item {
     this.setCreativeTab(creativeTab);
   }
   
-   public ItemStack getItemStack(int amount, int meta) {
+  public ItemStack getItemStack(int amount, int meta) {
     return new ItemStack(this, amount, meta);
    }
-   
-   public ItemStack getItemStack(int amount) {
+  
+  public ItemStack getItemStack(int amount) {
     return new ItemStack(this, amount);
    }
+  
+  public ItemStack getItemStack() {
+    return new ItemStack(this);
+  }
 }

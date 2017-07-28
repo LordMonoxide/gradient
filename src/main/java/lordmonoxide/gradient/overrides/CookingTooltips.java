@@ -12,7 +12,7 @@ public final class CookingTooltips {
   
   @SubscribeEvent
   public void addCookingInfoToTooltips(ItemTooltipEvent event) {
-    if(!GradientFood.instance.has(event.getItemStack())) {
+    if(event.getItemStack().isEmpty() || !GradientFood.instance.has(event.getItemStack())) {
       return;
     }
     

@@ -12,7 +12,7 @@ public final class MetalTooltips {
   
   @SubscribeEvent
   public void addMetalInfoToTooltips(ItemTooltipEvent event) {
-    if(!GradientMetals.instance.hasMeltable(event.getItemStack())) {
+    if(event.getItemStack().isEmpty() || !GradientMetals.instance.hasMeltable(event.getItemStack())) {
       return;
     }
     

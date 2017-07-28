@@ -18,17 +18,15 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
   public void preInit(FMLPreInitializationEvent event) {
-    // Trigger loading
-    System.out.println("Fibre: " + GradientItems.FIBRE);
-    System.out.println("Pebble: " + GradientBlocks.PEBBLE);
-    
-    GradientMetals.instance.registerFluids();
+    System.out.println("------------------- PREINIT -------------------");
     
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
   }
   
   @Mod.EventHandler
   public void init(FMLInitializationEvent event) {
+    System.out.println("------------------- INIT -------------------");
+    
     MinecraftForge.EVENT_BUS.register(DisableVanillaTools.instance);
     MinecraftForge.EVENT_BUS.register(DisableBreakingBlocksWithoutTools.instance);
     MinecraftForge.EVENT_BUS.register(AddExtraDrops.instance);
@@ -37,8 +35,8 @@ public class CommonProxy {
     
     RecipeRemover.remove();
     
-    GradientBlocks.addRecipes();
-    GradientItems.addRecipes();
+    GradientBlocks.RegistrationHandler.addRecipes();
+    GradientItems.RegistrationHandler.addRecipes();
     ExtraRecipes.addRecipes();
     
     GradientMetals.instance.registerMeltables();
@@ -46,6 +44,6 @@ public class CommonProxy {
   
   @Mod.EventHandler
   public void postInit(FMLPostInitializationEvent event) {
-    
+    System.out.println("------------------- POSTINIT -------------------");
   }
 }

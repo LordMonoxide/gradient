@@ -20,7 +20,9 @@ public final class GradientMetals {
   
   static {
     instance.addMetal("copper", 20, 1085.00f);
+    instance.addMetal("tin",    15,  231.93f);
     instance.addMetal("iron",   30, 1538.00f);
+    instance.addMetal("gold",   20, 1064.00f);
   }
   
   void registerMeltables() {

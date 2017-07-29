@@ -16,15 +16,24 @@ item.cloth_pants.name=Cloth Pants
 # Metals
 item.ingot.invalid.name=Invalid Ingot
 item.ingot.copper.name=Copper Ingot
+item.ingot.tin.name=Tin Ingot
 item.ingot.iron.name=Iron Ingot
+item.ingot.gold.name=Gold Ingot
+item.ingot.bronze.name=Bronze Ingot
 item.nugget.invalid.name=Invalid Nugget
 item.nugget.copper.name=Copper Nugget
+item.nugget.tin.name=Tin Nugget
 item.nugget.iron.name=Iron Nugget
+item.nugget.gold.name=Gold Nugget
+item.nugget.bronze.name=Bronze Nugget
 
 # Fluids
 fluid.invalid=Invalid Molten Metal
 fluid.copper=Molten Copper
+fluid.tin=Molten Tin
 fluid.iron=Molten Iron
+fluid.gold=Molten Gold
+fluid.bronze=Molten Bronze
 
 # Blocks
 tile.pebble.name=Pebble

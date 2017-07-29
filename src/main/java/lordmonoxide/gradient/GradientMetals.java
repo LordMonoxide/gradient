@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
@@ -15,12 +16,19 @@ public final class GradientMetals {
   public static final Metal    INVALID_METAL    = instance.addMetal("invalid", 0, Integer.MAX_VALUE);
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
   
-  private final List<Metal> metals = new ArrayList<>();
+  public final List<Metal> metals = new ArrayList<>();
+  public final List<Alloy> alloys = new ArrayList<>();
+  
   private final Map<Integer, Meltable> meltables = new HashMap<>();
   
   static {
     instance.addMetal("copper", 20, 1085.00f);
+    instance.addMetal("tin",    15,  231.93f);
     instance.addMetal("iron",   30, 1538.00f);
+    instance.addMetal("gold",   20, 1064.00f);
+    instance.addMetal("bronze", 20,  950.00f);
+    
+    instance.addAlloy(instance.metalStack("bronze", 4), instance.getMetal("copper"), instance.getMetal("copper"), instance.getMetal("copper"), instance.getMetal("tin"));
   }
   
   void registerMeltables() {
@@ -61,8 +69,10 @@ public final class GradientMetals {
     return metal;
   }
   
-  public List<Metal> getMetals() {
-    return this.metals;
+  public Alloy addAlloy(MetalStack output, Metal... input) {
+    Alloy alloy = new Alloy(output, input);
+    this.alloys.add(alloy);
+    return alloy;
   }
   
   public Metal getMetal(String name) {
@@ -77,6 +87,14 @@ public final class GradientMetals {
   
   public Metal getMetal(int index) {
     return this.metals.get(index);
+  }
+  
+  private MetalStack metalStack(String metal, int amount) {
+    return new MetalStack(this.getMetal(metal), amount);
+  }
+  
+  private MetalStack metalStack(String metal) {
+    return this.metalStack(metal, Fluid.BUCKET_VOLUME);
   }
   
   public Meltable getMeltable(ItemStack stack) {
@@ -123,6 +141,26 @@ public final class GradientMetals {
     
     public Fluid getFluid() {
       return this.fluid;
+    }
+  }
+  
+  public static class MetalStack {
+    public final Metal metal;
+    public final int amount;
+    
+    public MetalStack(Metal metal, int amount) {
+      this.metal  = metal;
+      this.amount = amount;
+    }
+  }
+  
+  public static class Alloy {
+    public final MetalStack output;
+    public final List<Metal> inputs;
+    
+    public Alloy(MetalStack output, Metal... inputs) {
+      this.output = output;
+      this.inputs = ImmutableList.copyOf(inputs);
     }
   }
   

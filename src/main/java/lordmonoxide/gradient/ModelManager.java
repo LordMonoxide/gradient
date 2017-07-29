@@ -41,7 +41,7 @@ public final class ModelManager {
   }
   
   private void registerFluidModels() {
-    GradientMetals.instance.getMetals().forEach(metal -> this.registerFluidModel(metal.getFluid()));
+    GradientMetals.instance.metals.forEach(metal -> this.registerFluidModel(metal.getFluid()));
   }
   
   private void registerFluidModel(final Fluid fluid) {

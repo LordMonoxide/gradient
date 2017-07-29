@@ -24,7 +24,7 @@ public final class GradientFluids {
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
       System.out.println("Registering fluids");
       
-      GradientMetals.instance.getMetals().forEach(GradientFluids::registerFluidForMetal);
+      GradientMetals.instance.metals.forEach(GradientFluids::registerFluidForMetal);
     }
   }
   

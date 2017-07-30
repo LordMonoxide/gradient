@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,6 +116,11 @@ public final class GradientMetals {
   
   public boolean hasMeltable(ItemStack stack) {
     return this.getMeltable(stack) != INVALID_MELTABLE;
+  }
+  
+  @Nullable
+  public Metal getMetalForFluid(Fluid fluid) {
+    return this.metals.stream().filter(metal -> metal.fluid == fluid).findFirst().orElse(null);
   }
   
   public static class Metal {

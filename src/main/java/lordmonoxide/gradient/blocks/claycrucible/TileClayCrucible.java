@@ -3,15 +3,14 @@ package lordmonoxide.gradient.blocks.claycrucible;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -52,6 +51,16 @@ public class TileClayCrucible extends HeatSinker {
     }
     
     return Math.min((int)(this.getHeat() / 800 * 11) + 4, 15);
+  }
+  
+  public FluidActionResult useBucket(ItemStack bucket, EntityPlayer player) {
+    FluidActionResult result = FluidUtil.interactWithFluidHandler(bucket, this.tank, player);
+    
+    if(result.success) {
+      this.sync();
+    }
+    
+    return result;
   }
   
   @Override

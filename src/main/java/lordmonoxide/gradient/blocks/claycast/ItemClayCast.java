@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks.claycast;
 
 import lordmonoxide.gradient.GradientTools;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -14,6 +15,14 @@ public class ItemClayCast extends ItemBlock {
   public ItemClayCast(final Block block) {
     super(block);
     this.setHasSubtypes(true);
+  }
+  
+  public static ItemStack getCast(final GradientTools.Tool tool, final int amount) {
+    return new ItemStack(Item.getItemFromBlock(GradientBlocks.CLAY_CAST), amount, tool.id);
+  }
+  
+  public static ItemStack getCast(final GradientTools.Tool tool) {
+    return getCast(tool, 1);
   }
   
   @Override

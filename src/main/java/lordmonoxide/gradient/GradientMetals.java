@@ -2,7 +2,9 @@ package lordmonoxide.gradient;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
@@ -46,6 +48,17 @@ public final class GradientMetals {
         }
       }
     }
+  }
+  
+  public static ItemStack getBucket(GradientMetals.MetalStack metal) {
+    ItemStack stack = getBucket(metal.metal);
+    stack.grow(metal.amount - 1);
+    
+    return stack;
+  }
+  
+  public static ItemStack getBucket(GradientMetals.Metal metal) {
+    return UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, metal.getFluid());
   }
   
   private Meltable addMeltable(String oreName, String metal, float meltModifier, int amount) {

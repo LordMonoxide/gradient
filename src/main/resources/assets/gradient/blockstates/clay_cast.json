@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "normal": { "model": "gradient:clay_cast" },
+    "tool=pickaxe": { "model": "gradient:clay_cast.pickaxe" },
+    "tool=mattock": { "model": "gradient:clay_cast.mattock" }
+  }
+}

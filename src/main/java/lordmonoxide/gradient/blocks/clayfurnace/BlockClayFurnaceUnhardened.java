@@ -3,8 +3,7 @@ package lordmonoxide.gradient.blocks.clayfurnace;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.Hardenable;
-import net.minecraft.block.Block;
+import lordmonoxide.gradient.blocks.heat.Hardenable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -48,8 +47,8 @@ public class BlockClayFurnaceUnhardened extends GradientBlock implements Gradien
   }
   
   @Override
-  public Block getHardened() {
-    return GradientBlocks.CLAY_FURNACE;
+  public IBlockState getHardened(final IBlockState current) {
+    return GradientBlocks.CLAY_FURNACE.getDefaultState().withProperty(FACING, current.getValue(FACING));
   }
   
   @Override

@@ -2,7 +2,6 @@ package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
@@ -45,6 +44,8 @@ public final class GradientItems {
   
   public static final GradientItem INGOT  = RegistrationHandler.register(new Ingot());
   public static final GradientItem NUGGET = RegistrationHandler.register(new Nugget());
+  
+  public static final GradientItem TOOL_HEADS = RegistrationHandler.register(new ToolHead());
   
   private static void initialiseItems() {
     MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());

@@ -3,7 +3,7 @@ package lordmonoxide.gradient.blocks.claybucket;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.Hardenable;
+import lordmonoxide.gradient.blocks.heat.Hardenable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -52,8 +52,8 @@ public class BlockClayBucketUnhardened extends GradientBlock implements Gradient
   }
   
   @Override
-  public Block getHardened() {
-    return GradientBlocks.CLAY_BUCKET;
+  public IBlockState getHardened(final IBlockState current) {
+    return GradientBlocks.CLAY_BUCKET.getDefaultState();
   }
   
   @Override

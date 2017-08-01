@@ -2,7 +2,7 @@ package lordmonoxide.gradient.blocks.firepit;
 
 import lordmonoxide.gradient.GradientFood;
 import lordmonoxide.gradient.GradientFuel;
-import lordmonoxide.gradient.blocks.Hardenable;
+import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -10,8 +10,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -225,7 +223,7 @@ public class TileFirePit extends HeatProducer {
     this.hardenables.values().stream()
       .filter(Hardening::isHardened)
       .collect(Collectors.toList()) // Gotta decouple here to avoid concurrent modification exceptions
-      .forEach(hardenable -> this.getWorld().setBlockState(hardenable.pos, hardenable.block.getHardened().getDefaultState()));
+      .forEach(hardenable -> this.getWorld().setBlockState(hardenable.pos, hardenable.block.getHardened(this.getWorld().getBlockState(hardenable.pos))));
   }
   
   private void updateLight() {

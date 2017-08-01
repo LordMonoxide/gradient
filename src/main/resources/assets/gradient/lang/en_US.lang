@@ -9,6 +9,20 @@ item.stone_mattock.name=Stone Mattock
 item.fire_starter.name=Fire Starter
 item.flint_knife.name=Flint Knife
 
+# Tool parts
+item.tool_head.pickaxe.invalid.name=Invalid Pickaxe Head
+item.tool_head.pickaxe.copper.name=Copper Pickaxe Head
+item.tool_head.pickaxe.tin.name=Tin Pickaxe Head
+item.tool_head.pickaxe.iron.name=Iron Pickaxe Head
+item.tool_head.pickaxe.gold.name=Gold Pickaxe Head
+item.tool_head.pickaxe.bronze.name=Bronze Pickaxe Head
+item.tool_head.mattock.invalid.name=Invalid Mattock Head
+item.tool_head.mattock.copper.name=Copper Mattock Head
+item.tool_head.mattock.tin.name=Tin Mattock Head
+item.tool_head.mattock.iron.name=Iron Mattock Head
+item.tool_head.mattock.gold.name=Gold Mattock Head
+item.tool_head.mattock.bronze.name=Bronze Mattock Head
+
 # Armour
 item.cloth_shirt.name=Cloth Shirt
 item.cloth_pants.name=Cloth Pants
@@ -49,6 +63,10 @@ tile.clay_furnace.name=Clay Furnace
 tile.clay_crucible_unhardened.name=Unhardened Clay Crucible
 tile.clay_crucible.name=Clay Crucible
 tile.clay_crucible.molten=%s: %f
+tile.clay_cast_unhardened.pickaxe.name=Unhardened Clay Cast (Pickaxe)
+tile.clay_cast_unhardened.mattock.name=Unhardened Clay Cast (Mattock)
+tile.clay_cast.pickaxe.name=Clay Cast (Pickaxe)
+tile.clay_cast.mattock.name=Clay Cast (Mattock)
 
 # Fuel
 fuel.ignition_temp=Ignition Temperature: %f °C

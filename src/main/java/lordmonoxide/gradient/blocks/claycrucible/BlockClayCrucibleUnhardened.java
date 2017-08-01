@@ -3,7 +3,7 @@ package lordmonoxide.gradient.blocks.claycrucible;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.Hardenable;
+import lordmonoxide.gradient.blocks.heat.Hardenable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -53,8 +53,8 @@ public class BlockClayCrucibleUnhardened extends GradientBlock implements Gradie
   }
   
   @Override
-  public Block getHardened() {
-    return GradientBlocks.CLAY_CRUCIBLE;
+  public IBlockState getHardened(final IBlockState current) {
+    return GradientBlocks.CLAY_CRUCIBLE.getDefaultState();
   }
   
   @Override

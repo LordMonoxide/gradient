@@ -51,6 +51,7 @@ public class GuiJournal extends GuiScreen {
     }
   }
   
+  @Override
   public void drawScreen(int mouseX, int mouseY, float partialTicks) {
     this.drawDefaultBackground();
     this.drawJournal(mouseX, mouseY, partialTicks);

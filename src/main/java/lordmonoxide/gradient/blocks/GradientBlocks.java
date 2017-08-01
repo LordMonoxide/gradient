@@ -3,6 +3,10 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucketUnhardened;
+import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
+import lordmonoxide.gradient.blocks.claycast.BlockClayCastUnhardened;
+import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
+import lordmonoxide.gradient.blocks.claycast.ItemClayCastUnhardened;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucible;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
@@ -22,10 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class GradientBlocks {
   public static final Material       MATERIAL_CLAY_MACHINE = new Material(MapColor.BROWN);
@@ -38,10 +39,22 @@ public final class GradientBlocks {
   public static final BlockClayBucketUnhardened   CLAY_BUCKET_UNHARDENED   = RegistrationHandler.register(new BlockClayBucketUnhardened());
   public static final BlockClayFurnaceUnhardened  CLAY_FURNACE_UNHARDENED  = RegistrationHandler.register(new BlockClayFurnaceUnhardened());
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = RegistrationHandler.register(new BlockClayCrucibleUnhardened());
+  public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED;
+  
+  static {
+    BlockClayCastUnhardened block = new BlockClayCastUnhardened();
+    CLAY_CAST_UNHARDENED = RegistrationHandler.register(block, new ItemClayCastUnhardened(block));
+  }
   
   public static final BlockClayBucket   CLAY_BUCKET   = RegistrationHandler.register(new BlockClayBucket());
   public static final BlockClayFurnace  CLAY_FURNACE  = RegistrationHandler.register(new BlockClayFurnace());
   public static final BlockClayCrucible CLAY_CRUCIBLE = RegistrationHandler.register(new BlockClayCrucible());
+  public static final BlockClayCast     CLAY_CAST;
+  
+  static {
+    BlockClayCast block = new BlockClayCast();
+    CLAY_CAST = RegistrationHandler.register(block, new ItemClayCast(block));
+  }
   
   private GradientBlocks() {
     
@@ -49,14 +62,18 @@ public final class GradientBlocks {
   
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
-    private static final List<GradientBlock> blocks = new ArrayList<>();
+    private static final Map<GradientBlock, ItemBlock> blocks = new HashMap<>();
     private static final List<GradientBlockCraftable> craftables = new ArrayList<>();
     
     public static final Set<ItemBlock> ITEM_BLOCKS = new HashSet<>();
     
     private static <T extends GradientBlock> T register(final T block) {
-      blocks.add(block);
-  
+      return register(block, new ItemBlock(block));
+    }
+    
+    private static <T extends GradientBlock> T register(final T block, final ItemBlock item) {
+      blocks.put(block, item);
+      
       if(block instanceof GradientBlockCraftable) {
         craftables.add((GradientBlockCraftable)block);
       }
@@ -71,14 +88,14 @@ public final class GradientBlocks {
       // Trigger block registration
       new GradientBlocks();
       
-      blocks.forEach(event.getRegistry()::register);
+      blocks.keySet().forEach(event.getRegistry()::register);
     }
     
     @SubscribeEvent
     public static void registerItemBlocks(final RegistryEvent.Register<Item> event) {
       System.out.println("Registering item blocks");
       
-      blocks.stream().map(ItemBlock::new).forEach(item -> {
+      blocks.forEach((block, item) -> {
         item.setRegistryName(item.block.getRegistryName());
         event.getRegistry().register(item);
         ITEM_BLOCKS.add(item);
@@ -88,7 +105,7 @@ public final class GradientBlocks {
     }
     
     private static void registerTileEntities() {
-      for(final GradientBlock block : blocks) {
+      for(final GradientBlock block : blocks.keySet()) {
         if(block instanceof ITileEntityProvider) {
           try {
             //noinspection unchecked

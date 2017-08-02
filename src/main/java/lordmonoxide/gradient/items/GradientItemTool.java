@@ -42,12 +42,12 @@ public class GradientItemTool extends GradientItem {
   }
   
   @Override
-  public boolean canHarvestBlock(IBlockState blockIn) {
+  public boolean canHarvestBlock(IBlockState blockIn, ItemStack stack) {
     if(blockIn.getBlockHardness(null, null) <= 1.0f) {
       return true;
     }
     
-    for(String type : this.getToolClasses(null)) {
+    for(String type : this.getToolClasses(stack)) {
       if(blockIn.getBlock().isToolEffective(type, blockIn)) {
         return true;
       }
@@ -58,7 +58,7 @@ public class GradientItemTool extends GradientItem {
   
   @Override
   public float getStrVsBlock(ItemStack stack, IBlockState state) {
-    return this.canHarvestBlock(state) ? this.harvestSpeed : 0.0f;
+    return this.canHarvestBlock(state, stack) ? this.harvestSpeed : 0.0f;
   }
   
   @Override

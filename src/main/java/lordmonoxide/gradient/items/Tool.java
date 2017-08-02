@@ -76,6 +76,11 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   }
   
   @Override
+  public float getStrVsBlock(ItemStack stack, IBlockState state) {
+    return this.canHarvestBlock(state, stack) ? this.getMetal(stack).harvestSpeed : 0.0f;
+  }
+  
+  @Override
   public void addRecipe() {
     final NonNullList<ItemStack> stacks = NonNullList.create();
     this.getSubItems(this, this.getCreativeTab(), stacks);

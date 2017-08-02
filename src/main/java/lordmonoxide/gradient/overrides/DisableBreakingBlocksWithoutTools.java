@@ -22,7 +22,7 @@ public final class DisableBreakingBlocksWithoutTools {
     
     ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
     
-    if(held.isEmpty() || !held.getItem().canHarvestBlock(event.getState())) {
+    if(held.isEmpty() || !held.getItem().canHarvestBlock(event.getState(), held)) {
       event.setCanceled(true);
     }
   }

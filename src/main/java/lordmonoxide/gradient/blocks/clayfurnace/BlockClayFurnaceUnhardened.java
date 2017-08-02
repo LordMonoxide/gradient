@@ -1,9 +1,9 @@
 package lordmonoxide.gradient.blocks.clayfurnace;
 
 import lordmonoxide.gradient.blocks.GradientBlock;
-import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class BlockClayFurnaceUnhardened extends GradientBlock implements GradientBlockCraftable, Hardenable {
+public class BlockClayFurnaceUnhardened extends GradientBlock implements GradientCraftable, Hardenable {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
   
   public BlockClayFurnaceUnhardened() {

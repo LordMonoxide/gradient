@@ -1,11 +1,11 @@
 package lordmonoxide.gradient.items;
 
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-public class FlintKnife extends GradientItemTool implements GradientItemCraftable {
+public class FlintKnife extends GradientItemTool implements GradientCraftable {
   public FlintKnife() {
     super("flint_knife", 0, -1.0f, 3);
     this.setMaxDamage(49);

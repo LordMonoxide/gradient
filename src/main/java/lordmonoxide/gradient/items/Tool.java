@@ -4,12 +4,13 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.ModelManager;
-import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
 import lordmonoxide.gradient.recipes.GradientCraftable;
-import lordmonoxide.gradient.recipes.ShapelessMetaAwareRecipe;
+import lordmonoxide.gradient.recipes.ShapedMetaAwareRecipe;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,25 +21,25 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.util.*;
 
-public class ToolHead extends GradientItem implements GradientCraftable, ModelManager.CustomModel {
-  public ToolHead() {
-    super("tool_head", CreativeTabs.TOOLS);
+public class Tool extends GradientItemTool implements GradientCraftable, ModelManager.CustomModel {
+  public Tool() {
+    super("tool", 0, 0, 0);
     this.setHasSubtypes(true);
   }
   
-  public static ItemStack getToolHead(final GradientTools.Type type, final GradientMetals.Metal metal) {
-    return getToolHead(type, metal, 1);
+  public static ItemStack getTool(final GradientTools.Type type, final GradientMetals.Metal metal) {
+    return getTool(type, metal, 1);
   }
   
-  public static ItemStack getToolHead(final GradientTools.Type type, final GradientMetals.Metal metal, final int amount) {
+  public static ItemStack getTool(final GradientTools.Type type, final GradientMetals.Metal metal, final int amount) {
     final NBTTagCompound tag = new NBTTagCompound();
     tag.setInteger("type", type.id);
     tag.setString("metal", metal.name);
     
-    final ItemStack stack = new ItemStack(GradientItems.TOOL_HEAD, amount);
+    final ItemStack stack = new ItemStack(GradientItems.TOOL, amount);
     stack.setTagCompound(tag);
     return stack;
   }
@@ -59,6 +60,21 @@ public class ToolHead extends GradientItem implements GradientCraftable, ModelMa
     return GradientMetals.instance.getMetal(stack.getTagCompound().getString("metal"));
   }
   
+  @Deprecated
+  public int getMaxDamage(final ItemStack stack) {
+    return this.getMetal(stack).durability - 1;
+  }
+  
+  public Set<String> getToolClasses(final ItemStack stack) {
+    final Set<String> set = new HashSet<>();
+    Collections.addAll(set, this.getType(stack).toolClass);
+    return set;
+  }
+  
+  public int getHarvestLevel(final ItemStack stack, final String toolClass, @Nullable final EntityPlayer player, @Nullable final IBlockState blockState) {
+    return this.getMetal(stack).harvestLevel;
+  }
+  
   @Override
   public void addRecipe() {
     final NonNullList<ItemStack> stacks = NonNullList.create();
@@ -68,10 +84,14 @@ public class ToolHead extends GradientItem implements GradientCraftable, ModelMa
       final GradientTools.Type type = this.getType(stack);
       final GradientMetals.Metal metal = this.getMetal(stack);
       
-      GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
+      GameRegistry.addRecipe(new ShapedMetaAwareRecipe(
         stack,
-        GradientMetals.getBucket(metal),
-        ItemClayCast.getCast(type)
+        "H",
+        "F",
+        "S",
+        'H', ToolHead.getToolHead(type, metal),
+        'F', "string",
+        'S', "stickWood"
       ));
     }
   }
@@ -91,7 +111,7 @@ public class ToolHead extends GradientItem implements GradientCraftable, ModelMa
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientTools.Type type : GradientTools.TYPES) {
       for(final GradientMetals.Metal metal : GradientMetals.instance.metals) {
-        list.add(getToolHead(type, metal));
+        list.add(getTool(type, metal));
       }
     }
   }

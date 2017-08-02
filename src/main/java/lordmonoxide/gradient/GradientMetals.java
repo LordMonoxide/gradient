@@ -16,7 +16,7 @@ import java.util.Map;
 public final class GradientMetals {
   public static final GradientMetals instance = new GradientMetals();
   
-  public static final Metal    INVALID_METAL    = instance.addMetal("invalid", 0, Integer.MAX_VALUE);
+  public static final Metal    INVALID_METAL    = instance.addMetal("invalid", 0, Integer.MAX_VALUE, 0, 0);
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
   
   public final List<Metal> metals = new ArrayList<>();
@@ -25,11 +25,11 @@ public final class GradientMetals {
   private final Map<Integer, Meltable> meltables = new HashMap<>();
   
   static {
-    instance.addMetal("copper", 20, 1085.00f);
-    instance.addMetal("tin",    15,  231.93f);
-    instance.addMetal("iron",   30, 1538.00f);
-    instance.addMetal("gold",   20, 1064.00f);
-    instance.addMetal("bronze", 20,  950.00f);
+    instance.addMetal("copper", 20, 1085.00f, 100, 1);
+    instance.addMetal("tin",    15,  231.93f,  20, 0);
+    instance.addMetal("iron",   30, 1538.00f, 150, 1);
+    instance.addMetal("gold",   20, 1064.00f,  30, 0);
+    instance.addMetal("bronze", 20,  950.00f, 130, 1);
     
     instance.addAlloy(instance.metalStack("bronze", 4), instance.getMetal("copper"), instance.getMetal("copper"), instance.getMetal("copper"), instance.getMetal("tin"));
   }
@@ -77,8 +77,8 @@ public final class GradientMetals {
     return meltable;
   }
   
-  public Metal addMetal(String name, int meltTime, float meltTemp) {
-    Metal metal = new Metal(name, meltTime, meltTemp);
+  public Metal addMetal(String name, int meltTime, float meltTemp, int durability, int harvestLevel) {
+    Metal metal = new Metal(name, meltTime, meltTemp, durability, harvestLevel);
     this.metals.add(metal);
     return metal;
   }
@@ -144,14 +144,20 @@ public final class GradientMetals {
     public final int    meltTime;
     public final float  meltTemp;
     
+    public final int durability;
+    public final int harvestLevel;
+    
     private ItemStack nugget;
     Fluid fluid;
     
-    public Metal(String name, int meltTime, float meltTemp) {
+    public Metal(String name, int meltTime, float meltTemp, int durability, int harvestLevel) {
       this.id = currentId++;
       this.name = name;
       this.meltTime = meltTime;
       this.meltTemp = meltTemp;
+      
+      this.durability = durability;
+      this.harvestLevel = harvestLevel;
     }
     
     public ItemStack getNugget() {

@@ -2,10 +2,10 @@ package lordmonoxide.gradient.blocks.firepit;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -29,7 +29,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.Random;
 
-public class BlockFirePit extends HeatSinkerBlock implements GradientBlockCraftable, ITileEntityProvider {
+public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, ITileEntityProvider {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
   
   public BlockFirePit() {

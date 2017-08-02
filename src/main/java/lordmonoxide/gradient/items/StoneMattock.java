@@ -1,9 +1,9 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-public class StoneMattock extends GradientItemTool implements GradientItemCraftable {
+public class StoneMattock extends GradientItemTool implements GradientCraftable {
   public StoneMattock() {
     super("stone_mattock", 0.5f, -2.4f, 4);
     this.setHarvestLevel("axe", 0);

@@ -34,19 +34,19 @@ public class GuiClayCast extends GuiContainer {
     int x = 12;
     int y = 33;
     
-    for(final GradientTools.Tool tool : GradientTools.tools) {
-      final GuiButton button = this.addButtonForTool(tool, x, y);
+    for(final GradientTools.Type type : GradientTools.TYPES) {
+      final GuiButton button = this.addButtonForTool(type, x, y);
       x += 22;
       
-      if(this.held.getMetadata() == tool.id) {
+      if(this.held.getMetadata() == type.id) {
         button.enabled = false;
         this.selectedCast = (ItemButton)button;
       }
     }
   }
   
-  private GuiButton addButtonForTool(final GradientTools.Tool tool, final int x, final int y) {
-    return this.addButton(new ItemButton(tool.id, ToolHead.getToolHead(tool, GradientMetals.INVALID_METAL), x + this.guiLeft, y + this.guiTop));
+  private GuiButton addButtonForTool(final GradientTools.Type type, final int x, final int y) {
+    return this.addButton(new ItemButton(type.id, ToolHead.getToolHead(type, GradientMetals.INVALID_METAL), x + this.guiLeft, y + this.guiTop));
   }
   
   @Override
@@ -57,7 +57,7 @@ public class GuiClayCast extends GuiContainer {
       cast.enabled = false;
       this.selectedCast = cast;
       
-      PacketSwitchCast.send(GradientTools.tools.get(cast.id));
+      PacketSwitchCast.send(GradientTools.TYPES.get(cast.id));
     }
   }
   

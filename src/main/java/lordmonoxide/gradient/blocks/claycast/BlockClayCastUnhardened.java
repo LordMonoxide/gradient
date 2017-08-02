@@ -2,9 +2,9 @@ package lordmonoxide.gradient.blocks.claycast;
 
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlock;
-import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class BlockClayCastUnhardened extends GradientBlock implements GradientBlockCraftable, Hardenable {
+public class BlockClayCastUnhardened extends GradientBlock implements GradientCraftable, Hardenable {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
   
   private static final GradientTools.PropertyTool TOOL = GradientTools.PropertyTool.create("tool");
@@ -43,7 +43,7 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientBl
   
   @Override
   public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(TOOL, GradientTools.tools.get(meta));
+    return this.getDefaultState().withProperty(TOOL, GradientTools.TYPES.get(meta));
   }
   
   @Override

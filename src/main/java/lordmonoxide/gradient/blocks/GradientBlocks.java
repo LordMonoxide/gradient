@@ -12,6 +12,7 @@ import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnaceUnhardened;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -63,7 +64,7 @@ public final class GradientBlocks {
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
     private static final Map<GradientBlock, ItemBlock> blocks = new HashMap<>();
-    private static final List<GradientBlockCraftable> craftables = new ArrayList<>();
+    private static final List<GradientCraftable> craftables = new ArrayList<>();
     
     public static final Set<ItemBlock> ITEM_BLOCKS = new HashSet<>();
     
@@ -74,8 +75,8 @@ public final class GradientBlocks {
     private static <T extends GradientBlock> T register(final T block, final ItemBlock item) {
       blocks.put(block, item);
       
-      if(block instanceof GradientBlockCraftable) {
-        craftables.add((GradientBlockCraftable)block);
+      if(block instanceof GradientCraftable) {
+        craftables.add((GradientCraftable)block);
       }
       
       return block;
@@ -116,7 +117,7 @@ public final class GradientBlocks {
     }
     
     public static void addRecipes() {
-      craftables.forEach(GradientBlockCraftable::addRecipe);
+      craftables.forEach(GradientCraftable::addRecipe);
     }
   }
 }

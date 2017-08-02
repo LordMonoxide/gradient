@@ -9,42 +9,42 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketSwitchCast implements IMessage {
-  public static void send(GradientTools.Tool tool) {
-    GradientNet.CHANNEL.sendToServer(new PacketSwitchCast(tool));
+  public static void send(GradientTools.Type type) {
+    GradientNet.CHANNEL.sendToServer(new PacketSwitchCast(type));
   }
   
-  private GradientTools.Tool tool;
+  private GradientTools.Type type;
   
   public PacketSwitchCast() { }
   
-  public PacketSwitchCast(GradientTools.Tool tool) {
-    this.tool = tool;
+  public PacketSwitchCast(GradientTools.Type type) {
+    this.type = type;
   }
   
-  public GradientTools.Tool getTool() {
-    return this.tool;
+  public GradientTools.Type getType() {
+    return this.type;
   }
   
   @Override
   public void fromBytes(ByteBuf buf) {
     try {
-      this.tool = GradientTools.tools.get(buf.readInt());
+      this.type = GradientTools.TYPES.get(buf.readInt());
     } catch(Exception e) {
-      System.out.println("Invalid tool in PacketSwitchCast");
+      System.out.println("Invalid type in PacketSwitchCast");
       System.out.println(e);
-      this.tool = null;
+      this.type = null;
     }
   }
   
   @Override
   public void toBytes(ByteBuf buf) {
-    buf.writeInt(this.tool.id);
+    buf.writeInt(this.type.id);
   }
   
   public static class Handler implements IMessageHandler<PacketSwitchCast, IMessage> {
     @Override
     public IMessage onMessage(PacketSwitchCast packet, MessageContext ctx) {
-      if(packet.tool == null) {
+      if(packet.type == null) {
         return null;
       }
       
@@ -55,7 +55,7 @@ public class PacketSwitchCast implements IMessage {
           return;
         }
         
-        hand.setItemDamage(packet.tool.id);
+        hand.setItemDamage(packet.type.id);
       });
       
       return null;

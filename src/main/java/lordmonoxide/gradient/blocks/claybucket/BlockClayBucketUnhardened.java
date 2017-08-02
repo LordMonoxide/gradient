@@ -1,10 +1,9 @@
 package lordmonoxide.gradient.blocks.claybucket;
 
 import lordmonoxide.gradient.blocks.GradientBlock;
-import lordmonoxide.gradient.blocks.GradientBlockCraftable;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
-import net.minecraft.block.Block;
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -16,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class BlockClayBucketUnhardened extends GradientBlock implements GradientBlockCraftable, Hardenable {
+public class BlockClayBucketUnhardened extends GradientBlock implements GradientCraftable, Hardenable {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(3.0d / 16.0d, 0.0d, 3.0d / 16.0d, 1.0d - 3.0d / 16.0d, 0.5d, 1.0d - 3.0d / 16.0d);
   
   public BlockClayBucketUnhardened() {

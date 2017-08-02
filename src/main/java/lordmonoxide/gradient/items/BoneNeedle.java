@@ -1,12 +1,10 @@
 package lordmonoxide.gradient.items;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-public class BoneNeedle extends GradientItemTool implements GradientItemCraftable {
+public class BoneNeedle extends GradientItemTool implements GradientCraftable {
   public BoneNeedle() {
     super("bone_needle", 0, 0, 0);
     this.setMaxDamage(19);

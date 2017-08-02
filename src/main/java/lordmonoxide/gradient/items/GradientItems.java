@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -45,7 +46,8 @@ public final class GradientItems {
   public static final GradientItem INGOT  = RegistrationHandler.register(new Ingot());
   public static final GradientItem NUGGET = RegistrationHandler.register(new Nugget());
   
-  public static final GradientItem TOOL_HEADS = RegistrationHandler.register(new ToolHead());
+  public static final GradientItem TOOL_HEAD = RegistrationHandler.register(new ToolHead());
+  public static final GradientItem TOOL      = RegistrationHandler.register(new Tool());
   
   private static void initialiseItems() {
     MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());
@@ -71,15 +73,15 @@ public final class GradientItems {
   
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
-    private static final List<GradientItemCraftable> craftables = new ArrayList<>();
+    private static final List<GradientCraftable> craftables = new ArrayList<>();
     
     public static final Set<Item> ITEMS = new HashSet<>();
     
     private static <T extends Item> T register(final T item) {
       ITEMS.add(item);
       
-      if(item instanceof GradientItemCraftable) {
-        craftables.add((GradientItemCraftable)item);
+      if(item instanceof GradientCraftable) {
+        craftables.add((GradientCraftable)item);
       }
       
       return item;
@@ -103,7 +105,7 @@ public final class GradientItems {
     }
     
     public static void addRecipes() {
-      craftables.forEach(GradientItemCraftable::addRecipe);
+      craftables.forEach(GradientCraftable::addRecipe);
     }
   }
 }

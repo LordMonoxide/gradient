@@ -1,9 +1,8 @@
 package lordmonoxide.gradient.items;
 
+import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -15,7 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-public class FireStarter extends GradientItem implements GradientItemCraftable {
+public class FireStarter extends GradientItem implements GradientCraftable {
   public FireStarter() {
     super("fire_starter", CreativeTabs.TOOLS);
     this.maxStackSize = 1;

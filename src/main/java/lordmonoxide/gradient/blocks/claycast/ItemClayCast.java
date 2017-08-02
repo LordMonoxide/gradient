@@ -17,12 +17,12 @@ public class ItemClayCast extends ItemBlock {
     this.setHasSubtypes(true);
   }
   
-  public static ItemStack getCast(final GradientTools.Tool tool, final int amount) {
-    return new ItemStack(Item.getItemFromBlock(GradientBlocks.CLAY_CAST), amount, tool.id);
+  public static ItemStack getCast(final GradientTools.Type type, final int amount) {
+    return new ItemStack(Item.getItemFromBlock(GradientBlocks.CLAY_CAST), amount, type.id);
   }
   
-  public static ItemStack getCast(final GradientTools.Tool tool) {
-    return getCast(tool, 1);
+  public static ItemStack getCast(final GradientTools.Type type) {
+    return getCast(type, 1);
   }
   
   @Override
@@ -32,14 +32,14 @@ public class ItemClayCast extends ItemBlock {
   
   @Override
   public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName(stack) + "." + GradientTools.tools.get(stack.getMetadata()).name;
+    return super.getUnlocalizedName(stack) + "." + GradientTools.TYPES.get(stack.getMetadata()).name;
   }
   
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    for(final GradientTools.Tool tool : GradientTools.tools) {
-      list.add(new ItemStack(this, 1, tool.id));
+    for(final GradientTools.Type type : GradientTools.TYPES) {
+      list.add(new ItemStack(this, 1, type.id));
     }
   }
 }

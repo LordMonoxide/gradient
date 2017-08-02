@@ -87,22 +87,28 @@ public final class ModelManager {
   
   private void registerItemModel(final Item item, final ModelResourceLocation fullModelLocation) {
     this.itemsRegistered.add(item);
-  
+    
+    if(item instanceof CustomModel) {
+      ((CustomModel)item).registerCustomModels();
+      return;
+    }
+    
     if(!item.getHasSubtypes()) {
       ModelBakery.registerItemVariants(item, fullModelLocation);
       ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> fullModelLocation));
+      return;
+    }
+    
+    NonNullList<ItemStack> stacks = NonNullList.create();
+    item.getSubItems(item, item.getCreativeTab(), stacks);
+    
+    if(item instanceof ItemBlock) {
+      for(ItemStack stack : stacks) {
+        ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(item.getRegistryName(), "inventory"));
+      }
     } else {
-      NonNullList<ItemStack> stacks = NonNullList.create();
-      item.getSubItems(item, null, stacks);
-      
-      if(item instanceof ItemBlock) {
-        for(ItemStack stack : stacks) {
-          ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(item.getRegistryName(), "inventory"));
-        }
-      } else {
-        for(ItemStack stack : stacks) {
-          ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory"));
-        }
+      for(ItemStack stack : stacks) {
+        ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory"));
       }
     }
   }
@@ -128,5 +134,9 @@ public final class ModelManager {
     default ModelResourceLocation getModelLocation(final ItemStack stack) {
       return this.getLocation(stack);
     }
+  }
+  
+  public interface CustomModel {
+    void registerCustomModels();
   }
 }

@@ -11,15 +11,13 @@ public final class GradientTools {
   private GradientTools() { }
   
   public static final List<Type> TYPES = new ArrayList<>();
-  private static final List<String> names = new ArrayList<>();
   
-  public static final Type PICKAXE = register("pickaxe", new String[] {"pickaxe"});
-  public static final Type MATTOCK = register("mattock", new String[] {"axe", "shovel"});
+  public static final Type PICKAXE = register("pickaxe", new String[] {"pickaxe"},       1.0d, -2.8d);
+  public static final Type MATTOCK = register("mattock", new String[] {"axe", "shovel"}, 6.0d, -2.8d);
   
-  public static Type register(final String name, final String[] toolClass) {
-    Type type = new Type(name, toolClass);
+  public static Type register(final String name, final String[] toolClass, final double attackDamage, final double attackSpeed) {
+    Type type = new Type(name, toolClass, attackDamage, attackSpeed);
     TYPES.add(type);
-    names.add(name);
     return type;
   }
   
@@ -30,12 +28,18 @@ public final class GradientTools {
     public final String name;
     public final String[] toolClass;
     
-    public Type(final String name, final String[] toolClass) {
+    public final double attackDamage;
+    public final double attackSpeed;
+    
+    public Type(final String name, final String[] toolClass, final double attackDamage, final double attackSpeed) {
       this.id = currentId++;
       this.name = name;
       this.toolClass = toolClass;
+      
+      this.attackDamage = attackDamage;
+      this.attackSpeed  = attackSpeed;
     }
-  
+    
     @Override
     public int compareTo(final Type o) {
       assert o != null;
@@ -48,6 +52,11 @@ public final class GradientTools {
       assert o instanceof Type;
       
       return this.id == ((Type)o).id;
+    }
+    
+    @Override
+    public int hashCode() {
+      return this.id;
     }
   }
   

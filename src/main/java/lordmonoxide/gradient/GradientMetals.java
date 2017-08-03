@@ -16,7 +16,7 @@ import java.util.Map;
 public final class GradientMetals {
   public static final GradientMetals instance = new GradientMetals();
   
-  public static final Metal    INVALID_METAL    = instance.addMetal("invalid", 0, Integer.MAX_VALUE, 0, 0, 0);
+  public static final Metal    INVALID_METAL    = instance.addMetal("invalid", 0, Integer.MAX_VALUE, 0, 0, 0, 0, 0);
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
   
   public final List<Metal> metals = new ArrayList<>();
@@ -25,11 +25,11 @@ public final class GradientMetals {
   private final Map<Integer, Meltable> meltables = new HashMap<>();
   
   static {
-    instance.addMetal("copper", 20, 1085.00f, 100, 2, 1.6f);
-    instance.addMetal("tin",    15,  231.93f,  20, 0, 1.0f);
-    instance.addMetal("iron",   30, 1538.00f, 150, 2, 2.0f);
-    instance.addMetal("gold",   20, 1064.00f,  30, 0, 1.0f);
-    instance.addMetal("bronze", 20,  950.00f, 130, 2, 1.8f);
+    instance.addMetal("copper", 20, 1085.00f, 100, 2, 1.6f, 0.8d, 1.0d);
+    instance.addMetal("tin",    15,  231.93f,  20, 0, 1.0f, 0.5d, 1.0d);
+    instance.addMetal("iron",   30, 1538.00f, 150, 2, 2.0f, 1.1d, 1.0d);
+    instance.addMetal("gold",   20, 1064.00f,  30, 0, 1.0f, 0.5d, 1.0d);
+    instance.addMetal("bronze", 20,  950.00f, 130, 2, 1.8f, 1.0d, 1.0d);
     
     instance.addAlloy(instance.metalStack("bronze", 4), instance.getMetal("copper"), instance.getMetal("copper"), instance.getMetal("copper"), instance.getMetal("tin"));
   }
@@ -77,8 +77,8 @@ public final class GradientMetals {
     return meltable;
   }
   
-  public Metal addMetal(String name, int meltTime, float meltTemp, int durability, int harvestLevel, float harvestSpeed) {
-    Metal metal = new Metal(name, meltTime, meltTemp, durability, harvestLevel, harvestSpeed);
+  public Metal addMetal(String name, int meltTime, float meltTemp, int durability, int harvestLevel, float harvestSpeed, double attackDamage, double attackSpeed) {
+    Metal metal = new Metal(name, meltTime, meltTemp, durability, harvestLevel, harvestSpeed, attackDamage, attackSpeed);
     this.metals.add(metal);
     return metal;
   }
@@ -145,21 +145,29 @@ public final class GradientMetals {
     public final float  meltTemp;
     
     public final int durability;
+    
     public final int harvestLevel;
     public final float harvestSpeed;
+    
+    public final double attackDamageMultiplier;
+    public final double attackSpeedMultiplier;
     
     private ItemStack nugget;
     Fluid fluid;
     
-    public Metal(String name, int meltTime, float meltTemp, int durability, int harvestLevel, float harvestSpeed) {
+    public Metal(String name, int meltTime, float meltTemp, int durability, int harvestLevel, float harvestSpeed, double attackDamageMultiplier, double attackSpeedMultiplier) {
       this.id = currentId++;
       this.name = name;
       this.meltTime = meltTime;
       this.meltTemp = meltTemp;
       
       this.durability = durability;
+      
       this.harvestLevel = harvestLevel;
       this.harvestSpeed = harvestSpeed;
+      
+      this.attackDamageMultiplier = attackDamageMultiplier;
+      this.attackSpeedMultiplier  = attackSpeedMultiplier;
     }
     
     public ItemStack getNugget() {

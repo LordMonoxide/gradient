@@ -17,14 +17,14 @@ import java.util.Random;
 public class GradientItemTool extends GradientItem {
   private final float harvestSpeed;
   private final float attackSpeed;
-  private final int damage;
+  private final int attackDamage;
   
-  public GradientItemTool(String name, float harvestSpeed, float attackSpeed, int damage) {
+  public GradientItemTool(String name, float harvestSpeed, float attackSpeed, int attackDamage) {
     super(name, CreativeTabs.TOOLS);
     this.maxStackSize = 1;
     this.harvestSpeed = harvestSpeed;
     this.attackSpeed  = attackSpeed;
-    this.damage       = damage;
+    this.attackDamage = attackDamage;
     
     this.setContainerItem(this);
   }
@@ -77,14 +77,22 @@ public class GradientItemTool extends GradientItem {
   }
   
   @Override
-  public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot equipmentSlot, ItemStack stack) {
-    Multimap<String, AttributeModifier> modifiers = super.getAttributeModifiers(equipmentSlot, stack);
+  public Multimap<String, AttributeModifier> getAttributeModifiers(final EntityEquipmentSlot equipmentSlot, final ItemStack stack) {
+    final Multimap<String, AttributeModifier> modifiers = super.getAttributeModifiers(equipmentSlot, stack);
     
     if(equipmentSlot == EntityEquipmentSlot.MAINHAND) {
-      modifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.damage, 0));
-      modifiers.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", this.attackSpeed, 0));
+      modifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.getAttackDamage(stack), 0));
+      modifiers.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", this.getAttackSpeed(stack), 0));
     }
     
     return modifiers;
+  }
+  
+  protected double getAttackDamage(final ItemStack stack) {
+    return this.attackDamage;
+  }
+  
+  protected double getAttackSpeed(final ItemStack stack) {
+    return this.attackSpeed;
   }
 }

@@ -60,6 +60,16 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
     return GradientMetals.instance.getMetal(stack.getTagCompound().getString("metal"));
   }
   
+  @Override
+  protected double getAttackDamage(final ItemStack stack) {
+    return this.getType(stack).attackDamage * this.getMetal(stack).attackDamageMultiplier;
+  }
+  
+  @Override
+  protected double getAttackSpeed(final ItemStack stack) {
+    return this.getType(stack).attackSpeed * this.getMetal(stack).attackSpeedMultiplier;
+  }
+  
   @Deprecated
   public int getMaxDamage(final ItemStack stack) {
     return this.getMetal(stack).durability - 1;

@@ -82,7 +82,11 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   }
   
   public int getHarvestLevel(final ItemStack stack, final String toolClass, @Nullable final EntityPlayer player, @Nullable final IBlockState blockState) {
-    return this.getMetal(stack).harvestLevel;
+    if(Arrays.stream(this.getType(stack).toolClass).anyMatch(toolClass::equals)) {
+      return this.getMetal(stack).harvestLevel;
+    }
+    
+    return -1;
   }
   
   @Override

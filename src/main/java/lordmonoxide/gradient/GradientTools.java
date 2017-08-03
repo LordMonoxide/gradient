@@ -14,6 +14,7 @@ public final class GradientTools {
   
   public static final Type PICKAXE = register("pickaxe", new String[] {"pickaxe"},       1.0d, -2.8d);
   public static final Type MATTOCK = register("mattock", new String[] {"axe", "shovel"}, 6.0d, -2.8d);
+  public static final Type SWORD   = register("sword",   new String[] {"sword"},         4.0d, -2.4d);
   
   public static Type register(final String name, final String[] toolClass, final double attackDamage, final double attackSpeed) {
     Type type = new Type(name, toolClass, attackDamage, attackSpeed);

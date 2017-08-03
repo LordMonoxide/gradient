@@ -20,6 +20,12 @@ item.tool.mattock.tin.name=Tin Mattock
 item.tool.mattock.iron.name=Iron Mattock
 item.tool.mattock.gold.name=Gold Mattock
 item.tool.mattock.bronze.name=Bronze Mattock
+item.tool.sword.invalid.name=Invalid Sword
+item.tool.sword.copper.name=Copper Sword
+item.tool.sword.tin.name=Tin Sword
+item.tool.sword.iron.name=Iron Sword
+item.tool.sword.gold.name=Gold Sword
+item.tool.sword.bronze.name=Bronze Sword
 
 # Tool parts
 item.tool_head.pickaxe.invalid.name=Invalid Pickaxe Head
@@ -34,6 +40,12 @@ item.tool_head.mattock.tin.name=Tin Mattock Head
 item.tool_head.mattock.iron.name=Iron Mattock Head
 item.tool_head.mattock.gold.name=Gold Mattock Head
 item.tool_head.mattock.bronze.name=Bronze Mattock Head
+item.tool_head.sword.invalid.name=Invalid Sword Blade
+item.tool_head.sword.copper.name=Copper Sword Blade
+item.tool_head.sword.tin.name=Tin Sword Blade
+item.tool_head.sword.iron.name=Iron Sword Blade
+item.tool_head.sword.gold.name=Gold Sword Blade
+item.tool_head.sword.bronze.name=Bronze Sword Blade
 
 # Armour
 item.cloth_shirt.name=Cloth Shirt
@@ -77,8 +89,10 @@ tile.clay_crucible.name=Clay Crucible
 tile.clay_crucible.molten=%s: %f
 tile.clay_cast_unhardened.pickaxe.name=Unhardened Clay Cast (Pickaxe)
 tile.clay_cast_unhardened.mattock.name=Unhardened Clay Cast (Mattock)
+tile.clay_cast_unhardened.sword.name=Unhardened Clay Cast (Sword)
 tile.clay_cast.pickaxe.name=Clay Cast (Pickaxe)
 tile.clay_cast.mattock.name=Clay Cast (Mattock)
+tile.clay_cast.sword.name=Clay Cast (Sword)
 
 # Fuel
 fuel.ignition_temp=Ignition Temperature: %f °C

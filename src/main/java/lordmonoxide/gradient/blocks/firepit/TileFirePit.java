@@ -208,7 +208,7 @@ public class TileFirePit extends HeatProducer {
         if(food.isCooked()) {
           this.foods[i] = null;
           this.setFoodSlot(i, ItemStack.EMPTY);
-          this.setCookedSlot(i, food.food.cooked);
+          this.setCookedSlot(i, food.food.cooked.copy());
         }
       }
     }

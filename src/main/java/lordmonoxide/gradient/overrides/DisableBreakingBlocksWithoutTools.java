@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.overrides;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,12 +16,14 @@ public final class DisableBreakingBlocksWithoutTools {
    * @param event
    */
   @SubscribeEvent
-  public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-    if(event.getState().getBlockHardness(event.getEntity().getEntityWorld(), event.getPos()) <= 1.0f) {
+  public void onBreakSpeed(final PlayerEvent.BreakSpeed event) {
+    final IBlockState state = event.getState();
+    
+    if(state.getBlockHardness(event.getEntity().getEntityWorld(), event.getPos()) <= 1.0f || state.getBlock().getHarvestTool(state) == null) {
       return;
     }
     
-    ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
+    final ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
     
     if(held.isEmpty() || !held.getItem().canHarvestBlock(event.getState(), held)) {
       event.setCanceled(true);

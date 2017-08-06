@@ -29,6 +29,7 @@ public final class GradientItems {
   public static final ItemArmor.ArmorMaterial MATERIAL_CLOTH = EnumHelper.addArmorMaterial("cloth", "cloth", 5, new int[] {0, 1, 2, 0}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
   
   public static final GradientItem INFINICOAL = RegistrationHandler.register(new Infinicoal());
+  public static final GradientItem DEBUG      = RegistrationHandler.register(new DebugItem());
   
   public static final GradientItem FIBRE = RegistrationHandler.register(new Fibre());
   public static final GradientItem CLOTH = RegistrationHandler.register(new Cloth());

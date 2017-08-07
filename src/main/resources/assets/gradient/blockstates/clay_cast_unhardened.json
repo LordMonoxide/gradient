@@ -2,6 +2,7 @@
   "variants": {
     "normal": { "model": "gradient:clay_cast_unhardened" },
     "tool=pickaxe": { "model": "gradient:clay_cast_unhardened.pickaxe" },
-    "tool=mattock": { "model": "gradient:clay_cast_unhardened.mattock" }
+    "tool=mattock": { "model": "gradient:clay_cast_unhardened.mattock" },
+    "tool=sword":   { "model": "gradient:clay_cast_unhardened.sword" }
   }
 }

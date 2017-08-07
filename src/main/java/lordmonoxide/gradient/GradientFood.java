@@ -45,7 +45,7 @@ public final class GradientFood {
   
   public Food get(ItemStack raw) {
     for(Map.Entry<ItemStack, Food> entry : this.foods.entrySet()) {
-      if(ItemStack.areItemStacksEqual(raw, entry.getKey())) {
+      if(ItemStack.areItemsEqual(raw, entry.getKey())) {
         return entry.getValue();
       }
     }

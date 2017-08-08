@@ -15,5 +15,6 @@ deploy:
   file: gradient-*.jar
   skip_cleanup: true
   on:
+    branch: master
     repo: LordMonoxide/gradient
 

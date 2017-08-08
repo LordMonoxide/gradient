@@ -5,7 +5,11 @@ import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockPlanks;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -22,6 +26,13 @@ import java.util.List;
 
 public final class RecipeRemover {
   private RecipeRemover() { }
+  
+  private static final Container DUMMY_CONTAINER = new Container() {
+    @Override
+    public boolean canInteractWith(EntityPlayer player) {
+      return true;
+    }
+  };
   
   public static void remove() {
     Item[] tools = {
@@ -77,6 +88,7 @@ public final class RecipeRemover {
     removeRecipes(items);
     removeRecipes(blocks);
     replacePlankRecipes();
+    removeStringToWoolRecipes();
   }
   
   private static void removeRecipes(Item[] items) {
@@ -115,7 +127,7 @@ public final class RecipeRemover {
     List<IRecipe> toAdd = new ArrayList<>();
     
     Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
-  
+    
     while(it.hasNext()) {
       IRecipe recipe = it.next();
       
@@ -160,6 +172,30 @@ public final class RecipeRemover {
     
     for(IRecipe recipe : toAdd) {
       GameRegistry.addRecipe(recipe);
+    }
+  }
+  
+  private static void removeStringToWoolRecipes() {
+    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+    
+    while(it.hasNext()) {
+      IRecipe recipe = it.next();
+      
+      ItemStack output = recipe.getRecipeOutput();
+      
+      if(output.getItem() instanceof ItemBlock) {
+        if(((ItemBlock)output.getItem()).block == Blocks.WOOL) {
+          InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 2, 2);
+          inv.setInventorySlotContents(0, new ItemStack(Items.STRING));
+          inv.setInventorySlotContents(1, new ItemStack(Items.STRING));
+          inv.setInventorySlotContents(2, new ItemStack(Items.STRING));
+          inv.setInventorySlotContents(3, new ItemStack(Items.STRING));
+          
+          if(recipe.matches(inv, null)) {
+            it.remove();
+          }
+        }
+      }
     }
   }
 }

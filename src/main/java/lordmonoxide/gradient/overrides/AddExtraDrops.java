@@ -3,8 +3,11 @@ package lordmonoxide.gradient.overrides;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.GradientItems;
+import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,11 +23,6 @@ public final class AddExtraDrops {
     MinecraftForge.addGrassSeed(new ItemStack(GradientItems.FIBRE), 10);
   }
   
-  /**
-   * Adds sticks as a random drop to leaves
-   *
-   * @param event
-   */
   @SubscribeEvent
   public void leavesDropSticks(BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getBlock() instanceof BlockLeaves) {
@@ -34,11 +32,21 @@ public final class AddExtraDrops {
     }
   }
   
-  /**
-   * Makes stones drop pebbles when broken by a hammer
-   *
-   * @param event
-   */
+  @SubscribeEvent
+  public void wheatDropsFibre(BlockEvent.HarvestDropsEvent event) {
+    IBlockState state = event.getState();
+    
+    if(state.getBlock() == Blocks.WHEAT) {
+      BlockCrops wheat = (BlockCrops)state.getBlock();
+      
+      if(state.getValue(BlockCrops.AGE) == wheat.getMaxAge()) {
+        if(event.getWorld().rand.nextInt(2) == 0) {
+          event.getDrops().add(GradientItems.FIBRE.getItemStack());
+        }
+      }
+    }
+  }
+  
   @SubscribeEvent
   public void stoneDropsPebbles(BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getMaterial() != Material.ROCK) {

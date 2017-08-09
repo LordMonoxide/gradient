@@ -1,7 +1,10 @@
 package lordmonoxide.gradient.recipes;
 
 import com.google.common.collect.Lists;
+import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.items.GradientItems;
+import lordmonoxide.gradient.items.Tool;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockPlanks;
@@ -161,6 +164,17 @@ public final class RecipeRemover {
                 new ItemStack(output.getItem(), 2, output.getMetadata()),
                 Lists.newArrayList(component, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
               ));
+              
+              for(GradientMetals.Metal metal : GradientMetals.instance.metals) {
+                ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
+                tool.setItemDamage(OreDictionary.WILDCARD_VALUE);
+                
+                toAdd.add(new ShapelessMetaAwareRecipe(
+                  new ItemStack(output.getItem(), 2, output.getMetadata()),
+                  component,
+                  tool
+                ));
+              }
               
               // Remove the old one
               it.remove();

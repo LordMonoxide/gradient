@@ -1,7 +1,9 @@
 package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.GradientMetals;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -46,6 +48,14 @@ public final class ExtraRecipes {
       'L', "leather",
       'N', "needle",
       'S', "string"
+    ));
+    
+    GameRegistry.addRecipe(new ShapedOreRecipe(
+      new ItemStack(Blocks.TORCH, 2),
+      "C",
+      "S",
+      'C', "cloth",
+      'S', "stickWood"
     ));
     
     for(GradientMetals.Alloy alloy : GradientMetals.instance.alloys) {

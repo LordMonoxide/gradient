@@ -8,6 +8,7 @@ import lordmonoxide.gradient.items.Tool;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockPlanks;
+import net.minecraft.block.BlockTorch;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -92,6 +93,7 @@ public final class RecipeRemover {
     removeRecipes(blocks);
     replacePlankRecipes();
     removeStringToWoolRecipes();
+    removeTorchRecipeUsingCoal();
   }
   
   private static void removeRecipes(Item[] items) {
@@ -190,6 +192,8 @@ public final class RecipeRemover {
   }
   
   private static void removeStringToWoolRecipes() {
+    int removed = 0;
+    
     Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
     
     while(it.hasNext()) {
@@ -207,9 +211,54 @@ public final class RecipeRemover {
           
           if(recipe.matches(inv, null)) {
             it.remove();
+            removed++;
           }
         }
       }
+    }
+    
+    if(removed == 0) {
+      System.out.println("Failed to remove wool recipes!");
+    } else {
+      System.out.println("Removed " + removed + " wool recipes!");
+    }
+  }
+  
+  private static void removeTorchRecipeUsingCoal() {
+    int removed = 0;
+    
+    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+    
+    while(it.hasNext()) {
+      IRecipe recipe = it.next();
+      
+      ItemStack output = recipe.getRecipeOutput();
+      
+      if(output.getItem() instanceof ItemBlock) {
+        if(((ItemBlock)output.getItem()).block instanceof BlockTorch) {
+          InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 1, 2);
+          inv.setInventorySlotContents(0, new ItemStack(Items.COAL));
+          inv.setInventorySlotContents(1, new ItemStack(Items.STICK));
+          
+          if(recipe.matches(inv, null)) {
+            it.remove();
+            removed++;
+          }
+          
+          inv.setInventorySlotContents(0, new ItemStack(Items.COAL, 1, 1));
+          
+          if(recipe.matches(inv, null)) {
+            it.remove();
+            removed++;
+          }
+        }
+      }
+    }
+    
+    if(removed == 0) {
+      System.out.println("Failed to remove torch recipes!");
+    } else {
+      System.out.println("Removed " + removed + " torch recipes!");
     }
   }
 }

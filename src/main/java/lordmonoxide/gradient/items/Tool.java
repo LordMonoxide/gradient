@@ -14,8 +14,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -58,6 +59,11 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
     }
     
     return GradientMetals.instance.getMetal(stack.getTagCompound().getString("metal"));
+  }
+  
+  @Override
+  public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+    return this.getType(player.getHeldItem(hand)).onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
   
   @Override

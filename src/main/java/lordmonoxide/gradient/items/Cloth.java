@@ -14,9 +14,8 @@ public class Cloth extends GradientItem implements GradientCraftable {
   public void addRecipe() {
     GameRegistry.addRecipe(new ShapedOreRecipe(
       this,
-        "SSS",
-        "SSS",
-        "SSS",
+        "SS",
+        "SS",
         'S', "string"
     ));
   }

@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.items;
 
 import com.google.common.collect.Multimap;
+import net.minecraft.block.BlockRedstoneOre;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -49,6 +50,11 @@ public class GradientItemTool extends GradientItem {
     
     for(String type : this.getToolClasses(stack)) {
       if(blockIn.getBlock().isToolEffective(type, blockIn)) {
+        return true;
+      }
+      
+      // Redstone has weird special-case handling
+      if("pickaxe".equals(type) && blockIn.getBlock() instanceof BlockRedstoneOre) {
         return true;
       }
     }

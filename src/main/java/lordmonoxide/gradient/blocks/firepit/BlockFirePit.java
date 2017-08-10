@@ -135,8 +135,16 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
         
         if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).block instanceof BlockClayFurnace) {
           if(!state.getValue(HAS_FURNACE)) {
+            TileFirePit te = (TileFirePit)world.getTileEntity(pos);
+            
             world.setBlockState(pos, state.withProperty(HAS_FURNACE, true));
-            ((TileFirePit)world.getTileEntity(pos)).attachFurnace();
+            
+            // Changing the blockstate replaces the tile entity... swap it
+            // back to the old one.  Not sure how terrible doing this is.
+            te.validate();
+            world.setTileEntity(pos, te);
+            te.attachFurnace();
+            
             stack.shrink(1);
             return true;
           }

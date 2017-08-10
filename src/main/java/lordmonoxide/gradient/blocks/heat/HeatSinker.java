@@ -10,6 +10,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public abstract class HeatSinker extends TileEntity implements ITickable {
@@ -49,12 +50,9 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   public void updateSink(BlockPos pos) {
     TileEntity te = this.getWorld().getTileEntity(pos);
     
-    if(!(te instanceof HeatSinker)) {
-      this.sinks.remove(pos);
-      return;
+    if(te instanceof HeatSinker) {
+      this.sinks.put(pos, (HeatSinker)te);
     }
-    
-    this.sinks.put(pos, (HeatSinker)te);
   }
   
   private void findSurroundingSinks() {
@@ -98,14 +96,30 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
       return;
     }
     
-    this.sinks.keySet().removeIf(pos -> !(this.getWorld().getTileEntity(pos) instanceof HeatSinker));
-    this.sinks.forEach((pos, sink) -> {
+    Iterator<Map.Entry<BlockPos, HeatSinker>> iterator = this.sinks.entrySet().iterator();
+    
+    while(iterator.hasNext()) {
+      Map.Entry<BlockPos, HeatSinker> entry = iterator.next();
+      
+      TileEntity worldEntity = this.getWorld().getTileEntity(entry.getKey());
+      
+      if(!(worldEntity instanceof HeatSinker)) {
+        iterator.remove();
+        return;
+      }
+      
+      if(worldEntity != entry.getValue()) {
+        entry.setValue((HeatSinker)worldEntity);
+      }
+      
+      HeatSinker sink = entry.getValue();
+      
       if(sink.getHeat() < this.getHeat()) {
         float heat = this.calculateHeatLoss(this.state) * sink.heatTransferEfficiency() / 20.0f;
         this.removeHeat(heat);
         sink.addHeat(heat);
       }
-    });
+    }
   }
   
   protected abstract void tickBeforeCooldown();

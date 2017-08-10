@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.blocks.heat;
 
 import lordmonoxide.gradient.blocks.GradientBlock;
-import lordmonoxide.gradient.blocks.claycrucible.TileClayCrucible;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -33,6 +32,7 @@ public abstract class HeatSinkerBlock extends GradientBlock implements ITileEnti
     
     if(te instanceof HeatSinker) {
       ((HeatSinker)te).updateSink(neighbor);
+      PacketUpdateHeatNeighbours.send(pos, neighbor);
     }
   }
 }

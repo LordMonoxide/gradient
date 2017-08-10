@@ -47,9 +47,9 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   public BlockFirePit() {
     super("fire_pit", CreativeTabs.TOOLS, Material.WOOD, MapColor.RED); //$NON-NLS-1$
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(HAS_FURNACE, false));
-    this.setHardness(0.0f);
-    this.setResistance(0.0f);
     this.setLightOpacity(0);
+    this.setResistance(5.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

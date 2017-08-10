@@ -18,6 +18,8 @@ public class BlockClayCast extends GradientBlock {
   public BlockClayCast() {
     super("clay_cast", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
     this.setDefaultState(this.blockState.getBaseState().withProperty(TOOL, GradientTools.PICKAXE));
+    this.setResistance(5.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

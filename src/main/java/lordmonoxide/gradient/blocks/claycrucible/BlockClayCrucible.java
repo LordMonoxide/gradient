@@ -25,6 +25,8 @@ public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityPro
   
   public BlockClayCrucible() {
     super("clay_crucible", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
+    this.setResistance(5.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

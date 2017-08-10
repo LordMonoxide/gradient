@@ -20,6 +20,8 @@ public class BlockClayCrucibleUnhardened extends GradientBlock implements Gradie
   
   public BlockClayCrucibleUnhardened() {
     super("clay_crucible_unhardened", CreativeTabs.TOOLS, Material.CLAY, MapColor.CLAY);
+    this.setResistance(2.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

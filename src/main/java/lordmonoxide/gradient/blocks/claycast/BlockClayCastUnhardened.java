@@ -26,6 +26,8 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientCr
   public BlockClayCastUnhardened() {
     super("clay_cast_unhardened", CreativeTabs.TOOLS, Material.CLAY, MapColor.CLAY);
     this.setDefaultState(this.blockState.getBaseState().withProperty(TOOL, GradientTools.PICKAXE));
+    this.setResistance(2.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

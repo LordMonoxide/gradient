@@ -18,6 +18,8 @@ public class BlockClayBucket extends GradientBlock {
   
   public BlockClayBucket() {
     super("clay_bucket", CreativeTabs.TOOLS, Material.CLAY, MapColor.BROWN);
+    this.setResistance(5.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

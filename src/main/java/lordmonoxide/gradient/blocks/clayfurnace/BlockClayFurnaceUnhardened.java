@@ -27,6 +27,8 @@ public class BlockClayFurnaceUnhardened extends GradientBlock implements Gradien
   public BlockClayFurnaceUnhardened() {
     super("clay_furnace_unhardened", CreativeTabs.TOOLS, Material.CLAY, MapColor.CLAY);
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+    this.setResistance(2.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

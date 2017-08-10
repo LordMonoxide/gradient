@@ -21,6 +21,8 @@ public class BlockClayFurnace extends GradientBlock {
   public BlockClayFurnace() {
     super("clay_furnace", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+    this.setResistance(5.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

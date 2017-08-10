@@ -20,6 +20,8 @@ public class BlockClayBucketUnhardened extends GradientBlock implements Gradient
   
   public BlockClayBucketUnhardened() {
     super("clay_bucket_unhardened", CreativeTabs.TOOLS, Material.CLAY, MapColor.CLAY);
+    this.setResistance(2.0f);
+    this.setHardness(1.0f);
   }
   
   @Override

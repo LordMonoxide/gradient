@@ -53,7 +53,8 @@ public class GradientGuiHandler implements IGuiHandler {
   
   @Override
   public Gui getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
-    TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+    BlockPos pos = new BlockPos(x, y, z);
+    TileEntity te = world.getTileEntity(pos);
     
     switch(id) {
       case FIRE_PIT:
@@ -61,7 +62,7 @@ public class GradientGuiHandler implements IGuiHandler {
           return null;
         }
         
-        return new GuiFirePit((ContainerFirePit)this.getServerGuiElement(id, player, world, x, y, z), (TileFirePit)te, player.inventory);
+        return new GuiFirePit((ContainerFirePit)this.getServerGuiElement(id, player, world, x, y, z), (TileFirePit)te, world.getBlockState(pos), player.inventory);
       
       case CLAY_CRUCIBLE:
         if(te == null) {

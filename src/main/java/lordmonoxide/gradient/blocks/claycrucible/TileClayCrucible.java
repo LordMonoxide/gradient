@@ -2,6 +2,7 @@ package lordmonoxide.gradient.blocks.claycrucible;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -135,7 +136,7 @@ public class TileClayCrucible extends HeatSinker {
   }
   
   @Override
-  protected float calculateHeatLoss() {
+  protected float calculateHeatLoss(IBlockState state) {
     return (float)Math.pow(this.getHeat() / 800, 2);
   }
   

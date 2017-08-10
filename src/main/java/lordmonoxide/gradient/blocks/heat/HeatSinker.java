@@ -20,6 +20,12 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   
   private float heat;
   
+  private IBlockState state;
+  
+  protected IBlockState getBlockState() {
+    return this.state;
+  }
+  
   public boolean hasHeat() {
     return this.heat != 0;
   }
@@ -66,6 +72,8 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
       return;
     }
     
+    this.state = this.getWorld().getBlockState(this.getPos());
+    
     this.tickBeforeCooldown();
     this.coolDown();
     this.tickAfterCooldown();
@@ -93,7 +101,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
     this.sinks.keySet().removeIf(pos -> !(this.getWorld().getTileEntity(pos) instanceof HeatSinker));
     this.sinks.forEach((pos, sink) -> {
       if(sink.getHeat() < this.getHeat()) {
-        float heat = this.calculateHeatLoss() * sink.heatTransferEfficiency() / 20.0f;
+        float heat = this.calculateHeatLoss(this.state) * sink.heatTransferEfficiency() / 20.0f;
         this.removeHeat(heat);
         sink.addHeat(heat);
       }
@@ -104,10 +112,10 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   protected abstract void tickAfterCooldown();
   
   private void coolDown() {
-    this.removeHeat(this.calculateHeatLoss() / 20.0f);
+    this.removeHeat(this.calculateHeatLoss(this.state) / 20.0f);
   }
   
-  protected abstract float calculateHeatLoss();
+  protected abstract float calculateHeatLoss(IBlockState state);
   
   /**
    * @return  The percentage of heat that is maintained when this sink absorbs heat. 0.0 = 0%, 1.0 = 100%

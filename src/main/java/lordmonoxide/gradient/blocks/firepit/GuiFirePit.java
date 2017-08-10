@@ -3,23 +3,24 @@ package lordmonoxide.gradient.blocks.firepit;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.containers.GradientContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiFirePit extends GuiContainer {
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/fire_pit.png");
   
-  private TileFirePit firePit;
-  private InventoryPlayer playerInv;
+  private final TileFirePit firePit;
+  private final IBlockState state;
+  private final InventoryPlayer playerInv;
   
-  public GuiFirePit(ContainerFirePit container, TileFirePit firePit, InventoryPlayer playerInv) {
+  public GuiFirePit(ContainerFirePit container, TileFirePit firePit, IBlockState state, InventoryPlayer playerInv) {
     super(container);
     this.firePit = firePit;
+    this.state = state;
     this.playerInv = playerInv;
   }
   
@@ -50,7 +51,7 @@ public class GuiFirePit extends GuiContainer {
       }
     }
     
-    String name = I18n.format((this.firePit.hasFurnace() ? GradientBlocks.CLAY_FURNACE : GradientBlocks.FIRE_PIT).getUnlocalizedName() + ".name");
+    String name = I18n.format((this.firePit.hasFurnace(this.state) ? GradientBlocks.CLAY_FURNACE : GradientBlocks.FIRE_PIT).getUnlocalizedName() + ".name");
     String fuel = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".fuel");
     String food = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".input");
     

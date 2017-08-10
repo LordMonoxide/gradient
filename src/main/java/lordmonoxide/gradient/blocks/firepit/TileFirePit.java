@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -47,12 +48,10 @@ public class TileFirePit extends HeatProducer {
   
   private boolean firstTick = true;
   
-  private boolean hasFurnace;
-  
   private int lastLight;
   
-  public boolean hasFurnace() {
-    return this.hasFurnace;
+  public boolean hasFurnace(IBlockState state) {
+    return state.getValue(BlockFirePit.HAS_FURNACE);
   }
   
   public boolean isBurning() {
@@ -91,13 +90,13 @@ public class TileFirePit extends HeatProducer {
     return this.foods[slot];
   }
   
-  public int getLightLevel() {
+  public int getLightLevel(IBlockState state) {
     if(this.getHeat() == 0) {
       return 0;
     }
     
     return Math.min(
-      !this.hasFurnace ?
+      !this.hasFurnace(state) ?
         (int)(this.getHeat() / 800 * 11) + 4 :
         (int)(this.getHeat() / 1000 * 9) + 2,
       15
@@ -113,17 +112,8 @@ public class TileFirePit extends HeatProducer {
     this.sync();
   }
   
-  /**
-   * @return  True if the furnace was attached, false if there already was one
-   */
-  public boolean attachFurnace() {
-    if(this.hasFurnace) {
-      return false;
-    }
-    
-    this.hasFurnace = true;
+  public void attachFurnace() {
     this.sync();
-    return true;
   }
   
   public void updateHardenable(BlockPos pos) {
@@ -227,11 +217,13 @@ public class TileFirePit extends HeatProducer {
   }
   
   private void updateLight() {
-    if(this.lastLight != this.getLightLevel()) {
+    int light = this.getLightLevel(this.getBlockState());
+    
+    if(this.lastLight != light) {
       this.getWorld().markBlockRangeForRenderUpdate(this.pos, this.pos);
       this.getWorld().checkLight(this.pos);
       
-      this.lastLight = this.getLightLevel();
+      this.lastLight = light;
     }
   }
   
@@ -290,8 +282,8 @@ public class TileFirePit extends HeatProducer {
   }
   
   @Override
-  protected float calculateHeatLoss() {
-    return !this.hasFurnace ?
+  protected float calculateHeatLoss(IBlockState state) {
+    return !this.hasFurnace(state) ?
       (float)Math.pow((this.getHeat() / 500) + 1, 2) / 1.5f :
       (float)Math.pow((this.getHeat() / 1600) + 1, 2);
   }
@@ -332,7 +324,6 @@ public class TileFirePit extends HeatProducer {
   @Override
   public NBTTagCompound writeToNBT(NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
-    compound.setBoolean("hasFurnace", this.hasFurnace);
     
     NBTTagList fuels = new NBTTagList();
     NBTTagList foods = new NBTTagList();
@@ -369,13 +360,12 @@ public class TileFirePit extends HeatProducer {
   
   @Override
   public void readFromNBT(NBTTagCompound compound) {
-    this.lastLight = this.getLightLevel();
+    this.lastLight = -1;
     
     Arrays.fill(this.fuels, null);
     Arrays.fill(this.foods, null);
     
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
-    this.hasFurnace = compound.getBoolean("hasFurnace");
     
     NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
     NBTTagList foods = compound.getTagList("food", Constants.NBT.TAG_COMPOUND);

@@ -1,8 +1,8 @@
 package lordmonoxide.gradient.blocks.claycast;
 
-import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.GradientCasts;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,28 +13,28 @@ import net.minecraft.world.IBlockAccess;
 public class BlockClayCast extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
   
-  private static final GradientTools.PropertyTool TOOL = GradientTools.PropertyTool.create("tool");
+  private static final GradientCasts.PropertyCast CAST = GradientCasts.PropertyCast.create("cast");
   
   public BlockClayCast() {
     super("clay_cast", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
-    this.setDefaultState(this.blockState.getBaseState().withProperty(TOOL, GradientTools.PICKAXE));
+    this.setDefaultState(this.blockState.getBaseState().withProperty(CAST, GradientCasts.PICKAXE));
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }
   
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, TOOL);
+    return new BlockStateContainer(this, CAST);
   }
   
   @Override
   public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(TOOL, GradientTools.TYPES.get(meta));
+    return this.getDefaultState().withProperty(CAST, GradientCasts.CASTS.get(meta));
   }
   
   @Override
   public int getMetaFromState(final IBlockState state) {
-    return state.getValue(TOOL).id;
+    return state.getValue(CAST).id;
   }
   
   @Override

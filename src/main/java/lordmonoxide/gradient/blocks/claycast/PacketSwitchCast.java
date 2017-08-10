@@ -2,49 +2,52 @@ package lordmonoxide.gradient.blocks.claycast;
 
 import io.netty.buffer.ByteBuf;
 import lordmonoxide.gradient.GradientNet;
-import lordmonoxide.gradient.GradientTools;
+import lordmonoxide.gradient.GradientCasts;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import javax.annotation.Nullable;
+
 public class PacketSwitchCast implements IMessage {
-  public static void send(GradientTools.Type type) {
-    GradientNet.CHANNEL.sendToServer(new PacketSwitchCast(type));
+  public static void send(GradientCasts.Cast cast) {
+    GradientNet.CHANNEL.sendToServer(new PacketSwitchCast(cast));
   }
   
-  private GradientTools.Type type;
+  private GradientCasts.Cast cast;
   
   public PacketSwitchCast() { }
   
-  public PacketSwitchCast(GradientTools.Type type) {
-    this.type = type;
+  public PacketSwitchCast(GradientCasts.Cast cast) {
+    this.cast = cast;
   }
   
-  public GradientTools.Type getType() {
-    return this.type;
+  public GradientCasts.Cast getCast() {
+    return this.cast;
   }
   
   @Override
   public void fromBytes(ByteBuf buf) {
     try {
-      this.type = GradientTools.TYPES.get(buf.readInt());
+      this.cast = GradientCasts.CASTS.get(buf.readInt());
     } catch(Exception e) {
       System.out.println("Invalid type in PacketSwitchCast");
       System.out.println(e);
-      this.type = null;
+      this.cast = null;
     }
   }
   
   @Override
   public void toBytes(ByteBuf buf) {
-    buf.writeInt(this.type.id);
+    buf.writeInt(this.cast.id);
   }
   
   public static class Handler implements IMessageHandler<PacketSwitchCast, IMessage> {
     @Override
+    @Nullable
     public IMessage onMessage(PacketSwitchCast packet, MessageContext ctx) {
-      if(packet.type == null) {
+      if(packet.cast == null) {
         return null;
       }
       
@@ -55,7 +58,7 @@ public class PacketSwitchCast implements IMessage {
           return;
         }
         
-        hand.setItemDamage(packet.type.id);
+        hand.setItemDamage(packet.cast.id);
       });
       
       return null;

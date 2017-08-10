@@ -1,9 +1,9 @@
 package lordmonoxide.gradient.blocks.claycast;
 
-import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
+import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -21,11 +21,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class BlockClayCastUnhardened extends GradientBlock implements GradientCraftable, Hardenable {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
   
-  private static final GradientTools.PropertyTool TOOL = GradientTools.PropertyTool.create("tool");
+  private static final GradientCasts.PropertyCast CAST = GradientCasts.PropertyCast.create("cast");
   
   public BlockClayCastUnhardened() {
     super("clay_cast_unhardened", CreativeTabs.TOOLS, Material.CLAY, MapColor.CLAY);
-    this.setDefaultState(this.blockState.getBaseState().withProperty(TOOL, GradientTools.PICKAXE));
+    this.setDefaultState(this.blockState.getBaseState().withProperty(CAST, GradientCasts.PICKAXE));
     this.setResistance(2.0f);
     this.setHardness(1.0f);
   }
@@ -40,17 +40,17 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientCr
   
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, TOOL);
+    return new BlockStateContainer(this, CAST);
   }
   
   @Override
   public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(TOOL, GradientTools.TYPES.get(meta));
+    return this.getDefaultState().withProperty(CAST, GradientCasts.CASTS.get(meta));
   }
   
   @Override
   public int getMetaFromState(final IBlockState state) {
-    return state.getValue(TOOL).id;
+    return state.getValue(CAST).id;
   }
   
   @Override
@@ -78,7 +78,7 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientCr
   
   @Override
   public IBlockState getHardened(final IBlockState current) {
-    return GradientBlocks.CLAY_CAST.getDefaultState().withProperty(TOOL, current.getValue(TOOL));
+    return GradientBlocks.CLAY_CAST.getDefaultState().withProperty(CAST, current.getValue(CAST));
   }
   
   @Override

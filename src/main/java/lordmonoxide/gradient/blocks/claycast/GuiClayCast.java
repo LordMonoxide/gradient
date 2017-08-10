@@ -2,8 +2,8 @@ package lordmonoxide.gradient.blocks.claycast;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.GradientTools;
-import lordmonoxide.gradient.items.ToolHead;
+import lordmonoxide.gradient.items.CastItem;
+import lordmonoxide.gradient.GradientCasts;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -34,19 +34,19 @@ public class GuiClayCast extends GuiContainer {
     int x = 12;
     int y = 33;
     
-    for(final GradientTools.Type type : GradientTools.TYPES) {
-      final GuiButton button = this.addButtonForTool(type, x, y);
+    for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
+      final GuiButton button = this.addButtonForTool(cast, x, y);
       x += 22;
       
-      if(this.held.getMetadata() == type.id) {
+      if(this.held.getMetadata() == cast.id) {
         button.enabled = false;
         this.selectedCast = (ItemButton)button;
       }
     }
   }
   
-  private GuiButton addButtonForTool(final GradientTools.Type type, final int x, final int y) {
-    return this.addButton(new ItemButton(type.id, ToolHead.getToolHead(type, GradientMetals.INVALID_METAL), x + this.guiLeft, y + this.guiTop));
+  private GuiButton addButtonForTool(final GradientCasts.Cast cast, final int x, final int y) {
+    return this.addButton(new ItemButton(cast.id, cast.itemOverride != null ? cast.itemOverride.getDefaultInstance() : CastItem.getCastItem(cast, GradientMetals.INVALID_METAL), x + this.guiLeft, y + this.guiTop));
   }
   
   @Override
@@ -57,7 +57,7 @@ public class GuiClayCast extends GuiContainer {
       cast.enabled = false;
       this.selectedCast = cast;
       
-      PacketSwitchCast.send(GradientTools.TYPES.get(cast.id));
+      PacketSwitchCast.send(GradientCasts.CASTS.get(cast.id));
     }
   }
   

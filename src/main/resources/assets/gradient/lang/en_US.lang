@@ -27,25 +27,25 @@ item.tool.sword.iron.name=Iron Sword
 item.tool.sword.gold.name=Gold Sword
 item.tool.sword.bronze.name=Bronze Sword
 
-# Tool parts
-item.tool_head.pickaxe.invalid.name=Invalid Pickaxe Head
-item.tool_head.pickaxe.copper.name=Copper Pickaxe Head
-item.tool_head.pickaxe.tin.name=Tin Pickaxe Head
-item.tool_head.pickaxe.iron.name=Iron Pickaxe Head
-item.tool_head.pickaxe.gold.name=Gold Pickaxe Head
-item.tool_head.pickaxe.bronze.name=Bronze Pickaxe Head
-item.tool_head.mattock.invalid.name=Invalid Mattock Head
-item.tool_head.mattock.copper.name=Copper Mattock Head
-item.tool_head.mattock.tin.name=Tin Mattock Head
-item.tool_head.mattock.iron.name=Iron Mattock Head
-item.tool_head.mattock.gold.name=Gold Mattock Head
-item.tool_head.mattock.bronze.name=Bronze Mattock Head
-item.tool_head.sword.invalid.name=Invalid Sword Blade
-item.tool_head.sword.copper.name=Copper Sword Blade
-item.tool_head.sword.tin.name=Tin Sword Blade
-item.tool_head.sword.iron.name=Iron Sword Blade
-item.tool_head.sword.gold.name=Gold Sword Blade
-item.tool_head.sword.bronze.name=Bronze Sword Blade
+# Cast items
+item.cast_item.pickaxe.invalid.name=Invalid Pickaxe Head
+item.cast_item.pickaxe.copper.name=Copper Pickaxe Head
+item.cast_item.pickaxe.tin.name=Tin Pickaxe Head
+item.cast_item.pickaxe.iron.name=Iron Pickaxe Head
+item.cast_item.pickaxe.gold.name=Gold Pickaxe Head
+item.cast_item.pickaxe.bronze.name=Bronze Pickaxe Head
+item.cast_item.mattock.invalid.name=Invalid Mattock Head
+item.cast_item.mattock.copper.name=Copper Mattock Head
+item.cast_item.mattock.tin.name=Tin Mattock Head
+item.cast_item.mattock.iron.name=Iron Mattock Head
+item.cast_item.mattock.gold.name=Gold Mattock Head
+item.cast_item.mattock.bronze.name=Bronze Mattock Head
+item.cast_item.sword.invalid.name=Invalid Sword Blade
+item.cast_item.sword.copper.name=Copper Sword Blade
+item.cast_item.sword.tin.name=Tin Sword Blade
+item.cast_item.sword.iron.name=Iron Sword Blade
+item.cast_item.sword.gold.name=Gold Sword Blade
+item.cast_item.sword.bronze.name=Bronze Sword Blade
 
 # Armour
 item.cloth_shirt.name=Cloth Shirt
@@ -90,9 +90,11 @@ tile.clay_crucible.molten=%s: %f
 tile.clay_cast_unhardened.pickaxe.name=Unhardened Clay Cast (Pickaxe)
 tile.clay_cast_unhardened.mattock.name=Unhardened Clay Cast (Mattock)
 tile.clay_cast_unhardened.sword.name=Unhardened Clay Cast (Sword)
+tile.clay_cast_unhardened.ingot.name=Unhardened Clay Cast (Ingot)
 tile.clay_cast.pickaxe.name=Clay Cast (Pickaxe)
 tile.clay_cast.mattock.name=Clay Cast (Mattock)
 tile.clay_cast.sword.name=Clay Cast (Sword)
+tile.clay_cast.ingot.name=Clay Cast (Ingot)
 
 # Fuel
 fuel.ignition_temp=Ignition Temperature: %f °C

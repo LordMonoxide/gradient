@@ -114,7 +114,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
         "H",
         "F",
         "S",
-        'H', ToolHead.getToolHead(type, metal),
+        'H', CastItem.getCastItem(type.cast, metal),
         'F', "string",
         'S', "stickWood"
       ));
@@ -128,7 +128,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   
   @Override
   public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName() + '.' + this.getType(stack).name + '.' + this.getMetal(stack).name;
+    return super.getUnlocalizedName() + '.' + this.getType(stack).cast.name + '.' + this.getMetal(stack).name;
   }
   
   @Override
@@ -152,10 +152,10 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
       final GradientTools.Type type = this.getType(stack);
       final GradientMetals.Metal metal = this.getMetal(stack);
       
-      lookup.put(type.name + "." + metal.name, new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, this.getUnlocalizedName(stack).substring(5)), "inventory"));
+      lookup.put(type.cast.name + "." + metal.name, new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, this.getUnlocalizedName(stack).substring(5)), "inventory"));
     }
     
     ModelBakery.registerItemVariants(this, lookup.values().toArray(new ModelResourceLocation[lookup.size()]));
-    ModelLoader.setCustomMeshDefinition(this, stack -> lookup.get(this.getType(stack).name + "." + this.getMetal(stack).name));
+    ModelLoader.setCustomMeshDefinition(this, stack -> lookup.get(this.getType(stack).cast.name + "." + this.getMetal(stack).name));
   }
 }

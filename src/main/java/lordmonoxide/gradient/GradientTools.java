@@ -19,18 +19,18 @@ public final class GradientTools {
   
   public static final List<Type> TYPES = new ArrayList<>();
   
-  public static final Type PICKAXE = register("pickaxe", new String[] {"pickaxe"},       1.0d, -2.8d);
-  public static final Type MATTOCK = register("mattock", new String[] {"axe", "shovel"}, 6.0d, -2.8d, GradientTools::onMattockUse);
-  public static final Type SWORD   = register("sword",   new String[] {"sword"},         4.0d, -2.4d);
+  public static final Type PICKAXE = register(GradientCasts.PICKAXE, new String[] {"pickaxe"},       1.0d, -2.8d);
+  public static final Type MATTOCK = register(GradientCasts.MATTOCK, new String[] {"axe", "shovel"}, 6.0d, -2.8d, GradientTools::onMattockUse);
+  public static final Type SWORD   = register(GradientCasts.SWORD,   new String[] {"sword"},         4.0d, -2.4d);
   
-  public static Type register(final String name, final String[] toolClass, final double attackDamage, final double attackSpeed, final OnItemUse onItemUse) {
-    Type type = new Type(name, toolClass, attackDamage, attackSpeed, onItemUse);
+  public static Type register(final GradientCasts.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed, final OnItemUse onItemUse) {
+    Type type = new Type(cast, toolClass, attackDamage, attackSpeed, onItemUse);
     TYPES.add(type);
     return type;
   }
   
-  public static Type register(final String name, final String[] toolClass, final double attackDamage, final double attackSpeed) {
-    return register(name, toolClass, attackDamage, attackSpeed, GradientTools::onItemUsePass);
+  public static Type register(final GradientCasts.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed) {
+    return register(cast, toolClass, attackDamage, attackSpeed, GradientTools::onItemUsePass);
   }
   
   private static EnumActionResult onItemUsePass(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
@@ -45,7 +45,7 @@ public final class GradientTools {
     private static int currentId;
     
     public final int id;
-    public final String name;
+    public final GradientCasts.Cast cast;
     public final String[] toolClass;
     
     public final double attackDamage;
@@ -53,19 +53,15 @@ public final class GradientTools {
     
     private final OnItemUse onItemUse;
     
-    public Type(final String name, final String[] toolClass, final double attackDamage, final double attackSpeed, final OnItemUse onItemUse) {
+    public Type(final GradientCasts.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed, final OnItemUse onItemUse) {
       this.id = currentId++;
-      this.name = name;
+      this.cast = cast;
       this.toolClass = toolClass;
       
       this.attackDamage = attackDamage;
       this.attackSpeed  = attackSpeed;
       
       this.onItemUse = onItemUse;
-    }
-    
-    public Type(final String name, final String[] toolClass, final double attackDamage, final double attackSpeed) {
-      this(name, toolClass, attackDamage, attackSpeed, null);
     }
     
     public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
@@ -109,7 +105,7 @@ public final class GradientTools {
     @Override
     public Optional<Type> parseValue(final String value) {
       for(final Type type : TYPES) {
-        if(type.name.equals(value)) {
+        if(type.cast.name.equals(value)) {
           return Optional.of(type);
         }
       }
@@ -119,7 +115,7 @@ public final class GradientTools {
     
     @Override
     public String getName(final Type type) {
-      return type.name;
+      return type.cast.name;
     }
   }
   

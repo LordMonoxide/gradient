@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gradient:items/tool_head.sword.tin"
+    "layer0": "gradient:items/cast_item.pickaxe.gold"
   }
 }

@@ -6,6 +6,7 @@ import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
 import lordmonoxide.gradient.recipes.GradientCraftable;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -70,6 +71,48 @@ public final class GradientItems {
       OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));
       OreDictionary.registerOre("nugget" + caps, NUGGET.getItemStack(1, metal.id));
     }
+    
+    Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);
+    Blocks.SPRUCE_STAIRS.setHarvestLevel("axe", 0);
+    Blocks.BIRCH_STAIRS.setHarvestLevel("axe", 0);
+    Blocks.JUNGLE_STAIRS.setHarvestLevel("axe", 0);
+    Blocks.ACACIA_STAIRS.setHarvestLevel("axe", 0);
+    Blocks.DARK_OAK_STAIRS.setHarvestLevel("axe", 0);
+    
+    Blocks.OAK_DOOR.setHarvestLevel("axe", 0);
+    Blocks.SPRUCE_DOOR.setHarvestLevel("axe", 0);
+    Blocks.BIRCH_DOOR.setHarvestLevel("axe", 0);
+    Blocks.JUNGLE_DOOR.setHarvestLevel("axe", 0);
+    Blocks.ACACIA_DOOR.setHarvestLevel("axe", 0);
+    Blocks.DARK_OAK_DOOR.setHarvestLevel("axe", 0);
+    
+    Blocks.OAK_FENCE.setHarvestLevel("axe", 0);
+    Blocks.SPRUCE_FENCE.setHarvestLevel("axe", 0);
+    Blocks.BIRCH_FENCE.setHarvestLevel("axe", 0);
+    Blocks.JUNGLE_FENCE.setHarvestLevel("axe", 0);
+    Blocks.ACACIA_FENCE.setHarvestLevel("axe", 0);
+    Blocks.DARK_OAK_FENCE.setHarvestLevel("axe", 0);
+    
+    Blocks.OAK_FENCE_GATE.setHarvestLevel("axe", 0);
+    Blocks.SPRUCE_FENCE_GATE.setHarvestLevel("axe", 0);
+    Blocks.BIRCH_FENCE_GATE.setHarvestLevel("axe", 0);
+    Blocks.JUNGLE_FENCE_GATE.setHarvestLevel("axe", 0);
+    Blocks.ACACIA_FENCE_GATE.setHarvestLevel("axe", 0);
+    Blocks.DARK_OAK_FENCE_GATE.setHarvestLevel("axe", 0);
+    
+    Blocks.STONE_STAIRS.setHarvestLevel("pickaxe", 0);
+    Blocks.BRICK_STAIRS.setHarvestLevel("pickaxe", 0);
+    Blocks.STONE_BRICK_STAIRS.setHarvestLevel("pickaxe", 0);
+    Blocks.NETHER_BRICK_STAIRS.setHarvestLevel("pickaxe", 0);
+    Blocks.SANDSTONE_STAIRS.setHarvestLevel("pickaxe", 0);
+    Blocks.QUARTZ_STAIRS.setHarvestLevel("pickaxe", 0);
+    Blocks.RED_SANDSTONE_STAIRS.setHarvestLevel("pickaxe", 0);
+    Blocks.PURPUR_STAIRS.setHarvestLevel("pickaxe", 0);
+    
+    Blocks.IRON_DOOR.setHarvestLevel("pickaxe", 2);
+    
+    Blocks.NETHER_BRICK_FENCE.setHarvestLevel("pickaxe", 0);
+    Blocks.COBBLESTONE_WALL.setHarvestLevel("pickaxe", 0);
   }
   
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)

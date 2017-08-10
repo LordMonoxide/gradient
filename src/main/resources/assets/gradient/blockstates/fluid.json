@@ -18,10 +18,31 @@
         }
       }
     ],
+    "tin": [
+      {
+        "custom": {
+          "fluid": "tin"
+        }
+      }
+    ],
     "iron": [
       {
         "custom": {
           "fluid": "iron"
+        }
+      }
+    ],
+    "gold": [
+      {
+        "custom": {
+          "fluid": "gold"
+        }
+      }
+    ],
+    "bronze": [
+      {
+        "custom": {
+          "fluid": "bronze"
         }
       }
     ]

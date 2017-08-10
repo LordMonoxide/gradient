@@ -2,6 +2,7 @@ package lordmonoxide.gradient.blocks.firepit;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
@@ -34,6 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import java.util.List;
 import java.util.Random;
 
 public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, ITileEntityProvider {
@@ -58,6 +60,17 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   @Override
   public Item getItemDropped(IBlockState state, Random rand, int fortune) {
     return Items.STICK;
+  }
+  
+  @Override
+  public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+    List<ItemStack> ret = super.getDrops(world, pos, state, fortune);
+    
+    if(state.getValue(HAS_FURNACE)) {
+      ret.add(new ItemStack(GradientBlocks.CLAY_FURNACE));
+    }
+    
+    return ret;
   }
   
   @Override

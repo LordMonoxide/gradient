@@ -25,6 +25,11 @@ public class DebugItem extends GradientItem {
       
       this.addChat("Harvest tool: " + block.getHarvestTool(state));
       this.addChat("Harvest level: " + block.getHarvestLevel(state));
+      
+      final int meta = block.getMetaFromState(state);
+      this.addChat("Meta: " + meta + " (" + Integer.toString(meta, 2) + ')');
+      
+      state.getProperties().forEach((property, value) -> this.addChat("Property " + property + ": " + value));
     }
     
     return EnumActionResult.SUCCESS;

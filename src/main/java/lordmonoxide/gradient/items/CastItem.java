@@ -61,18 +61,16 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   
   @Override
   public void addRecipe() {
-    final NonNullList<ItemStack> stacks = NonNullList.create();
-    this.getSubItems(this, this.getCreativeTab(), stacks);
-    
-    for(final ItemStack stack : stacks) {
-      final GradientCasts.Cast cast = this.getCast(stack);
-      final GradientMetals.Metal metal = this.getMetal(stack);
-      
-      GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
-        stack,
-        GradientMetals.getBucket(metal),
-        ItemClayCast.getCast(cast)
-      ));
+    for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
+      if(cast.itemOverride == null) {
+        for(final GradientMetals.Metal metal : GradientMetals.instance.metals) {
+          GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
+            getCastItem(cast, metal),
+            GradientMetals.getBucket(metal),
+            ItemClayCast.getCast(cast)
+          ));
+        }
+      }
     }
   }
   

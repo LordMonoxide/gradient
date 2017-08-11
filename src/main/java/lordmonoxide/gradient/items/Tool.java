@@ -102,22 +102,18 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   
   @Override
   public void addRecipe() {
-    final NonNullList<ItemStack> stacks = NonNullList.create();
-    this.getSubItems(this, this.getCreativeTab(), stacks);
-    
-    for(final ItemStack stack : stacks) {
-      final GradientTools.Type type = this.getType(stack);
-      final GradientMetals.Metal metal = this.getMetal(stack);
-      
-      GameRegistry.addRecipe(new ShapedMetaAwareRecipe(
-        stack,
-        "H",
-        "F",
-        "S",
-        'H', CastItem.getCastItem(type.cast, metal),
-        'F', "string",
-        'S', "stickWood"
-      ));
+    for(final GradientTools.Type type : GradientTools.TYPES) {
+      for(final GradientMetals.Metal metal : GradientMetals.instance.metals) {
+        GameRegistry.addRecipe(new ShapedMetaAwareRecipe(
+          getTool(type, metal),
+          "H",
+          "F",
+          "S",
+          'H', CastItem.getCastItem(type.cast, metal),
+          'F', "string",
+          'S', "stickWood"
+        ));
+      }
     }
   }
   

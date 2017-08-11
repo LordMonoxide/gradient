@@ -37,17 +37,10 @@ public class Ingot extends GradientItem implements GradientCraftable {
   
   @Override
   public void addRecipe() {
-    final NonNullList<ItemStack> stacks = NonNullList.create();
-    this.getSubItems(this, this.getCreativeTab(), stacks);
-    
-    for(final ItemStack stack : stacks) {
-      final GradientMetals.Metal metal = GradientMetals.instance.getMetal(stack.getMetadata());
-      
-      GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
-        stack,
-        GradientMetals.getBucket(metal),
-        ItemClayCast.getCast(GradientCasts.INGOT)
-      ));
-    }
+    GradientMetals.instance.metals.stream().map(metal -> new ShapelessMetaAwareRecipe(
+      this.getItemStack(1, metal.id),
+      GradientMetals.getBucket(metal),
+      ItemClayCast.getCast(GradientCasts.INGOT)
+    )).forEach(GameRegistry::addRecipe);
   }
 }

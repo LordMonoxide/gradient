@@ -2,10 +2,7 @@ package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.GradientItems;
-import lordmonoxide.gradient.overrides.AddExtraDrops;
-import lordmonoxide.gradient.overrides.DisableBreakingBlocksWithoutTools;
-import lordmonoxide.gradient.overrides.DisableVanillaTools;
-import lordmonoxide.gradient.overrides.GeneratePebbles;
+import lordmonoxide.gradient.overrides.*;
 import lordmonoxide.gradient.recipes.ExtraRecipes;
 import lordmonoxide.gradient.recipes.RecipeRemover;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,6 +16,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class CommonProxy {
   public void preInit(FMLPreInitializationEvent event) {
     System.out.println("------------------- PREINIT -------------------");
+    
+    MinecraftForge.EVENT_BUS.register(OverrideInventory.instance);
     
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
   }

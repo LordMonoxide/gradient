@@ -52,7 +52,7 @@ public class GradientGuiHandler implements IGuiHandler {
   }
   
   @Override
-  public Gui getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
+  public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
     BlockPos pos = new BlockPos(x, y, z);
     TileEntity te = world.getTileEntity(pos);
     

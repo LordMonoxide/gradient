@@ -22,6 +22,7 @@ public final class GradientTools {
   public static final Type PICKAXE = register(GradientCasts.PICKAXE, new String[] {"pickaxe"},       1.0d, -2.8d);
   public static final Type MATTOCK = register(GradientCasts.MATTOCK, new String[] {"axe", "shovel"}, 6.0d, -2.8d, GradientTools::onMattockUse);
   public static final Type SWORD   = register(GradientCasts.SWORD,   new String[] {"sword"},         4.0d, -2.4d);
+  public static final Type HAMMER  = register(GradientCasts.HAMMER);
   
   public static Type register(final GradientCasts.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed, final OnItemUse onItemUse) {
     Type type = new Type(cast, toolClass, attackDamage, attackSpeed, onItemUse);
@@ -31,6 +32,10 @@ public final class GradientTools {
   
   public static Type register(final GradientCasts.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed) {
     return register(cast, toolClass, attackDamage, attackSpeed, GradientTools::onItemUsePass);
+  }
+  
+  public static Type register(final GradientCasts.Cast cast) {
+    return register(cast, new String[0], 0, 0);
   }
   
   private static EnumActionResult onItemUsePass(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {

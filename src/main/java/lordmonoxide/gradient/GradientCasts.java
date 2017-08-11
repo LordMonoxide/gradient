@@ -18,6 +18,7 @@ public final class GradientCasts {
   public static final Cast PICKAXE = register("pickaxe");
   public static final Cast MATTOCK = register("mattock");
   public static final Cast SWORD   = register("sword");
+  public static final Cast HAMMER  = register("hammer");
   public static final Cast INGOT   = register("ingot", GradientItems.INGOT);
   
   public static Cast register(final String name, @Nullable final Item itemOverride) {

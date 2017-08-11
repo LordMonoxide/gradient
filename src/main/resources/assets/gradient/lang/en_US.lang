@@ -26,6 +26,12 @@ item.tool.sword.tin.name=Tin Sword
 item.tool.sword.iron.name=Iron Sword
 item.tool.sword.gold.name=Gold Sword
 item.tool.sword.bronze.name=Bronze Sword
+item.tool.hammer.invalid.name=Invalid Forge Hammer
+item.tool.hammer.copper.name=Copper Forge Hammer
+item.tool.hammer.tin.name=Tin Forge Hammer
+item.tool.hammer.iron.name=Iron Forge Hammer
+item.tool.hammer.gold.name=Gold Forge Hammer
+item.tool.hammer.bronze.name=Bronze Forge Hammer
 
 # Cast items
 item.cast_item.pickaxe.invalid.name=Invalid Pickaxe Head
@@ -46,6 +52,12 @@ item.cast_item.sword.tin.name=Tin Sword Blade
 item.cast_item.sword.iron.name=Iron Sword Blade
 item.cast_item.sword.gold.name=Gold Sword Blade
 item.cast_item.sword.bronze.name=Bronze Sword Blade
+item.cast_item.hammer.invalid.name=Invalid Forge Hammer Head
+item.cast_item.hammer.copper.name=Copper Forge Hammer Head
+item.cast_item.hammer.tin.name=Tin Forge Hammer Head
+item.cast_item.hammer.iron.name=Iron Forge Hammer Head
+item.cast_item.hammer.gold.name=Gold Forge Hammer Head
+item.cast_item.hammer.bronze.name=Bronze Forge Hammer Head
 
 # Armour
 item.cloth_shirt.name=Cloth Shirt
@@ -90,10 +102,12 @@ tile.clay_crucible.molten=%s: %f
 tile.clay_cast_unhardened.pickaxe.name=Unhardened Clay Cast (Pickaxe)
 tile.clay_cast_unhardened.mattock.name=Unhardened Clay Cast (Mattock)
 tile.clay_cast_unhardened.sword.name=Unhardened Clay Cast (Sword)
+tile.clay_cast_unhardened.hammer.name=Unhardened Clay Cast (Hammer)
 tile.clay_cast_unhardened.ingot.name=Unhardened Clay Cast (Ingot)
 tile.clay_cast.pickaxe.name=Clay Cast (Pickaxe)
 tile.clay_cast.mattock.name=Clay Cast (Mattock)
 tile.clay_cast.sword.name=Clay Cast (Sword)
+tile.clay_cast.hammer.name=Clay Cast (Hammer)
 tile.clay_cast.ingot.name=Clay Cast (Ingot)
 
 # Fuel

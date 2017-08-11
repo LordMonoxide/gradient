@@ -3,7 +3,6 @@ package lordmonoxide.gradient.blocks.claycrucible;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -167,8 +166,8 @@ public class TileClayCrucible extends HeatSinker {
         
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
-        tag.setLong("start", melting.meltStart - Minecraft.getSystemTime());
-        tag.setLong("until", melting.meltUntil - Minecraft.getSystemTime());
+        tag.setLong("start", melting.meltStart - System.currentTimeMillis());
+        tag.setLong("until", melting.meltUntil - System.currentTimeMillis());
         meltings.appendTag(tag);
       }
     }
@@ -195,8 +194,8 @@ public class TileClayCrucible extends HeatSinker {
       
       if(slot < METAL_SLOTS_COUNT) {
         this.melting[slot] = new MeltingMetal(GradientMetals.instance.getMeltable(this.getMetalSlot(slot)));
-        this.melting[slot].meltStart = tag.getLong("start") + Minecraft.getSystemTime();
-        this.melting[slot].meltUntil = tag.getLong("until") + Minecraft.getSystemTime();
+        this.melting[slot].meltStart = tag.getLong("start") + System.currentTimeMillis();
+        this.melting[slot].meltUntil = tag.getLong("until") + System.currentTimeMillis();
       }
     }
     
@@ -227,16 +226,16 @@ public class TileClayCrucible extends HeatSinker {
     
     private MeltingMetal(GradientMetals.Meltable meltable) {
       this.meltable  = meltable;
-      this.meltStart = Minecraft.getSystemTime();
+      this.meltStart = System.currentTimeMillis();
       this.meltUntil = (long)(this.meltStart + meltable.metal.meltTime * meltable.meltModifier * 1000L);
     }
     
     public boolean isMelted() {
-      return Minecraft.getSystemTime() >= this.meltUntil;
+      return System.currentTimeMillis() >= this.meltUntil;
     }
     
     public float meltPercent() {
-      return (float)(Minecraft.getSystemTime() - this.meltStart) / (this.meltUntil - this.meltStart);
+      return (float)(System.currentTimeMillis() - this.meltStart) / (this.meltUntil - this.meltStart);
     }
   }
 }

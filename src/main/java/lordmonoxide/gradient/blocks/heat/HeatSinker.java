@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.blocks.heat;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -84,8 +83,8 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
     this.transferHeat();
     
     if(!this.getWorld().isRemote) {
-      if(Minecraft.getSystemTime() >= this.nextSync) {
-        this.nextSync = Minecraft.getSystemTime() + 10000;
+      if(System.currentTimeMillis() >= this.nextSync) {
+        this.nextSync = System.currentTimeMillis() + 10000;
         this.sync();
       }
     }

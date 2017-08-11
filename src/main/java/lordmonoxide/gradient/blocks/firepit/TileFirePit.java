@@ -6,7 +6,6 @@ import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -334,8 +333,8 @@ public class TileFirePit extends HeatProducer {
         
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
-        tag.setLong("start", fuel.burnStart - Minecraft.getSystemTime());
-        tag.setLong("until", fuel.burnUntil - Minecraft.getSystemTime());
+        tag.setLong("start", fuel.burnStart - System.currentTimeMillis());
+        tag.setLong("until", fuel.burnUntil - System.currentTimeMillis());
         fuels.appendTag(tag);
       }
     }
@@ -346,8 +345,8 @@ public class TileFirePit extends HeatProducer {
         
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
-        tag.setLong("start", food.cookStart - Minecraft.getSystemTime());
-        tag.setLong("until", food.cookUntil - Minecraft.getSystemTime());
+        tag.setLong("start", food.cookStart - System.currentTimeMillis());
+        tag.setLong("until", food.cookUntil - System.currentTimeMillis());
         foods.appendTag(tag);
       }
     }
@@ -377,8 +376,8 @@ public class TileFirePit extends HeatProducer {
       
       if(slot < FUEL_SLOTS_COUNT) {
         this.fuels[slot] = new BurningFuel(GradientFuel.instance.get(this.getFuelSlot(slot)));
-        this.fuels[slot].burnStart = tag.getLong("start") + Minecraft.getSystemTime();
-        this.fuels[slot].burnUntil = tag.getLong("until") + Minecraft.getSystemTime();
+        this.fuels[slot].burnStart = tag.getLong("start") + System.currentTimeMillis();
+        this.fuels[slot].burnUntil = tag.getLong("until") + System.currentTimeMillis();
       }
     }
     
@@ -389,8 +388,8 @@ public class TileFirePit extends HeatProducer {
       
       if(slot < INPUT_SLOTS_COUNT) {
         this.foods[slot] = new CookingFood(GradientFood.instance.get(this.getFoodSlot(slot)));
-        this.foods[slot].cookStart = tag.getLong("start") + Minecraft.getSystemTime();
-        this.foods[slot].cookUntil = tag.getLong("until") + Minecraft.getSystemTime();
+        this.foods[slot].cookStart = tag.getLong("start") + System.currentTimeMillis();
+        this.foods[slot].cookUntil = tag.getLong("until") + System.currentTimeMillis();
       }
     }
     
@@ -415,16 +414,16 @@ public class TileFirePit extends HeatProducer {
     
     private BurningFuel(GradientFuel.Fuel fuel) {
       this.fuel = fuel;
-      this.burnStart = Minecraft.getSystemTime();
+      this.burnStart = System.currentTimeMillis();
       this.burnUntil = this.burnStart + fuel.duration * 1000L;
     }
     
     public boolean isDepleted() {
-      return Minecraft.getSystemTime() >= this.burnUntil;
+      return System.currentTimeMillis() >= this.burnUntil;
     }
     
     public float burnPercent() {
-      return (float)(Minecraft.getSystemTime() - this.burnStart) / (this.burnUntil - this.burnStart);
+      return (float)(System.currentTimeMillis() - this.burnStart) / (this.burnUntil - this.burnStart);
     }
   }
   
@@ -435,16 +434,16 @@ public class TileFirePit extends HeatProducer {
     
     private CookingFood(GradientFood.Food food) {
       this.food = food;
-      this.cookStart = Minecraft.getSystemTime();
+      this.cookStart = System.currentTimeMillis();
       this.cookUntil = this.cookStart + food.duration * 1000L;
     }
     
     public boolean isCooked() {
-      return Minecraft.getSystemTime() >= this.cookUntil;
+      return System.currentTimeMillis() >= this.cookUntil;
     }
     
     public float cookPercent() {
-      return (float)(Minecraft.getSystemTime() - this.cookStart) / (this.cookUntil - this.cookStart);
+      return (float)(System.currentTimeMillis() - this.cookStart) / (this.cookUntil - this.cookStart);
     }
   }
   
@@ -457,12 +456,12 @@ public class TileFirePit extends HeatProducer {
     private Hardening(Hardenable block, BlockPos pos) {
       this.block = block;
       this.pos = pos;
-      this.hardenStart = Minecraft.getSystemTime();
+      this.hardenStart = System.currentTimeMillis();
       this.hardenUntil = this.hardenStart + block.getHardeningTime() * 1000L;
     }
     
     public boolean isHardened() {
-      return Minecraft.getSystemTime() >= this.hardenUntil;
+      return System.currentTimeMillis() >= this.hardenUntil;
     }
   }
 }

@@ -227,7 +227,7 @@ public class TileClayCrucible extends HeatSinker {
     private MeltingMetal(GradientMetals.Meltable meltable) {
       this.meltable  = meltable;
       this.meltStart = System.currentTimeMillis();
-      this.meltUntil = (long)(this.meltStart + meltable.metal.meltTime * meltable.meltModifier * 1000L);
+      this.meltUntil = this.meltStart + (long)(meltable.metal.meltTime * meltable.meltModifier * 1000);
     }
     
     public boolean isMelted() {

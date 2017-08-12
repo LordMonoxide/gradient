@@ -32,7 +32,7 @@ public final class GradientFood {
   }
   
   public void add(Item raw, Item cooked, int duration, float cookTemp) {
-    this.add(raw.getDefaultInstance(), cooked.getDefaultInstance(), duration, cookTemp);
+    this.add(new ItemStack(raw), new ItemStack(cooked), duration, cookTemp);
   }
   
   public void add(ItemStack raw, ItemStack cooked, int duration, float cookTemp) {

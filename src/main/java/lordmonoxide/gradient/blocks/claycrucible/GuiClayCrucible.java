@@ -14,17 +14,17 @@ import net.minecraftforge.fluids.FluidStack;
 public class GuiClayCrucible extends GuiContainer {
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_crucible.png");
   
-  private TileClayCrucible te;
-  private InventoryPlayer playerInv;
+  private final TileClayCrucible te;
+  private final InventoryPlayer playerInv;
   
-  public GuiClayCrucible(ContainerClayCrucible container, TileClayCrucible te, InventoryPlayer playerInv) {
+  public GuiClayCrucible(final ContainerClayCrucible container, final TileClayCrucible te, final InventoryPlayer playerInv) {
     super(container);
     this.te = te;
     this.playerInv = playerInv;
   }
   
   @Override
-  protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+  protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
     GlStateManager.color(1, 1, 1, 1);
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
     int x = (this.width  - this.xSize) / 2;
@@ -33,7 +33,7 @@ public class GuiClayCrucible extends GuiContainer {
   }
   
   @Override
-  protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+  protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
     for(int slot = 0; slot < TileClayCrucible.METAL_SLOTS_COUNT; slot++) {
       if(this.te.isMelting(slot)) {
         int x = ContainerClayCrucible.METAL_SLOTS_X + (slot % 5) * (GradientContainer.SLOT_X_SPACING + 8) + 20;
@@ -44,18 +44,18 @@ public class GuiClayCrucible extends GuiContainer {
       }
     }
     
-    int x = ContainerClayCrucible.METAL_SLOTS_X + (GradientContainer.SLOT_X_SPACING + 8);
-    int y = ContainerClayCrucible.METAL_SLOTS_Y;
-    
     FluidStack molten = this.te.getMoltenMetal();
     
     if(molten != null) {
-      String text = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".molten", molten.getFluid().getLocalizedName(molten), molten.amount);
+      final int x = ContainerClayCrucible.METAL_SLOTS_X + (GradientContainer.SLOT_X_SPACING + 8);
+      final int y = ContainerClayCrucible.METAL_SLOTS_Y;
+      
+      final String text = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".molten", molten.getFluid().getLocalizedName(molten), molten.amount);
       this.fontRenderer.drawString(text, x, y, 0x404040);
     }
     
-    String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".name");
-    String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.te.getHeat());
+    final String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".name");
+    final String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.te.getHeat());
     
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);

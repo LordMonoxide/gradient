@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import javax.annotation.Nullable;
 
 public class PacketSwitchCast implements IMessage {
-  public static void send(GradientCasts.Cast cast) {
+  public static void send(final GradientCasts.Cast cast) {
     GradientNet.CHANNEL.sendToServer(new PacketSwitchCast(cast));
   }
   
@@ -19,7 +19,7 @@ public class PacketSwitchCast implements IMessage {
   
   public PacketSwitchCast() { }
   
-  public PacketSwitchCast(GradientCasts.Cast cast) {
+  public PacketSwitchCast(final GradientCasts.Cast cast) {
     this.cast = cast;
   }
   
@@ -28,31 +28,31 @@ public class PacketSwitchCast implements IMessage {
   }
   
   @Override
-  public void fromBytes(ByteBuf buf) {
+  public void fromBytes(final ByteBuf buf) {
     try {
       this.cast = GradientCasts.CASTS.get(buf.readInt());
     } catch(Exception e) {
       System.out.println("Invalid type in PacketSwitchCast");
       System.out.println(e);
-      this.cast = null;
+      this.cast = GradientCasts.PICKAXE;
     }
   }
   
   @Override
-  public void toBytes(ByteBuf buf) {
+  public void toBytes(final ByteBuf buf) {
     buf.writeInt(this.cast.id);
   }
   
   public static class Handler implements IMessageHandler<PacketSwitchCast, IMessage> {
     @Override
     @Nullable
-    public IMessage onMessage(PacketSwitchCast packet, MessageContext ctx) {
+    public IMessage onMessage(final PacketSwitchCast packet, final MessageContext ctx) {
       if(packet.cast == null) {
         return null;
       }
       
       ctx.getServerHandler().player.getServerWorld().addScheduledTask(() -> {
-        ItemStack hand = ctx.getServerHandler().player.inventory.getCurrentItem();
+        final ItemStack hand = ctx.getServerHandler().player.inventory.getCurrentItem();
         
         if(!(hand.getItem() instanceof ItemClayCastUnhardened)) {
           return;

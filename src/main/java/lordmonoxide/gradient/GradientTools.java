@@ -25,7 +25,7 @@ public final class GradientTools {
   public static final Type HAMMER  = register(GradientCasts.HAMMER);
   
   public static Type register(final GradientCasts.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed, final OnItemUse onItemUse) {
-    Type type = new Type(cast, toolClass, attackDamage, attackSpeed, onItemUse);
+    final Type type = new Type(cast, toolClass, attackDamage, attackSpeed, onItemUse);
     TYPES.add(type);
     return type;
   }

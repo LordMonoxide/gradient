@@ -31,11 +31,11 @@ public class TileClayCrucible extends HeatSinker {
   
   private int lastLight;
   
-  public boolean isMelting(int slot) {
+  public boolean isMelting(final int slot) {
     return this.melting[slot] != null;
   }
   
-  public MeltingMetal getMeltingMetal(int slot) {
+  public MeltingMetal getMeltingMetal(final int slot) {
     return this.melting[slot];
   }
   
@@ -53,8 +53,8 @@ public class TileClayCrucible extends HeatSinker {
     return Math.min((int)(this.getHeat() / 800 * 11) + 4, 15);
   }
   
-  public FluidActionResult useBucket(ItemStack bucket, EntityPlayer player) {
-    FluidActionResult result = FluidUtil.interactWithFluidHandler(bucket, this.tank, player);
+  public FluidActionResult useBucket(final ItemStack bucket, final EntityPlayer player) {
+    final FluidActionResult result = FluidUtil.interactWithFluidHandler(bucket, this.tank, player);
     
     if(result.success) {
       this.sync();
@@ -81,7 +81,7 @@ public class TileClayCrucible extends HeatSinker {
     
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(!this.isMelting(slot) && !this.getMetalSlot(slot).isEmpty()) {
-        GradientMetals.Meltable meltable = GradientMetals.instance.getMeltable(this.getMetalSlot(slot));
+        final GradientMetals.Meltable meltable = GradientMetals.getMeltable(this.getMetalSlot(slot));
         
         if(this.canMelt(meltable)) {
           this.melting[slot] = new MeltingMetal(meltable);
@@ -100,15 +100,15 @@ public class TileClayCrucible extends HeatSinker {
     
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(this.isMelting(slot)) {
-        MeltingMetal melting = this.getMeltingMetal(slot);
+        final MeltingMetal melting = this.getMeltingMetal(slot);
         
         if(melting.isMelted()) {
-          ItemStack stack = this.getMetalSlot(slot);
+          final ItemStack stack = this.getMetalSlot(slot);
           
           this.melting[slot] = null;
           this.setMetalSlot(slot, ItemStack.EMPTY);
           
-          FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), GradientMetals.instance.getMeltable(stack).amount);
+          final FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), GradientMetals.getMeltable(stack).amount);
           
           this.tank.fill(fluid, true);
           
@@ -122,20 +122,20 @@ public class TileClayCrucible extends HeatSinker {
     }
   }
   
-  private ItemStack getMetalSlot(int slot) {
+  private ItemStack getMetalSlot(final int slot) {
     return this.inventory.getStackInSlot(FIRST_METAL_SLOT + slot);
   }
   
-  private void setMetalSlot(int slot, ItemStack stack) {
+  private void setMetalSlot(final int slot, final ItemStack stack) {
     this.inventory.setStackInSlot(FIRST_METAL_SLOT + slot, stack);
   }
   
-  private boolean canMelt(GradientMetals.Meltable meltable) {
+  private boolean canMelt(final GradientMetals.Meltable meltable) {
     return (this.tank.getFluid() == null || this.tank.getFluid().getFluid() == meltable.metal.getFluid()) && this.getHeat() >= meltable.metal.meltTemp;
   }
   
   @Override
-  protected float calculateHeatLoss(IBlockState state) {
+  protected float calculateHeatLoss(final IBlockState state) {
     return (float)Math.pow(this.getHeat() / 800, 2);
   }
   
@@ -154,17 +154,17 @@ public class TileClayCrucible extends HeatSinker {
   }
   
   @Override
-  public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
     this.tank.writeToNBT(compound);
     
-    NBTTagList meltings = new NBTTagList();
+    final NBTTagList meltings = new NBTTagList();
     
     for(int i = 0; i < METAL_SLOTS_COUNT; i++) {
       if(this.isMelting(i)) {
-        MeltingMetal melting = this.getMeltingMetal(i);
+        final MeltingMetal melting = this.getMeltingMetal(i);
         
-        NBTTagCompound tag = new NBTTagCompound();
+        final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
         tag.setLong("start", melting.meltStart - System.currentTimeMillis());
         tag.setLong("until", melting.meltUntil - System.currentTimeMillis());
@@ -178,24 +178,26 @@ public class TileClayCrucible extends HeatSinker {
   }
   
   @Override
-  public void readFromNBT(NBTTagCompound compound) {
+  public void readFromNBT(final NBTTagCompound compound) {
     this.lastLight = this.getLightLevel();
     
     Arrays.fill(this.melting, null);
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.tank.readFromNBT(compound);
     
-    NBTTagList meltings = compound.getTagList("melting", Constants.NBT.TAG_COMPOUND);
+    final NBTTagList meltings = compound.getTagList("melting", Constants.NBT.TAG_COMPOUND);
     
     for(int i = 0; i < meltings.tagCount(); i++) {
-      NBTTagCompound tag = meltings.getCompoundTagAt(i);
+      final NBTTagCompound tag = meltings.getCompoundTagAt(i);
       
-      int slot = tag.getInteger("slot");
+      final int slot = tag.getInteger("slot");
       
       if(slot < METAL_SLOTS_COUNT) {
-        this.melting[slot] = new MeltingMetal(GradientMetals.instance.getMeltable(this.getMetalSlot(slot)));
-        this.melting[slot].meltStart = tag.getLong("start") + System.currentTimeMillis();
-        this.melting[slot].meltUntil = tag.getLong("until") + System.currentTimeMillis();
+        this.melting[slot] = new MeltingMetal(
+          GradientMetals.getMeltable(this.getMetalSlot(slot)),
+          tag.getLong("start") + System.currentTimeMillis(),
+          tag.getLong("until") + System.currentTimeMillis()
+        );
       }
     }
     
@@ -203,7 +205,7 @@ public class TileClayCrucible extends HeatSinker {
   }
   
   @Override
-  public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     return
       capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
       capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
@@ -212,7 +214,7 @@ public class TileClayCrucible extends HeatSinker {
   
   @Nullable
   @Override
-  public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     return
       capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory :
       capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T)this.tank :
@@ -221,13 +223,17 @@ public class TileClayCrucible extends HeatSinker {
   
   public static final class MeltingMetal {
     public final GradientMetals.Meltable meltable;
-    private long meltStart;
-    private long meltUntil;
+    private final long meltStart;
+    private final long meltUntil;
     
-    private MeltingMetal(GradientMetals.Meltable meltable) {
-      this.meltable  = meltable;
-      this.meltStart = System.currentTimeMillis();
-      this.meltUntil = this.meltStart + (long)(meltable.metal.meltTime * meltable.meltModifier * 1000);
+    private MeltingMetal(final GradientMetals.Meltable meltable) {
+      this(meltable, System.currentTimeMillis(), System.currentTimeMillis() + (long)(meltable.metal.meltTime * meltable.meltModifier * 1000));
+    }
+    
+    private MeltingMetal(final GradientMetals.Meltable meltable, final long meltStart, final long meltUntil) {
+      this.meltable = meltable;
+      this.meltStart = meltStart;
+      this.meltUntil = meltUntil;
     }
     
     public boolean isMelted() {

@@ -59,19 +59,19 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientCr
   }
   
   @Override
-  @SuppressWarnings("deprecation")
+  @Deprecated
   public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
+  @Deprecated
   public boolean isFullCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
+  @Deprecated
   public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
     return AABB;
   }

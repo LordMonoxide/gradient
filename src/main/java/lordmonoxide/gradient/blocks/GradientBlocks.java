@@ -43,7 +43,7 @@ public final class GradientBlocks {
   public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED;
   
   static {
-    BlockClayCastUnhardened block = new BlockClayCastUnhardened();
+    final BlockClayCastUnhardened block = new BlockClayCastUnhardened();
     CLAY_CAST_UNHARDENED = RegistrationHandler.register(block, new ItemClayCastUnhardened(block));
   }
   
@@ -53,7 +53,7 @@ public final class GradientBlocks {
   public static final BlockClayCast     CLAY_CAST;
   
   static {
-    BlockClayCast block = new BlockClayCast();
+    final BlockClayCast block = new BlockClayCast();
     CLAY_CAST = RegistrationHandler.register(block, new ItemClayCast(block));
   }
   

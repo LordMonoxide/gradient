@@ -25,26 +25,26 @@ import java.util.Set;
 
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = GradientMod.MODID)
 public final class ModelManager {
-  private static final ModelManager instance = new ModelManager();
-  
-  private final Set<Item> itemsRegistered = new HashSet<>();
-  
   private ModelManager() { }
+  
+  private static final Set<Item> itemsRegistered = new HashSet<>();
   
   @SubscribeEvent
   public static void registerModels(final ModelRegistryEvent event) {
     System.out.println("Registering models");
     
-    instance.registerFluidModels();
-    instance.registerBlockModels();
-    instance.registerItemModels();
+    registerFluidModels();
+    registerBlockModels();
+    registerItemModels();
   }
   
-  private void registerFluidModels() {
-    GradientMetals.instance.metals.forEach(metal -> this.registerFluidModel(metal.getFluid()));
+  private static void registerFluidModels() {
+    GradientMetals.metals.stream()
+      .map(GradientMetals.Metal::getFluid)
+      .forEach(ModelManager::registerFluidModel);
   }
   
-  private void registerFluidModel(final Fluid fluid) {
+  private static void registerFluidModel(final Fluid fluid) {
     final Item item = Item.getItemFromBlock(fluid.getBlock());
     assert item != Items.AIR;
     
@@ -62,31 +62,35 @@ public final class ModelManager {
     });
   }
   
-  private void registerBlockModels() {
-    GradientBlocks.RegistrationHandler.ITEM_BLOCKS.stream().filter(item -> !this.itemsRegistered.contains(item)).forEach(this::registerItemModel);
+  private static void registerBlockModels() {
+    GradientBlocks.RegistrationHandler.ITEM_BLOCKS.stream()
+      .filter(item -> !itemsRegistered.contains(item))
+      .forEach(ModelManager::registerItemModel);
   }
   
-  private void registerItemModels() {
+  private static void registerItemModels() {
     // Register items with custom model names first
     //registerItemModel(ModItems.SNOWBALL_LAUNCHER, "minecraft:fishing_rod");
     
     //registerVariantItemModels(ModItems.VARIANTS_ITEM, "variant", ItemVariants.EnumType.values());
     
     // Then register items with default model names
-    GradientItems.RegistrationHandler.ITEMS.stream().filter(item -> !itemsRegistered.contains(item)).forEach(this::registerItemModel);
+    GradientItems.RegistrationHandler.ITEMS.stream()
+      .filter(item -> !itemsRegistered.contains(item))
+      .forEach(ModelManager::registerItemModel);
   }
   
-  private void registerItemModel(final Item item) {
-    this.registerItemModel(item, item.getRegistryName().toString());
+  private static void registerItemModel(final Item item) {
+    registerItemModel(item, item.getRegistryName().toString());
   }
   
-  private void registerItemModel(final Item item, final String modelLocation) {
+  private static void registerItemModel(final Item item, final String modelLocation) {
     final ModelResourceLocation fullModelLocation = new ModelResourceLocation(modelLocation, "inventory");
-    this.registerItemModel(item, fullModelLocation);
+    registerItemModel(item, fullModelLocation);
   }
   
-  private void registerItemModel(final Item item, final ModelResourceLocation fullModelLocation) {
-    this.itemsRegistered.add(item);
+  private static void registerItemModel(final Item item, final ModelResourceLocation fullModelLocation) {
+    itemsRegistered.add(item);
     
     if(item instanceof CustomModel) {
       ((CustomModel)item).registerCustomModels();
@@ -98,18 +102,14 @@ public final class ModelManager {
       ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> fullModelLocation));
       return;
     }
-    
-    NonNullList<ItemStack> stacks = NonNullList.create();
+  
+    final NonNullList<ItemStack> stacks = NonNullList.create();
     item.getSubItems(item, item.getCreativeTab(), stacks);
     
     if(item instanceof ItemBlock) {
-      for(ItemStack stack : stacks) {
-        ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(item.getRegistryName(), "inventory"));
-      }
+      stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(item.getRegistryName(), "inventory")));
     } else {
-      for(ItemStack stack : stacks) {
-        ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory"));
-      }
+      stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory")));
     }
   }
   

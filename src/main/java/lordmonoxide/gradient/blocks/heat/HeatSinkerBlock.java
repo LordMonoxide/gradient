@@ -12,23 +12,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class HeatSinkerBlock extends GradientBlock implements ITileEntityProvider {
-  protected HeatSinkerBlock(String name, CreativeTabs creative_tab, Material material, MapColor map_color) {
-    super(name, creative_tab, material, map_color);
+  protected HeatSinkerBlock(final String name, final CreativeTabs creativeTab, final Material material, final MapColor mapColor) {
+    super(name, creativeTab, material, mapColor);
   }
   
-  protected HeatSinkerBlock(String name, CreativeTabs creative_tab, Material material) {
-    super(name, creative_tab, material);
+  protected HeatSinkerBlock(final String name, final CreativeTabs creativeTab, final Material material) {
+    super(name, creativeTab, material);
   }
   
   @Override
-  public abstract HeatSinker createNewTileEntity(World worldIn, int meta);
+  public abstract HeatSinker createNewTileEntity(final World world, final int meta);
   
   @Override
-  @SuppressWarnings("deprecation")
-  public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos neighbor) {
-    super.neighborChanged(state, world, pos, blockIn, neighbor);
-    
-    TileEntity te = world.getTileEntity(pos);
+  @Deprecated
+  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
+    super.neighborChanged(state, world, pos, block, neighbor);
+  
+    final TileEntity te = world.getTileEntity(pos);
     
     if(te instanceof HeatSinker) {
       ((HeatSinker)te).updateSink(neighbor);

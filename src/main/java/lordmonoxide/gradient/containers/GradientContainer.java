@@ -20,11 +20,11 @@ public class GradientContainer extends Container {
   
   protected final IItemHandler inventory;
   
-  public GradientContainer(TileEntity te) {
+  public GradientContainer(final TileEntity te) {
     this.inventory = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
   }
   
-  protected void addPlayerSlots(InventoryPlayer invPlayer) {
+  protected void addPlayerSlots(final InventoryPlayer invPlayer) {
     // Player inv
     for(int y = 0; y < 3; ++y) {
       for(int x = 0; x < 9; ++x) {
@@ -39,41 +39,42 @@ public class GradientContainer extends Container {
   }
   
   @Override
-  public boolean canInteractWith(EntityPlayer player) {
+  public boolean canInteractWith(final EntityPlayer player) {
     return true;
   }
   
   @Override
-  public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-    ItemStack itemstack = ItemStack.EMPTY;
+  public ItemStack transferStackInSlot(final EntityPlayer player, final int index) {
     Slot slot = this.inventorySlots.get(index);
     
-    if(slot != null && slot.getHasStack()) {
-      ItemStack itemstack1 = slot.getStack();
-      itemstack = itemstack1.copy();
-      
-      int containerSlots = this.inventorySlots.size() - player.inventory.mainInventory.size();
-      
-      if(index < containerSlots) {
-        if(!this.mergeItemStack(itemstack1, containerSlots, this.inventorySlots.size(), true)) {
-          return ItemStack.EMPTY;
-        }
-      } else if(!this.mergeItemStack(itemstack1, 0, containerSlots, false)) {
-        return ItemStack.EMPTY;
-      }
-      
-      if(itemstack1.isEmpty()) {
-        slot.putStack(ItemStack.EMPTY);
-      } else {
-        slot.onSlotChanged();
-      }
-      
-      if(itemstack1.getCount() == itemstack.getCount()) {
-        return ItemStack.EMPTY;
-      }
-      
-      slot.onTake(player, itemstack1);
+    if(slot == null || !slot.getHasStack()) {
+      return ItemStack.EMPTY;
     }
+    
+    final ItemStack itemstack1 = slot.getStack();
+    final ItemStack itemstack = itemstack1.copy();
+
+    final int containerSlots = this.inventorySlots.size() - player.inventory.mainInventory.size();
+    
+    if(index < containerSlots) {
+      if(!this.mergeItemStack(itemstack1, containerSlots, this.inventorySlots.size(), true)) {
+        return ItemStack.EMPTY;
+      }
+    } else if(!this.mergeItemStack(itemstack1, 0, containerSlots, false)) {
+      return ItemStack.EMPTY;
+    }
+    
+    if(itemstack1.isEmpty()) {
+      slot.putStack(ItemStack.EMPTY);
+    } else {
+      slot.onSlotChanged();
+    }
+    
+    if(itemstack1.getCount() == itemstack.getCount()) {
+      return ItemStack.EMPTY;
+    }
+    
+    slot.onTake(player, itemstack1);
     
     return itemstack;
   }
@@ -82,22 +83,19 @@ public class GradientContainer extends Container {
    * This is an exact copy-and-paste but fixes shift-clicking ignoring stack limits
    */
   @Override
-  protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+  protected boolean mergeItemStack(final ItemStack stack, final int startIndex, final int endIndex, final boolean reverseDirection) {
     boolean flag = false;
-    int i = startIndex;
-    
-    if(reverseDirection) {
-      i = endIndex - 1;
-    }
     
     if(stack.isStackable()) {
+      int i = reverseDirection ? endIndex - 1 : startIndex;
+      
       while(!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
-        Slot slot = this.inventorySlots.get(i);
-        ItemStack itemstack = slot.getStack();
+        final Slot slot = this.inventorySlots.get(i);
+        final ItemStack itemstack = slot.getStack();
         
         if(areItemStacksEqual(stack, itemstack)) {
-          int j = itemstack.getCount() + stack.getCount();
-          int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
+          final int j = itemstack.getCount() + stack.getCount();
+          final int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
           
           if(j <= maxSize) {
             stack.setCount(0);
@@ -121,15 +119,15 @@ public class GradientContainer extends Container {
     }
     
     if(!stack.isEmpty()) {
-      i = reverseDirection ? endIndex - 1 : startIndex;
+      int i = reverseDirection ? endIndex - 1 : startIndex;
       
       while(reverseDirection ? i >= startIndex : i < endIndex) {
-        Slot slot1 = this.inventorySlots.get(i);
-        ItemStack itemstack1 = slot1.getStack();
+        final Slot slot = this.inventorySlots.get(i);
+        final ItemStack itemstack = slot.getStack();
         
-        if(itemstack1.isEmpty() && slot1.isItemValid(stack)) { // Forge: Make sure to respect isItemValid in the slot.
-          slot1.putStack(stack.splitStack(slot1.getItemStackLimit(stack)));
-          slot1.onSlotChanged();
+        if(itemstack.isEmpty() && slot.isItemValid(stack)) { // Forge: Make sure to respect isItemValid in the slot.
+          slot.putStack(stack.splitStack(slot.getItemStackLimit(stack)));
+          slot.onSlotChanged();
           flag = true;
           
           if(stack.isEmpty()) {
@@ -148,7 +146,7 @@ public class GradientContainer extends Container {
     return flag;
   }
   
-  private static boolean areItemStacksEqual(ItemStack stackA, ItemStack stackB) {
+  private static boolean areItemStacksEqual(final ItemStack stackA, final ItemStack stackB) {
     return stackB.getItem() == stackA.getItem() && (!stackA.getHasSubtypes() || stackA.getMetadata() == stackB.getMetadata()) && ItemStack.areItemStackTagsEqual(stackA, stackB);
   }
 }

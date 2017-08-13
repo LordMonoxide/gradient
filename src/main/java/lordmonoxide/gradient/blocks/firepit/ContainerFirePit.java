@@ -17,7 +17,7 @@ public class ContainerFirePit extends GradientContainer {
   public static final int OUTPUT_SLOTS_X = 141;
   public static final int OUTPUT_SLOTS_Y =  34;
   
-  public ContainerFirePit(InventoryPlayer playerInv, TileFirePit firePit) {
+  public ContainerFirePit(final InventoryPlayer playerInv, final TileFirePit firePit) {
     super(firePit);
     
     for(int i = 0; i < TileFirePit.FUEL_SLOTS_COUNT; i++) {
@@ -27,7 +27,7 @@ public class ContainerFirePit extends GradientContainer {
         @Override public void onSlotChanged() {
           firePit.markDirty();
         }
-        @Override public boolean canTakeStack(EntityPlayer playerIn) { return !firePit.isBurning(i2); }
+        @Override public boolean canTakeStack(final EntityPlayer player) { return !firePit.isBurning(i2); }
       });
     }
     
@@ -38,7 +38,7 @@ public class ContainerFirePit extends GradientContainer {
         @Override public void onSlotChanged() {
           firePit.markDirty();
         }
-        @Override public boolean canTakeStack(EntityPlayer playerIn) { return !firePit.isCooking(i2); }
+        @Override public boolean canTakeStack(final EntityPlayer player) { return !firePit.isCooking(i2); }
       });
     }
     

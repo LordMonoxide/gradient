@@ -28,7 +28,7 @@ public class BlockPebble extends GradientBlock {
    * Returns the quantity of items to drop on block destruction.
    */
   @Override
-  public int quantityDropped(Random rand) {
+  public int quantityDropped(final Random rand) {
     return rand.nextInt(3);
   }
   
@@ -36,7 +36,7 @@ public class BlockPebble extends GradientBlock {
    * Get the Item that this Block should drop when harvested.
    */
   @Override
-  public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+  public Item getItemDropped(final IBlockState state, final Random rand, final int fortune) {
     switch(rand.nextInt(2)) {
       case 1:
         return Items.FLINT;
@@ -50,31 +50,31 @@ public class BlockPebble extends GradientBlock {
    */
   @Override
   @SuppressWarnings("deprecation")
-  public boolean isOpaqueCube(IBlockState state) {
+  public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
   
   @Override
   @SuppressWarnings("deprecation")
-  public boolean isFullCube(IBlockState state) {
+  public boolean isFullCube(final IBlockState state) {
     return false;
   }
   
   @Override
   @SuppressWarnings("deprecation")
-  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
     return AABB;
   }
   
   @Override
   @Nullable
   @SuppressWarnings("deprecation")
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+  public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, final IBlockAccess world, final BlockPos pos) {
     return NULL_AABB;
   }
   
   @Override
-  public boolean canPlaceBlockAt(World world, BlockPos pos) {
+  public boolean canPlaceBlockAt(final World world, final BlockPos pos) {
     IBlockState down = world.getBlockState(pos.down());
     
     return

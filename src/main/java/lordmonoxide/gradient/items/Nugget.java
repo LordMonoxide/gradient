@@ -15,18 +15,18 @@ public class Nugget extends GradientItem {
   }
   
   @Override
-  public int getMetadata(int metadata) {
+  public int getMetadata(final int metadata) {
     return metadata;
   }
   
   @Override
-  public String getUnlocalizedName(ItemStack stack) {
-    return super.getUnlocalizedName() + '.' + GradientMetals.instance.getMetal(stack.getMetadata()).name;
+  public String getUnlocalizedName(final ItemStack stack) {
+    return super.getUnlocalizedName() + '.' + GradientMetals.getMetal(stack.getMetadata()).name;
   }
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
-    GradientMetals.instance.metals.forEach(ore -> list.add(this.getItemStack(1, ore.id)));
+  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
+    GradientMetals.metals.forEach(ore -> list.add(this.getItemStack(1, ore.id)));
   }
 }

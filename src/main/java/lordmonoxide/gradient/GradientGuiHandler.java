@@ -7,7 +7,6 @@ import lordmonoxide.gradient.blocks.claycrucible.TileClayCrucible;
 import lordmonoxide.gradient.blocks.firepit.ContainerFirePit;
 import lordmonoxide.gradient.blocks.firepit.GuiFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -21,8 +20,8 @@ public class GradientGuiHandler implements IGuiHandler {
   public static final int CLAY_CAST = 2;
   
   @Override
-  public Container getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
-    TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+  public Container getServerGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    final TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
     
     switch(id) {
       case FIRE_PIT:
@@ -52,9 +51,9 @@ public class GradientGuiHandler implements IGuiHandler {
   }
   
   @Override
-  public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
-    BlockPos pos = new BlockPos(x, y, z);
-    TileEntity te = world.getTileEntity(pos);
+  public Object getClientGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    final BlockPos pos = new BlockPos(x, y, z);
+    final TileEntity te = world.getTileEntity(pos);
     
     switch(id) {
       case FIRE_PIT:

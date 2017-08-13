@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
   @Override
-  public void preInit(FMLPreInitializationEvent e) {
+  public void preInit(final FMLPreInitializationEvent e) {
     super.preInit(e);
     
     MinecraftForge.EVENT_BUS.register(BurningTooltips.instance);

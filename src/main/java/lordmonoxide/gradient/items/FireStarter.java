@@ -22,18 +22,18 @@ public class FireStarter extends GradientItem implements GradientCraftable {
     this.setCreativeTab(CreativeTabs.TOOLS);
   }
   
-  public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-    pos = pos.offset(facing);
+  public EnumActionResult onItemUse(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+    BlockPos posFacing = pos.offset(facing);
     
-    if(!playerIn.canPlayerEdit(pos, facing, stack)) {
+    if(!player.canPlayerEdit(posFacing, facing, stack)) {
       return EnumActionResult.FAIL;
     }
     
-    if(worldIn.isAirBlock(pos)) {
-      worldIn.playSound(playerIn, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, itemRand.nextFloat() * 0.4f + 0.8f);
+    if(world.isAirBlock(posFacing)) {
+      world.playSound(player, posFacing, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, itemRand.nextFloat() * 0.4f + 0.8f);
     }
     
-    stack.damageItem(1, playerIn);
+    stack.damageItem(1, player);
     return EnumActionResult.SUCCESS;
   }
   

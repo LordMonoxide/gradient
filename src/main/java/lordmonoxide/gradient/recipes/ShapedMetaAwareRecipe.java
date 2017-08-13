@@ -11,24 +11,21 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ShapedMetaAwareRecipe extends ShapedOreRecipe {
-  public ShapedMetaAwareRecipe(Block result, Object... recipe) { this(new ItemStack(result), recipe); }
-  public ShapedMetaAwareRecipe(Item  result, Object... recipe) { this(new ItemStack(result), recipe); }
-  public ShapedMetaAwareRecipe(ItemStack result, Object... recipe) {
+  public ShapedMetaAwareRecipe(final Block result, final Object... recipe) { this(new ItemStack(result), recipe); }
+  public ShapedMetaAwareRecipe(final Item  result, final Object... recipe) { this(new ItemStack(result), recipe); }
+  public ShapedMetaAwareRecipe(final ItemStack result, final Object... recipe) {
     super(result, recipe);
   }
   
-  protected boolean checkMatch(InventoryCrafting inv, int startX, int startY, boolean mirror) {
+  protected boolean checkMatch(final InventoryCrafting inv, final int startX, final int startY, final boolean mirror) {
     for(int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++) {
       for(int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++) {
-        int subX = x - startX;
-        int subY = y - startY;
-        Object target = null;
+        final int subX = x - startX;
+        final int subY = y - startY;
         
-        if(subX >= 0 && subY >= 0 && subX < this.width && subY < this.height) {
-          target = this.input[(mirror ? this.width - subX - 1 : subX) + subY * this.width];
-        }
+        final Object target = subX >= 0 && subY >= 0 && subX < this.width && subY < this.height ? this.input[(mirror ? this.width - subX - 1 : subX) + subY * this.width] : null;
         
-        ItemStack slot = inv.getStackInRowAndColumn(x, y);
+        final ItemStack slot = inv.getStackInRowAndColumn(x, y);
         
         if(target instanceof ItemStack) {
           if(!this.itemMatches((ItemStack)target, slot)) {
@@ -54,7 +51,7 @@ public class ShapedMetaAwareRecipe extends ShapedOreRecipe {
     return true;
   }
   
-  private boolean itemMatches(ItemStack a, ItemStack b) {
+  private boolean itemMatches(final ItemStack a, final ItemStack b) {
     if(!OreDictionary.itemMatches(a, b, false)) {
       return false;
     }

@@ -65,7 +65,7 @@ public final class GradientItems {
     OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
     OreDictionary.registerOre("toolMattock", STONE_MATTOCK.getWildcardItemStack());
     
-    for(GradientMetals.Metal metal : GradientMetals.instance.metals) {
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
       String caps = StringUtils.capitalize(metal.name);
       
       OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));

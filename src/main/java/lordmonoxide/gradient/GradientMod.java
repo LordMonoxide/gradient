@@ -24,19 +24,19 @@ public class GradientMod {
   }
   
   @Mod.EventHandler
-  public void preInit(FMLPreInitializationEvent event) {
+  public void preInit(final FMLPreInitializationEvent event) {
     System.out.println(NAME + " is loading!");
     
     proxy.preInit(event);
   }
   
   @Mod.EventHandler
-  public void init(FMLInitializationEvent event) {
+  public void init(final FMLInitializationEvent event) {
     proxy.init(event);
   }
   
   @Mod.EventHandler
-  public void postInit(FMLPostInitializationEvent event) {
+  public void postInit(final FMLPostInitializationEvent event) {
     proxy.postInit(event);
   }
 }

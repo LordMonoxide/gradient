@@ -30,65 +30,67 @@ public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityPro
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean isOpaqueCube(IBlockState state) {
+  @Deprecated
+  public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(IBlockState state) {
+  @Deprecated
+  public boolean isFullCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+  @Deprecated
+  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
     return AABB;
   }
   
   @Override
-  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-    IBlockState other = world.getBlockState(pos);
+  public int getLightValue(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+    final IBlockState other = world.getBlockState(pos);
     if(other.getBlock() != this) {
       return other.getLightValue(world, pos);
     }
-    
-    TileEntity te = world.getTileEntity(pos);
+  
+    final TileEntity te = world.getTileEntity(pos);
     
     if(te instanceof TileClayCrucible) {
       return ((TileClayCrucible)te).getLightLevel();
     }
     
-    @SuppressWarnings("deprecation")
-    int light = state.getLightValue();
-    return light;
+    return state.getLightValue(world, pos);
   }
   
   @Override
-  public TileClayCrucible createNewTileEntity(World worldIn, int meta) {
+  public TileClayCrucible createNewTileEntity(final World worldIn, final int meta) {
     return new TileClayCrucible();
   }
   
   @Override
-  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+  public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        TileClayCrucible te = (TileClayCrucible)world.getTileEntity(pos);
+        final TileClayCrucible te = (TileClayCrucible)world.getTileEntity(pos);
+        
+        if(te == null) {
+          return false;
+        }
         
         if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
-          FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand));
+          final FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand));
           
           // Make sure the fluid handler is either empty, or contains metal
           if(fluid != null) {
-            GradientMetals.Metal metal = GradientMetals.instance.getMetalForFluid(fluid.getFluid());
+            final GradientMetals.Metal metal = GradientMetals.getMetalForFluid(fluid.getFluid());
             
-            if(metal == null) {
+            if(metal == GradientMetals.INVALID_METAL) {
               return true;
             }
           }
           
-          FluidActionResult result = te.useBucket(player.getHeldItem(hand), player);
+          final FluidActionResult result = te.useBucket(player.getHeldItem(hand), player);
           
           if(result.success) {
             player.setHeldItem(hand, result.result);

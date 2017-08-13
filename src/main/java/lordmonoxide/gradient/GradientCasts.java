@@ -22,7 +22,7 @@ public final class GradientCasts {
   public static final Cast INGOT   = register("ingot", GradientItems.INGOT);
   
   public static Cast register(final String name, @Nullable final Item itemOverride) {
-    Cast cast = new Cast(name, itemOverride);
+    final Cast cast = new Cast(name, itemOverride);
     CASTS.add(cast);
     return cast;
   }

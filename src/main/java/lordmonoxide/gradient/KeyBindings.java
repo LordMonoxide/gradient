@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 public final class KeyBindings {
   public static final KeyBindings instance = new KeyBindings();
   
-  private static Map<KeyBinding, Consumer<KeyBinding>> keys = new HashMap<>();
+  private static final Map<KeyBinding, Consumer<KeyBinding>> keys = new HashMap<>();
   
   static {
     addKey("key.journal", Keyboard.KEY_BACKSLASH, KeyBindings::onKeyJournal);
@@ -23,15 +23,15 @@ public final class KeyBindings {
   
   private KeyBindings() { }
   
-  private static void addKey(String description, int key, Consumer<KeyBinding> fn) {
-    KeyBinding binding = new KeyBinding(description, key, "key.category.gradient");
+  private static void addKey(final String description, final int key, final Consumer<KeyBinding> fn) {
+    final KeyBinding binding = new KeyBinding(description, key, "key.category.gradient");
   
     ClientRegistry.registerKeyBinding(binding);
     keys.put(binding, fn);
   }
   
   @SubscribeEvent
-  public void onKeyInput(InputEvent.KeyInputEvent event) {
+  public void onKeyInput(final InputEvent.KeyInputEvent event) {
     for(Map.Entry<KeyBinding, Consumer<KeyBinding>> entry : keys.entrySet()) {
       if(entry.getKey().isPressed()) {
         entry.getValue().accept(entry.getKey());
@@ -39,7 +39,7 @@ public final class KeyBindings {
     }
   }
   
-  private static void onKeyJournal(KeyBinding binding) {
+  private static void onKeyJournal(final KeyBinding binding) {
     Minecraft.getMinecraft().displayGuiScreen(new GuiJournal());
   }
 }

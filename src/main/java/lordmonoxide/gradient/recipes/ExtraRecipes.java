@@ -58,11 +58,9 @@ public final class ExtraRecipes {
       'S', "stickWood"
     ));
     
-    for(GradientMetals.Alloy alloy : GradientMetals.instance.alloys) {
-      GameRegistry.addShapelessRecipe(
-        GradientMetals.getBucket(alloy.output),
-        alloy.inputs.stream().map(GradientMetals::getBucket).toArray()
-      );
-    }
+    GradientMetals.alloys.forEach(alloy -> GameRegistry.addShapelessRecipe(
+      GradientMetals.getBucket(alloy.output),
+      alloy.inputs.stream().map(GradientMetals::getBucket).toArray()
+    ));
   }
 }

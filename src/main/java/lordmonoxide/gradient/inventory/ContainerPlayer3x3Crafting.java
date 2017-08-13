@@ -16,7 +16,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
   
   private static final int CRAFT_SIZE = 3;
   
-  public ContainerPlayer3x3Crafting(InventoryPlayer playerInventory, boolean localWorld, EntityPlayer player) {
+  public ContainerPlayer3x3Crafting(final InventoryPlayer playerInventory, final boolean localWorld, final EntityPlayer player) {
     super(playerInventory, localWorld, player);
     
     this.inventorySlots = Lists.newArrayList();
@@ -40,7 +40,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
         }
         
         @Override
-        public boolean isItemValid(@Nullable ItemStack stack) {
+        public boolean isItemValid(@Nullable final ItemStack stack) {
           return stack != null && stack.getItem().isValidArmor(stack, entityequipmentslot, player);
         }
         
@@ -83,14 +83,14 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
   }
   
   @Override
-  public void onContainerClosed(EntityPlayer playerIn) {
-    super.onContainerClosed(playerIn);
+  public void onContainerClosed(final EntityPlayer player) {
+    super.onContainerClosed(player);
     
     for(int i = 0; i < CRAFT_SIZE * CRAFT_SIZE; i++) {
       ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
       
       if(!itemstack.isEmpty()) {
-        playerIn.dropItem(itemstack, false);
+        player.dropItem(itemstack, false);
       }
     }
     

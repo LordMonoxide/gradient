@@ -17,7 +17,7 @@ public class GuiFirePit extends GuiContainer {
   private final IBlockState state;
   private final InventoryPlayer playerInv;
   
-  public GuiFirePit(ContainerFirePit container, TileFirePit firePit, IBlockState state, InventoryPlayer playerInv) {
+  public GuiFirePit(final ContainerFirePit container, final TileFirePit firePit, final IBlockState state, final InventoryPlayer playerInv) {
     super(container);
     this.firePit = firePit;
     this.state = state;
@@ -25,7 +25,7 @@ public class GuiFirePit extends GuiContainer {
   }
   
   @Override
-  protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+  protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
     GlStateManager.color(1, 1, 1, 1);
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
     int x = (this.width  - this.xSize) / 2;
@@ -33,29 +33,29 @@ public class GuiFirePit extends GuiContainer {
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
     
     if(this.firePit.isCooking(0)) {
-      float percent = this.firePit.getCookingFood(0).cookPercent();
-  
+      final float percent = this.firePit.getCookingFood(0).cookPercent();
+      
       this.drawTexturedModalRect(x + 122, y + 35, 176, 0, (int)(16 * percent), 14);
     }
   }
   
   @Override
-  protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+  protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
     for(int slot = 0; slot < TileFirePit.FUEL_SLOTS_COUNT; slot++) {
       if(this.firePit.isBurning(slot)) {
-        int x = ContainerFirePit.FUEL_SLOTS_X + (slot % 3) * (GradientContainer.SLOT_X_SPACING + 8) + 20;
-        int y = ContainerFirePit.FUEL_SLOTS_Y + (slot / 3) * (GradientContainer.SLOT_Y_SPACING + 8);
-        float percent = this.firePit.getBurningFuel(slot).burnPercent();
+        final int x = ContainerFirePit.FUEL_SLOTS_X + (slot % 3) * (GradientContainer.SLOT_X_SPACING + 8) + 20;
+        final int y = ContainerFirePit.FUEL_SLOTS_Y + (slot / 3) * (GradientContainer.SLOT_Y_SPACING + 8);
+        final float percent = this.firePit.getBurningFuel(slot).burnPercent();
         
         drawRect(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
       }
     }
     
-    String name = I18n.format((this.firePit.hasFurnace(this.state) ? GradientBlocks.CLAY_FURNACE : GradientBlocks.FIRE_PIT).getUnlocalizedName() + ".name");
-    String fuel = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".fuel");
-    String food = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".input");
+    final String name = I18n.format((this.firePit.hasFurnace(this.state) ? GradientBlocks.CLAY_FURNACE : GradientBlocks.FIRE_PIT).getUnlocalizedName() + ".name");
+    final String fuel = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".fuel");
+    final String food = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".input");
     
-    String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.firePit.getHeat());
+    final String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.firePit.getHeat());
     
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(fuel, ContainerFirePit.FUEL_SLOTS_X, ContainerFirePit.FUEL_SLOTS_Y - this.fontRenderer.FONT_HEIGHT - 2, 0x404040);

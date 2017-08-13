@@ -21,7 +21,7 @@ public class StoneMattock extends GradientItemTool implements GradientCraftable 
   }
   
   @Override
-  public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+  public EnumActionResult onItemUse(final EntityPlayer playerIn, final World worldIn, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
     return Items.STONE_HOE.onItemUse(playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
   }
   

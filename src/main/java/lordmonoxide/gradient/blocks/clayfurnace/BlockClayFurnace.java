@@ -26,43 +26,37 @@ public class BlockClayFurnace extends GradientBlock {
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean isOpaqueCube(IBlockState state) {
+  @Deprecated
+  public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-    worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
+    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateFromMeta(int meta) {
-    EnumFacing enumfacing = EnumFacing.getFront(meta);
-    
-    if(enumfacing.getAxis() == EnumFacing.Axis.Y) {
-      enumfacing = EnumFacing.NORTH;
-    }
-    
-    return this.getDefaultState().withProperty(FACING, enumfacing);
+  @Deprecated
+  public IBlockState getStateFromMeta(final int meta) {
+    return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
   }
   
   @Override
-  public int getMetaFromState(IBlockState state) {
-    return state.getValue(FACING).getIndex();
+  public int getMetaFromState(final IBlockState state) {
+    return state.getValue(FACING).getHorizontalIndex();
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState withRotation(IBlockState state, Rotation rot) {
+  @Deprecated
+  public IBlockState withRotation(final IBlockState state, final Rotation rot) {
     return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
-    return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
+  @Deprecated
+  public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
+    return state.withRotation(mirror.toRotation(state.getValue(FACING)));
   }
   
   @Override

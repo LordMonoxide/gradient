@@ -20,7 +20,7 @@ public class GradientItemTool extends GradientItem {
   private final float attackSpeed;
   private final int attackDamage;
   
-  public GradientItemTool(String name, float harvestSpeed, float attackSpeed, int attackDamage) {
+  public GradientItemTool(final String name, final float harvestSpeed, final float attackSpeed, final int attackDamage) {
     super(name, CreativeTabs.TOOLS);
     this.maxStackSize = 1;
     this.harvestSpeed = harvestSpeed;
@@ -32,8 +32,8 @@ public class GradientItemTool extends GradientItem {
   
   // This causes the mattock to take damage every time it is used in a recipe
   @Override
-  public ItemStack getContainerItem(ItemStack itemStack) {
-    ItemStack stack = itemStack.copy();
+  public ItemStack getContainerItem(final ItemStack itemStack) {
+    final ItemStack stack = itemStack.copy();
     stack.attemptDamageItem(1, new Random());
     return stack;
   }
@@ -43,12 +43,12 @@ public class GradientItemTool extends GradientItem {
   }
   
   @Override
-  public boolean canHarvestBlock(IBlockState blockIn, ItemStack stack) {
+  public boolean canHarvestBlock(final IBlockState blockIn, final ItemStack stack) {
     if(blockIn.getBlockHardness(null, null) <= 1.0f) {
       return true;
     }
     
-    for(String type : this.getToolClasses(stack)) {
+    for(final String type : this.getToolClasses(stack)) {
       if(blockIn.getBlock().isToolEffective(type, blockIn)) {
         return true;
       }
@@ -63,19 +63,19 @@ public class GradientItemTool extends GradientItem {
   }
   
   @Override
-  public float getStrVsBlock(ItemStack stack, IBlockState state) {
+  public float getStrVsBlock(final ItemStack stack, final IBlockState state) {
     return this.canHarvestBlock(state, stack) ? this.harvestSpeed : 0.0f;
   }
   
   @Override
-  public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+  public boolean hitEntity(final ItemStack stack, final EntityLivingBase target, final EntityLivingBase attacker) {
     stack.damageItem(2, attacker);
     return true;
   }
   
   @Override
-  public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving) {
-    if(state.getBlockHardness(worldIn, pos) != 0.0f) {
+  public boolean onBlockDestroyed(final ItemStack stack, final World world, final IBlockState state, final BlockPos pos, final EntityLivingBase entityLiving) {
+    if(state.getBlockHardness(world, pos) != 0.0f) {
       stack.damageItem(1, entityLiving);
     }
     

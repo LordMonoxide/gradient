@@ -24,7 +24,7 @@ public final class GradientFluids {
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
       System.out.println("Registering fluids");
       
-      GradientMetals.instance.metals.forEach(GradientFluids::registerFluidForMetal);
+      GradientMetals.metals.forEach(GradientFluids::registerFluidForMetal);
     }
   }
   
@@ -39,8 +39,8 @@ public final class GradientFluids {
     }
     
     FluidRegistry.addBucketForFluid(fluid);
-    
-    Block block = new BlockMetalFluid(fluid);
+  
+    final Block block = new BlockMetalFluid(fluid);
     
     if(fluid.getBlock() == null) {
       fluid.setBlock(block);

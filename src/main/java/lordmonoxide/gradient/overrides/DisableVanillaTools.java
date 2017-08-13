@@ -16,8 +16,8 @@ public final class DisableVanillaTools {
    * @param event
    */
   @SubscribeEvent
-  public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-    ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
+  public void onBreakSpeed(final PlayerEvent.BreakSpeed event) {
+    final ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
     
     if(held.isEmpty()) {
       if(held.getItem() instanceof ItemTool) {

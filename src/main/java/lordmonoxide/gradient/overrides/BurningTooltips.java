@@ -11,12 +11,12 @@ public final class BurningTooltips {
   private BurningTooltips() { }
   
   @SubscribeEvent
-  public void addBurningInfoToTooltips(ItemTooltipEvent event) {
-    if(event.getItemStack().isEmpty() || !GradientFuel.instance.has(event.getItemStack())) {
+  public void addBurningInfoToTooltips(final ItemTooltipEvent event) {
+    if(event.getItemStack().isEmpty() || !GradientFuel.has(event.getItemStack())) {
       return;
     }
     
-    GradientFuel.Fuel fuel = GradientFuel.instance.get(event.getItemStack());
+    final GradientFuel.Fuel fuel = GradientFuel.get(event.getItemStack());
     
     event.getToolTip().add(I18n.format("fuel.ignition_temp", fuel.ignitionTemp));
     event.getToolTip().add(I18n.format("fuel.burn_temp", fuel.burnTemp));

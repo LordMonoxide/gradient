@@ -9,7 +9,7 @@ public class ContainerClayCrucible extends GradientContainer {
   public static final int METAL_SLOTS_X = 13;
   public static final int METAL_SLOTS_Y = 17;
   
-  public ContainerClayCrucible(InventoryPlayer playerInv, TileClayCrucible te) {
+  public ContainerClayCrucible(final InventoryPlayer playerInv, final TileClayCrucible te) {
     super(te);
     
     for(int i = 0; i < TileClayCrucible.METAL_SLOTS_COUNT; i++) {
@@ -19,7 +19,7 @@ public class ContainerClayCrucible extends GradientContainer {
         @Override public void onSlotChanged() {
           te.markDirty();
         }
-        @Override public boolean canTakeStack(EntityPlayer playerIn) { return !te.isMelting(i2); }
+        @Override public boolean canTakeStack(final EntityPlayer player) { return !te.isMelting(i2); }
       });
     }
     

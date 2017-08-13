@@ -27,6 +27,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 public final class RecipeRemover {
   private RecipeRemover() { }
@@ -96,32 +97,24 @@ public final class RecipeRemover {
     removeTorchRecipeUsingCoal();
   }
   
-  private static void removeRecipes(Item[] items) {
-    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
-    
-    List<Item> itemsList = Lists.newArrayList(items);
-    
-    while(it.hasNext()) {
-      ItemStack stack = it.next().getRecipeOutput();
-      
-      if(!stack.isEmpty() && itemsList.contains(stack.getItem())) {
-        it.remove();
-      }
-    }
+  private static void removeRecipes(final Item[] items) {
+    final List<Item> list = Lists.newArrayList(items);
+    removeRecipes(stack -> !stack.isEmpty() && list.contains(stack.getItem()));
   }
   
-  private static void removeRecipes(Block[] blocks) {
-    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
-    
-    List<Block> blocksList = Lists.newArrayList(blocks);
-    
+  private static void removeRecipes(final Block[] blocks) {
+    final List<Block> list = Lists.newArrayList(blocks);
+    removeRecipes(stack -> !stack.isEmpty() && stack.getItem() instanceof ItemBlock && list.contains(((ItemBlock)stack.getItem()).getBlock()));
+  }
+  
+  private static <T> void removeRecipes(final Function<ItemStack, Boolean> predicate) {
+    final Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+  
     while(it.hasNext()) {
-      ItemStack stack = it.next().getRecipeOutput();
+      final ItemStack stack = it.next().getRecipeOutput();
       
-      if(!stack.isEmpty() && stack.getItem() instanceof ItemBlock) {
-        if(blocksList.contains(((ItemBlock)stack.getItem()).getBlock())) {
-          it.remove();
-        }
+      if(predicate.apply(stack)) {
+        it.remove();
       }
     }
   }
@@ -167,7 +160,7 @@ public final class RecipeRemover {
                 Lists.newArrayList(component, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
               ));
               
-              for(GradientMetals.Metal metal : GradientMetals.instance.metals) {
+              for(GradientMetals.Metal metal : GradientMetals.metals) {
                 ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
                 tool.setItemDamage(OreDictionary.WILDCARD_VALUE);
                 

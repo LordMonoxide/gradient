@@ -23,26 +23,26 @@ public class BlockClayBucket extends GradientBlock {
   }
   
   @Override
-  public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+  public Item getItemDropped(final IBlockState state, final Random rand, final int fortune) {
     //TODO
     return Items.BUCKET;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean isOpaqueCube(IBlockState state) {
+  @Deprecated
+  public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(IBlockState state) {
+  @Deprecated
+  public boolean isFullCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+  @Deprecated
+  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
     return AABB;
   }
 }

@@ -34,20 +34,20 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
     return this.heat;
   }
   
-  protected void setHeat(float heat) {
+  protected void setHeat(final float heat) {
     this.heat = heat;
   }
   
-  protected void addHeat(float heat) {
+  protected void addHeat(final float heat) {
     this.heat += heat;
   }
   
-  protected void removeHeat(float heat) {
+  protected void removeHeat(final float heat) {
     this.heat = Math.max(0, this.heat - heat);
   }
   
-  public void updateSink(BlockPos pos) {
-    TileEntity te = this.getWorld().getTileEntity(pos);
+  public void updateSink(final BlockPos pos) {
+    final TileEntity te = this.getWorld().getTileEntity(pos);
     
     if(te instanceof HeatSinker) {
       this.sinks.put(pos, (HeatSinker)te);
@@ -94,13 +94,13 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
     if(this.sinks.isEmpty()) {
       return;
     }
-    
-    Iterator<Map.Entry<BlockPos, HeatSinker>> iterator = this.sinks.entrySet().iterator();
+  
+    final Iterator<Map.Entry<BlockPos, HeatSinker>> iterator = this.sinks.entrySet().iterator();
     
     while(iterator.hasNext()) {
-      Map.Entry<BlockPos, HeatSinker> entry = iterator.next();
+      final Map.Entry<BlockPos, HeatSinker> entry = iterator.next();
       
-      TileEntity worldEntity = this.getWorld().getTileEntity(entry.getKey());
+      final TileEntity worldEntity = this.getWorld().getTileEntity(entry.getKey());
       
       if(!(worldEntity instanceof HeatSinker)) {
         iterator.remove();
@@ -111,10 +111,10 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
         entry.setValue((HeatSinker)worldEntity);
       }
       
-      HeatSinker sink = entry.getValue();
+      final HeatSinker sink = entry.getValue();
       
       if(sink.getHeat() < this.getHeat()) {
-        float heat = this.calculateHeatLoss(this.state) * sink.heatTransferEfficiency() / 20.0f;
+        final float heat = this.calculateHeatLoss(this.state) * sink.heatTransferEfficiency() / 20.0f;
         this.removeHeat(heat);
         sink.addHeat(heat);
       }
@@ -136,14 +136,14 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   protected abstract float heatTransferEfficiency();
   
   @Override
-  public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setFloat("heat", this.getHeat());
     
     return super.writeToNBT(compound);
   }
   
   @Override
-  public void readFromNBT(NBTTagCompound compound) {
+  public void readFromNBT(final NBTTagCompound compound) {
     this.setHeat(compound.getFloat("heat"));
     
     super.readFromNBT(compound);
@@ -151,7 +151,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   
   protected void sync() {
     if(!this.getWorld().isRemote) {
-      IBlockState state = this.getWorld().getBlockState(this.getPos());
+      final IBlockState state = this.getWorld().getBlockState(this.getPos());
       this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
     }
   }
@@ -167,7 +167,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   }
   
   @Override
-  public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+  public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
     this.readFromNBT(pkt.getNbtCompound());
   }
 }

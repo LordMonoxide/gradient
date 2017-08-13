@@ -6,14 +6,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 
 public class GradientBlock extends Block {
-  public GradientBlock(String name, CreativeTabs creativeTab, Material material, MapColor mapColor) {
+  public GradientBlock(final String name, final CreativeTabs creativeTab, final Material material, final MapColor mapColor) {
     super(material, mapColor);
     this.setRegistryName(name);
     this.setUnlocalizedName(name);
     this.setCreativeTab(creativeTab);
   }
   
-  public GradientBlock(String name, CreativeTabs creativeTab, Material material) {
+  public GradientBlock(final String name, final CreativeTabs creativeTab, final Material material) {
     super(material, material.getMaterialMapColor());
     this.setRegistryName(name);
     this.setUnlocalizedName(name);

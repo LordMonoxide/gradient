@@ -11,12 +11,12 @@ public final class CookingTooltips {
   private CookingTooltips() { }
   
   @SubscribeEvent
-  public void addCookingInfoToTooltips(ItemTooltipEvent event) {
-    if(event.getItemStack().isEmpty() || !GradientFood.instance.has(event.getItemStack())) {
+  public void addCookingInfoToTooltips(final ItemTooltipEvent event) {
+    if(event.getItemStack().isEmpty() || !GradientFood.has(event.getItemStack())) {
       return;
     }
-    
-    GradientFood.Food food = GradientFood.instance.get(event.getItemStack());
+  
+    final GradientFood.Food food = GradientFood.get(event.getItemStack());
     
     event.getToolTip().add(I18n.format("food.cook_temp", food.cookTemp));
     event.getToolTip().add(I18n.format("food.duration", food.duration));

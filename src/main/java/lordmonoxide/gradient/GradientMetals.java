@@ -7,41 +7,37 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.OreDictionary;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class GradientMetals {
-  public static final GradientMetals instance = new GradientMetals();
+  private GradientMetals() { }
   
-  public static final Metal    INVALID_METAL    = instance.addMetal("invalid", 0, Integer.MAX_VALUE, 0, 0, 0, 0, 0);
+  public static final List<Metal> metals = new ArrayList<>();
+  public static final List<Alloy> alloys = new ArrayList<>();
+  
+  private static final Map<Integer, Meltable> meltables = new HashMap<>();
+  
+  public static final Metal    INVALID_METAL    = addMetal("invalid", 0, Integer.MAX_VALUE, 0, 0, 0, 0, 0);
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
   
-  public final List<Metal> metals = new ArrayList<>();
-  public final List<Alloy> alloys = new ArrayList<>();
-  
-  private final Map<Integer, Meltable> meltables = new HashMap<>();
-  
   static {
-    instance.addMetal("copper", 20, 1085.00f, 100, 2, 1.6f, 0.8d, 1.0d);
-    instance.addMetal("tin",    15,  231.93f,  20, 0, 1.0f, 0.5d, 1.0d);
-    instance.addMetal("iron",   30, 1538.00f, 150, 2, 2.0f, 1.1d, 1.0d);
-    instance.addMetal("gold",   20, 1064.00f,  30, 0, 1.0f, 0.5d, 1.0d);
-    instance.addMetal("bronze", 20,  950.00f, 130, 2, 1.8f, 1.0d, 1.0d);
+    addMetal("copper", 20, 1085.00f, 100, 2, 1.6f, 0.8d, 1.0d);
+    addMetal("tin",    15,  231.93f,  20, 0, 1.0f, 0.5d, 1.0d);
+    addMetal("iron",   30, 1538.00f, 150, 2, 2.0f, 1.1d, 1.0d);
+    addMetal("gold",   20, 1064.00f,  30, 0, 1.0f, 0.5d, 1.0d);
+    addMetal("bronze", 20,  950.00f, 130, 2, 1.8f, 1.0d, 1.0d);
     
-    instance.addAlloy(instance.metalStack("bronze", 4), instance.getMetal("copper"), instance.getMetal("copper"), instance.getMetal("copper"), instance.getMetal("tin"));
+    addAlloy(metalStack("bronze", 4), getMetal("copper"), getMetal("copper"), getMetal("copper"), getMetal("tin"));
   }
   
-  void registerMeltables() {
-    for(String oreName : OreDictionary.getOreNames()) {
+  static void registerMeltables() {
+    for(final String oreName : OreDictionary.getOreNames()) {
       if(oreName.startsWith("ore")) {
-        this.addMeltable(oreName, oreName.substring(3).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
+        addMeltable(oreName, oreName.substring(3).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
       } else if(oreName.startsWith("ingot")) {
-        this.addMeltable(oreName, oreName.substring(5).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
+        addMeltable(oreName, oreName.substring(5).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
       } else if(oreName.startsWith("nugget")) {
-        Meltable meltable = this.addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
+        final Meltable meltable = addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
         
         if(meltable != INVALID_MELTABLE) {
           meltable.metal.nugget = OreDictionary.getOres(oreName).get(0);
@@ -50,47 +46,47 @@ public final class GradientMetals {
     }
   }
   
-  public static ItemStack getBucket(GradientMetals.MetalStack metal) {
-    ItemStack stack = getBucket(metal.metal);
+  public static ItemStack getBucket(final GradientMetals.MetalStack metal) {
+    final ItemStack stack = getBucket(metal.metal);
     stack.grow(metal.amount - 1);
     
     return stack;
   }
   
-  public static ItemStack getBucket(GradientMetals.Metal metal) {
+  public static ItemStack getBucket(final GradientMetals.Metal metal) {
     return UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, metal.getFluid());
   }
   
-  private Meltable addMeltable(String oreName, String metal, float meltModifier, int amount) {
-    Metal m = this.getMetal(metal);
+  private static Meltable addMeltable(final String oreName, final String metal, final float meltModifier, final int amount) {
+    final Metal m = getMetal(metal);
     
     if(m != INVALID_METAL) {
-      return this.addMeltable(oreName, m, meltModifier, amount);
+      return addMeltable(oreName, m, meltModifier, amount);
     }
     
     return INVALID_MELTABLE;
   }
   
-  private Meltable addMeltable(String oreDict, Metal metal, float meltModifier, int amount) {
-    Meltable meltable = new Meltable(metal, meltModifier, amount);
-    this.meltables.put(OreDictionary.getOreID(oreDict), meltable);
+  private static Meltable addMeltable(final String oreDict, final Metal metal, final float meltModifier, final int amount) {
+    final Meltable meltable = new Meltable(metal, meltModifier, amount);
+    meltables.put(OreDictionary.getOreID(oreDict), meltable);
     return meltable;
   }
   
-  public Metal addMetal(String name, int meltTime, float meltTemp, int durability, int harvestLevel, float harvestSpeed, double attackDamage, double attackSpeed) {
-    Metal metal = new Metal(name, meltTime, meltTemp, durability, harvestLevel, harvestSpeed, attackDamage, attackSpeed);
-    this.metals.add(metal);
+  public static Metal addMetal(final String name, final int meltTime, final float meltTemp, final int durability, final int harvestLevel, final float harvestSpeed, final double attackDamage, final double attackSpeed) {
+    final Metal metal = new Metal(name, meltTime, meltTemp, durability, harvestLevel, harvestSpeed, attackDamage, attackSpeed);
+    metals.add(metal);
     return metal;
   }
   
-  public Alloy addAlloy(MetalStack output, Metal... input) {
-    Alloy alloy = new Alloy(output, input);
-    this.alloys.add(alloy);
+  public static Alloy addAlloy(final MetalStack output, final Metal... input) {
+    final Alloy alloy = new Alloy(output, input);
+    alloys.add(alloy);
     return alloy;
   }
   
-  public Metal getMetal(String name) {
-    for(Metal metal : this.metals) {
+  public static Metal getMetal(final String name) {
+    for(Metal metal : metals) {
       if(metal.name.equals(name)) {
         return metal;
       }
@@ -99,21 +95,21 @@ public final class GradientMetals {
     return INVALID_METAL;
   }
   
-  public Metal getMetal(int index) {
-    return this.metals.get(index);
+  public static Metal getMetal(final int index) {
+    return metals.get(index);
   }
   
-  private MetalStack metalStack(String metal, int amount) {
-    return new MetalStack(this.getMetal(metal), amount);
+  private static MetalStack metalStack(final String metal, final int amount) {
+    return new MetalStack(getMetal(metal), amount);
   }
   
-  private MetalStack metalStack(String metal) {
-    return this.metalStack(metal, Fluid.BUCKET_VOLUME);
+  private static MetalStack metalStack(final String metal) {
+    return metalStack(metal, Fluid.BUCKET_VOLUME);
   }
   
-  public Meltable getMeltable(ItemStack stack) {
+  public static Meltable getMeltable(final ItemStack stack) {
     for(int id : OreDictionary.getOreIDs(stack)) {
-      Meltable meltable = this.meltables.get(id);
+      Meltable meltable = meltables.get(id);
       
       if(meltable != null) {
         return meltable;
@@ -123,17 +119,22 @@ public final class GradientMetals {
     return INVALID_MELTABLE;
   }
   
-  public boolean hasMetal(String name) {
-    return this.getMetal(name) != INVALID_METAL;
+  public static boolean hasMetal(final String name) {
+    return getMetal(name) != INVALID_METAL;
   }
   
-  public boolean hasMeltable(ItemStack stack) {
-    return this.getMeltable(stack) != INVALID_MELTABLE;
+  public static boolean hasMeltable(final ItemStack stack) {
+    return getMeltable(stack) != INVALID_MELTABLE;
   }
   
-  @Nullable
-  public Metal getMetalForFluid(Fluid fluid) {
-    return this.metals.stream().filter(metal -> metal.fluid == fluid).findFirst().orElse(null);
+  public static Metal getMetalForFluid(final Fluid fluid) {
+    for(Metal metal : metals) {
+      if(metal.fluid == fluid) {
+        return metal;
+      }
+    }
+    
+    return INVALID_METAL;
   }
   
   public static class Metal {
@@ -155,7 +156,7 @@ public final class GradientMetals {
     private ItemStack nugget;
     Fluid fluid;
     
-    public Metal(String name, int meltTime, float meltTemp, int durability, int harvestLevel, float harvestSpeed, double attackDamageMultiplier, double attackSpeedMultiplier) {
+    public Metal(final String name, final int meltTime, final float meltTemp, final int durability, final int harvestLevel, final float harvestSpeed, final double attackDamageMultiplier, final double attackSpeedMultiplier) {
       this.id = currentId++;
       this.name = name;
       this.meltTime = meltTime;
@@ -183,7 +184,7 @@ public final class GradientMetals {
     public final Metal metal;
     public final int amount;
     
-    public MetalStack(Metal metal, int amount) {
+    public MetalStack(final Metal metal, final int amount) {
       this.metal  = metal;
       this.amount = amount;
     }
@@ -193,7 +194,7 @@ public final class GradientMetals {
     public final MetalStack output;
     public final List<Metal> inputs;
     
-    public Alloy(MetalStack output, Metal... inputs) {
+    public Alloy(final MetalStack output, final Metal... inputs) {
       this.output = output;
       this.inputs = ImmutableList.copyOf(inputs);
     }
@@ -204,7 +205,7 @@ public final class GradientMetals {
     public final float meltModifier;
     public final int   amount;
     
-    public Meltable(Metal metal, float meltModifier, int amount) {
+    public Meltable(final Metal metal, final float meltModifier, final int amount) {
       this.metal        = metal;
       this.meltModifier = meltModifier;
       this.amount       = amount;

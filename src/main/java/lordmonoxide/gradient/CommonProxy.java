@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
-  public void preInit(FMLPreInitializationEvent event) {
+  public void preInit(final FMLPreInitializationEvent event) {
     System.out.println("------------------- PREINIT -------------------");
     
     MinecraftForge.EVENT_BUS.register(OverrideInventory.instance);
@@ -23,7 +23,7 @@ public class CommonProxy {
   }
   
   @Mod.EventHandler
-  public void init(FMLInitializationEvent event) {
+  public void init(final FMLInitializationEvent event) {
     System.out.println("------------------- INIT -------------------");
     
     MinecraftForge.EVENT_BUS.register(DisableVanillaTools.instance);
@@ -38,13 +38,13 @@ public class CommonProxy {
     GradientItems.RegistrationHandler.addRecipes();
     ExtraRecipes.addRecipes();
     
-    GradientMetals.instance.registerMeltables();
+    GradientMetals.registerMeltables();
     
     GradientNet.register();
   }
   
   @Mod.EventHandler
-  public void postInit(FMLPostInitializationEvent event) {
+  public void postInit(final FMLPostInitializationEvent event) {
     System.out.println("------------------- POSTINIT -------------------");
   }
 }

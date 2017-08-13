@@ -10,41 +10,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class GradientFood {
-  public static final GradientFood instance = new GradientFood();
+  private GradientFood() { }
   
   public static final Food INVALID_FOOD = new Food(ItemStack.EMPTY, 0, 0);
   
-  private final Map<ItemStack, Food> foods = new HashMap<>();
+  private static final Map<ItemStack, Food> foods = new HashMap<>();
   
-  private GradientFood() {
-    for(Map.Entry<ItemStack, ItemStack> e : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
-      if(e.getKey().getItem() instanceof ItemFood) {
-        this.add(e.getKey(), e.getValue(), 120, 200);
-      }
-    }
+  static {
+    FurnaceRecipes.instance().getSmeltingList().entrySet().stream()
+      .filter(e -> e.getKey().getItem() instanceof ItemFood)
+      .forEach(e -> add(e.getKey(), e.getValue(), 120, 200));
     
-    this.add(Items.PORKCHOP, Items.COOKED_PORKCHOP, 120, 200);
-    this.add(Items.BEEF,     Items.COOKED_BEEF,     120, 200);
-    this.add(Items.CHICKEN,  Items.COOKED_CHICKEN,  120, 200);
-    this.add(Items.RABBIT,   Items.COOKED_RABBIT,   120, 200);
-    this.add(Items.MUTTON,   Items.COOKED_MUTTON,   120, 200);
-    this.add(Items.POTATO,   Items.BAKED_POTATO,    120, 200);
+    add(Items.PORKCHOP, Items.COOKED_PORKCHOP, 120, 200);
+    add(Items.BEEF,     Items.COOKED_BEEF,     120, 200);
+    add(Items.CHICKEN,  Items.COOKED_CHICKEN,  120, 200);
+    add(Items.RABBIT,   Items.COOKED_RABBIT,   120, 200);
+    add(Items.MUTTON,   Items.COOKED_MUTTON,   120, 200);
+    add(Items.POTATO,   Items.BAKED_POTATO,    120, 200);
   }
   
-  public void add(Item raw, Item cooked, int duration, float cookTemp) {
-    this.add(new ItemStack(raw), new ItemStack(cooked), duration, cookTemp);
+  public static void add(final Item raw, final Item cooked, final int duration, final float cookTemp) {
+    add(new ItemStack(raw), new ItemStack(cooked), duration, cookTemp);
   }
   
-  public void add(ItemStack raw, ItemStack cooked, int duration, float cookTemp) {
-    this.add(raw, new Food(cooked, duration, cookTemp));
+  public static void add(final ItemStack raw, final ItemStack cooked, final int duration, final float cookTemp) {
+    add(raw, new Food(cooked, duration, cookTemp));
   }
   
-  public void add(ItemStack raw, Food food) {
-    this.foods.put(raw, food);
+  public static void add(final ItemStack raw, final Food food) {
+    foods.put(raw, food);
   }
   
-  public Food get(ItemStack raw) {
-    for(Map.Entry<ItemStack, Food> entry : this.foods.entrySet()) {
+  public static Food get(final ItemStack raw) {
+    for(Map.Entry<ItemStack, Food> entry : foods.entrySet()) {
       if(ItemStack.areItemsEqual(raw, entry.getKey())) {
         return entry.getValue();
       }
@@ -53,8 +51,8 @@ public final class GradientFood {
     return INVALID_FOOD;
   }
   
-  public boolean has(ItemStack itemStack) {
-    return this.get(itemStack) != INVALID_FOOD;
+  public static boolean has(final ItemStack itemStack) {
+    return get(itemStack) != INVALID_FOOD;
   }
   
   public static class Food {
@@ -62,7 +60,7 @@ public final class GradientFood {
     public final int       duration;
     public final float     cookTemp;
     
-    public Food(ItemStack cooked, int duration, float cookTemp) {
+    public Food(final ItemStack cooked, final int duration, final float cookTemp) {
       this.cooked   = cooked;
       this.duration = duration;
       this.cookTemp = cookTemp;

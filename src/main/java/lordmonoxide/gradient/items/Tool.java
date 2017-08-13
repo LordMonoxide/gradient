@@ -58,7 +58,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
       return GradientMetals.INVALID_METAL;
     }
     
-    return GradientMetals.instance.getMetal(stack.getTagCompound().getString("metal"));
+    return GradientMetals.getMetal(stack.getTagCompound().getString("metal"));
   }
   
   @Override
@@ -103,7 +103,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   @Override
   public void addRecipe() {
     for(final GradientTools.Type type : GradientTools.TYPES) {
-      for(final GradientMetals.Metal metal : GradientMetals.instance.metals) {
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
         GameRegistry.addRecipe(new ShapedMetaAwareRecipe(
           getTool(type, metal),
           "H",
@@ -131,7 +131,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientTools.Type type : GradientTools.TYPES) {
-      for(final GradientMetals.Metal metal : GradientMetals.instance.metals) {
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
         list.add(getTool(type, metal));
       }
     }

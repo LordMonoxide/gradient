@@ -56,14 +56,14 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
       return GradientMetals.INVALID_METAL;
     }
     
-    return GradientMetals.instance.getMetal(stack.getTagCompound().getString("metal"));
+    return GradientMetals.getMetal(stack.getTagCompound().getString("metal"));
   }
   
   @Override
   public void addRecipe() {
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       if(cast.itemOverride == null) {
-        for(final GradientMetals.Metal metal : GradientMetals.instance.metals) {
+        for(final GradientMetals.Metal metal : GradientMetals.metals) {
           GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
             getCastItem(cast, metal),
             GradientMetals.getBucket(metal),
@@ -89,7 +89,7 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       if(cast.itemOverride == null) {
-        for(final GradientMetals.Metal metal : GradientMetals.instance.metals) {
+        for(final GradientMetals.Metal metal : GradientMetals.metals) {
           list.add(getCastItem(cast, metal));
         }
       }

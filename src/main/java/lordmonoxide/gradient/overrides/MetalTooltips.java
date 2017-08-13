@@ -11,13 +11,13 @@ public final class MetalTooltips {
   private MetalTooltips() { }
   
   @SubscribeEvent
-  public void addMetalInfoToTooltips(ItemTooltipEvent event) {
-    if(event.getItemStack().isEmpty() || !GradientMetals.instance.hasMeltable(event.getItemStack())) {
+  public void addMetalInfoToTooltips(final ItemTooltipEvent event) {
+    if(event.getItemStack().isEmpty() || !GradientMetals.hasMeltable(event.getItemStack())) {
       return;
     }
-    
-    GradientMetals.Meltable meltable = GradientMetals.instance.getMeltable(event.getItemStack());
-    GradientMetals.Metal metal = meltable.metal;
+  
+    final GradientMetals.Meltable meltable = GradientMetals.getMeltable(event.getItemStack());
+    final GradientMetals.Metal metal = meltable.metal;
     
     event.getToolTip().add(I18n.format("metal.melt_temp", metal.meltTemp));
     event.getToolTip().add(I18n.format("metal.melt_time", metal.meltTime * meltable.meltModifier));

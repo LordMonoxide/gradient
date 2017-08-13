@@ -53,18 +53,18 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   }
   
   @Override
-  public int quantityDropped(Random rand) {
+  public int quantityDropped(final Random rand) {
     return rand.nextInt(3) + 2;
   }
   
   @Override
-  public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+  public Item getItemDropped(final IBlockState state, final Random rand, final int fortune) {
     return Items.STICK;
   }
   
   @Override
-  public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-    List<ItemStack> ret = super.getDrops(world, pos, state, fortune);
+  public List<ItemStack> getDrops(final IBlockAccess world, final BlockPos pos, final IBlockState state, final int fortune) {
+    final List<ItemStack> ret = super.getDrops(world, pos, state, fortune);
     
     if(state.getValue(HAS_FURNACE)) {
       ret.add(new ItemStack(GradientBlocks.CLAY_FURNACE));
@@ -74,20 +74,20 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean isOpaqueCube(IBlockState state) {
+  @Deprecated
+  public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(IBlockState state) {
+  @Deprecated
+  public boolean isFullCube(final IBlockState state) {
     return false;
   }
   
   @Override
-  @SuppressWarnings("deprecation")
-  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+  @Deprecated
+  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
     if(!state.getValue(HAS_FURNACE)) {
       return AABB;
     }
@@ -96,36 +96,38 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   }
   
   @Override
-  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-    IBlockState other = world.getBlockState(pos);
+  public int getLightValue(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+    final IBlockState other = world.getBlockState(pos);
     if(other.getBlock() != this) {
       return other.getLightValue(world, pos);
     }
     
-    TileEntity te = world.getTileEntity(pos);
+    final TileEntity te = world.getTileEntity(pos);
     
     if(te instanceof TileFirePit) {
       return ((TileFirePit)te).getLightLevel(state);
     }
     
-    @SuppressWarnings("deprecation")
-    int light = state.getLightValue();
-    return light;
+    return state.getLightValue(world, pos);
   }
   
   @Override
-  public TileFirePit createNewTileEntity(World worldIn, int meta) {
+  public TileFirePit createNewTileEntity(final World world, final int meta) {
     return new TileFirePit();
   }
   
   @Override
-  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+  public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getHeldItem(hand);
         
         if(stack.getItem() instanceof FireStarter) {
-          TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
+          final TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
+          
+          if(tile == null) {
+            return false;
+          }
           
           if(!tile.isBurning()) {
             tile.light();
@@ -135,7 +137,11 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
         
         if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).block instanceof BlockClayFurnace) {
           if(!state.getValue(HAS_FURNACE)) {
-            TileFirePit te = (TileFirePit)world.getTileEntity(pos);
+            final TileFirePit te = (TileFirePit)world.getTileEntity(pos);
+            
+            if(te == null) {
+              return false;
+            }
             
             world.setBlockState(pos, state.withProperty(HAS_FURNACE, true));
             
@@ -159,10 +165,10 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   
   @Override
   @Deprecated
-  public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos neighbor) {
-    super.neighborChanged(state, world, pos, blockIn, neighbor);
+  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
+    super.neighborChanged(state, world, pos, block, neighbor);
     
-    TileEntity te = world.getTileEntity(pos);
+    final TileEntity te = world.getTileEntity(pos);
     
     if(te instanceof TileFirePit) {
       ((TileFirePit)te).updateHardenable(neighbor);
@@ -170,13 +176,13 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   }
   
   @Override
-  public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-    worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
+    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
   }
   
   @Override
   @Deprecated
-  public IBlockState getStateFromMeta(int meta) {
+  public IBlockState getStateFromMeta(final int meta) {
     EnumFacing facing = EnumFacing.getHorizontal(meta & 0b11);
     boolean hasFurnace = (meta >>> 2) == 1;
     
@@ -184,20 +190,20 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   }
   
   @Override
-  public int getMetaFromState(IBlockState state) {
+  public int getMetaFromState(final IBlockState state) {
     return state.getValue(FACING).getHorizontalIndex() | ((state.getValue(HAS_FURNACE) ? 1 : 0) << 2);
   }
   
   @Override
   @Deprecated
-  public IBlockState withRotation(IBlockState state, Rotation rot) {
+  public IBlockState withRotation(final IBlockState state, final Rotation rot) {
     return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
   }
   
   @Override
   @Deprecated
-  public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
-    return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
+  public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
+    return state.withRotation(mirror.toRotation(state.getValue(FACING)));
   }
   
   @Override

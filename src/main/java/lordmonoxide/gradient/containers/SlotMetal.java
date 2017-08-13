@@ -6,17 +6,17 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class SlotMetal extends SlotItemHandler {
-  public SlotMetal(IItemHandler inventory, int slotNumber, int x, int y) {
+  public SlotMetal(final IItemHandler inventory, final int slotNumber, final int x, final int y) {
     super(inventory, slotNumber, x, y);
   }
   
   @Override
-  public boolean isItemValid(ItemStack stack) {
-    return GradientMetals.instance.hasMeltable(stack) && super.isItemValid(stack);
+  public boolean isItemValid(final ItemStack stack) {
+    return GradientMetals.hasMeltable(stack) && super.isItemValid(stack);
   }
   
   @Override
-  public int getItemStackLimit(ItemStack stack) {
+  public int getItemStackLimit(final ItemStack stack) {
     return 1;
   }
   

@@ -24,7 +24,7 @@ public final class AddExtraDrops {
   }
   
   @SubscribeEvent
-  public void leavesDropSticks(BlockEvent.HarvestDropsEvent event) {
+  public void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getBlock() instanceof BlockLeaves) {
       if(event.getWorld().rand.nextInt(10) == 0) {
         event.getDrops().add(new ItemStack(Items.STICK));
@@ -33,11 +33,11 @@ public final class AddExtraDrops {
   }
   
   @SubscribeEvent
-  public void wheatDropsFibre(BlockEvent.HarvestDropsEvent event) {
-    IBlockState state = event.getState();
+  public void wheatDropsFibre(final BlockEvent.HarvestDropsEvent event) {
+    final IBlockState state = event.getState();
     
     if(state.getBlock() == Blocks.WHEAT) {
-      BlockCrops wheat = (BlockCrops)state.getBlock();
+      final BlockCrops wheat = (BlockCrops)state.getBlock();
       
       if(state.getValue(BlockCrops.AGE) == wheat.getMaxAge()) {
         if(event.getWorld().rand.nextInt(2) == 0) {
@@ -48,7 +48,7 @@ public final class AddExtraDrops {
   }
   
   @SubscribeEvent
-  public void stoneDropsPebbles(BlockEvent.HarvestDropsEvent event) {
+  public void stoneDropsPebbles(final BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getMaterial() != Material.ROCK) {
       return;
     }
@@ -56,30 +56,30 @@ public final class AddExtraDrops {
     if(event.getHarvester() == null) {
       return;
     }
-    
-    ItemStack hand = event.getHarvester().getHeldItemMainhand();
+  
+    final ItemStack hand = event.getHarvester().getHeldItemMainhand();
     
     if(hand.isEmpty()) {
       return;
     }
     
     if(hand.getItem().getHarvestLevel(hand, "hammer", event.getHarvester(), event.getState()) != -1) {
-      List<ItemStack> drops = event.getDrops();
+      final List<ItemStack> drops = event.getDrops();
       
       drops.clear();
-      
-      int pebbleCount = event.getHarvester().getEntityWorld().rand.nextInt(4) + 2;
+  
+      final int pebbleCount = event.getHarvester().getEntityWorld().rand.nextInt(4) + 2;
       
       for(int i = 0; i < pebbleCount; i++) {
         drops.add(new ItemStack(GradientBlocks.PEBBLE));
       }
+  
+      final ItemStack metalStack = event.getState().getBlock().getItem(event.getWorld(), event.getPos(), event.getState());
       
-      ItemStack metalStack = event.getState().getBlock().getItem(event.getWorld(), event.getPos(), event.getState());
-      
-      if(GradientMetals.instance.hasMeltable(metalStack)) {
-        GradientMetals.Meltable meltable = GradientMetals.instance.getMeltable(metalStack);
-        
-        int nuggetCount = event.getHarvester().getEntityWorld().rand.nextInt(meltable.amount * 4 / 1000 + 1) + 2;
+      if(GradientMetals.hasMeltable(metalStack)) {
+        final GradientMetals.Meltable meltable = GradientMetals.getMeltable(metalStack);
+  
+        final int nuggetCount = event.getHarvester().getEntityWorld().rand.nextInt(meltable.amount * 4 / 1000 + 1) + 2;
         
         for(int i = 0; i < nuggetCount; i++) {
           drops.add(meltable.metal.getNugget());

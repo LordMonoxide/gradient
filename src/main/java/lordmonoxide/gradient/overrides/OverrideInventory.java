@@ -19,28 +19,16 @@ public final class OverrideInventory {
   
   @SideOnly(Side.CLIENT)
   @SubscribeEvent
-  public void onGuiOpen(GuiOpenEvent event) {
+  public void onGuiOpen(final GuiOpenEvent event) {
     if(event.getGui() != null && event.getGui().getClass() == GuiInventory.class) {
       event.setGui(new GuiInventory3x3Crafting(Minecraft.getMinecraft().player));
     }
   }
   
-  @SideOnly(Side.CLIENT)
   @SubscribeEvent
-  public void onEntityJoinWorldClient(EntityJoinWorldEvent event) {
+  public void onEntityJoinWorld(final EntityJoinWorldEvent event) {
     if(event.getEntity() instanceof EntityPlayer) {
-      EntityPlayer player = (EntityPlayer)event.getEntity();
-      
-      player.inventoryContainer = new ContainerPlayer3x3Crafting(player.inventory, !player.world.isRemote, player);
-      player.openContainer = player.inventoryContainer;
-    }
-  }
-  
-  @SideOnly(Side.SERVER)
-  @SubscribeEvent
-  public void onEntityJoinWorldServer(EntityJoinWorldEvent event) {
-    if(event.getEntity() instanceof EntityPlayerMP) {
-      EntityPlayerMP player = (EntityPlayerMP)event.getEntity();
+      final EntityPlayer player = (EntityPlayer)event.getEntity();
       
       player.inventoryContainer = new ContainerPlayer3x3Crafting(player.inventory, !player.world.isRemote, player);
       player.openContainer = player.inventoryContainer;

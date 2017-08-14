@@ -9,6 +9,7 @@ public class GradientItem extends Item {
     this.setUnlocalizedName(name);
     this.setRegistryName(name);
     this.setCreativeTab(creativeTab);
+    this.setNoRepair();
   }
   
   public ItemStack getItemStack(final int amount, final int meta) {

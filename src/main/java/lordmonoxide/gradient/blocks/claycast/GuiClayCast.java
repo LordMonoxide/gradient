@@ -89,7 +89,7 @@ public class GuiClayCast extends GuiContainer {
       super.drawButton(mc, mouseX, mouseY);
       
       if(this.visible) {
-        GuiClayCast.this.itemRender.renderItemAndEffectIntoGUI(this.item, this.xPosition + 2, this.yPosition + 2);
+        GuiClayCast.this.itemRender.renderItemAndEffectIntoGUI(this.item, this.x + 2, this.y + 2);
       }
     }
   }

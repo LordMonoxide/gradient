@@ -163,16 +163,16 @@ public class GuiJournal extends GuiScreen {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
       if(this.visible) {
-        this.hovered = (mouseX - this.scaledX()) >= this.xPosition && (mouseY - this.scaledY()) >= this.yPosition && (mouseX - this.scaledX()) < this.xPosition + this.width && (mouseY - this.scaledY()) < this.yPosition + this.height;
+        this.hovered = (mouseX - this.scaledX()) >= this.x && (mouseY - this.scaledY()) >= this.y && (mouseX - this.scaledX()) < this.x + this.width && (mouseY - this.scaledY()) < this.y + this.height;
         
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         
         mc.getTextureManager().bindTexture(BACKGROUND);
-        this.drawTexturedModalRect(this.xPosition, this.yPosition, this.entry.type.textureX, this.entry.type.textureY + this.getHoverState(this.hovered) * this.height, this.width, this.height);
+        this.drawTexturedModalRect(this.x, this.y, this.entry.type.textureX, this.entry.type.textureY + this.getHoverState(this.hovered) * this.height, this.width, this.height);
         
-        GuiJournal.this.itemRender.renderItemAndEffectIntoGUI(this.icon,this.xPosition + (this.width - TEXEL_SIZE) / 2, this.yPosition + (this.height - TEXEL_SIZE) / 2);
+        GuiJournal.this.itemRender.renderItemAndEffectIntoGUI(this.icon,this.x + (this.width - TEXEL_SIZE) / 2, this.y + (this.height - TEXEL_SIZE) / 2);
         
         this.mouseDragged(mc, mouseX, mouseY);
       }

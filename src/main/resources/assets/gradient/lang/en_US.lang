@@ -76,6 +76,12 @@ item.nugget.tin.name=Tin Nugget
 item.nugget.iron.name=Iron Nugget
 item.nugget.gold.name=Gold Nugget
 item.nugget.bronze.name=Bronze Nugget
+item.plate.invalid.name=Invalid Plate
+item.plate.copper.name=Copper Plate
+item.plate.tin.name=Tin Plate
+item.plate.iron.name=Iron Plate
+item.plate.gold.name=Gold Plate
+item.plate.bronze.name=Bronze Plate
 
 # Fluids
 fluid.invalid=Invalid Molten Metal

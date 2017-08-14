@@ -47,6 +47,7 @@ public final class GradientItems {
   
   public static final GradientItem INGOT  = RegistrationHandler.register(new Ingot());
   public static final GradientItem NUGGET = RegistrationHandler.register(new Nugget());
+  public static final GradientItem PLATE  = RegistrationHandler.register(new Plate());
   
   public static final GradientItem CAST_ITEM = RegistrationHandler.register(new CastItem());
   public static final GradientItem TOOL      = RegistrationHandler.register(new Tool());

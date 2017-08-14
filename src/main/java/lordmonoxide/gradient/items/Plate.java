@@ -1,8 +1,7 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
-import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
-import lordmonoxide.gradient.GradientCasts;
+import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.recipes.GradientCraftable;
 import lordmonoxide.gradient.recipes.ShapelessMetaAwareRecipe;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,18 +12,18 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class Ingot extends GradientItem implements GradientCraftable {
-  public Ingot() {
-    super("ingot", CreativeTabs.MATERIALS);
+public class Plate extends GradientItem implements GradientCraftable {
+  public Plate() {
+    super("plate", CreativeTabs.MATERIALS);
     this.setHasSubtypes(true);
   }
   
-  public static ItemStack getIngot(final GradientMetals.Metal metal) {
-    return GradientItems.INGOT.getItemStack(1, metal.id);
+  public static ItemStack getPlate(final GradientMetals.Metal metal) {
+    return GradientItems.PLATE.getItemStack(1, metal.id);
   }
   
-  public static ItemStack getIngot(final GradientMetals.Metal metal, int amount) {
-    return getIngot(metal);
+  public static ItemStack getPlate(final GradientMetals.Metal metal, int amount) {
+    return getPlate(metal);
   }
   
   @Override
@@ -40,15 +39,17 @@ public class Ingot extends GradientItem implements GradientCraftable {
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(Ingot::getIngot).forEach(list::add);
+    GradientMetals.metals.stream().map(Plate::getPlate).forEach(list::add);
   }
   
   @Override
   public void addRecipe() {
-    GradientMetals.metals.stream().map(metal -> new ShapelessMetaAwareRecipe(
-      Ingot.getIngot(metal),
-      GradientMetals.getBucket(metal),
-      ItemClayCast.getCast(GradientCasts.INGOT)
-    )).forEach(GameRegistry::addRecipe);
+    for(GradientMetals.Metal toolMetal : GradientMetals.metals) {
+      GradientMetals.metals.stream().map(metal -> new ShapelessMetaAwareRecipe(
+        Plate.getPlate(metal),
+        Ingot.getIngot(metal),
+        Tool.getTool(GradientTools.HAMMER, toolMetal)
+      )).forEach(GameRegistry::addRecipe);
+    }
   }
 }

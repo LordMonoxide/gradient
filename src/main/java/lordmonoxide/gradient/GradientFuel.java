@@ -59,4 +59,28 @@ public final class GradientFuel {
       this.heatPerSec   = heatPerSec;
     }
   }
+  
+  public static final class BurningFuel {
+    public final GradientFuel.Fuel fuel;
+    public final long burnStart;
+    public final long burnUntil;
+    
+    public BurningFuel(final GradientFuel.Fuel fuel) {
+      this(fuel, System.currentTimeMillis(), System.currentTimeMillis() + fuel.duration * 1000L);
+    }
+    
+    public BurningFuel(final GradientFuel.Fuel fuel, final long burnStart, final long burnUntil) {
+      this.fuel = fuel;
+      this.burnStart = burnStart;
+      this.burnUntil = burnUntil;
+    }
+    
+    public boolean isDepleted() {
+      return System.currentTimeMillis() >= this.burnUntil;
+    }
+    
+    public float burnPercent() {
+      return (float)(System.currentTimeMillis() - this.burnStart) / (this.burnUntil - this.burnStart);
+    }
+  }
 }

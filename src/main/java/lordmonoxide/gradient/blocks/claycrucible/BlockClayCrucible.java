@@ -90,11 +90,7 @@ public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityPro
             }
           }
           
-          final FluidActionResult result = te.useBucket(player.getHeldItem(hand), player);
-          
-          if(result.success) {
-            player.setHeldItem(hand, result.result);
-          }
+          te.useBucket(player, hand, world, pos, side);
           
           return true;
         }

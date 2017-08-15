@@ -2,11 +2,11 @@ package lordmonoxide.gradient.blocks.claycast;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.containers.GradientGuiContainer;
 import lordmonoxide.gradient.items.CastItem;
 import lordmonoxide.gradient.GradientCasts;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
-public class GuiClayCast extends GuiContainer {
+public class GuiClayCast extends GradientGuiContainer {
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_cast.png");
   
   private final ItemStack held;
@@ -46,7 +46,7 @@ public class GuiClayCast extends GuiContainer {
   }
   
   private GuiButton addButtonForTool(final GradientCasts.Cast cast, final int x, final int y) {
-    return this.addButton(new ItemButton(cast.id, cast.itemOverride != null ? cast.itemOverride.getDefaultInstance() : CastItem.getCastItem(cast, GradientMetals.INVALID_METAL), x + this.guiLeft, y + this.guiTop));
+    return this.addButton(new ItemButton(cast.id, cast.itemOverride != null ? cast.itemOverride.getDefaultInstance() : CastItem.getCastItem(cast, GradientMetals.INVALID_METAL), x, y));
   }
   
   @Override
@@ -74,23 +74,5 @@ public class GuiClayCast extends GuiContainer {
   protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
     final String name = this.selectedCast.item.getDisplayName();
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
-  }
-  
-  protected class ItemButton extends GuiButton {
-    public final ItemStack item;
-    
-    public ItemButton(final int id, final ItemStack item, final int x, final int y) {
-      super(id, x, y, 20, 20, "");
-      this.item = item;
-    }
-    
-    @Override
-    public void drawButton(final Minecraft mc, final int mouseX, final int mouseY) {
-      super.drawButton(mc, mouseX, mouseY);
-      
-      if(this.visible) {
-        GuiClayCast.this.itemRender.renderItemAndEffectIntoGUI(this.item, this.x + 2, this.y + 2);
-      }
-    }
   }
 }

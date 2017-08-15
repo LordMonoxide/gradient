@@ -4,14 +4,14 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.firepit.ContainerFirePit;
 import lordmonoxide.gradient.containers.GradientContainer;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import lordmonoxide.gradient.containers.GradientGuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
-public class GuiClayCrucible extends GuiContainer {
+public class GuiClayCrucible extends GradientGuiContainer {
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_crucible.png");
   
   private final TileClayCrucible te;

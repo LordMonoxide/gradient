@@ -8,6 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
@@ -15,6 +18,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
@@ -53,14 +57,10 @@ public class TileClayCrucible extends HeatSinker {
     return Math.min((int)(this.getHeat() / 800 * 11) + 4, 15);
   }
   
-  public FluidActionResult useBucket(final ItemStack bucket, final EntityPlayer player) {
-    final FluidActionResult result = FluidUtil.interactWithFluidHandler(bucket, this.tank, player);
-    
-    if(result.success) {
+  public void useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
+    if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
       this.sync();
     }
-    
-    return result;
   }
   
   @Override

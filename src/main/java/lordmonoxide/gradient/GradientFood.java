@@ -66,4 +66,28 @@ public final class GradientFood {
       this.cookTemp = cookTemp;
     }
   }
+  
+  public static final class CookingFood {
+    public final GradientFood.Food food;
+    public final long cookStart;
+    public final long cookUntil;
+    
+    public CookingFood(final GradientFood.Food food) {
+      this(food, System.currentTimeMillis(), System.currentTimeMillis() + food.duration * 1000L);
+    }
+    
+    public CookingFood(final GradientFood.Food food, final long cookStart, final long cookUntil) {
+      this.food = food;
+      this.cookStart = cookStart;
+      this.cookUntil = cookUntil;
+    }
+    
+    public boolean isCooked() {
+      return System.currentTimeMillis() >= this.cookUntil;
+    }
+    
+    public float cookPercent() {
+      return (float)(System.currentTimeMillis() - this.cookStart) / (this.cookUntil - this.cookStart);
+    }
+  }
 }

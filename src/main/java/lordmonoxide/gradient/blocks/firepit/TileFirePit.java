@@ -10,7 +10,9 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
@@ -40,8 +42,8 @@ public class TileFirePit extends HeatProducer {
   
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   
-  private final BurningFuel[] fuels = new BurningFuel[FUEL_SLOTS_COUNT];
-  private final CookingFood[] foods = new CookingFood[INPUT_SLOTS_COUNT];
+  private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
+  private final GradientFood.CookingFood[] foods = new GradientFood.CookingFood[INPUT_SLOTS_COUNT];
   
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
   
@@ -67,7 +69,7 @@ public class TileFirePit extends HeatProducer {
     return this.fuels[slot] != null;
   }
   
-  public BurningFuel getBurningFuel(final int slot) {
+  public GradientFuel.BurningFuel getBurningFuel(final int slot) {
     return this.fuels[slot];
   }
   
@@ -85,7 +87,7 @@ public class TileFirePit extends HeatProducer {
     return this.foods[slot] != null;
   }
   
-  public CookingFood getCookingFood(final int slot) {
+  public GradientFood.CookingFood getCookingFood(final int slot) {
     return this.foods[slot];
   }
   
@@ -175,7 +177,7 @@ public class TileFirePit extends HeatProducer {
         final GradientFuel.Fuel fuel = GradientFuel.get(this.getFuelSlot(i));
         
         if(this.canIgnite(fuel)) {
-          this.fuels[i] = new BurningFuel(fuel);
+          this.fuels[i] = new GradientFuel.BurningFuel(fuel);
         }
       }
     }
@@ -187,12 +189,12 @@ public class TileFirePit extends HeatProducer {
         final GradientFood.Food food = GradientFood.get(this.getFoodSlot(i));
         
         if(this.canCook(food)) {
-          this.foods[i] = new CookingFood(food);
+          this.foods[i] = new GradientFood.CookingFood(food);
         }
       }
       
       if(this.isCooking(i)) {
-        final CookingFood food = this.getCookingFood(i);
+        final GradientFood.CookingFood food = this.getCookingFood(i);
         
         if(food.isCooked()) {
           this.foods[i] = null;
@@ -264,7 +266,7 @@ public class TileFirePit extends HeatProducer {
     
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
       if(this.isBurning(slot)) {
-        final BurningFuel fuel = this.fuels[slot];
+        final GradientFuel.BurningFuel fuel = this.fuels[slot];
         
         if(fuel.isDepleted()) {
           this.fuels[slot] = null;
@@ -329,7 +331,7 @@ public class TileFirePit extends HeatProducer {
     
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
       if(this.isBurning(i)) {
-        final BurningFuel fuel = this.getBurningFuel(i);
+        final GradientFuel.BurningFuel fuel = this.getBurningFuel(i);
         
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
@@ -341,7 +343,7 @@ public class TileFirePit extends HeatProducer {
     
     for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
       if(this.isCooking(i)) {
-        final CookingFood food = this.getCookingFood(i);
+        final GradientFood.CookingFood food = this.getCookingFood(i);
         
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
@@ -375,7 +377,7 @@ public class TileFirePit extends HeatProducer {
       final int slot = tag.getInteger("slot");
       
       if(slot < FUEL_SLOTS_COUNT) {
-        this.fuels[slot] = new BurningFuel(
+        this.fuels[slot] = new GradientFuel.BurningFuel(
           GradientFuel.get(this.getFuelSlot(slot)),
           tag.getLong("start") + System.currentTimeMillis(),
           tag.getLong("until") + System.currentTimeMillis()
@@ -389,7 +391,7 @@ public class TileFirePit extends HeatProducer {
       final int slot = tag.getInteger("slot");
       
       if(slot < INPUT_SLOTS_COUNT) {
-        this.foods[slot] = new CookingFood(
+        this.foods[slot] = new GradientFood.CookingFood(
           GradientFood.get(this.getFoodSlot(slot)),
           tag.getLong("start") + System.currentTimeMillis(),
           tag.getLong("until") + System.currentTimeMillis()
@@ -409,54 +411,6 @@ public class TileFirePit extends HeatProducer {
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory : super.getCapability(capability, facing);
-  }
-  
-  public static final class BurningFuel {
-    public final GradientFuel.Fuel fuel;
-    private final long burnStart;
-    private final long burnUntil;
-    
-    private BurningFuel(final GradientFuel.Fuel fuel) {
-      this(fuel, System.currentTimeMillis(), System.currentTimeMillis() + fuel.duration * 1000L);
-    }
-    
-    private BurningFuel(final GradientFuel.Fuel fuel, final long burnStart, final long burnUntil) {
-      this.fuel = fuel;
-      this.burnStart = burnStart;
-      this.burnUntil = burnUntil;
-    }
-    
-    public boolean isDepleted() {
-      return System.currentTimeMillis() >= this.burnUntil;
-    }
-    
-    public float burnPercent() {
-      return (float)(System.currentTimeMillis() - this.burnStart) / (this.burnUntil - this.burnStart);
-    }
-  }
-  
-  public static final class CookingFood {
-    public final GradientFood.Food food;
-    private final long cookStart;
-    private final long cookUntil;
-  
-    private CookingFood(final GradientFood.Food food) {
-      this(food, System.currentTimeMillis(), System.currentTimeMillis() + food.duration * 1000L);
-    }
-    
-    private CookingFood(final GradientFood.Food food, final long cookStart, final long cookUntil) {
-      this.food = food;
-      this.cookStart = cookStart;
-      this.cookUntil = cookUntil;
-    }
-    
-    public boolean isCooked() {
-      return System.currentTimeMillis() >= this.cookUntil;
-    }
-    
-    public float cookPercent() {
-      return (float)(System.currentTimeMillis() - this.cookStart) / (this.cookUntil - this.cookStart);
-    }
   }
   
   public static final class Hardening {

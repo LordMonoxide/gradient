@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks.bronzeboiler;
 
+import ic2.core.block.comp.Fluids;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.containers.GradientContainer;
@@ -10,6 +11,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.io.IOException;
 
@@ -18,11 +22,13 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
   
   private final TileBronzeBoiler boiler;
   private final InventoryPlayer playerInv;
+  private final FluidRenderer fluidRender;
   
   public GuiBronzeBoiler(final ContainerBronzeBoiler container, final TileBronzeBoiler boiler, final InventoryPlayer playerInv) {
     super(container);
     this.boiler = boiler;
     this.playerInv = playerInv;
+    this.fluidRender = new FluidRenderer();
   }
   
   @Override
@@ -50,6 +56,13 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
     int x = (this.width  - this.xSize) / 2;
     int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+    
+    this.boiler.tankWater.setFluid(new FluidStack(FluidRegistry.getFluid("water"), 4000));
+    
+    System.out.println(this.boiler.tankWater.getFluid().getUnlocalizedName());
+    
+    this.fluidRender.renderFluid(this.boiler.tankWater, 124, 19, 12, 47);
+    this.fluidRender.renderFluid(this.boiler.tankSteam, 148, 19, 12, 47);
   }
   
   @Override

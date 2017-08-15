@@ -31,8 +31,8 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap();
-  private final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME *  8);
-  private final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
+  public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME *  8);
+  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
   
   private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
   

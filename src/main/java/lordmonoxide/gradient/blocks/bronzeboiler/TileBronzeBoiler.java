@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks.bronzeboiler;
 
+import ic2.core.ref.FluidName;
 import lordmonoxide.gradient.GradientFuel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -188,10 +189,9 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   
   private void boilWater() {
     if(this.getHeat() >= 100) {
-      if(this.tankWater.getFluidAmount() > 0 || this.tankSteam.getFluidAmount() < this.tankSteam.getCapacity()) {
+      if(this.tankWater.getFluidAmount() > 0 && this.tankSteam.getFluidAmount() < this.tankSteam.getCapacity()) {
         FluidStack water = this.tankWater.drain(1, true);
-        FluidStack steam = FluidRegistry.getFluidStack("steam", water.amount);
-        //TODO: STEAM IS NOT A FLUID?
+        FluidStack steam = FluidRegistry.getFluidStack(FluidName.steam.getName(), water.amount);
         this.tankSteam.fill(steam, true);
       }
     }

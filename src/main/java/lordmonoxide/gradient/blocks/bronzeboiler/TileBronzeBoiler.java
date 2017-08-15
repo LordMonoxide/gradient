@@ -16,10 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -134,6 +131,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     this.coolDown();
     this.heatUp();
     this.igniteFuel();
+    this.boilWater();
     
     if(!this.getWorld().isRemote) {
       if(System.currentTimeMillis() >= this.nextSync) {
@@ -184,6 +182,17 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
         if(this.canIgnite(fuel)) {
           this.fuels[i] = new GradientFuel.BurningFuel(fuel);
         }
+      }
+    }
+  }
+  
+  private void boilWater() {
+    if(this.getHeat() >= 100) {
+      if(this.tankWater.getFluidAmount() > 0 || this.tankSteam.getFluidAmount() < this.tankSteam.getCapacity()) {
+        FluidStack water = this.tankWater.drain(1, true);
+        FluidStack steam = FluidRegistry.getFluidStack("steam", water.amount);
+        //TODO: STEAM IS NOT A FLUID?
+        this.tankSteam.fill(steam, true);
       }
     }
   }

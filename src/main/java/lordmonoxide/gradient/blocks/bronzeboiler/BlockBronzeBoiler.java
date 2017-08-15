@@ -22,10 +22,16 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class BlockBronzeBoiler extends GradientBlock implements GradientCraftable, ITileEntityProvider {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
+  
+  private static final Fluid WATER = FluidRegistry.getFluid("water");
   
   public BlockBronzeBoiler() {
     super("bronze_boiler", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_BRONZE_MACHINE); //$NON-NLS-1$
@@ -43,6 +49,25 @@ public class BlockBronzeBoiler extends GradientBlock implements GradientCraftabl
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
+        final TileBronzeBoiler te = (TileBronzeBoiler)world.getTileEntity(pos);
+        
+        if(te == null) {
+          return false;
+        }
+        
+        if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
+          final FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand));
+          
+          // Make sure the fluid handler is either empty, or contains water
+          if(fluid != null && fluid.getFluid() != WATER) {
+            return true;
+          }
+          
+          te.useBucket(player, hand, world, pos, side);
+          
+          return true;
+        }
+        
         player.openGui(GradientMod.instance, GradientGuiHandler.BRONZE_BOILER, world, pos.getX(), pos.getY(), pos.getZ());
       }
     }

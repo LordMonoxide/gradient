@@ -86,11 +86,11 @@ public abstract class GradientGuiContainer extends GuiContainer {
       
       final Fluid fluid = tank.getFluid().getFluid();
       final TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getStill(tank.getFluid()).toString());
-      final double renderHeight = height * Util.limit(tank.getFluidAmount() / (double)tank.getCapacity(), 0.0D, 1.0D);
+      final double renderHeight = height * Util.limit(tank.getFluidAmount() / (double)tank.getCapacity(), 0.0d, 1.0d);
       final int color = fluid.getColor(tank.getFluid());
       
       Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-      GradientGuiContainer.this.drawSprite(x, (y + height) - renderHeight, width, renderHeight, sprite, color, 1.0D);
+      GradientGuiContainer.this.drawSprite(x, (y + height) - renderHeight, width, renderHeight, sprite, color, 1.0d);
     }
   }
 }

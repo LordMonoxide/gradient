@@ -26,7 +26,7 @@ public final class AddExtraDrops {
   @SubscribeEvent
   public void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getBlock() instanceof BlockLeaves) {
-      if(event.getWorld().rand.nextInt(10) == 0) {
+      if(event.getWorld().rand.nextInt(7) == 0) {
         event.getDrops().add(new ItemStack(Items.STICK));
       }
     }

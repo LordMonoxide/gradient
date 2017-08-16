@@ -153,6 +153,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
     if(!this.getWorld().isRemote) {
       final IBlockState state = this.getWorld().getBlockState(this.getPos());
       this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+      this.markDirty();
     }
   }
   

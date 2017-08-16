@@ -193,6 +193,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
         FluidStack water = this.tankWater.drain(1, true);
         FluidStack steam = FluidRegistry.getFluidStack(FluidName.steam.getName(), water.amount);
         this.tankSteam.fill(steam, true);
+        this.markDirty();
       }
     }
   }
@@ -227,7 +228,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   @Override
   public void readFromNBT(final NBTTagCompound compound) {
     Arrays.fill(this.fuels, null);
-  
+    
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.tankWater.readFromNBT(compound.getCompoundTag("water"));
     this.tankSteam.readFromNBT(compound.getCompoundTag("steam"));
@@ -274,6 +275,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     if(!this.getWorld().isRemote) {
       final IBlockState state = this.getWorld().getBlockState(this.getPos());
       this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+      this.markDirty();
     }
   }
   

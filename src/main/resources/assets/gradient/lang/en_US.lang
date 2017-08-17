@@ -103,6 +103,7 @@ item.plate.magnesium.name=Magnesium Plate
 
 # Machine parts
 item.bronze_machine_hull.name=Bronze Machine Hull
+item.igniter.name=Igniter
 
 # Fluids
 fluid.invalid=Invalid Molten Metal

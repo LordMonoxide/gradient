@@ -55,6 +55,7 @@ public final class GradientItems {
   public static final GradientItem TOOL      = RegistrationHandler.register(new Tool());
   
   public static final GradientItem BRONZE_MACHINE_HULL = RegistrationHandler.register(new BronzeMachineHull());
+  public static final GradientItem IGNITER = RegistrationHandler.register(new Igniter());
   
   private static void initialiseItems() {
     MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());

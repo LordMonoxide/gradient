@@ -153,7 +153,7 @@ food.cooked=Cooked: %s
 # Metal
 metal.melt_temp=Melting Point: %f °C
 metal.melt_time=Melting Time: %d sec
-metal.amount=Amount: %d buckets
+metal.amount=Amount: %d millibuckets
 
 # Journal
 journal.getting_started=Getting Started

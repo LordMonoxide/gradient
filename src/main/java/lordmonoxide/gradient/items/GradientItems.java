@@ -2,6 +2,7 @@ package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
@@ -54,6 +55,8 @@ public final class GradientItems {
   
   private static void initialiseItems() {
     MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());
+    
+    OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);
     
     OreDictionary.registerOre("infinicoal", INFINICOAL);
     

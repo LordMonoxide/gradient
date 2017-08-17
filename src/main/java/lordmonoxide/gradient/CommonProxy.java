@@ -5,6 +5,7 @@ import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.overrides.*;
 import lordmonoxide.gradient.recipes.ExtraRecipes;
 import lordmonoxide.gradient.recipes.RecipeRemover;
+import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -31,6 +32,7 @@ public class CommonProxy {
     MinecraftForge.EVENT_BUS.register(AddExtraDrops.instance);
     
     GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
+    GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
     
     RecipeRemover.remove();
     

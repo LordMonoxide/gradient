@@ -21,11 +21,12 @@ public final class GradientMetals {
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
   
   static {
-    addMetal("copper", 20, 1085.00f, 100, 2, 1.6f, 0.8d, 1.0d);
-    addMetal("tin",    15,  231.93f,  20, 0, 1.0f, 0.5d, 1.0d);
-    addMetal("iron",   30, 1538.00f, 150, 2, 2.0f, 1.1d, 1.0d);
-    addMetal("gold",   20, 1064.00f,  30, 0, 1.0f, 0.5d, 1.0d);
-    addMetal("bronze", 20,  950.00f, 130, 2, 1.8f, 1.0d, 1.0d);
+    addMetal("copper",    20, 1085.00f, 100, 2, 1.6f, 0.8d, 1.0d);
+    addMetal("tin",       15,  231.93f,  20, 0, 1.0f, 0.5d, 1.0d);
+    addMetal("iron",      30, 1538.00f, 150, 2, 2.0f, 1.1d, 1.0d);
+    addMetal("gold",      20, 1064.00f,  30, 0, 1.0f, 0.5d, 1.0d);
+    addMetal("bronze",    20,  950.00f, 130, 2, 1.8f, 1.0d, 1.0d);
+    addMetal("magnesium", 15,  650.00f,  20, 0, 1.0f, 0.5d, 1.0d);
     
     addAlloy(metalStack("bronze", 4), getMetal("copper"), getMetal("copper"), getMetal("copper"), getMetal("tin"));
   }

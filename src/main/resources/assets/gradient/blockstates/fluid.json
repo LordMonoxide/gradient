@@ -45,6 +45,13 @@
           "fluid": "bronze"
         }
       }
+    ],
+    "magnesium": [
+      {
+        "custom": {
+          "fluid": "magnesium"
+        }
+      }
     ]
   }
 }

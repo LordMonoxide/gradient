@@ -101,6 +101,9 @@ item.plate.gold.name=Gold Plate
 item.plate.bronze.name=Bronze Plate
 item.plate.magnesium.name=Magnesium Plate
 
+# Machine parts
+item.bronze_machine_hull.name=Bronze Machine Hull
+
 # Fluids
 fluid.invalid=Invalid Molten Metal
 fluid.copper=Molten Copper

@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
   public void initGui() {
     super.initGui();
     
-    this.addButton(new ItemButton(0, GradientItems.FIRE_STARTER.getItemStack(), 92, 32));
+    this.addButton(new ItemButton(0, Items.FLINT_AND_STEEL.getDefaultInstance(), 92, 32));
   }
   
   @Override

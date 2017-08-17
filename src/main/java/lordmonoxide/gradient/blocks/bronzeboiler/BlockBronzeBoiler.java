@@ -1,11 +1,11 @@
 package lordmonoxide.gradient.blocks.bronzeboiler;
 
+import buildcraft.factory.BCFactoryBlocks;
 import lordmonoxide.gradient.GradientGuiHandler;
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.items.Plate;
+import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -114,10 +114,11 @@ public class BlockBronzeBoiler extends GradientBlock implements GradientCraftabl
   public void addRecipe() {
     GameRegistry.addRecipe(
       new ItemStack(this),
-      "PPP",
-      "P P",
-      "PPP",
-      'P', Plate.getPlate(GradientMetals.getMetal("bronze"))
+      "THT",
+      " I ",
+      'H', GradientItems.BRONZE_MACHINE_HULL,
+      'T', BCFactoryBlocks.tank,
+      'I', GradientItems.IGNITER
     );
   }
 }

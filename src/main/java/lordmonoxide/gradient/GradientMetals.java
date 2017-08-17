@@ -43,6 +43,8 @@ public final class GradientMetals {
         if(meltable != INVALID_MELTABLE) {
           meltable.metal.nugget = OreDictionary.getOres(oreName).get(0);
         }
+      } else if(oreName.startsWith("dust")) {
+        addMeltable(oreName, oreName.substring(4).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
       }
     }
   }

@@ -48,6 +48,7 @@ public final class GradientItems {
   
   public static final GradientItem INGOT  = RegistrationHandler.register(new Ingot());
   public static final GradientItem NUGGET = RegistrationHandler.register(new Nugget());
+  public static final GradientItem DUST   = RegistrationHandler.register(new Dust());
   public static final GradientItem PLATE  = RegistrationHandler.register(new Plate());
   
   public static final GradientItem CAST_ITEM = RegistrationHandler.register(new CastItem());
@@ -72,8 +73,9 @@ public final class GradientItems {
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       String caps = StringUtils.capitalize(metal.name);
       
-      OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));
-      OreDictionary.registerOre("nugget" + caps, NUGGET.getItemStack(1, metal.id));
+      OreDictionary.registerOre("ingot" + caps, Ingot.getIngot(metal));
+      OreDictionary.registerOre("nugget" + caps, Nugget.getNugget(metal));
+      OreDictionary.registerOre("dust" + caps, Dust.getDust(metal));
     }
     
     Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);

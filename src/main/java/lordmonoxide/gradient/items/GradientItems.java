@@ -51,6 +51,8 @@ public final class GradientItems {
   public static final GradientItem DUST   = RegistrationHandler.register(new Dust());
   public static final GradientItem PLATE  = RegistrationHandler.register(new Plate());
   
+  public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
+  
   public static final GradientItem CAST_ITEM = RegistrationHandler.register(new CastItem());
   public static final GradientItem TOOL      = RegistrationHandler.register(new Tool());
   
@@ -74,12 +76,14 @@ public final class GradientItems {
     OreDictionary.registerOre("toolMattock", STONE_MATTOCK.getWildcardItemStack());
     
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      String caps = StringUtils.capitalize(metal.name);
+      final String caps = StringUtils.capitalize(metal.name);
       
       OreDictionary.registerOre("ingot" + caps, Ingot.getIngot(metal));
       OreDictionary.registerOre("nugget" + caps, Nugget.getNugget(metal));
       OreDictionary.registerOre("dust" + caps, Dust.getDust(metal));
     }
+    
+    OreDictionary.registerOre("dustFlint", DUST_FLINT);
     
     Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);
     Blocks.SPRUCE_STAIRS.setHarvestLevel("axe", 0);

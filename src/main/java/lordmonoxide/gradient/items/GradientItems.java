@@ -81,9 +81,9 @@ public final class GradientItems {
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);
       
-      OreDictionary.registerOre("ingot" + caps, Ingot.getIngot(metal));
-      OreDictionary.registerOre("nugget" + caps, Nugget.getNugget(metal));
-      OreDictionary.registerOre("dust" + caps, Dust.getDust(metal));
+      OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));
+      OreDictionary.registerOre("nugget" + caps, NUGGET.getItemStack(1, metal.id));
+      OreDictionary.registerOre("dust" + caps, DUST.getItemStack(1, metal.id));
     }
     
     OreDictionary.registerOre("dustFlint", DUST_FLINT);

@@ -19,12 +19,14 @@ public class Ingot extends GradientItem implements GradientCraftable {
     this.setHasSubtypes(true);
   }
   
-  public static ItemStack getIngot(final GradientMetals.Metal metal) {
-    return GradientItems.INGOT.getItemStack(1, metal.id);
+  @SideOnly(Side.CLIENT)
+  public ItemStack getIngot(final GradientMetals.Metal metal) {
+    return this.getItemStack(1, metal.id);
   }
   
-  public static ItemStack getIngot(final GradientMetals.Metal metal, int amount) {
-    return getIngot(metal);
+  @SideOnly(Side.CLIENT)
+  public ItemStack getIngot(final GradientMetals.Metal metal, int amount) {
+    return this.getIngot(metal);
   }
   
   @Override
@@ -40,13 +42,13 @@ public class Ingot extends GradientItem implements GradientCraftable {
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(Ingot::getIngot).forEach(list::add);
+    GradientMetals.metals.stream().map(this::getIngot).forEach(list::add);
   }
   
   @Override
   public void addRecipe() {
     GradientMetals.metals.stream().map(metal -> new ShapelessMetaAwareRecipe(
-      Ingot.getIngot(metal),
+      this.getItemStack(1, metal.id),
       GradientMetals.getBucket(metal),
       ItemClayCast.getCast(GradientCasts.INGOT)
     )).forEach(GameRegistry::addRecipe);

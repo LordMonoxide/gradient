@@ -18,12 +18,14 @@ public class Plate extends GradientItem implements GradientCraftable {
     this.setHasSubtypes(true);
   }
   
-  public static ItemStack getPlate(final GradientMetals.Metal metal) {
-    return GradientItems.PLATE.getItemStack(1, metal.id);
+  @SideOnly(Side.CLIENT)
+  public ItemStack getPlate(final GradientMetals.Metal metal) {
+    return this.getItemStack(1, metal.id);
   }
   
-  public static ItemStack getPlate(final GradientMetals.Metal metal, int amount) {
-    return getPlate(metal);
+  @SideOnly(Side.CLIENT)
+  public ItemStack getPlate(final GradientMetals.Metal metal, int amount) {
+    return this.getPlate(metal);
   }
   
   @Override
@@ -39,15 +41,15 @@ public class Plate extends GradientItem implements GradientCraftable {
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(Plate::getPlate).forEach(list::add);
+    GradientMetals.metals.stream().map(this::getPlate).forEach(list::add);
   }
   
   @Override
   public void addRecipe() {
     for(GradientMetals.Metal toolMetal : GradientMetals.metals) {
       GradientMetals.metals.stream().map(metal -> new ShapelessMetaAwareRecipe(
-        Plate.getPlate(metal),
-        Ingot.getIngot(metal),
+        this.getItemStack(1, metal.id),
+        GradientItems.INGOT.getItemStack(1, metal.id),
         Tool.getTool(GradientTools.HAMMER, toolMetal)
       )).forEach(GameRegistry::addRecipe);
     }

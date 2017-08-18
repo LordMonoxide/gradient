@@ -18,7 +18,7 @@ public class BronzeMachineHull extends GradientItem implements GradientCraftable
       "PPP",
       "P P",
       "PPP",
-      'P', Plate.getPlate(GradientMetals.getMetal("bronze"))
+      'P', GradientItems.PLATE.getItemStack(1, GradientMetals.getMetal("bronze").id)
     );
   }
 }

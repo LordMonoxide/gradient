@@ -14,12 +14,14 @@ public class Nugget extends GradientItem {
     this.setHasSubtypes(true);
   }
   
-  public static ItemStack getNugget(final GradientMetals.Metal metal) {
-    return GradientItems.NUGGET.getItemStack(1, metal.id);
+  @SideOnly(Side.CLIENT)
+  public ItemStack getNugget(final GradientMetals.Metal metal) {
+    return this.getItemStack(1, metal.id);
   }
   
-  public static ItemStack getNugget(final GradientMetals.Metal metal, int amount) {
-    return getNugget(metal);
+  @SideOnly(Side.CLIENT)
+  public ItemStack getNugget(final GradientMetals.Metal metal, int amount) {
+    return this.getNugget(metal);
   }
   
   @Override
@@ -35,6 +37,6 @@ public class Nugget extends GradientItem {
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(Nugget::getNugget).forEach(list::add);
+    GradientMetals.metals.stream().map(this::getNugget).forEach(list::add);
   }
 }

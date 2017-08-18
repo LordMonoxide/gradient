@@ -15,6 +15,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -61,7 +62,9 @@ public final class GradientItems {
   
   private static void initialiseItems() {
     MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());
-    
+  }
+  
+  private static void initialiseOreDict() {
     OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);
     
     OreDictionary.registerOre("infinicoal", INFINICOAL);
@@ -159,6 +162,11 @@ public final class GradientItems {
       }
       
       initialiseItems();
+    }
+    
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void initOreDict(final RegistryEvent.Register<Item> event) {
+      initialiseOreDict();
     }
     
     public static void addRecipes() {

@@ -13,12 +13,12 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 import java.util.Random;
 
 public class OreGenerator implements IWorldGenerator {
-  private final WorldGenerator magnesium = new WorldGenMinable(GradientBlocks.ORE_MAGNESIUM.getDefaultState(), 5);
+  private final WorldGenerator magnesium = new WorldGenMinable(GradientBlocks.ORE_MAGNESIUM.getDefaultState(), 4);
   
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
-      this.runGenerator(this.magnesium, world, random, chunkX, chunkZ, 10, 0, 128);
+      this.runGenerator(this.magnesium, world, random, chunkX, chunkZ, 4, 0, 128);
     }
   }
   

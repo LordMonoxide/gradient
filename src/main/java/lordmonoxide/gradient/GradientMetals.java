@@ -17,16 +17,16 @@ public final class GradientMetals {
   
   private static final Map<Integer, Meltable> meltables = new HashMap<>();
   
-  public static final Metal    INVALID_METAL    = addMetal("invalid", 0, Integer.MAX_VALUE, 0, 0, 0, 0, 0);
+  public static final Metal    INVALID_METAL    = addMetal("invalid", Integer.MAX_VALUE, 0, 0).add();
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
   
   static {
-    addMetal("copper",    20, 1085.00f, 100, 2, 1.6f, 0.8d, 1.0d);
-    addMetal("tin",       15,  231.93f,  20, 0, 1.0f, 0.5d, 1.0d);
-    addMetal("iron",      30, 1538.00f, 150, 2, 2.0f, 1.1d, 1.0d);
-    addMetal("gold",      20, 1064.00f,  30, 0, 1.0f, 0.5d, 1.0d);
-    addMetal("bronze",    20,  950.00f, 130, 2, 1.8f, 1.0d, 1.0d);
-    addMetal("magnesium", 15,  650.00f,  20, 0, 1.0f, 0.5d, 1.0d);
+    addMetal("copper",    1085.00f, 3.0f,  63.55f).add();
+    addMetal("tin",        231.93f, 1.5f, 118.71f).add();
+    addMetal("iron",      1538.00f, 4.0f,  55.85f).add();
+    addMetal("gold",      1064.00f, 2.0f, 196.97f).add();
+    addMetal("bronze",     950.00f, 3.5f, 182.26f).add();
+    addMetal("magnesium",  650.00f, 2.5f,  24.31f).disableTools().add();
     
     addAlloy(metalStack("bronze", 4), getMetal("copper"), getMetal("copper"), getMetal("copper"), getMetal("tin"));
   }
@@ -76,10 +76,8 @@ public final class GradientMetals {
     return meltable;
   }
   
-  public static Metal addMetal(final String name, final int meltTime, final float meltTemp, final int durability, final int harvestLevel, final float harvestSpeed, final double attackDamage, final double attackSpeed) {
-    final Metal metal = new Metal(name, meltTime, meltTemp, durability, harvestLevel, harvestSpeed, attackDamage, attackSpeed);
-    metals.add(metal);
-    return metal;
+  public static MetalBuilder addMetal(final String name, final float meltTemp, final float hardness, final float weight) {
+    return new MetalBuilder(name, meltTemp, hardness, weight);
   }
   
   public static Alloy addAlloy(final MetalStack output, final Metal... input) {
@@ -147,6 +145,8 @@ public final class GradientMetals {
     public final String name;
     public final int    meltTime;
     public final float  meltTemp;
+    public final float  hardness;
+    public final float  weight;
     
     public final int durability;
     
@@ -156,22 +156,28 @@ public final class GradientMetals {
     public final double attackDamageMultiplier;
     public final double attackSpeedMultiplier;
     
+    public final boolean canMakeTools;
+    
     private ItemStack nugget;
     Fluid fluid;
     
-    public Metal(final String name, final int meltTime, final float meltTemp, final int durability, final int harvestLevel, final float harvestSpeed, final double attackDamageMultiplier, final double attackSpeedMultiplier) {
+    private Metal(final String name, final float meltTemp, final float hardness, final float weight, final boolean canMakeTools) {
       this.id = currentId++;
       this.name = name;
-      this.meltTime = meltTime;
+      this.meltTime = Math.round(hardness * 7.5f);
       this.meltTemp = meltTemp;
+      this.hardness = hardness;
+      this.weight   = weight;
       
-      this.durability = durability;
+      this.durability = Math.round(hardness * 35);
       
-      this.harvestLevel = harvestLevel;
-      this.harvestSpeed = harvestSpeed;
+      this.harvestLevel = Math.round(hardness / 2);
+      this.harvestSpeed = 1 / weight * 130;
       
-      this.attackDamageMultiplier = attackDamageMultiplier;
-      this.attackSpeedMultiplier  = attackSpeedMultiplier;
+      this.attackDamageMultiplier = (hardness / 2) * weight / 100;
+      this.attackSpeedMultiplier  = 1 / weight * 100;
+      
+      this.canMakeTools = canMakeTools;
     }
     
     public ItemStack getNugget() {
@@ -212,6 +218,33 @@ public final class GradientMetals {
       this.metal        = metal;
       this.meltModifier = meltModifier;
       this.amount       = amount;
+    }
+  }
+  
+  public static final class MetalBuilder {
+    public final String name;
+    public final float meltTemp;
+    public final float  hardness;
+    public final float  weight;
+    
+    private boolean canMakeTools = true;
+    
+    private MetalBuilder(final String name, final float meltTemp, final float hardness, final float weight) {
+      this.name = name;
+      this.meltTemp = meltTemp;
+      this.hardness = hardness;
+      this.weight = weight;
+    }
+    
+    public MetalBuilder disableTools() {
+      this.canMakeTools = false;
+      return this;
+    }
+    
+    public Metal add() {
+      final Metal metal = new Metal(this.name, this.meltTemp, this.hardness, this.weight, this.canMakeTools);
+      metals.add(metal);
+      return metal;
     }
   }
 }

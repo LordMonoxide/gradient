@@ -73,7 +73,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   
   @Override
   protected double getAttackSpeed(final ItemStack stack) {
-    return this.getType(stack).attackSpeed * this.getMetal(stack).attackSpeedMultiplier;
+    return -4 + this.getType(stack).attackSpeed * this.getMetal(stack).attackSpeedMultiplier;
   }
   
   @Deprecated
@@ -104,15 +104,17 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   public void addRecipe() {
     for(final GradientTools.Type type : GradientTools.TYPES) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        GameRegistry.addRecipe(new ShapedMetaAwareRecipe(
-          getTool(type, metal),
-          "H",
-          "F",
-          "S",
-          'H', CastItem.getCastItem(type.cast, metal),
-          'F', "string",
-          'S', "stickWood"
-        ));
+        if(metal.canMakeTools) {
+          GameRegistry.addRecipe(new ShapedMetaAwareRecipe(
+            getTool(type, metal),
+            "H",
+            "F",
+            "S",
+            'H', CastItem.getCastItem(type.cast, metal),
+            'F', "string",
+            'S', "stickWood"
+          ));
+        }
       }
     }
   }
@@ -132,7 +134,9 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientTools.Type type : GradientTools.TYPES) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        list.add(getTool(type, metal));
+        if(metal.canMakeTools) {
+          list.add(getTool(type, metal));
+        }
       }
     }
   }

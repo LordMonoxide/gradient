@@ -54,6 +54,8 @@ public final class GradientItems {
   
   public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
   
+  public static final GradientItem MORTAR = RegistrationHandler.register(new Mortar());
+  
   public static final GradientItem CAST_ITEM = RegistrationHandler.register(new CastItem());
   public static final GradientItem TOOL      = RegistrationHandler.register(new Tool());
   

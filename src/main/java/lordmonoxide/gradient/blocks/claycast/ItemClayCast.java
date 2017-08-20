@@ -2,7 +2,6 @@ package lordmonoxide.gradient.blocks.claycast;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.GradientCasts;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -12,7 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemClayCast extends ItemBlock {
-  public ItemClayCast(final Block block) {
+  public ItemClayCast(final BlockClayCast block) {
     super(block);
     this.setHasSubtypes(true);
   }

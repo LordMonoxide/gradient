@@ -29,7 +29,7 @@ public class BlockClayBucketUnhardened extends GradientBlock implements Gradient
     GameRegistry.addShapedRecipe(
       new ItemStack(this),
       "C C",
-      " C ",
+      "CCC",
       'C', Items.CLAY_BALL
     );
   }
@@ -58,7 +58,7 @@ public class BlockClayBucketUnhardened extends GradientBlock implements Gradient
   }
   
   @Override
-  public int getHardeningTime() {
+  public int getHardeningTime(final IBlockState current) {
     return 60;
   }
 }

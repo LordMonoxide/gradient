@@ -123,6 +123,8 @@ tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
 tile.fire_pit.heat=Heat: %d °C
 
+tile.clay_bowl.unhardened.name=Unhardened Clay Bowl
+tile.clay_bowl.hardened.name=Clay Bowl
 tile.clay_bucket_unhardened.name=Unhardened Clay Bucket
 tile.clay_bucket.name=Clay Bucket
 tile.clay_furnace_unhardened.name=Unhardened Clay Furnace

@@ -1,6 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "gradient:clay_cast" },
     "cast=pickaxe": { "model": "gradient:clay_cast.pickaxe" },
     "cast=mattock": { "model": "gradient:clay_cast.mattock" },
     "cast=sword":   { "model": "gradient:clay_cast.sword" },

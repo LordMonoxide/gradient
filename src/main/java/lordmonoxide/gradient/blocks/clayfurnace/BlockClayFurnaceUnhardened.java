@@ -54,7 +54,7 @@ public class BlockClayFurnaceUnhardened extends GradientBlock implements Gradien
   }
   
   @Override
-  public int getHardeningTime() {
+  public int getHardeningTime(final IBlockState current) {
     return 180;
   }
   

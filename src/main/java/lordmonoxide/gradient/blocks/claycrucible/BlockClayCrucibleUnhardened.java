@@ -59,7 +59,7 @@ public class BlockClayCrucibleUnhardened extends GradientBlock implements Gradie
   }
   
   @Override
-  public int getHardeningTime() {
+  public int getHardeningTime(final IBlockState current) {
     return 180;
   }
 }

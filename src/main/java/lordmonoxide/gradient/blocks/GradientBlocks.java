@@ -2,6 +2,7 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.bronzeboiler.BlockBronzeBoiler;
+import lordmonoxide.gradient.blocks.claybowl.BlockClayBowl;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucketUnhardened;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
@@ -61,6 +62,8 @@ public final class GradientBlocks {
     CLAY_CAST = RegistrationHandler.register(block, new ItemClayCast(block));
   }
   
+  public static final BlockClayBowl CLAY_BOWL = RegistrationHandler.register(new BlockClayBowl());
+  
   public static final BlockBronzeBoiler BRONZE_BOILER = RegistrationHandler.register(new BlockBronzeBoiler());
   
   private GradientBlocks() {
@@ -75,6 +78,10 @@ public final class GradientBlocks {
     public static final Set<ItemBlock> ITEM_BLOCKS = new HashSet<>();
     
     private static <T extends GradientBlock> T register(final T block) {
+      if(block instanceof ItemBlockProvider) {
+        return register(block, ((ItemBlockProvider)block).getItemBlock(block));
+      }
+      
       return register(block, new ItemBlock(block));
     }
     

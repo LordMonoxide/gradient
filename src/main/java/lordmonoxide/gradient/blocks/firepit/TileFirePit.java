@@ -210,7 +210,7 @@ public class TileFirePit extends HeatProducer {
       return;
     }
     
-    this.hardenables.keySet().removeIf(pos -> !(this.getWorld().getBlockState(pos).getBlock() instanceof Hardenable));
+    this.hardenables.keySet().removeIf(pos -> !(this.getWorld().getBlockState(pos).getBlock() instanceof Hardenable) || ((Hardenable)this.getWorld().getBlockState(pos).getBlock()).isHardened(this.getWorld().getBlockState(pos)));
     this.hardenables.values().stream()
       .filter(Hardening::isHardened)
       .collect(Collectors.toList()) // Gotta decouple here to avoid concurrent modification exceptions
@@ -413,14 +413,14 @@ public class TileFirePit extends HeatProducer {
     return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory : super.getCapability(capability, facing);
   }
   
-  public static final class Hardening {
+  public final class Hardening {
     public final Hardenable block;
     public final BlockPos pos;
     private final long hardenStart;
     private final long hardenUntil;
     
     private Hardening(final Hardenable block, final BlockPos pos) {
-      this(block, pos, System.currentTimeMillis(), System.currentTimeMillis() + block.getHardeningTime() * 1000L);
+      this(block, pos, System.currentTimeMillis(), System.currentTimeMillis() + block.getHardeningTime(TileFirePit.this.world.getBlockState(pos)) * 1000L);
     }
     
     private Hardening(final Hardenable block, final BlockPos pos, final long hardenStart, final long hardenUntil) {

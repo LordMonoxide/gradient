@@ -1,5 +1,5 @@
 {
-  "parent": "gradient:block/clay_cast",
+  "parent": "gradient:block/clay_cast.sword",
   "display": {
     "thirdperson": {
       "rotation": [ -90, 0, 0 ],

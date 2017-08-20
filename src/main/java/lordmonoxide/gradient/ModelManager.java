@@ -102,15 +102,11 @@ public final class ModelManager {
       ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> fullModelLocation));
       return;
     }
-  
+    
     final NonNullList<ItemStack> stacks = NonNullList.create();
     item.getSubItems(item, item.getCreativeTab(), stacks);
     
-    if(item instanceof ItemBlock) {
-      stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(item.getRegistryName(), "inventory")));
-    } else {
-      stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory")));
-    }
+    stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory")));
   }
   
   /**

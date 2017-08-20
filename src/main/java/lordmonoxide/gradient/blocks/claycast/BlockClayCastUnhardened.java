@@ -82,7 +82,7 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientCr
   }
   
   @Override
-  public int getHardeningTime() {
+  public int getHardeningTime(final IBlockState current) {
     return 60;
   }
 }

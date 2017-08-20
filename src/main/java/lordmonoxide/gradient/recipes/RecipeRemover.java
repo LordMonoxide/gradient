@@ -86,7 +86,7 @@ public final class RecipeRemover {
     };
     
     Block[] blocks = {
-      //Blocks.PLANKS,
+      Blocks.FURNACE,
     };
     
     removeRecipes(tools);

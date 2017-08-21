@@ -3,7 +3,7 @@ jdk: oraclejdk8
 
 before_script:
   - ./gradlew setupDecompWorkspace
-  - ./travis_release
+  - ./travis_release.sh
 
 script:
   - ./gradlew build

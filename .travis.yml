@@ -12,7 +12,7 @@ deploy:
   api_key:
     secure: K4GDU5m36TiK9HWj7uyK1SWV8L8t2+S7lORpWyDcE9Jt+aNjs6qYG3FI4xX1WPrBPy+Ik5119tb4E/nX/mhd4MXZNBBO7d8FymhdM0FINn6xF/njvO7Gu3D5pckGO9c0G+igTVM78YAXxB6iY04EVtOS/7f/yv0phvHy1T3+EBkR6zaUlhN3h9aS8ua+ZoF1pZbossRNR0kLnq9TXZVRvshAyi38n5+QKu6OaYElkGdwObnXmFtxwt3GW58ElI0d4S2nuSeMM7LLgamrMEn6HndG/4UhdzyiI2AsFxaN1aunILxrVhp3uf9Kf4a32di033es0Ak42XMJxL0GW3g541J/P6i10keu8wQ5iB+GRwPZGG8Bf4fqV3h5TiRJ5l5hpuS0P8KmJWkh3JiTq89O3svCWv1f4cROy3iqq1qJVeYCSkZUy67wQDkbpdAgb89O5i/YboP3m4jykO9OVnWlb6mQWELsFYoP8vVrKSlvRr900M7MEvw1PJ933VBSgokckWgacM3u4hYG40JSw0D+U/Oo6rul+fS4MWgTs6EpMeVcWUiqy5/o5r+Jivi4T9vFBfpMSQ+PL1AkeEUW34YDbrjtpkwH+HaT8Hn1niT1jq5OHgA2xCoRQgkq5TuooEBhsmlo8fuZWfMJ36hu6B/pXqqKH/psYMomfceCeBDXFRc=
   file_glob: true
-  file: gradient-*.jar
+  file: build/libs/gradient-*.jar
   skip_cleanup: true
   on:
     repo: LordMonoxide/gradient

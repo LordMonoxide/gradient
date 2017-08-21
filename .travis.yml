@@ -16,4 +16,5 @@ deploy:
   skip_cleanup: true
   on:
     repo: LordMonoxide/gradient
-    branch: master
+    tags: true
+    all_branches: true

@@ -15,20 +15,14 @@ public final class GradientCasts {
   
   public static final List<Cast> CASTS = new ArrayList<>();
   
-  public static final Cast PICKAXE = register("pickaxe");
-  public static final Cast MATTOCK = register("mattock");
-  public static final Cast SWORD   = register("sword");
-  public static final Cast HAMMER  = register("hammer");
-  public static final Cast INGOT   = register("ingot", GradientItems.INGOT);
+  public static final Cast PICKAXE = register("pickaxe").tool().add();
+  public static final Cast MATTOCK = register("mattock").tool().add();
+  public static final Cast SWORD   = register("sword").tool().add();
+  public static final Cast HAMMER  = register("hammer").tool().add();
+  public static final Cast INGOT   = register("ingot").itemOverride(GradientItems.INGOT).add();
   
-  public static Cast register(final String name, @Nullable final Item itemOverride) {
-    final Cast cast = new Cast(name, itemOverride);
-    CASTS.add(cast);
-    return cast;
-  }
-  
-  public static Cast register(final String name) {
-    return register(name, null);
+  public static CastBuilder register(final String name) {
+    return new CastBuilder(name);
   }
   
   public static class Cast implements Comparable<Cast> {
@@ -36,16 +30,14 @@ public final class GradientCasts {
     
     public final int id;
     public final String name;
+    public final boolean canMakeTools;
     public final Item itemOverride;
     
-    public Cast(final String name, @Nullable final Item itemOverride) {
+    public Cast(final String name, final boolean canMakeTools, @Nullable final Item itemOverride) {
       this.id = currentId++;
       this.name = name;
+      this.canMakeTools = canMakeTools;
       this.itemOverride = itemOverride;
-    }
-    
-    public Cast(final String name) {
-      this(name, null);
     }
     
     @Override
@@ -96,6 +88,34 @@ public final class GradientCasts {
     @Override
     public String getName(final Cast cast) {
       return cast.name;
+    }
+  }
+  
+  public static final class CastBuilder {
+    private final String name;
+    
+    private boolean tool;
+    
+    private Item itemOverride;
+    
+    private CastBuilder(final String name) {
+      this.name = name;
+    }
+    
+    public CastBuilder tool() {
+      this.tool = true;
+      return this;
+    }
+    
+    public CastBuilder itemOverride(final Item itemOverride) {
+      this.itemOverride = itemOverride;
+      return this;
+    }
+    
+    public Cast add() {
+      final Cast cast = new Cast(this.name, this.tool, this.itemOverride);
+      CASTS.add(cast);
+      return cast;
     }
   }
 }

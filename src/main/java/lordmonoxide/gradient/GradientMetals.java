@@ -20,15 +20,17 @@ public final class GradientMetals {
   public static final Metal    INVALID_METAL    = addMetal("invalid", Integer.MAX_VALUE, 0, 0).add();
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
   
+  public static final Metal COPPER    = addMetal("copper",    1085.00f, 3.0f,  63.55f).add();
+  public static final Metal TIN       = addMetal("tin",        231.93f, 1.5f, 118.71f).add();
+  public static final Metal IRON      = addMetal("iron",      1538.00f, 4.0f,  55.85f).add();
+  public static final Metal GOLD      = addMetal("gold",      1064.00f, 2.0f, 196.97f).add();
+  public static final Metal BRONZE    = addMetal("bronze",     950.00f, 3.5f, 182.26f).add();
+  public static final Metal MAGNESIUM = addMetal("magnesium",  650.00f, 2.5f,  24.31f).disableTools().add();
+  
+  public static final Metal GLASS = addMetal("glass", 1200.00f, 5.0f, 50.0f).disableTools().add();
+  
   static {
-    addMetal("copper",    1085.00f, 3.0f,  63.55f).add();
-    addMetal("tin",        231.93f, 1.5f, 118.71f).add();
-    addMetal("iron",      1538.00f, 4.0f,  55.85f).add();
-    addMetal("gold",      1064.00f, 2.0f, 196.97f).add();
-    addMetal("bronze",     950.00f, 3.5f, 182.26f).add();
-    addMetal("magnesium",  650.00f, 2.5f,  24.31f).disableTools().add();
-    
-    addAlloy(metalStack("bronze", 4), getMetal("copper"), getMetal("copper"), getMetal("copper"), getMetal("tin"));
+    addAlloy(metalStack(BRONZE, 4), COPPER, COPPER, COPPER, TIN);
   }
   
   static void registerMeltables() {
@@ -47,6 +49,10 @@ public final class GradientMetals {
         addMeltable(oreName, oreName.substring(4).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
       }
     }
+    
+    addMeltable("blockSand",  GLASS, 1, Fluid.BUCKET_VOLUME);
+    addMeltable("blockGlass", GLASS, 1, Fluid.BUCKET_VOLUME);
+    addMeltable("paneGlass",  GLASS, 1, Fluid.BUCKET_VOLUME / 16);
   }
   
   public static ItemStack getBucket(final GradientMetals.MetalStack metal) {
@@ -100,8 +106,16 @@ public final class GradientMetals {
     return metals.get(index);
   }
   
+  private static MetalStack metalStack(final Metal metal, final int amount) {
+    return new MetalStack(metal, amount);
+  }
+  
   private static MetalStack metalStack(final String metal, final int amount) {
-    return new MetalStack(getMetal(metal), amount);
+    return metalStack(getMetal(metal), amount);
+  }
+  
+  private static MetalStack metalStack(final Metal metal) {
+    return metalStack(metal, 1);
   }
   
   private static MetalStack metalStack(final String metal) {
@@ -222,10 +236,10 @@ public final class GradientMetals {
   }
   
   public static final class MetalBuilder {
-    public final String name;
-    public final float meltTemp;
-    public final float  hardness;
-    public final float  weight;
+    private final String name;
+    private final float meltTemp;
+    private final float  hardness;
+    private final float  weight;
     
     private boolean canMakeTools = true;
     

@@ -30,13 +30,13 @@ public final class GradientCasts {
     
     public final int id;
     public final String name;
-    public final boolean canMakeTools;
+    public final boolean tool;
     public final Item itemOverride;
     
-    public Cast(final String name, final boolean canMakeTools, @Nullable final Item itemOverride) {
+    public Cast(final String name, final boolean tool, @Nullable final Item itemOverride) {
       this.id = currentId++;
       this.name = name;
-      this.canMakeTools = canMakeTools;
+      this.tool = tool;
       this.itemOverride = itemOverride;
     }
     

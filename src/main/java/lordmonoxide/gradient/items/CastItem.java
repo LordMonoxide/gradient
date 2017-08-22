@@ -64,7 +64,7 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       if(cast.itemOverride == null) {
         for(final GradientMetals.Metal metal : GradientMetals.metals) {
-          if(metal.canMakeTools && cast.canMakeTools) {
+          if(cast.tool && metal.canMakeTools) {
             GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
               getCastItem(cast, metal),
               GradientMetals.getBucket(metal),
@@ -92,7 +92,9 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       if(cast.itemOverride == null) {
         for(final GradientMetals.Metal metal : GradientMetals.metals) {
-          list.add(getCastItem(cast, metal));
+          if(cast.tool && metal.canMakeTools) {
+            list.add(getCastItem(cast, metal));
+          }
         }
       }
     }

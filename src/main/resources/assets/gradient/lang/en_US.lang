@@ -116,6 +116,7 @@ fluid.iron=Molten Iron
 fluid.gold=Molten Gold
 fluid.bronze=Molten Bronze
 fluid.magnesium=Molten Magnesium
+fluid.glass=Molten Glass
 
 # Blocks
 tile.ore_magnesium.name=Magnesium Ore

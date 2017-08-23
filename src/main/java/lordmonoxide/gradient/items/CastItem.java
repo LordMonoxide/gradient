@@ -65,14 +65,14 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   public void addRecipe() {
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        final ItemStack override = cast.itemOverride.get(metal);
-        
         if(!cast.tool || metal.canMakeTools) {
           int amount = cast.amount / Fluid.BUCKET_VOLUME;
           
-          Object[] parts = new Object[amount + 1];
+          final Object[] parts = new Object[amount + 1];
           parts[0] = ItemClayCast.getCast(cast);
           Arrays.fill(parts, 1, amount + 1, GradientMetals.getBucket(metal));
+          
+          final ItemStack override = cast.itemOverride.get(metal);
           
           GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
             override == null ? getCastItem(cast, metal) : override,
@@ -97,11 +97,9 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
-      if(cast.itemOverride == null) {
-        for(final GradientMetals.Metal metal : GradientMetals.metals) {
-          if(cast.tool && metal.canMakeTools) {
-            list.add(getCastItem(cast, metal));
-          }
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+        if((!cast.tool || metal.canMakeTools) && cast.itemOverride.get(metal) == null) {
+          list.add(getCastItem(cast, metal));
         }
       }
     }

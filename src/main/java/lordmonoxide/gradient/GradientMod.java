@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = GradientMod.MODID, name = GradientMod.NAME, version = GradientMod.VERSION)
+@Mod(modid = GradientMod.MODID, name = GradientMod.NAME, version = GradientMod.VERSION, dependencies = "after:ic2")
 public class GradientMod {
   public static final String MODID = "gradient";
   public static final String NAME = "Gradient";

@@ -20,7 +20,14 @@ public final class GradientCasts {
   public static final Cast SWORD   = register("sword").tool().add();
   public static final Cast HAMMER  = register("hammer").tool().add();
   public static final Cast INGOT   = register("ingot").itemOverride(GradientItems.INGOT).add();
-  public static final Cast BLOCK   = register("block").itemOverride(GradientItems.BLOCK).itemOverride(GradientMetals.GLASS, new ItemStack(Blocks.GLASS)).amount(Fluid.BUCKET_VOLUME * 8).add();
+  
+  public static final Cast BLOCK = register("block")
+    .itemOverride(GradientItems.BLOCK)
+    .itemOverride(GradientMetals.IRON,  new ItemStack(Blocks.IRON_BLOCK))
+    .itemOverride(GradientMetals.GOLD,  new ItemStack(Blocks.GOLD_BLOCK))
+    .itemOverride(GradientMetals.GLASS, new ItemStack(Blocks.GLASS))
+    .amount(Fluid.BUCKET_VOLUME * 8)
+    .add();
   
   public static CastBuilder register(final String name) {
     return new CastBuilder(name);

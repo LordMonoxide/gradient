@@ -47,12 +47,14 @@ public final class GradientMetals {
         }
       } else if(oreName.startsWith("dust")) {
         addMeltable(oreName, oreName.substring(4).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
+      } else if(oreName.startsWith("block")) {
+        addMeltable(oreName, oreName.substring(5).toLowerCase(), 8, Fluid.BUCKET_VOLUME * 8);
       }
     }
     
-    addMeltable("blockSand",  GLASS, 1, Fluid.BUCKET_VOLUME);
-    addMeltable("blockGlass", GLASS, 1, Fluid.BUCKET_VOLUME);
-    addMeltable("paneGlass",  GLASS, 1, Fluid.BUCKET_VOLUME / 16);
+    addMeltable("sand",       GLASS, 8, Fluid.BUCKET_VOLUME * 8);
+    addMeltable("blockGlass", GLASS, 8, Fluid.BUCKET_VOLUME * 8);
+    addMeltable("paneGlass",  GLASS, 8.0f / 16.0f, Fluid.BUCKET_VOLUME * 8 / 16);
   }
   
   public static ItemStack getBucket(final GradientMetals.MetalStack metal) {

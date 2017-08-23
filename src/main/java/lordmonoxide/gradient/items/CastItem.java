@@ -16,10 +16,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,15 +64,20 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   @Override
   public void addRecipe() {
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
-      if(cast.itemOverride == null) {
-        for(final GradientMetals.Metal metal : GradientMetals.metals) {
-          if(cast.tool && metal.canMakeTools) {
-            GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
-              getCastItem(cast, metal),
-              GradientMetals.getBucket(metal),
-              ItemClayCast.getCast(cast)
-            ));
-          }
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+        final ItemStack override = cast.itemOverride.get(metal);
+        
+        if(!cast.tool || metal.canMakeTools) {
+          int amount = cast.amount / Fluid.BUCKET_VOLUME;
+          
+          Object[] parts = new Object[amount + 1];
+          parts[0] = ItemClayCast.getCast(cast);
+          Arrays.fill(parts, 1, amount + 1, GradientMetals.getBucket(metal));
+          
+          GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
+            override == null ? getCastItem(cast, metal) : override,
+            parts
+          ));
         }
       }
     }

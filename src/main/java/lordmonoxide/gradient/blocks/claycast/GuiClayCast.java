@@ -5,7 +5,6 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.containers.GradientGuiContainer;
 import lordmonoxide.gradient.items.CastItem;
 import lordmonoxide.gradient.GradientCasts;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
@@ -46,7 +45,7 @@ public class GuiClayCast extends GradientGuiContainer {
   }
   
   private GuiButton addButtonForTool(final GradientCasts.Cast cast, final int x, final int y) {
-    return this.addButton(new ItemButton(cast.id, cast.itemOverride != null ? cast.itemOverride.getDefaultInstance() : CastItem.getCastItem(cast, GradientMetals.INVALID_METAL), x, y));
+    return this.addButton(new ItemButton(cast.id, !cast.itemOverride.isEmpty() ? cast.itemOverride.get(GradientMetals.COPPER) : CastItem.getCastItem(cast, GradientMetals.INVALID_METAL), x, y));
   }
   
   @Override

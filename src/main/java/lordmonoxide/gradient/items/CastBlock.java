@@ -8,20 +8,20 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class Ingot extends GradientItem {
-  public Ingot() {
-    super("ingot", CreativeTabs.MATERIALS);
+public class CastBlock extends GradientItem {
+  public CastBlock() {
+    super("cast_block", CreativeTabs.MATERIALS);
     this.setHasSubtypes(true);
   }
   
   @SideOnly(Side.CLIENT)
-  public ItemStack getIngot(final GradientMetals.Metal metal) {
-    return this.getItemStack(1, metal.id);
+  public static ItemStack getBlock(final GradientMetals.Metal metal) {
+    return GradientItems.BLOCK.getItemStack(1, metal.id);
   }
   
   @SideOnly(Side.CLIENT)
-  public ItemStack getIngot(final GradientMetals.Metal metal, int amount) {
-    return this.getIngot(metal);
+  public static ItemStack getBlock(final GradientMetals.Metal metal, int amount) {
+    return getBlock(metal);
   }
   
   @Override
@@ -37,6 +37,6 @@ public class Ingot extends GradientItem {
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(this::getIngot).forEach(list::add);
+    GradientMetals.metals.stream().map(CastBlock::getBlock).forEach(list::add);
   }
 }

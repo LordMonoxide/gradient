@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

@@ -6,9 +6,9 @@ import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.Tool;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockTorch;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +19,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -120,67 +119,68 @@ public final class RecipeRemover {
   }
   
   private static void replacePlankRecipes() {
-    // This would all be so much easier if logs weren't split up into LOG and LOG2
+    final List<IRecipe> toAdd = new ArrayList<>();
     
-    List<IRecipe> toAdd = new ArrayList<>();
+    final Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
     
-    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+    int removed = 0;
     
     while(it.hasNext()) {
-      IRecipe recipe = it.next();
+      final IRecipe recipe = it.next();
       
-      ItemStack output = recipe.getRecipeOutput();
+      final ItemStack output = recipe.getRecipeOutput();
       
-      // Is the result planks?
-      if(!output.isEmpty() && output.getItem() instanceof ItemBlock) {
-        if(((ItemBlock)output.getItem()).block instanceof BlockPlanks) {
-          ItemStack component = ItemStack.EMPTY;
+      if(!(output.getItem() instanceof ItemBlock) || !(((ItemBlock)output.getItem()).block instanceof BlockPlanks)) {
+        continue;
+      }
+      
+      for(final ItemStack log : OreDictionary.getOres("logWood")) {
+        if(!(log.getItem() instanceof ItemBlock)) {
+          continue;
+        }
+        
+        final Block block = ((ItemBlock)log.getItem()).block;
+        
+        for(final IBlockState state : block.getBlockState().getValidStates()) {
+          final ItemStack stack = log.copy();
+          stack.setItemDamage(block.getMetaFromState(state));
           
-          // Grab the component so we can check if it's a single log
-          if(recipe instanceof ShapelessRecipes) {
-            List<ItemStack> components = ((ShapelessRecipes)recipe).recipeItems;
-            
-            if(components.size() == 1) {
-              component = components.get(0);
-            }
-          } else if(recipe instanceof ShapedRecipes) {
-            ItemStack[] components = ((ShapedRecipes)recipe).recipeItems;
-            
-            if(components.length == 1) {
-              component = components[0];
-            }
-          }
+          final InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 2, 2);
+          inv.setInventorySlotContents(0, stack);
           
-          // Is the component logs?
-          if(!component.isEmpty() && component.getItem() instanceof ItemBlock) {
-            if(((ItemBlock)component.getItem()).block instanceof BlockLog) {
-              // Add the new recipe
-              toAdd.add(new ShapelessRecipes(
+          if(recipe.matches(inv, null)) {
+            toAdd.add(new ShapelessRecipes(
+              new ItemStack(output.getItem(), 2, output.getMetadata()),
+              Lists.newArrayList(stack, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
+            ));
+            
+            for(final GradientMetals.Metal metal : GradientMetals.metals) {
+              final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
+              tool.setItemDamage(OreDictionary.WILDCARD_VALUE);
+              
+              toAdd.add(new ShapelessMetaAwareRecipe(
                 new ItemStack(output.getItem(), 2, output.getMetadata()),
-                Lists.newArrayList(component, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
+                stack,
+                tool
               ));
-              
-              for(GradientMetals.Metal metal : GradientMetals.metals) {
-                ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
-                tool.setItemDamage(OreDictionary.WILDCARD_VALUE);
-                
-                toAdd.add(new ShapelessMetaAwareRecipe(
-                  new ItemStack(output.getItem(), 2, output.getMetadata()),
-                  component,
-                  tool
-                ));
-              }
-              
-              // Remove the old one
-              it.remove();
             }
+            
+            it.remove();
+            
+            removed++;
           }
         }
       }
     }
     
-    for(IRecipe recipe : toAdd) {
+    for(final IRecipe recipe : toAdd) {
       GameRegistry.addRecipe(recipe);
+    }
+    
+    if(removed == 0) {
+      System.out.println("Failed to replaced plank recipes!");
+    } else {
+      System.out.println("Replaced " + removed + " plank recipes!");
     }
   }
   

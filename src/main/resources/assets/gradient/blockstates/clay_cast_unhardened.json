@@ -4,6 +4,7 @@
     "cast=mattock": { "model": "gradient:clay_cast_unhardened.mattock" },
     "cast=sword":   { "model": "gradient:clay_cast_unhardened.sword" },
     "cast=hammer":  { "model": "gradient:clay_cast_unhardened.hammer" },
-    "cast=ingot":   { "model": "gradient:clay_cast_unhardened.ingot" }
+    "cast=ingot":   { "model": "gradient:clay_cast_unhardened.ingot" },
+    "cast=block":   { "model": "gradient:clay_cast_unhardened.block" }
   }
 }

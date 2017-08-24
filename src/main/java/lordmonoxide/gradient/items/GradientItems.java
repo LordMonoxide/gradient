@@ -51,7 +51,6 @@ public final class GradientItems {
   public static final GradientItem NUGGET = RegistrationHandler.register(new Nugget());
   public static final GradientItem DUST   = RegistrationHandler.register(new Dust());
   public static final GradientItem PLATE  = RegistrationHandler.register(new Plate());
-  public static final GradientItem BLOCK  = RegistrationHandler.register(new CastBlock());
   
   public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
   
@@ -87,7 +86,7 @@ public final class GradientItems {
       OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));
       OreDictionary.registerOre("nugget" + caps, NUGGET.getItemStack(1, metal.id));
       OreDictionary.registerOre("dust" + caps, DUST.getItemStack(1, metal.id));
-      OreDictionary.registerOre("block" + caps, BLOCK.getItemStack(1, metal.id));
+      OreDictionary.registerOre("block" + caps, CAST_ITEM.getItemStack(1, metal.id));
     }
     
     OreDictionary.registerOre("dustFlint", DUST_FLINT);

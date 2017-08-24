@@ -33,7 +33,7 @@ public interface ItemBlockProvider {
         if(!this.getHasSubtypes()) {
           this.block.getSubBlocks(item, tab, subItems);
         } else {
-          for(IBlockState state : this.block.getBlockState().getValidStates()) {
+          for(final IBlockState state : this.block.getBlockState().getValidStates()) {
             subItems.add(new ItemStack(item, 1, this.block.getMetaFromState(state)));
           }
         }

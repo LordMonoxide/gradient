@@ -38,7 +38,7 @@ public final class RecipeRemover {
   };
   
   public static void remove() {
-    Item[] tools = {
+    final Item[] tools = {
       Items.WOODEN_PICKAXE,
       Items.STONE_PICKAXE,
       Items.IRON_PICKAXE,
@@ -75,7 +75,7 @@ public final class RecipeRemover {
       Items.LEATHER_BOOTS,
     };
     
-    Item[] items = {
+    final Item[] items = {
       Items.STICK,
       Items.field_191525_da, // IRON_NUGGET
       Items.IRON_INGOT,
@@ -83,7 +83,7 @@ public final class RecipeRemover {
       Items.GOLD_INGOT,
     };
     
-    Block[] blocks = {
+    final Block[] blocks = {
       Blocks.FURNACE,
     };
     

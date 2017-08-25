@@ -6,7 +6,6 @@ import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.Tool;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -130,44 +129,58 @@ public final class RecipeRemover {
       
       final ItemStack output = recipe.getRecipeOutput();
       
-      if(!(output.getItem() instanceof ItemBlock) || !(((ItemBlock)output.getItem()).block instanceof BlockPlanks)) {
-        continue;
-      }
-      
-      for(final ItemStack log : OreDictionary.getOres("logWood")) {
-        if(!(log.getItem() instanceof ItemBlock)) {
+      outerLoop:
+      for(final ItemStack stackPlankBlock : OreDictionary.getOres("plankWood")) {
+        if(!(stackPlankBlock.getItem() instanceof ItemBlock)) {
           continue;
         }
         
-        final Block block = ((ItemBlock)log.getItem()).block;
+        final Block blockPlank = ((ItemBlock)stackPlankBlock.getItem()).block;
         
-        for(final IBlockState state : block.getBlockState().getValidStates()) {
-          final ItemStack stack = log.copy();
-          stack.setItemDamage(block.getMetaFromState(state));
+        for(final IBlockState statePlank : blockPlank.getBlockState().getValidStates()) {
+          final ItemStack stackPlank = stackPlankBlock.copy();
+          stackPlank.setItemDamage(blockPlank.getMetaFromState(statePlank));
           
-          final InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 2, 2);
-          inv.setInventorySlotContents(0, stack);
-          
-          if(recipe.matches(inv, null)) {
-            toAdd.add(new ShapelessRecipes(
-              new ItemStack(output.getItem(), 2, output.getMetadata()),
-              Lists.newArrayList(stack, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
-            ));
-            
-            for(final GradientMetals.Metal metal : GradientMetals.metals) {
-              final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
-              tool.setItemDamage(OreDictionary.WILDCARD_VALUE);
+          if(output.isItemEqual(stackPlank)) {
+            for(final ItemStack stackLogBlock : OreDictionary.getOres("logWood")) {
+              if(!(stackLogBlock.getItem() instanceof ItemBlock)) {
+                continue;
+              }
               
-              toAdd.add(new ShapelessMetaAwareRecipe(
-                new ItemStack(output.getItem(), 2, output.getMetadata()),
-                stack,
-                tool
-              ));
+              final Block blockLog = ((ItemBlock)stackLogBlock.getItem()).block;
+              
+              for(final IBlockState stateLog : blockLog.getBlockState().getValidStates()) {
+                final ItemStack stackLog = stackLogBlock.copy();
+                stackLog.setItemDamage(blockLog.getMetaFromState(stateLog));
+                
+                final InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 2, 2);
+                inv.setInventorySlotContents(0, stackLog);
+                
+                if(recipe.matches(inv, null)) {
+                  toAdd.add(new ShapelessRecipes(
+                    new ItemStack(output.getItem(), 2, output.getMetadata()),
+                    Lists.newArrayList(stackLog, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
+                  ));
+                  
+                  for(final GradientMetals.Metal metal : GradientMetals.metals) {
+                    final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
+                    tool.setItemDamage(OreDictionary.WILDCARD_VALUE);
+                    
+                    toAdd.add(new ShapelessMetaAwareRecipe(
+                      new ItemStack(output.getItem(), 2, output.getMetadata()),
+                      stackLog,
+                      tool
+                    ));
+                  }
+                  
+                  it.remove();
+                  
+                  removed++;
+                  
+                  break outerLoop;
+                }
+              }
             }
-            
-            it.remove();
-            
-            removed++;
           }
         }
       }

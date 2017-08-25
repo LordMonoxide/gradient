@@ -25,7 +25,19 @@ public final class DisableBreakingBlocksWithoutTools {
     
     final ItemStack held = event.getEntityPlayer().getHeldItemMainhand();
     
-    if(held.isEmpty() || !held.getItem().canHarvestBlock(event.getState(), held)) {
+    if(held.isEmpty()) {
+      event.setCanceled(true);
+      return;
+    }
+    
+    if(!held.getItem().canHarvestBlock(event.getState(), held)) {
+      for(final String toolClass : held.getItem().getToolClasses(held)) {
+        if(state.getBlock().isToolEffective(toolClass, event.getState())) {
+          return;
+        }
+      }
+      
+      System.out.println("Cancelling event");
       event.setCanceled(true);
     }
   }

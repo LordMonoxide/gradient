@@ -37,7 +37,6 @@ public final class DisableBreakingBlocksWithoutTools {
         }
       }
       
-      System.out.println("Cancelling event");
       event.setCanceled(true);
     }
   }

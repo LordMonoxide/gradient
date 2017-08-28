@@ -52,6 +52,13 @@
           "fluid": "magnesium"
         }
       }
+    ],
+    "glass": [
+      {
+        "custom": {
+          "fluid": "glass"
+        }
+      }
     ]
   }
 }

@@ -37,6 +37,6 @@ public class Nugget extends GradientItem {
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(this::getNugget).forEach(list::add);
+    GradientMetals.metals.stream().filter(metal -> metal.canMakeNuggets).map(this::getNugget).forEach(list::add);
   }
 }

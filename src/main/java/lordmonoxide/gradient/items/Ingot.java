@@ -37,6 +37,6 @@ public class Ingot extends GradientItem {
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(this::getIngot).forEach(list::add);
+    GradientMetals.metals.stream().filter(metal -> metal.canMakeIngots).map(this::getIngot).forEach(list::add);
   }
 }

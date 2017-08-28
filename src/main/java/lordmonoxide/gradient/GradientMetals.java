@@ -27,7 +27,7 @@ public final class GradientMetals {
   public static final Metal BRONZE    = addMetal("bronze",     950.00f, 3.5f, 182.26f).add();
   public static final Metal MAGNESIUM = addMetal("magnesium",  650.00f, 2.5f,  24.31f).disableTools().add();
   
-  public static final Metal GLASS = addMetal("glass", 1200.00f, 5.0f, 50.0f).disableTools().add();
+  public static final Metal GLASS = addMetal("glass", 1200.00f, 5.0f, 50.0f).disableTools().disableNuggets().disableIngots().add();
   
   static {
     addAlloy(metalStack(BRONZE, 4), COPPER, COPPER, COPPER, TIN);
@@ -154,7 +154,7 @@ public final class GradientMetals {
     return INVALID_METAL;
   }
   
-  public static class Metal {
+  public static final class Metal {
     private static int currentId;
     
     public final int    id;
@@ -173,11 +173,13 @@ public final class GradientMetals {
     public final double attackSpeedMultiplier;
     
     public final boolean canMakeTools;
+    public final boolean canMakeNuggets;
+    public final boolean canMakeIngots;
     
     private ItemStack nugget;
     Fluid fluid;
     
-    private Metal(final String name, final float meltTemp, final float hardness, final float weight, final boolean canMakeTools) {
+    private Metal(final String name, final float meltTemp, final float hardness, final float weight, final boolean canMakeTools, final boolean canMakeNuggets, final boolean canMakeIngots) {
       this.id = currentId++;
       this.name = name;
       this.meltTime = Math.round(hardness * 7.5f);
@@ -194,6 +196,8 @@ public final class GradientMetals {
       this.attackSpeedMultiplier  = 1 / weight * 100;
       
       this.canMakeTools = canMakeTools;
+      this.canMakeNuggets = canMakeNuggets;
+      this.canMakeIngots = canMakeIngots;
     }
     
     public ItemStack getNugget() {
@@ -239,11 +243,13 @@ public final class GradientMetals {
   
   public static final class MetalBuilder {
     private final String name;
-    private final float meltTemp;
+    private final float  meltTemp;
     private final float  hardness;
     private final float  weight;
     
     private boolean canMakeTools = true;
+    private boolean canMakeNuggets = true;
+    private boolean canMakeIngots = true;
     
     private MetalBuilder(final String name, final float meltTemp, final float hardness, final float weight) {
       this.name = name;
@@ -257,8 +263,18 @@ public final class GradientMetals {
       return this;
     }
     
+    public MetalBuilder disableNuggets() {
+      this.canMakeNuggets = false;
+      return this;
+    }
+    
+    public MetalBuilder disableIngots() {
+      this.canMakeIngots = false;
+      return this;
+    }
+    
     public Metal add() {
-      final Metal metal = new Metal(this.name, this.meltTemp, this.hardness, this.weight, this.canMakeTools);
+      final Metal metal = new Metal(this.name, this.meltTemp, this.hardness, this.weight, this.canMakeTools, this.canMakeNuggets, this.canMakeIngots);
       metals.add(metal);
       return metal;
     }

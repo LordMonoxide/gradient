@@ -99,6 +99,7 @@ item.dust.gold.name=Gold Dust
 item.dust.bronze.name=Bronze Dust
 item.dust.magnesium.name=Magnesium Dust
 item.dust.flint.name=Flint Dust
+item.dust.glass.name=Glass Dust
 item.plate.invalid.name=Invalid Plate
 item.plate.copper.name=Copper Plate
 item.plate.tin.name=Tin Plate

@@ -41,13 +41,13 @@ public class Plate extends GradientItem implements GradientCraftable {
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(this::getPlate).forEach(list::add);
+    GradientMetals.metals.stream().filter(metal -> metal.hardness <= 4.0f).map(this::getPlate).forEach(list::add);
   }
   
   @Override
   public void addRecipe() {
     for(GradientMetals.Metal toolMetal : GradientMetals.metals) {
-      GradientMetals.metals.stream().map(metal -> new ShapelessMetaAwareRecipe(
+      GradientMetals.metals.stream().filter(metal -> metal.hardness <= 4.0f).map(metal -> new ShapelessMetaAwareRecipe(
         this.getItemStack(1, metal.id),
         GradientItems.INGOT.getItemStack(1, metal.id),
         Tool.getTool(GradientTools.HAMMER, toolMetal)

@@ -31,7 +31,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
     }
     
     for(int i = 0; i < 4; ++i) {
-      EntityEquipmentSlot entityequipmentslot = VALID_EQUIPMENT_SLOTS[i];
+      final EntityEquipmentSlot entityequipmentslot = VALID_EQUIPMENT_SLOTS[i];
       
       this.addSlotToContainer(new Slot(playerInventory, 36 + (3 - i), 8, 8 + i * 18) {
         @Override
@@ -87,7 +87,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
     super.onContainerClosed(player);
     
     for(int i = 0; i < CRAFT_SIZE * CRAFT_SIZE; i++) {
-      ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
+      final ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
       
       if(!itemstack.isEmpty()) {
         player.dropItem(itemstack, false);

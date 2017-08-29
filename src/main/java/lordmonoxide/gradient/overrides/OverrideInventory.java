@@ -5,7 +5,6 @@ import lordmonoxide.gradient.inventory.GuiInventory3x3Crafting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -30,8 +29,10 @@ public final class OverrideInventory {
     if(event.getEntity() instanceof EntityPlayer) {
       final EntityPlayer player = (EntityPlayer)event.getEntity();
       
-      player.inventoryContainer = new ContainerPlayer3x3Crafting(player.inventory, !player.world.isRemote, player);
-      player.openContainer = player.inventoryContainer;
+      if(!(player.inventoryContainer instanceof ContainerPlayer3x3Crafting)) {
+        player.inventoryContainer = new ContainerPlayer3x3Crafting(player.inventory, !player.world.isRemote, player);
+        player.openContainer = player.inventoryContainer;
+      }
     }
   }
 }

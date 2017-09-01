@@ -112,7 +112,8 @@ public final class RecipeRemover {
       final ItemStack stack = it.next().getRecipeOutput();
       
       if(predicate.apply(stack)) {
-        it.remove();
+        //TODO
+        //it.remove();
       }
     }
   }
@@ -174,7 +175,8 @@ public final class RecipeRemover {
                     ));
                   }
                   
-                  it.remove();
+                  //TODO
+                  //it.remove();
                   
                   removed++;
                   
@@ -218,8 +220,9 @@ public final class RecipeRemover {
           inv.setInventorySlotContents(3, new ItemStack(Items.STRING));
           
           if(recipe.matches(inv, null)) {
-            it.remove();
-            removed++;
+            //TODO
+            //it.remove();
+            //removed++;
           }
         }
       }
@@ -249,15 +252,17 @@ public final class RecipeRemover {
           inv.setInventorySlotContents(1, new ItemStack(Items.STICK));
           
           if(recipe.matches(inv, null)) {
-            it.remove();
-            removed++;
+            //TODO
+            //it.remove();
+            //removed++;
           }
           
           inv.setInventorySlotContents(0, new ItemStack(Items.COAL, 1, 1));
           
           if(recipe.matches(inv, null)) {
-            it.remove();
-            removed++;
+            //TODO
+            //it.remove();
+            //removed++;
           }
         }
       }

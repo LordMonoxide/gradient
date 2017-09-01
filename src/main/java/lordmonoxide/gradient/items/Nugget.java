@@ -2,7 +2,6 @@ package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,7 +35,7 @@ public class Nugget extends GradientItem {
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
     GradientMetals.metals.stream().filter(metal -> metal.canMakeNuggets).map(this::getNugget).forEach(list::add);
   }
 }

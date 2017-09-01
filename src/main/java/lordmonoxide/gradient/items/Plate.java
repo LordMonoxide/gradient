@@ -5,7 +5,6 @@ import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.recipes.GradientCraftable;
 import lordmonoxide.gradient.recipes.ShapelessMetaAwareRecipe;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -40,7 +39,7 @@ public class Plate extends GradientItem implements GradientCraftable {
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
     GradientMetals.metals.stream().filter(metal -> metal.hardness <= 4.0f).map(this::getPlate).forEach(list::add);
   }
   

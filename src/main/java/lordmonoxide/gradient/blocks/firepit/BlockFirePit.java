@@ -24,10 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -63,14 +60,12 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   }
   
   @Override
-  public List<ItemStack> getDrops(final IBlockAccess world, final BlockPos pos, final IBlockState state, final int fortune) {
-    final List<ItemStack> ret = super.getDrops(world, pos, state, fortune);
+  public void getDrops(final NonNullList<ItemStack> drops, final IBlockAccess world, final BlockPos pos, final IBlockState state, final int fortune) {
+    super.getDrops(drops, world, pos, state, fortune);
     
     if(state.getValue(HAS_FURNACE)) {
-      ret.add(new ItemStack(GradientBlocks.CLAY_FURNACE));
+      drops.add(new ItemStack(GradientBlocks.CLAY_FURNACE));
     }
-    
-    return ret;
   }
   
   @Override
@@ -135,7 +130,7 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
           }
         }
         
-        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).block instanceof BlockClayFurnace) {
+        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() instanceof BlockClayFurnace) {
           if(!state.getValue(HAS_FURNACE)) {
             final TileFirePit te = (TileFirePit)world.getTileEntity(pos);
             

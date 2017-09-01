@@ -44,6 +44,7 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientCr
   }
   
   @Override
+  @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
     return this.getDefaultState().withProperty(CAST, GradientCasts.CASTS.get(meta));
   }

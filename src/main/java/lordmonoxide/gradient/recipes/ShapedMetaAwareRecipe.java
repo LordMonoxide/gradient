@@ -23,7 +23,7 @@ public class ShapedMetaAwareRecipe extends ShapedOreRecipe {
         final int subX = x - startX;
         final int subY = y - startY;
         
-        final Object target = subX >= 0 && subY >= 0 && subX < this.width && subY < this.height ? this.input[(mirror ? this.width - subX - 1 : subX) + subY * this.width] : null;
+        final Object target = subX >= 0 && subY >= 0 && subX < this.width && subY < this.height ? this.input.get((mirror ? this.width - subX - 1 : subX) + subY * this.width) : null;
         
         final ItemStack slot = inv.getStackInRowAndColumn(x, y);
         

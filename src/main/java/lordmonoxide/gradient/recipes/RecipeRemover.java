@@ -77,7 +77,7 @@ public final class RecipeRemover {
     
     final Item[] items = {
       Items.STICK,
-      Items.field_191525_da, // IRON_NUGGET
+      Items.IRON_NUGGET,
       Items.IRON_INGOT,
       Items.GOLD_NUGGET,
       Items.GOLD_INGOT,
@@ -106,7 +106,7 @@ public final class RecipeRemover {
   }
   
   private static <T> void removeRecipes(final Function<ItemStack, Boolean> predicate) {
-    final Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+    final Iterator<IRecipe> it = CraftingManager.REGISTRY.iterator();
   
     while(it.hasNext()) {
       final ItemStack stack = it.next().getRecipeOutput();
@@ -120,7 +120,7 @@ public final class RecipeRemover {
   private static void replacePlankRecipes() {
     final List<IRecipe> toAdd = new ArrayList<>();
     
-    final Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+    final Iterator<IRecipe> it = CraftingManager.REGISTRY.iterator();
     
     int removed = 0;
     
@@ -135,7 +135,7 @@ public final class RecipeRemover {
           continue;
         }
         
-        final Block blockPlank = ((ItemBlock)stackPlankBlock.getItem()).block;
+        final Block blockPlank = ((ItemBlock)stackPlankBlock.getItem()).getBlock();
         
         for(final IBlockState statePlank : blockPlank.getBlockState().getValidStates()) {
           final ItemStack stackPlank = stackPlankBlock.copy();
@@ -147,7 +147,7 @@ public final class RecipeRemover {
                 continue;
               }
               
-              final Block blockLog = ((ItemBlock)stackLogBlock.getItem()).block;
+              final Block blockLog = ((ItemBlock)stackLogBlock.getItem()).getBlock();
               
               for(final IBlockState stateLog : blockLog.getBlockState().getValidStates()) {
                 final ItemStack stackLog = stackLogBlock.copy();
@@ -200,7 +200,7 @@ public final class RecipeRemover {
   private static void removeStringToWoolRecipes() {
     int removed = 0;
     
-    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+    Iterator<IRecipe> it = CraftingManager.REGISTRY.iterator();
     
     while(it.hasNext()) {
       IRecipe recipe = it.next();
@@ -208,7 +208,7 @@ public final class RecipeRemover {
       ItemStack output = recipe.getRecipeOutput();
       
       if(output.getItem() instanceof ItemBlock) {
-        if(((ItemBlock)output.getItem()).block == Blocks.WOOL) {
+        if(((ItemBlock)output.getItem()).getBlock() == Blocks.WOOL) {
           InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 2, 2);
           inv.setInventorySlotContents(0, new ItemStack(Items.STRING));
           inv.setInventorySlotContents(1, new ItemStack(Items.STRING));
@@ -233,7 +233,7 @@ public final class RecipeRemover {
   private static void removeTorchRecipeUsingCoal() {
     int removed = 0;
     
-    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+    Iterator<IRecipe> it = CraftingManager.REGISTRY.iterator();
     
     while(it.hasNext()) {
       IRecipe recipe = it.next();
@@ -241,7 +241,7 @@ public final class RecipeRemover {
       ItemStack output = recipe.getRecipeOutput();
       
       if(output.getItem() instanceof ItemBlock) {
-        if(((ItemBlock)output.getItem()).block instanceof BlockTorch) {
+        if(((ItemBlock)output.getItem()).getBlock() instanceof BlockTorch) {
           InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 1, 2);
           inv.setInventorySlotContents(0, new ItemStack(Items.COAL));
           inv.setInventorySlotContents(1, new ItemStack(Items.STICK));

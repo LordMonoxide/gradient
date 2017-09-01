@@ -3,7 +3,6 @@ package lordmonoxide.gradient.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -29,12 +28,12 @@ public interface ItemBlockProvider {
       
       @Override
       @SideOnly(Side.CLIENT)
-      public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
+      public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
         if(!this.getHasSubtypes()) {
-          this.block.getSubBlocks(item, tab, subItems);
+          this.block.getSubBlocks(tab, subItems);
         } else {
           for(final IBlockState state : this.block.getBlockState().getValidStates()) {
-            subItems.add(new ItemStack(item, 1, this.block.getMetaFromState(state)));
+            subItems.add(new ItemStack(this, 1, this.block.getMetaFromState(state)));
           }
         }
       }

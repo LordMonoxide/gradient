@@ -110,7 +110,7 @@ public final class GradientBlocks {
       System.out.println("Registering item blocks");
       
       blocks.forEach((block, item) -> {
-        item.setRegistryName(item.block.getRegistryName());
+        item.setRegistryName(item.getBlock().getRegistryName());
         event.getRegistry().register(item);
         ITEM_BLOCKS.add(item);
       });

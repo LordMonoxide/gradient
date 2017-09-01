@@ -6,7 +6,6 @@ import lordmonoxide.gradient.GradientCasts;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -52,7 +51,7 @@ public class ItemClayCastUnhardened extends ItemBlock {
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       list.add(new ItemStack(this, 1, cast.id));
     }

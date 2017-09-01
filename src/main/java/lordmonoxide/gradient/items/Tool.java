@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -131,7 +130,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientTools.Type type : GradientTools.TYPES) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(metal.canMakeTools) {
@@ -144,7 +143,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   @Override
   public void registerCustomModels() {
     final NonNullList<ItemStack> stacks = NonNullList.create();
-    this.getSubItems(this, this.getCreativeTab(), stacks);
+    this.getSubItems(this.getCreativeTab(), stacks);
     
     final Map<String, ModelResourceLocation> lookup = new HashMap<>();
     

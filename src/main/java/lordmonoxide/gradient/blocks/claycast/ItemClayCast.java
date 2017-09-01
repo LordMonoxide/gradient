@@ -36,7 +36,7 @@ public class ItemClayCast extends ItemBlock {
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       list.add(new ItemStack(this, 1, cast.id));
     }

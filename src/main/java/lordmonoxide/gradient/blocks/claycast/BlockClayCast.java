@@ -28,6 +28,7 @@ public class BlockClayCast extends GradientBlock {
   }
   
   @Override
+  @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
     return this.getDefaultState().withProperty(CAST, GradientCasts.CASTS.get(meta));
   }

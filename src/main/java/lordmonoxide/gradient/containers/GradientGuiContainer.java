@@ -4,9 +4,9 @@ import ic2.core.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -23,7 +23,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
   public void drawSprite(final double xIn, final double yIn, final double width, final double height, final TextureAtlasSprite sprite, final int color, final double scaleIn) {
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     Tessellator tessellator = Tessellator.getInstance();
-    VertexBuffer buffer = tessellator.getBuffer();
+    BufferBuilder buffer = tessellator.getBuffer();
     buffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
   
     final double x = xIn + this.guiLeft;
@@ -67,8 +67,8 @@ public abstract class GradientGuiContainer extends GuiContainer {
     }
     
     @Override
-    public void drawButton(final Minecraft mc, final int mouseX, final int mouseY) {
-      super.drawButton(mc, mouseX, mouseY);
+    public void drawButton(final Minecraft mc, final int mouseX, final int mouseY, float partialTicks) {
+      super.drawButton(mc, mouseX, mouseY, partialTicks);
       
       if(this.visible) {
         GradientGuiContainer.this.itemRender.renderItemAndEffectIntoGUI(this.item, this.x + 2, this.y + 2);

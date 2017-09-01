@@ -95,7 +95,7 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if((!cast.tool || metal.canMakeTools) && cast.itemOverride.get(metal) == null) {
@@ -108,7 +108,7 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   @Override
   public void registerCustomModels() {
     final NonNullList<ItemStack> stacks = NonNullList.create();
-    this.getSubItems(this, this.getCreativeTab(), stacks);
+    this.getSubItems(this.getCreativeTab(), stacks);
     
     final Map<String, ModelResourceLocation> lookup = new HashMap<>();
     

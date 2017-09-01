@@ -3,7 +3,6 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -38,7 +37,7 @@ public class Dust extends GradientItem implements GradientCraftable {
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
     GradientMetals.metals.stream().map(Dust::getDust).forEach(list::add);
   }
   

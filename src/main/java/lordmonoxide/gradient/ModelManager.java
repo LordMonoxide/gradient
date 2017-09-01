@@ -104,7 +104,7 @@ public final class ModelManager {
     }
     
     final NonNullList<ItemStack> stacks = NonNullList.create();
-    item.getSubItems(item, item.getCreativeTab(), stacks);
+    item.getSubItems(item.getCreativeTab(), stacks);
     
     stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory")));
   }

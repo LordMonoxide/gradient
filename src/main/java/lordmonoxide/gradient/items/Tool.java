@@ -101,7 +101,8 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   
   @Override
   public void addRecipe() {
-    for(final GradientTools.Type type : GradientTools.TYPES) {
+    //TODO
+    /*for(final GradientTools.Type type : GradientTools.TYPES) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(metal.canMakeTools) {
           GameRegistry.addRecipe(new ShapedMetaAwareRecipe(
@@ -115,7 +116,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
           ));
         }
       }
-    }
+    }*/
   }
   
   @Override

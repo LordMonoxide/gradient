@@ -27,13 +27,14 @@ public class StoneMattock extends GradientItemTool implements GradientCraftable 
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(new ShapedOreRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(new ShapedOreRecipe(
       this,
       "PFP",
       " S ",
       'P', GradientBlocks.PEBBLE,
       'F', "string",
       'S', "stickWood"
-    ));
+    ));*/
   }
 }

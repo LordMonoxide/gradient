@@ -16,7 +16,8 @@ public class ShapelessMetaAwareRecipe extends ShapelessOreRecipe {
   public ShapelessMetaAwareRecipe(final Block result, final Object... recipe){ this(new ItemStack(result), recipe); }
   public ShapelessMetaAwareRecipe(final Item  result, final Object... recipe){ this(new ItemStack(result), recipe); }
   public ShapelessMetaAwareRecipe(final ItemStack result, final Object... recipe) {
-    super(result, recipe);
+    //TODO
+    super(null, result, recipe);
   }
   
   @Override

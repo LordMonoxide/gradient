@@ -43,7 +43,8 @@ public class Dust extends GradientItem implements GradientCraftable {
   
   @Override
   public void addRecipe() {
-    for(GradientMetals.Metal metal : GradientMetals.metals) {
+    //TODO
+    /*for(GradientMetals.Metal metal : GradientMetals.metals) {
       if(metal.hardness <= 2.5f) {
         GameRegistry.addRecipe(new ShapelessOreRecipe(
           this.getItemStack(1, metal.id),
@@ -51,6 +52,6 @@ public class Dust extends GradientItem implements GradientCraftable {
           GradientItems.MORTAR
         ));
       }
-    }
+    }*/
   }
 }

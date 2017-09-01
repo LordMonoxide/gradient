@@ -13,12 +13,13 @@ public class BronzeMachineHull extends GradientItem implements GradientCraftable
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(
       new ItemStack(this),
       "PPP",
       "P P",
       "PPP",
       'P', GradientItems.PLATE.getItemStack(1, GradientMetals.getMetal("bronze").id)
-    );
+    );*/
   }
 }

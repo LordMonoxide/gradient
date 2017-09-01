@@ -11,7 +11,8 @@ public final class ExtraRecipes {
   private ExtraRecipes() { }
   
   public static void addRecipes() {
-    GameRegistry.addRecipe(new ShapedOreRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(new ShapedOreRecipe(
       Items.LEATHER_HELMET,
       "LLL",
       "LNL",
@@ -61,6 +62,6 @@ public final class ExtraRecipes {
     GradientMetals.alloys.forEach(alloy -> GameRegistry.addShapelessRecipe(
       GradientMetals.getBucket(alloy.output),
       alloy.inputs.stream().map(GradientMetals::getBucket).toArray()
-    ));
+    ));*/
   }
 }

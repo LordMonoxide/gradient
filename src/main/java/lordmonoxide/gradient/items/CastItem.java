@@ -63,6 +63,8 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   
   @Override
   public void addRecipe() {
+    //TODO
+    /*
     for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(!cast.tool || metal.canMakeTools) {
@@ -81,6 +83,7 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
         }
       }
     }
+    */
   }
   
   @Override

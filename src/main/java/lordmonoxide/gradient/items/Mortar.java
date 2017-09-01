@@ -13,10 +13,11 @@ public class Mortar extends GradientItem implements GradientCraftable {
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapelessRecipe(
+    //TODO
+    /*GameRegistry.addShapelessRecipe(
       this.getItemStack(),
       new ItemStack(GradientBlocks.CLAY_BOWL, 1, 1),
       GradientBlocks.PEBBLE
-    );
+    );*/
   }
 }

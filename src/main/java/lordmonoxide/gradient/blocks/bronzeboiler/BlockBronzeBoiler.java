@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.blocks.bronzeboiler;
 
-import buildcraft.factory.BCFactoryBlocks;
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
@@ -112,13 +111,14 @@ public class BlockBronzeBoiler extends GradientBlock implements GradientCraftabl
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(
       new ItemStack(this),
       "THT",
       " I ",
       'H', GradientItems.BRONZE_MACHINE_HULL,
       'T', BCFactoryBlocks.tank,
       'I', GradientItems.IGNITER
-    );
+    );*/
   }
 }

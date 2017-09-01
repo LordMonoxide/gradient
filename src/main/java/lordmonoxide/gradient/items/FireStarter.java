@@ -39,11 +39,12 @@ public class FireStarter extends GradientItem implements GradientCraftable {
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(new ShapelessOreRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(new ShapelessOreRecipe(
       this,
       "string",
       "stickWood",
       "stickWood"
-    ));
+    ));*/
   }
 }

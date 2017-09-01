@@ -26,12 +26,13 @@ public class BlockClayBucketUnhardened extends GradientBlock implements Gradient
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapedRecipe(
+    //TODO
+    /*GameRegistry.addShapedRecipe(
       new ItemStack(this),
       "C C",
       "CCC",
       'C', Items.CLAY_BALL
-    );
+    );*/
   }
   
   @Override

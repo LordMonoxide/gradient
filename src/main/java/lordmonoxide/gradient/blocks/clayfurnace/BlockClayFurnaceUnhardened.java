@@ -33,13 +33,14 @@ public class BlockClayFurnaceUnhardened extends GradientBlock implements Gradien
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapedRecipe(
+    //TODO
+    /*GameRegistry.addShapedRecipe(
       new ItemStack(this),
       "CCC",
       "C C",
       "CCC",
       'C', Items.CLAY_BALL
-    );
+    );*/
   }
   
   @Override

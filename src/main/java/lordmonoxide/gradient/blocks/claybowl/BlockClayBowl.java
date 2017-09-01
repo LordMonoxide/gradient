@@ -31,12 +31,13 @@ public class BlockClayBowl extends GradientBlock implements GradientCraftable, H
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapedRecipe(
+    //TODO
+    /*GameRegistry.addShapedRecipe(
       new ItemStack(this),
       "C C",
       " C ",
       'C', Items.CLAY_BALL
-    );
+    );*/
   }
   
   @Override

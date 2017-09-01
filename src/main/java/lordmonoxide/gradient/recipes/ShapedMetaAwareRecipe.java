@@ -14,7 +14,8 @@ public class ShapedMetaAwareRecipe extends ShapedOreRecipe {
   public ShapedMetaAwareRecipe(final Block result, final Object... recipe) { this(new ItemStack(result), recipe); }
   public ShapedMetaAwareRecipe(final Item  result, final Object... recipe) { this(new ItemStack(result), recipe); }
   public ShapedMetaAwareRecipe(final ItemStack result, final Object... recipe) {
-    super(result, recipe);
+    //TODO
+    super(null, result, recipe);
   }
   
   protected boolean checkMatch(final InventoryCrafting inv, final int startX, final int startY, final boolean mirror) {

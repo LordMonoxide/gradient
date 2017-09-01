@@ -13,7 +13,8 @@ public class FlintKnife extends GradientItemTool implements GradientCraftable {
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(new ShapedOreRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(new ShapedOreRecipe(
       this,
       "F",
       "S",
@@ -21,6 +22,6 @@ public class FlintKnife extends GradientItemTool implements GradientCraftable {
       'F', Items.FLINT,
       'S', "string",
       'W', "stickWood"
-    ));
+    ));*/
   }
 }

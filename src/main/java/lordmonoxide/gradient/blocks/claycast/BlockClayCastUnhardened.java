@@ -32,10 +32,11 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientCr
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapelessRecipe(
+    //TODO
+    /*GameRegistry.addShapelessRecipe(
       new ItemStack(this, 1, this.getMetaFromState(this.getDefaultState())),
       Items.CLAY_BALL, Blocks.SAND
-    );
+    );*/
   }
   
   @Override

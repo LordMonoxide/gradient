@@ -157,10 +157,11 @@ public final class RecipeRemover {
                 inv.setInventorySlotContents(0, stackLog);
                 
                 if(recipe.matches(inv, null)) {
-                  toAdd.add(new ShapelessRecipes(
+                  //TODO
+                  /*toAdd.add(new ShapelessRecipes(
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
                     Lists.newArrayList(stackLog, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
-                  ));
+                  ));*/
                   
                   for(final GradientMetals.Metal metal : GradientMetals.metals) {
                     final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
@@ -186,9 +187,10 @@ public final class RecipeRemover {
       }
     }
     
-    for(final IRecipe recipe : toAdd) {
+    //TODO
+    /*for(final IRecipe recipe : toAdd) {
       GameRegistry.addRecipe(recipe);
-    }
+    }*/
     
     if(removed == 0) {
       System.out.println("Failed to replaced plank recipes!");

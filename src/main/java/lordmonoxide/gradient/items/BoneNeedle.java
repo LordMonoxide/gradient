@@ -12,10 +12,11 @@ public class BoneNeedle extends GradientItemTool implements GradientCraftable {
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(new ShapelessOreRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(new ShapelessOreRecipe(
       this.getItemStack(4),
       "bone",
       "toolHammer"
-    ));
+    ));*/
   }
 }

@@ -34,7 +34,8 @@ public class GradientItemTool extends GradientItem {
   @Override
   public ItemStack getContainerItem(final ItemStack itemStack) {
     final ItemStack stack = itemStack.copy();
-    stack.attemptDamageItem(1, new Random());
+    //TODO
+    //stack.attemptDamageItem(1, new Random());
     return stack;
   }
   

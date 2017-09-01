@@ -12,10 +12,11 @@ public class DustFlint extends GradientItem implements GradientCraftable {
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapelessRecipe(
+    //TODO
+    /*GameRegistry.addShapelessRecipe(
       this.getItemStack(),
       Items.FLINT,
       GradientItems.MORTAR
-    );
+    );*/
   }
 }

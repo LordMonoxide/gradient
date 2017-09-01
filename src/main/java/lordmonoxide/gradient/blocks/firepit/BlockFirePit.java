@@ -208,13 +208,14 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(new ShapelessOreRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(new ShapelessOreRecipe(
       this,
       "stickWood",
       "stickWood",
       "stickWood",
       "stickWood",
       "stickWood"
-    ));
+    ));*/
   }
 }

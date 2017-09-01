@@ -26,13 +26,14 @@ public class BlockClayCrucibleUnhardened extends GradientBlock implements Gradie
   
   @Override
   public void addRecipe() {
-    GameRegistry.addShapedRecipe(
+    //TODO
+    /*GameRegistry.addShapedRecipe(
         new ItemStack(this),
         "C C",
         "C C",
         "CCC",
         'C', Items.CLAY_BALL
-    );
+    );*/
   }
   
   @Override

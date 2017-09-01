@@ -13,7 +13,8 @@ public class ClothPants extends GradientArmour implements GradientCraftable {
   
   @Override
   public void addRecipe() {
-    GameRegistry.addRecipe(new ShapedOreRecipe(
+    //TODO
+    /*GameRegistry.addRecipe(new ShapedOreRecipe(
       this,
       "CCC",
       "CNC",
@@ -21,6 +22,6 @@ public class ClothPants extends GradientArmour implements GradientCraftable {
       'C', "cloth",
       'N', "needle",
       'S', "string"
-    ));
+    ));*/
   }
 }

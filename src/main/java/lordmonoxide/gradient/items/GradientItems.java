@@ -6,7 +6,6 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -136,17 +135,11 @@ public final class GradientItems {
   
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
-    private static final List<GradientCraftable> craftables = new ArrayList<>();
     
     public static final Set<Item> ITEMS = new HashSet<>();
     
     private static <T extends Item> T register(final T item) {
       ITEMS.add(item);
-      
-      if(item instanceof GradientCraftable) {
-        craftables.add((GradientCraftable)item);
-      }
-      
       return item;
     }
     
@@ -170,10 +163,6 @@ public final class GradientItems {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void initOreDict(final RegistryEvent.Register<Item> event) {
       initialiseOreDict();
-    }
-    
-    public static void addRecipes() {
-      craftables.forEach(GradientCraftable::addRecipe);
     }
   }
 }

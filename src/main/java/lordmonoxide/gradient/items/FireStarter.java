@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.items;
 
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -11,10 +10,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-public class FireStarter extends GradientItem implements GradientCraftable {
+public class FireStarter extends GradientItem {
   public FireStarter() {
     super("fire_starter", CreativeTabs.TOOLS);
     this.maxStackSize = 1;
@@ -35,16 +32,5 @@ public class FireStarter extends GradientItem implements GradientCraftable {
     
     stack.damageItem(1, player);
     return EnumActionResult.SUCCESS;
-  }
-  
-  @Override
-  public void addRecipe() {
-    //TODO
-    /*GameRegistry.addRecipe(new ShapelessOreRecipe(
-      this,
-      "string",
-      "stickWood",
-      "stickWood"
-    ));*/
   }
 }

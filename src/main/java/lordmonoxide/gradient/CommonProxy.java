@@ -1,7 +1,5 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.overrides.*;
 import lordmonoxide.gradient.recipes.ExtraRecipes;
 import lordmonoxide.gradient.recipes.RecipeRemover;
@@ -36,8 +34,6 @@ public class CommonProxy {
     
     RecipeRemover.remove();
     
-    GradientBlocks.RegistrationHandler.addRecipes();
-    GradientItems.RegistrationHandler.addRecipes();
     ExtraRecipes.addRecipes();
     
     GradientMetals.registerMeltables();

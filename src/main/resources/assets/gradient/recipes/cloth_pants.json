@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "gradient:cloth_pants"
+  },
+  "pattern": [
+    "CCC",
+    "CNC",
+    "CSC"
+  ],
+  "key": {
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "cloth"
+    },
+    "N": {
+      "type": "forge:ore_dict",
+      "ore": "needle"
+    },
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    }
+  }
+}

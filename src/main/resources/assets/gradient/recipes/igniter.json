@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:igniter"
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "dustFlint"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "dustMagnesium"
+  }]
+}

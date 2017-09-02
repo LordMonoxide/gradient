@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface ItemBlockProvider {
-  default ItemBlock getItemBlock(final Block block) {
+  default <T extends Block & ItemBlockProvider> ItemBlock getItemBlock(final T block) {
     return new ItemBlock(block) {
       {
         this.setHasSubtypes(ItemBlockProvider.this.hasSubBlocks());
@@ -29,13 +29,7 @@ public interface ItemBlockProvider {
       @Override
       @SideOnly(Side.CLIENT)
       public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
-        if(!this.getHasSubtypes()) {
-          this.block.getSubBlocks(tab, subItems);
-        } else {
-          for(final IBlockState state : this.block.getBlockState().getValidStates()) {
-            subItems.add(new ItemStack(this, 1, this.block.getMetaFromState(state)));
-          }
-        }
+        ItemBlockProvider.this.getSubItems(this, tab, subItems);
       }
     };
   }
@@ -46,5 +40,15 @@ public interface ItemBlockProvider {
   
   default boolean hasSubBlocks() {
     return false;
+  }
+  
+  default void getSubItems(final ItemBlock item, final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
+    if(!this.hasSubBlocks()) {
+      item.getBlock().getSubBlocks(tab, subItems);
+    } else {
+      for(final IBlockState state : item.getBlock().getBlockState().getValidStates()) {
+        subItems.add(new ItemStack(item, 1, item.getBlock().getMetaFromState(state)));
+      }
+    }
   }
 }

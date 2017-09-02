@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:fire_pit"
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "stickWood"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "stickWood"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "stickWood"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "stickWood"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "stickWood"
+  }]
+}

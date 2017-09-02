@@ -6,7 +6,6 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -29,13 +28,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import java.util.List;
 import java.util.Random;
 
-public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, ITileEntityProvider {
+public class BlockFirePit extends HeatSinkerBlock implements ITileEntityProvider {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
   
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -204,18 +200,5 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer(this, FACING, HAS_FURNACE);
-  }
-  
-  @Override
-  public void addRecipe() {
-    //TODO
-    /*GameRegistry.addRecipe(new ShapelessOreRecipe(
-      this,
-      "stickWood",
-      "stickWood",
-      "stickWood",
-      "stickWood",
-      "stickWood"
-    ));*/
   }
 }

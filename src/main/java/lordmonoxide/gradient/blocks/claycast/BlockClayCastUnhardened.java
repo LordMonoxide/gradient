@@ -33,7 +33,7 @@ public class BlockClayCastUnhardened extends GradientBlock implements Hardenable
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(CAST, GradientCasts.CASTS.get(meta));
+    return this.getDefaultState().withProperty(CAST, GradientCasts.getCast(meta));
   }
   
   @Override

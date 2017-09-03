@@ -1,0 +1,8 @@
+{
+  "ingredients": {
+    "cast":      "lordmonoxide.gradient.recipes.IngredientCastFactory",
+    "cast_item": "lordmonoxide.gradient.recipes.IngredientCastItemFactory",
+    "tool":      "lordmonoxide.gradient.recipes.IngredientToolFactory",
+    "bucket":    "lordmonoxide.gradient.recipes.UniversalBucketFactory"
+  }
+}

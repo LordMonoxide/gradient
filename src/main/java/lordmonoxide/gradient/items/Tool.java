@@ -4,8 +4,6 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.ModelManager;
-import lordmonoxide.gradient.recipes.GradientCraftable;
-import lordmonoxide.gradient.recipes.ShapedMetaAwareRecipe;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -17,14 +15,13 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class Tool extends GradientItemTool implements GradientCraftable, ModelManager.CustomModel {
+public class Tool extends GradientItemTool implements ModelManager.CustomModel {
   public Tool() {
     super("tool", 0, 0, 0);
     this.setHasSubtypes(true);
@@ -36,7 +33,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   
   public static ItemStack getTool(final GradientTools.Type type, final GradientMetals.Metal metal, final int amount) {
     final NBTTagCompound tag = new NBTTagCompound();
-    tag.setInteger("type", type.id);
+    tag.setString("type", type.cast.name);
     tag.setString("metal", metal.name);
     
     final ItemStack stack = new ItemStack(GradientItems.TOOL, amount);
@@ -49,7 +46,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
       return GradientTools.PICKAXE;
     }
     
-    return GradientTools.TYPES.get(stack.getTagCompound().getInteger("type"));
+    return GradientTools.getType(stack.getTagCompound().getString("type"));
   }
   
   public GradientMetals.Metal getMetal(final ItemStack stack) {
@@ -100,26 +97,6 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   }
   
   @Override
-  public void addRecipe() {
-    //TODO
-    /*for(final GradientTools.Type type : GradientTools.TYPES) {
-      for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        if(metal.canMakeTools) {
-          GameRegistry.addRecipe(new ShapedMetaAwareRecipe(
-            getTool(type, metal),
-            "H",
-            "F",
-            "S",
-            'H', CastItem.getCastItem(type.cast, metal),
-            'F', "string",
-            'S', "stickWood"
-          ));
-        }
-      }
-    }*/
-  }
-  
-  @Override
   public int getMetadata(final int metadata) {
     return metadata;
   }
@@ -132,7 +109,7 @@ public class Tool extends GradientItemTool implements GradientCraftable, ModelMa
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    for(final GradientTools.Type type : GradientTools.TYPES) {
+    for(final GradientTools.Type type : GradientTools.types()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(metal.canMakeTools) {
           list.add(getTool(type, metal));

@@ -31,13 +31,13 @@ public class ItemClayCast extends ItemBlock {
   
   @Override
   public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName(stack) + "." + GradientCasts.CASTS.get(stack.getMetadata()).name;
+    return super.getUnlocalizedName(stack) + "." + GradientCasts.getCast(stack.getMetadata()).name;
   }
   
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
+    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       list.add(new ItemStack(this, 1, cast.id));
     }
   }

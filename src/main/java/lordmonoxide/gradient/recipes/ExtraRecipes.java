@@ -1,14 +1,11 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.GradientMetals;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapedOreRecipe;
+import com.google.gson.*;
 
 public final class ExtraRecipes {
   private ExtraRecipes() { }
+  
+  private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
   
   public static void addRecipes() {
     //TODO

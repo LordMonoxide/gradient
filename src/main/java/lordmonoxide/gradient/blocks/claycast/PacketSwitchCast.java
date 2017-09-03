@@ -30,7 +30,7 @@ public class PacketSwitchCast implements IMessage {
   @Override
   public void fromBytes(final ByteBuf buf) {
     try {
-      this.cast = GradientCasts.CASTS.get(buf.readInt());
+      this.cast = GradientCasts.getCast(buf.readInt());
     } catch(Exception e) {
       System.out.println("Invalid type in PacketSwitchCast");
       System.out.println(e);

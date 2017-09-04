@@ -10,14 +10,12 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public final class GradientTools {
   private GradientTools() { }
   
-  public static final List<Type> TYPES = new ArrayList<>();
+  private static final Map<String, Type> TYPES = new HashMap<>();
   
   public static final Type PICKAXE = register(GradientCasts.PICKAXE).tool("pickaxe")      .weapon(1.0d, 1.0d).add();
   public static final Type MATTOCK = register(GradientCasts.MATTOCK).tool("axe", "shovel").weapon(4.5d, 0.5d).onItemUse(GradientTools::onMattockUse).add();
@@ -26,6 +24,20 @@ public final class GradientTools {
   
   public static ToolBuilder register(final GradientCasts.Cast cast) {
     return new ToolBuilder(cast);
+  }
+  
+  public static Collection<Type> types() {
+    return TYPES.values();
+  }
+  
+  public static Type getType(String name) {
+    Type type = TYPES.get(name);
+    
+    if(type == null) {
+      return PICKAXE;
+    }
+    
+    return type;
   }
   
   private static EnumActionResult onItemUsePass(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
@@ -67,7 +79,7 @@ public final class GradientTools {
     public int compareTo(final Type o) {
       assert o != null;
       
-      return this.id == o.id ? 0 : this.id > o.id ? 1 : -1;
+      return Integer.compare(this.id, o.id);
     }
     
     @Override
@@ -94,18 +106,18 @@ public final class GradientTools {
     
     @Override
     public Collection<Type> getAllowedValues() {
-      return TYPES;
+      return TYPES.values();
     }
     
     @Override
     public Optional<Type> parseValue(final String value) {
-      for(final Type type : TYPES) {
-        if(type.cast.name.equals(value)) {
-          return Optional.of(type);
-        }
+      Type type = TYPES.get(value);
+      
+      if(type == null) {
+        return Optional.absent();
       }
       
-      return Optional.absent();
+      return Optional.of(type);
     }
     
     @Override
@@ -150,7 +162,7 @@ public final class GradientTools {
     
     public Type add() {
       final Type type = new Type(this.cast, this.toolClass, this.attackDamage, this.attackSpeed, this.onItemUse);
-      TYPES.add(type);
+      TYPES.put(this.cast.name, type);
       return type;
     }
   }

@@ -23,6 +23,8 @@ public class DebugItem extends GradientItem {
       final IBlockState state = world.getBlockState(pos);
       final Block block = state.getBlock();
       
+      this.addChat("Registry name: " + block.getRegistryName());
+      
       this.addChat("Harvest tool: " + block.getHarvestTool(state));
       this.addChat("Harvest level: " + block.getHarvestLevel(state));
       

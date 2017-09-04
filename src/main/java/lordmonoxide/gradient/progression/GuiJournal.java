@@ -87,7 +87,7 @@ public class GuiJournal extends GuiScreen {
     }
     
     for(GuiButton button : this.buttonList) {
-      button.drawButton(this.mc, mouseX, mouseY);
+      button.drawButton(this.mc, mouseX, mouseY, partialTicks);
     }
     
     GlStateManager.popMatrix();
@@ -161,7 +161,7 @@ public class GuiJournal extends GuiScreen {
     }
     
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
       if(this.visible) {
         this.hovered = (mouseX - this.scaledX()) >= this.x && (mouseY - this.scaledY()) >= this.y && (mouseX - this.scaledX()) < this.x + this.width && (mouseY - this.scaledY()) < this.y + this.height;
         

@@ -14,7 +14,8 @@ public class ShapedMetaAwareRecipe extends ShapedOreRecipe {
   public ShapedMetaAwareRecipe(final Block result, final Object... recipe) { this(new ItemStack(result), recipe); }
   public ShapedMetaAwareRecipe(final Item  result, final Object... recipe) { this(new ItemStack(result), recipe); }
   public ShapedMetaAwareRecipe(final ItemStack result, final Object... recipe) {
-    super(result, recipe);
+    //TODO
+    super(null, result, recipe);
   }
   
   protected boolean checkMatch(final InventoryCrafting inv, final int startX, final int startY, final boolean mirror) {
@@ -23,7 +24,7 @@ public class ShapedMetaAwareRecipe extends ShapedOreRecipe {
         final int subX = x - startX;
         final int subY = y - startY;
         
-        final Object target = subX >= 0 && subY >= 0 && subX < this.width && subY < this.height ? this.input[(mirror ? this.width - subX - 1 : subX) + subY * this.width] : null;
+        final Object target = subX >= 0 && subY >= 0 && subX < this.width && subY < this.height ? this.input.get((mirror ? this.width - subX - 1 : subX) + subY * this.width) : null;
         
         final ItemStack slot = inv.getStackInRowAndColumn(x, y);
         

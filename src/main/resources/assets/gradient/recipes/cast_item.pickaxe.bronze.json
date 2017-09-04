@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:cast_item",
+    "data": 0,
+    "nbt": "{\"cast\":\"pickaxe\",\"metal\":\"bronze\"}"
+  },
+  "ingredients": [{
+    "type": "gradient:bucket",
+    "fluid": "bronze"
+  }, {
+    "type": "gradient:cast",
+    "cast": "pickaxe"
+  }]
+}

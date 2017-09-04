@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:dust.flint"
+  },
+  "ingredients": [{
+    "item": "minecraft:flint"
+  }, {
+    "item": "gradient:mortar"
+  }]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:cast_item",
+    "data": 0,
+    "nbt": "{\"cast\":\"sword\",\"metal\":\"iron\"}"
+  },
+  "ingredients": [{
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:cast",
+    "cast": "sword"
+  }]
+}

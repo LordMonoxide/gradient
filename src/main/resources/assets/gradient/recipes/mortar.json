@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:mortar"
+  },
+  "ingredients": [{
+    "item": "gradient:clay_bowl",
+    "data": 1
+  }, {
+    "item": "gradient:pebble"
+  }]
+}

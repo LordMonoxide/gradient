@@ -33,7 +33,7 @@ public class GuiClayCast extends GradientGuiContainer {
     int x = 12;
     int y = 33;
     
-    for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
+    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       final GuiButton button = this.addButtonForTool(cast, x, y);
       x += 22;
       
@@ -57,7 +57,7 @@ public class GuiClayCast extends GradientGuiContainer {
       cast.enabled = false;
       this.selectedCast = cast;
       
-      PacketSwitchCast.send(GradientCasts.CASTS.get(cast.id));
+      PacketSwitchCast.send(GradientCasts.getCast(cast.id));
     }
   }
   

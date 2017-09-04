@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "gradient:bronze_boiler"
+  },
+  "pattern": [
+    "THT",
+    " I "
+  ],
+  "key": {
+    "T": {
+      "item": "buildcraftfactory:tank"
+    },
+    "H": {
+      "item": "gradient:bronze_machine_hull"
+    },
+    "I": {
+      "item": "gradient:igniter"
+    }
+  }
+}

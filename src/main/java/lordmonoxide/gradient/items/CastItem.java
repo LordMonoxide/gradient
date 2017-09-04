@@ -3,29 +3,22 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.ModelManager;
-import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.recipes.GradientCraftable;
-import lordmonoxide.gradient.recipes.ShapelessMetaAwareRecipe;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CastItem extends GradientItem implements GradientCraftable, ModelManager.CustomModel {
+public class CastItem extends GradientItem implements ModelManager.CustomModel {
   public CastItem() {
     super("cast_item", CreativeTabs.TOOLS);
     this.setHasSubtypes(true);
@@ -37,7 +30,7 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   
   public static ItemStack getCastItem(final GradientCasts.Cast cast, final GradientMetals.Metal metal, final int amount) {
     final NBTTagCompound tag = new NBTTagCompound();
-    tag.setInteger("cast", cast.id);
+    tag.setString("cast", cast.name);
     tag.setString("metal", metal.name);
     
     final ItemStack stack = new ItemStack(GradientItems.CAST_ITEM, amount);
@@ -50,7 +43,7 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
       return GradientCasts.PICKAXE;
     }
     
-    return GradientCasts.CASTS.get(stack.getTagCompound().getInteger("cast"));
+    return GradientCasts.getCast(stack.getTagCompound().getString("cast"));
   }
   
   public GradientMetals.Metal getMetal(final ItemStack stack) {
@@ -59,28 +52,6 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
     }
     
     return GradientMetals.getMetal(stack.getTagCompound().getString("metal"));
-  }
-  
-  @Override
-  public void addRecipe() {
-    for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
-      for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        if(!cast.tool || metal.canMakeTools) {
-          int amount = cast.amount / Fluid.BUCKET_VOLUME;
-          
-          final Object[] parts = new Object[amount + 1];
-          parts[0] = ItemClayCast.getCast(cast);
-          Arrays.fill(parts, 1, amount + 1, GradientMetals.getBucket(metal));
-          
-          final ItemStack override = cast.itemOverride.get(metal);
-          
-          GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
-            override == null ? getCastItem(cast, metal) : override,
-            parts
-          ));
-        }
-      }
-    }
   }
   
   @Override
@@ -95,8 +66,8 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
+    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if((!cast.tool || metal.canMakeTools) && cast.itemOverride.get(metal) == null) {
           list.add(getCastItem(cast, metal));
@@ -108,7 +79,7 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
   @Override
   public void registerCustomModels() {
     final NonNullList<ItemStack> stacks = NonNullList.create();
-    this.getSubItems(this, this.getCreativeTab(), stacks);
+    this.getSubItems(this.getCreativeTab(), stacks);
     
     final Map<String, ModelResourceLocation> lookup = new HashMap<>();
     

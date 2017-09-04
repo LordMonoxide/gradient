@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "minecraft:iron_block"
+  },
+  "ingredients": [{
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "iron"
+  }, {
+    "type": "gradient:cast",
+    "cast": "block"
+  }]
+}

@@ -4,21 +4,16 @@ import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class BlockClayCastUnhardened extends GradientBlock implements GradientCraftable, Hardenable {
+public class BlockClayCastUnhardened extends GradientBlock implements Hardenable {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
   
   private static final GradientCasts.PropertyCast CAST = GradientCasts.PropertyCast.create("cast");
@@ -31,21 +26,14 @@ public class BlockClayCastUnhardened extends GradientBlock implements GradientCr
   }
   
   @Override
-  public void addRecipe() {
-    GameRegistry.addShapelessRecipe(
-      new ItemStack(this, 1, this.getMetaFromState(this.getDefaultState())),
-      Items.CLAY_BALL, Blocks.SAND
-    );
-  }
-  
-  @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer(this, CAST);
   }
   
   @Override
+  @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(CAST, GradientCasts.CASTS.get(meta));
+    return this.getDefaultState().withProperty(CAST, GradientCasts.getCast(meta));
   }
   
   @Override

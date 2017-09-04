@@ -4,7 +4,7 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -55,8 +55,10 @@ repositories {
 }
 
 dependencies {
-    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.63-ex111'
-    deobfCompile 'com.mod-buildcraft:buildcraft:7.99.7'
+    deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.20-ex112'
+    
+    //TODO
+    //deobfCompile 'com.mod-buildcraft:buildcraft:7.99.7'
     
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..

@@ -13,7 +13,7 @@ import java.util.*;
 public final class GradientCasts {
   private GradientCasts() { }
   
-  public static final List<Cast> CASTS = new ArrayList<>();
+  private static final Map<String, Cast> CASTS = new HashMap<>();
   
   public static final Cast PICKAXE = register("pickaxe").tool().add();
   public static final Cast MATTOCK = register("mattock").tool().add();
@@ -30,6 +30,30 @@ public final class GradientCasts {
   
   public static CastBuilder register(final String name) {
     return new CastBuilder(name);
+  }
+  
+  public static Collection<Cast> casts() {
+    return CASTS.values();
+  }
+  
+  public static Cast getCast(final String name) {
+    Cast cast = CASTS.get(name);
+    
+    if(cast == null) {
+      return PICKAXE;
+    }
+    
+    return cast;
+  }
+  
+  public static Cast getCast(final int id) {
+    for(final Cast cast : CASTS.values()) {
+      if(cast.id == id) {
+        return cast;
+      }
+    }
+    
+    return PICKAXE;
   }
   
   public static class Cast implements Comparable<Cast> {
@@ -53,7 +77,7 @@ public final class GradientCasts {
     public int compareTo(final Cast o) {
       assert o != null;
       
-      return this.id == o.id ? 0 : this.id > o.id ? 1 : -1;
+      return Integer.compare(this.id, o.id);
     }
     
     @Override
@@ -80,18 +104,18 @@ public final class GradientCasts {
     
     @Override
     public Collection<Cast> getAllowedValues() {
-      return CASTS;
+      return CASTS.values();
     }
     
     @Override
     public Optional<Cast> parseValue(final String value) {
-      for(final Cast cast : CASTS) {
-        if(cast.name.equals(value)) {
-          return Optional.of(cast);
-        }
+      Cast cast = CASTS.get(value);
+      
+      if(cast == null) {
+        return Optional.absent();
       }
       
-      return Optional.absent();
+      return Optional.of(cast);
     }
     
     @Override
@@ -106,7 +130,7 @@ public final class GradientCasts {
     private int amount = 1000;
     private boolean tool;
     
-    private Map<GradientMetals.Metal, ItemStack> itemOverride = new HashMap<>();
+    private final Map<GradientMetals.Metal, ItemStack> itemOverride = new HashMap<>();
     
     private CastBuilder(final String name) {
       this.name = name;
@@ -139,7 +163,7 @@ public final class GradientCasts {
     
     public Cast add() {
       final Cast cast = new Cast(this.name, this.amount, this.tool, this.itemOverride);
-      CASTS.add(cast);
+      CASTS.put(this.name, cast);
       return cast;
     }
   }

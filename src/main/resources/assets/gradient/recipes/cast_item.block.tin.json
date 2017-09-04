@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:cast_item",
+    "data": 0,
+    "nbt": "{\"cast\":\"block\",\"metal\":\"tin\"}"
+  },
+  "ingredients": [{
+    "type": "gradient:bucket",
+    "fluid": "tin"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "tin"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "tin"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "tin"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "tin"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "tin"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "tin"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "tin"
+  }, {
+    "type": "gradient:cast",
+    "cast": "block"
+  }]
+}

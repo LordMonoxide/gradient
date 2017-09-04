@@ -1,32 +1,30 @@
 package lordmonoxide.gradient.recipes;
 
-import com.google.common.collect.Lists;
 import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
-import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.Tool;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistryModifiable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public final class RecipeRemover {
   private RecipeRemover() { }
   
@@ -37,90 +35,72 @@ public final class RecipeRemover {
     }
   };
   
-  public static void remove() {
-    final Item[] tools = {
-      Items.WOODEN_PICKAXE,
-      Items.STONE_PICKAXE,
-      Items.IRON_PICKAXE,
-      Items.GOLDEN_PICKAXE,
-      Items.DIAMOND_PICKAXE,
+  @SubscribeEvent
+  public static void remove(final RegistryEvent.Register<IRecipe> event) {
+    final String[] toRemove = {
+      "minecraft:wooden_pickaxe",
+      "minecraft:stone_pickaxe",
+      "minecraft:iron_pickaxe",
+      "minecraft:golden_pickaxe",
+      "minecraft:diamond_pickaxe",
       
-      Items.WOODEN_SWORD,
-      Items.STONE_SWORD,
-      Items.IRON_SWORD,
-      Items.GOLDEN_SWORD,
-      Items.DIAMOND_SWORD,
+      "minecraft:wooden_sword",
+      "minecraft:stone_sword",
+      "minecraft:iron_sword",
+      "minecraft:golden_sword",
+      "minecraft:diamond_sword",
       
-      Items.WOODEN_SHOVEL,
-      Items.STONE_SHOVEL,
-      Items.IRON_SHOVEL,
-      Items.GOLDEN_SHOVEL,
-      Items.DIAMOND_SHOVEL,
+      "minecraft:wooden_shovel",
+      "minecraft:stone_shovel",
+      "minecraft:iron_shovel",
+      "minecraft:golden_shovel",
+      "minecraft:diamond_shovel",
       
-      Items.WOODEN_HOE,
-      Items.STONE_HOE,
-      Items.IRON_HOE,
-      Items.GOLDEN_HOE,
-      Items.DIAMOND_HOE,
+      "minecraft:wooden_hoe",
+      "minecraft:stone_hoe",
+      "minecraft:iron_hoe",
+      "minecraft:golden_hoe",
+      "minecraft:diamond_hoe",
       
-      Items.WOODEN_AXE,
-      Items.STONE_AXE,
-      Items.IRON_AXE,
-      Items.GOLDEN_AXE,
-      Items.DIAMOND_AXE,
+      "minecraft:wooden_axe",
+      "minecraft:stone_axe",
+      "minecraft:iron_axe",
+      "minecraft:golden_axe",
+      "minecraft:diamond_axe",
       
-      Items.LEATHER_HELMET,
-      Items.LEATHER_CHESTPLATE,
-      Items.LEATHER_LEGGINGS,
-      Items.LEATHER_BOOTS,
+      "minecraft:leather_helmet",
+      "minecraft:leather_chestplate",
+      "minecraft:leather_leggings",
+      "minecraft:leather_boots",
+      
+      "minecraft:iron_nugget",
+      "minecraft:iron_ingot_from_block",
+      "minecraft:iron_ingot_from_nuggets",
+      "minecraft:gold_nugget",
+      "minecraft:gold_ingot_from_block",
+      "minecraft:gold_ingot_from_nuggets",
+      
+      "minecraft:stick",
+      "minecraft:furnace",
+      "minecraft:torch",
+      "minecraft:string_to_wool",
     };
     
-    final Item[] items = {
-      Items.STICK,
-      Items.field_191525_da, // IRON_NUGGET
-      Items.IRON_INGOT,
-      Items.GOLD_NUGGET,
-      Items.GOLD_INGOT,
-    };
+    final IForgeRegistryModifiable registry = (IForgeRegistryModifiable)event.getRegistry();
     
-    final Block[] blocks = {
-      Blocks.FURNACE,
-    };
-    
-    removeRecipes(tools);
-    removeRecipes(items);
-    removeRecipes(blocks);
-    replacePlankRecipes();
-    removeStringToWoolRecipes();
-    removeTorchRecipeUsingCoal();
-  }
-  
-  private static void removeRecipes(final Item[] items) {
-    final List<Item> list = Lists.newArrayList(items);
-    removeRecipes(stack -> !stack.isEmpty() && list.contains(stack.getItem()));
-  }
-  
-  private static void removeRecipes(final Block[] blocks) {
-    final List<Block> list = Lists.newArrayList(blocks);
-    removeRecipes(stack -> !stack.isEmpty() && stack.getItem() instanceof ItemBlock && list.contains(((ItemBlock)stack.getItem()).getBlock()));
-  }
-  
-  private static <T> void removeRecipes(final Function<ItemStack, Boolean> predicate) {
-    final Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
-  
-    while(it.hasNext()) {
-      final ItemStack stack = it.next().getRecipeOutput();
-      
-      if(predicate.apply(stack)) {
-        it.remove();
+    for(final String loc : toRemove) {
+      if(registry.remove(new ResourceLocation(loc)) == null) {
+        System.out.println("Failed to remove recipe: " + loc);
       }
     }
+    
+    replacePlankRecipes();
   }
   
   private static void replacePlankRecipes() {
     final List<IRecipe> toAdd = new ArrayList<>();
     
-    final Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
+    final Iterator<IRecipe> it = CraftingManager.REGISTRY.iterator();
     
     int removed = 0;
     
@@ -135,7 +115,7 @@ public final class RecipeRemover {
           continue;
         }
         
-        final Block blockPlank = ((ItemBlock)stackPlankBlock.getItem()).block;
+        final Block blockPlank = ((ItemBlock)stackPlankBlock.getItem()).getBlock();
         
         for(final IBlockState statePlank : blockPlank.getBlockState().getValidStates()) {
           final ItemStack stackPlank = stackPlankBlock.copy();
@@ -147,7 +127,7 @@ public final class RecipeRemover {
                 continue;
               }
               
-              final Block blockLog = ((ItemBlock)stackLogBlock.getItem()).block;
+              final Block blockLog = ((ItemBlock)stackLogBlock.getItem()).getBlock();
               
               for(final IBlockState stateLog : blockLog.getBlockState().getValidStates()) {
                 final ItemStack stackLog = stackLogBlock.copy();
@@ -157,10 +137,11 @@ public final class RecipeRemover {
                 inv.setInventorySlotContents(0, stackLog);
                 
                 if(recipe.matches(inv, null)) {
-                  toAdd.add(new ShapelessRecipes(
+                  //TODO
+                  /*toAdd.add(new ShapelessRecipes(
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
                     Lists.newArrayList(stackLog, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
-                  ));
+                  ));*/
                   
                   for(final GradientMetals.Metal metal : GradientMetals.metals) {
                     final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
@@ -173,7 +154,8 @@ public final class RecipeRemover {
                     ));
                   }
                   
-                  it.remove();
+                  //TODO
+                  //it.remove();
                   
                   removed++;
                   
@@ -186,85 +168,15 @@ public final class RecipeRemover {
       }
     }
     
-    for(final IRecipe recipe : toAdd) {
+    //TODO
+    /*for(final IRecipe recipe : toAdd) {
       GameRegistry.addRecipe(recipe);
-    }
+    }*/
     
     if(removed == 0) {
       System.out.println("Failed to replaced plank recipes!");
     } else {
       System.out.println("Replaced " + removed + " plank recipes!");
-    }
-  }
-  
-  private static void removeStringToWoolRecipes() {
-    int removed = 0;
-    
-    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
-    
-    while(it.hasNext()) {
-      IRecipe recipe = it.next();
-      
-      ItemStack output = recipe.getRecipeOutput();
-      
-      if(output.getItem() instanceof ItemBlock) {
-        if(((ItemBlock)output.getItem()).block == Blocks.WOOL) {
-          InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 2, 2);
-          inv.setInventorySlotContents(0, new ItemStack(Items.STRING));
-          inv.setInventorySlotContents(1, new ItemStack(Items.STRING));
-          inv.setInventorySlotContents(2, new ItemStack(Items.STRING));
-          inv.setInventorySlotContents(3, new ItemStack(Items.STRING));
-          
-          if(recipe.matches(inv, null)) {
-            it.remove();
-            removed++;
-          }
-        }
-      }
-    }
-    
-    if(removed == 0) {
-      System.out.println("Failed to remove wool recipes!");
-    } else {
-      System.out.println("Removed " + removed + " wool recipes!");
-    }
-  }
-  
-  private static void removeTorchRecipeUsingCoal() {
-    int removed = 0;
-    
-    Iterator<IRecipe> it = CraftingManager.getInstance().getRecipeList().iterator();
-    
-    while(it.hasNext()) {
-      IRecipe recipe = it.next();
-      
-      ItemStack output = recipe.getRecipeOutput();
-      
-      if(output.getItem() instanceof ItemBlock) {
-        if(((ItemBlock)output.getItem()).block instanceof BlockTorch) {
-          InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 1, 2);
-          inv.setInventorySlotContents(0, new ItemStack(Items.COAL));
-          inv.setInventorySlotContents(1, new ItemStack(Items.STICK));
-          
-          if(recipe.matches(inv, null)) {
-            it.remove();
-            removed++;
-          }
-          
-          inv.setInventorySlotContents(0, new ItemStack(Items.COAL, 1, 1));
-          
-          if(recipe.matches(inv, null)) {
-            it.remove();
-            removed++;
-          }
-        }
-      }
-    }
-    
-    if(removed == 0) {
-      System.out.println("Failed to remove torch recipes!");
-    } else {
-      System.out.println("Removed " + removed + " torch recipes!");
     }
   }
 }

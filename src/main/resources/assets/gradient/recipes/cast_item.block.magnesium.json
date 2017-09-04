@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:cast_item",
+    "data": 0,
+    "nbt": "{\"cast\":\"block\",\"metal\":\"magnesium\"}"
+  },
+  "ingredients": [{
+    "type": "gradient:bucket",
+    "fluid": "magnesium"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "magnesium"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "magnesium"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "magnesium"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "magnesium"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "magnesium"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "magnesium"
+  }, {
+    "type": "gradient:bucket",
+    "fluid": "magnesium"
+  }, {
+    "type": "gradient:cast",
+    "cast": "block"
+  }]
+}

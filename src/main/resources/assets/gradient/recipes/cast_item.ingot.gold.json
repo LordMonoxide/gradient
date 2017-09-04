@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:ingot",
+    "data": 4
+  },
+  "ingredients": [{
+    "type": "gradient:bucket",
+    "fluid": "gold"
+  }, {
+    "type": "gradient:cast",
+    "cast": "ingot"
+  }]
+}

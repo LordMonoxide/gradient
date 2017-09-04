@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "gradient:tool",
+    "data": 0,
+    "nbt": "{\"type\":\"hammer\",\"metal\":\"copper\"}"
+  },
+  "pattern": [
+    "H",
+    "F",
+    "S"
+  ],
+  "key": {
+    "H": {
+      "type": "gradient:cast_item",
+      "cast": "hammer",
+      "metal": "copper"
+    },
+    "F": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    },
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    }
+  }
+}

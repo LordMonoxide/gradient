@@ -4,7 +4,6 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.bronzeboiler.BlockBronzeBoiler;
 import lordmonoxide.gradient.blocks.claybowl.BlockClayBowl;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
-import lordmonoxide.gradient.blocks.claybucket.BlockClayBucketUnhardened;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCastUnhardened;
 import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
@@ -12,9 +11,7 @@ import lordmonoxide.gradient.blocks.claycast.ItemClayCastUnhardened;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucible;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
-import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnaceUnhardened;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -42,8 +39,6 @@ public final class GradientBlocks {
   
   public static final BlockFirePit FIRE_PIT = RegistrationHandler.register(new BlockFirePit());
   
-  public static final BlockClayBucketUnhardened   CLAY_BUCKET_UNHARDENED   = RegistrationHandler.register(new BlockClayBucketUnhardened());
-  public static final BlockClayFurnaceUnhardened  CLAY_FURNACE_UNHARDENED  = RegistrationHandler.register(new BlockClayFurnaceUnhardened());
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = RegistrationHandler.register(new BlockClayCrucibleUnhardened());
   public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED;
   
@@ -73,13 +68,12 @@ public final class GradientBlocks {
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
     private static final Map<GradientBlock, ItemBlock> blocks = new HashMap<>();
-    private static final List<GradientCraftable> craftables = new ArrayList<>();
     
     public static final Set<ItemBlock> ITEM_BLOCKS = new HashSet<>();
     
     private static <T extends GradientBlock> T register(final T block) {
       if(block instanceof ItemBlockProvider) {
-        return register(block, ((ItemBlockProvider)block).getItemBlock(block));
+        return register(block, ((ItemBlockProvider)block).getItemBlock((Block & ItemBlockProvider)block));
       }
       
       return register(block, new ItemBlock(block));
@@ -87,11 +81,6 @@ public final class GradientBlocks {
     
     private static <T extends GradientBlock> T register(final T block, final ItemBlock item) {
       blocks.put(block, item);
-      
-      if(block instanceof GradientCraftable) {
-        craftables.add((GradientCraftable)block);
-      }
-      
       return block;
     }
     
@@ -110,7 +99,7 @@ public final class GradientBlocks {
       System.out.println("Registering item blocks");
       
       blocks.forEach((block, item) -> {
-        item.setRegistryName(item.block.getRegistryName());
+        item.setRegistryName(item.getBlock().getRegistryName());
         event.getRegistry().register(item);
         ITEM_BLOCKS.add(item);
       });
@@ -127,10 +116,6 @@ public final class GradientBlocks {
           } catch(final NoSuchMethodException ignored) { }
         }
       }
-    }
-    
-    public static void addRecipes() {
-      craftables.forEach(GradientCraftable::addRecipe);
     }
   }
 }

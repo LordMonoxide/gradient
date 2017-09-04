@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:clay_cast_unhardened",
+    "data": 0
+  },
+  "ingredients": [{
+    "item": "minecraft:clay_ball"
+  }, {
+    "item": "minecraft:sand",
+      "data": 32767
+  }]
+}

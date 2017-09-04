@@ -13,8 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.Random;
-
 public class GradientItemTool extends GradientItem {
   private final float harvestSpeed;
   private final float attackSpeed;
@@ -28,14 +26,6 @@ public class GradientItemTool extends GradientItem {
     this.attackDamage = attackDamage;
     
     this.setContainerItem(this);
-  }
-  
-  // This causes the mattock to take damage every time it is used in a recipe
-  @Override
-  public ItemStack getContainerItem(final ItemStack itemStack) {
-    final ItemStack stack = itemStack.copy();
-    stack.attemptDamageItem(1, new Random());
-    return stack;
   }
   
   public ItemStack getWildcardItemStack() {

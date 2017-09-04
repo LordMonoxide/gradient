@@ -19,7 +19,7 @@ public class GuiJournalEntry extends GuiScreen {
   
   private final JournalEntry entry;
   
-  private GuiScreen previousGui;
+  private final GuiScreen previousGui;
   
   public GuiJournalEntry(JournalEntry entry, GuiScreen previousGui) {
     this.entry = entry;

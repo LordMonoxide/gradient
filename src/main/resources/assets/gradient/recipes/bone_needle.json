@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:bone_needle"
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "bone"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "toolHammer"
+  }]
+}

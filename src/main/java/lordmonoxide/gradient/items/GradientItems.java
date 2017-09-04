@@ -6,7 +6,6 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -17,13 +16,11 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public final class GradientItems {
@@ -86,6 +83,7 @@ public final class GradientItems {
       OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));
       OreDictionary.registerOre("nugget" + caps, NUGGET.getItemStack(1, metal.id));
       OreDictionary.registerOre("dust" + caps, DUST.getItemStack(1, metal.id));
+      OreDictionary.registerOre("plate" + caps, PLATE.getItemStack(1, metal.id));
       OreDictionary.registerOre("block" + caps, CAST_ITEM.getItemStack(1, metal.id));
     }
     
@@ -136,17 +134,11 @@ public final class GradientItems {
   
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
-    private static final List<GradientCraftable> craftables = new ArrayList<>();
     
     public static final Set<Item> ITEMS = new HashSet<>();
     
     private static <T extends Item> T register(final T item) {
       ITEMS.add(item);
-      
-      if(item instanceof GradientCraftable) {
-        craftables.add((GradientCraftable)item);
-      }
-      
       return item;
     }
     
@@ -170,10 +162,6 @@ public final class GradientItems {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void initOreDict(final RegistryEvent.Register<Item> event) {
       initialiseOreDict();
-    }
-    
-    public static void addRecipes() {
-      craftables.forEach(GradientCraftable::addRecipe);
     }
   }
 }

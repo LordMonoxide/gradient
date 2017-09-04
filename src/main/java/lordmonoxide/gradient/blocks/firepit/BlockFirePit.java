@@ -6,7 +6,6 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -24,21 +23,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import java.util.List;
 import java.util.Random;
 
-public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, ITileEntityProvider {
+public class BlockFirePit extends HeatSinkerBlock implements ITileEntityProvider {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
   
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -63,14 +56,12 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   }
   
   @Override
-  public List<ItemStack> getDrops(final IBlockAccess world, final BlockPos pos, final IBlockState state, final int fortune) {
-    final List<ItemStack> ret = super.getDrops(world, pos, state, fortune);
+  public void getDrops(final NonNullList<ItemStack> drops, final IBlockAccess world, final BlockPos pos, final IBlockState state, final int fortune) {
+    super.getDrops(drops, world, pos, state, fortune);
     
     if(state.getValue(HAS_FURNACE)) {
-      ret.add(new ItemStack(GradientBlocks.CLAY_FURNACE));
+      drops.add(new ItemStack(GradientBlocks.CLAY_FURNACE));
     }
-    
-    return ret;
   }
   
   @Override
@@ -135,7 +126,7 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
           }
         }
         
-        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).block instanceof BlockClayFurnace) {
+        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() instanceof BlockClayFurnace) {
           if(!state.getValue(HAS_FURNACE)) {
             final TileFirePit te = (TileFirePit)world.getTileEntity(pos);
             
@@ -209,17 +200,5 @@ public class BlockFirePit extends HeatSinkerBlock implements GradientCraftable, 
   @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer(this, FACING, HAS_FURNACE);
-  }
-  
-  @Override
-  public void addRecipe() {
-    GameRegistry.addRecipe(new ShapelessOreRecipe(
-      this,
-      "stickWood",
-      "stickWood",
-      "stickWood",
-      "stickWood",
-      "stickWood"
-    ));
   }
 }

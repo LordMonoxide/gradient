@@ -2,8 +2,6 @@ package lordmonoxide.gradient.recipes;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.sun.swing.internal.plaf.metal.resources.metal;
-import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientTools;
 import net.minecraft.item.crafting.Ingredient;
@@ -17,10 +15,15 @@ public class IngredientToolFactory implements IIngredientFactory {
   @Nonnull
   @Override
   public Ingredient parse(JsonContext context, JsonObject json) {
-    final String typeName  = JsonUtils.getString(json, "head");
+    final String typeName = JsonUtils.getString(json, "head");
+    final GradientTools.Type type = GradientTools.getType(typeName);
+    
     final String metalName = JsonUtils.getString(json, "metal");
     
-    final GradientTools.Type   type  = GradientTools.getType(typeName);
+    if(metalName.equals("*")) {
+      return new IngredientTool(type);
+    }
+    
     final GradientMetals.Metal metal = GradientMetals.getMetal(metalName);
     
     if(metal == GradientMetals.INVALID_METAL) {

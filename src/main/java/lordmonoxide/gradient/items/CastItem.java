@@ -4,7 +4,6 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.ModelManager;
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CastItem extends GradientItem implements GradientCraftable, ModelManager.CustomModel {
+public class CastItem extends GradientItem implements ModelManager.CustomModel {
   public CastItem() {
     super("cast_item", CreativeTabs.TOOLS);
     this.setHasSubtypes(true);
@@ -53,31 +52,6 @@ public class CastItem extends GradientItem implements GradientCraftable, ModelMa
     }
     
     return GradientMetals.getMetal(stack.getTagCompound().getString("metal"));
-  }
-  
-  @Override
-  public void addRecipe() {
-    //TODO
-    /*
-    for(final GradientCasts.Cast cast : GradientCasts.CASTS) {
-      for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        if(!cast.tool || metal.canMakeTools) {
-          int amount = cast.amount / Fluid.BUCKET_VOLUME;
-          
-          final Object[] parts = new Object[amount + 1];
-          parts[0] = ItemClayCast.getCast(cast);
-          Arrays.fill(parts, 1, amount + 1, GradientMetals.getBucket(metal));
-          
-          final ItemStack override = cast.itemOverride.get(metal);
-          
-          GameRegistry.addRecipe(new ShapelessMetaAwareRecipe(
-            override == null ? getCastItem(cast, metal) : override,
-            parts
-          ));
-        }
-      }
-    }
-    */
   }
   
   @Override

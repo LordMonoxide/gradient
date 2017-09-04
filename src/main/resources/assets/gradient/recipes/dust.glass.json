@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:dust",
+    "data": 7
+  },
+  "ingredients": [{
+    "item": "gradient:mortar"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "blockGlass"
+  }]
+}

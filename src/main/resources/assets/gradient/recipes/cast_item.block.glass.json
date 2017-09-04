@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "minecraft:glass"
+  },
+  "ingredients": [{
+    "type": "gradient:bucket",
+    "fluid": "glass"
+  }, {
+    "type": "gradient:cast",
+    "cast": "block"
+  }]
+}

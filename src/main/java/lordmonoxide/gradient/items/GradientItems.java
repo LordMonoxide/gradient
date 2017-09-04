@@ -20,9 +20,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public final class GradientItems {
@@ -85,6 +83,7 @@ public final class GradientItems {
       OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));
       OreDictionary.registerOre("nugget" + caps, NUGGET.getItemStack(1, metal.id));
       OreDictionary.registerOre("dust" + caps, DUST.getItemStack(1, metal.id));
+      OreDictionary.registerOre("plate" + caps, PLATE.getItemStack(1, metal.id));
       OreDictionary.registerOre("block" + caps, CAST_ITEM.getItemStack(1, metal.id));
     }
     

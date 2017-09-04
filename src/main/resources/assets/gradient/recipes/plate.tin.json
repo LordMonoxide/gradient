@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:plate",
+    "data": 2
+  },
+  "ingredients": [{
+    "type": "gradient:tool",
+    "head": "hammer",
+    "metal": "*"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "ingotTin"
+  }]
+}

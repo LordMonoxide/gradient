@@ -3,7 +3,6 @@ package lordmonoxide.gradient;
 import lordmonoxide.gradient.overrides.BurningTooltips;
 import lordmonoxide.gradient.overrides.CookingTooltips;
 import lordmonoxide.gradient.overrides.MetalTooltips;
-import lordmonoxide.gradient.overrides.OverrideInventory;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 

@@ -4,8 +4,6 @@ import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.items.GradientItems;
-import lordmonoxide.gradient.recipes.GradientCraftable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.properties.PropertyDirection;
@@ -25,9 +23,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class BlockBronzeBoiler extends GradientBlock implements GradientCraftable, ITileEntityProvider {
+public class BlockBronzeBoiler extends GradientBlock implements ITileEntityProvider {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
   
   private static final Fluid WATER = FluidRegistry.getFluid("water");
@@ -107,18 +104,5 @@ public class BlockBronzeBoiler extends GradientBlock implements GradientCraftabl
   @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer(this, FACING);
-  }
-  
-  @Override
-  public void addRecipe() {
-    //TODO
-    /*GameRegistry.addRecipe(
-      new ItemStack(this),
-      "THT",
-      " I ",
-      'H', GradientItems.BRONZE_MACHINE_HULL,
-      'T', BCFactoryBlocks.tank,
-      'I', GradientItems.IGNITER
-    );*/
   }
 }

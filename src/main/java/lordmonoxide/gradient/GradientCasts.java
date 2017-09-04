@@ -130,7 +130,7 @@ public final class GradientCasts {
     private int amount = 1000;
     private boolean tool;
     
-    private Map<GradientMetals.Metal, ItemStack> itemOverride = new HashMap<>();
+    private final Map<GradientMetals.Metal, ItemStack> itemOverride = new HashMap<>();
     
     private CastBuilder(final String name) {
       this.name = name;

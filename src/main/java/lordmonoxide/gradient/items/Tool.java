@@ -41,7 +41,7 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
     return stack;
   }
   
-  public GradientTools.Type getType(final ItemStack stack) {
+  public static GradientTools.Type getType(final ItemStack stack) {
     if(!stack.hasTagCompound()) {
       return GradientTools.PICKAXE;
     }
@@ -49,7 +49,7 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
     return GradientTools.getType(stack.getTagCompound().getString("type"));
   }
   
-  public GradientMetals.Metal getMetal(final ItemStack stack) {
+  public static GradientMetals.Metal getMetal(final ItemStack stack) {
     if(!stack.hasTagCompound()) {
       return GradientMetals.INVALID_METAL;
     }
@@ -59,33 +59,33 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
   
   @Override
   public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-    return this.getType(player.getHeldItem(hand)).onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    return getType(player.getHeldItem(hand)).onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
   
   @Override
   protected double getAttackDamage(final ItemStack stack) {
-    return this.getType(stack).attackDamage * this.getMetal(stack).attackDamageMultiplier;
+    return getType(stack).attackDamage * getMetal(stack).attackDamageMultiplier;
   }
   
   @Override
   protected double getAttackSpeed(final ItemStack stack) {
-    return -4 + this.getType(stack).attackSpeed * this.getMetal(stack).attackSpeedMultiplier;
+    return -4 + getType(stack).attackSpeed * getMetal(stack).attackSpeedMultiplier;
   }
   
   @Deprecated
   public int getMaxDamage(final ItemStack stack) {
-    return this.getMetal(stack).durability - 1;
+    return getMetal(stack).durability - 1;
   }
   
   public Set<String> getToolClasses(final ItemStack stack) {
     final Set<String> set = new HashSet<>();
-    Collections.addAll(set, this.getType(stack).toolClass);
+    Collections.addAll(set, getType(stack).toolClass);
     return set;
   }
   
   public int getHarvestLevel(final ItemStack stack, final String toolClass, @Nullable final EntityPlayer player, @Nullable final IBlockState blockState) {
-    if(Arrays.stream(this.getType(stack).toolClass).anyMatch(toolClass::equals)) {
-      return this.getMetal(stack).harvestLevel;
+    if(Arrays.stream(getType(stack).toolClass).anyMatch(toolClass::equals)) {
+      return getMetal(stack).harvestLevel;
     }
     
     return -1;
@@ -93,7 +93,7 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
   
   @Override
   public float getStrVsBlock(ItemStack stack, IBlockState state) {
-    return this.canHarvestBlock(state, stack) ? this.getMetal(stack).harvestSpeed : 0.0f;
+    return this.canHarvestBlock(state, stack) ? getMetal(stack).harvestSpeed : 0.0f;
   }
   
   @Override
@@ -103,7 +103,7 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
   
   @Override
   public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName() + '.' + this.getType(stack).cast.name + '.' + this.getMetal(stack).name;
+    return super.getUnlocalizedName() + '.' + getType(stack).cast.name + '.' + getMetal(stack).name;
   }
   
   @Override
@@ -126,13 +126,13 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
     final Map<String, ModelResourceLocation> lookup = new HashMap<>();
     
     for(final ItemStack stack : stacks) {
-      final GradientTools.Type type = this.getType(stack);
-      final GradientMetals.Metal metal = this.getMetal(stack);
+      final GradientTools.Type type = getType(stack);
+      final GradientMetals.Metal metal = getMetal(stack);
       
       lookup.put(type.cast.name + "." + metal.name, new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, this.getUnlocalizedName(stack).substring(5)), "inventory"));
     }
     
     ModelBakery.registerItemVariants(this, lookup.values().toArray(new ModelResourceLocation[lookup.size()]));
-    ModelLoader.setCustomMeshDefinition(this, stack -> lookup.get(this.getType(stack).cast.name + "." + this.getMetal(stack).name));
+    ModelLoader.setCustomMeshDefinition(this, stack -> lookup.get(getType(stack).cast.name + "." + getMetal(stack).name));
   }
 }

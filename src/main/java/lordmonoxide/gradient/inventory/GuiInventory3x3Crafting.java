@@ -1,14 +1,39 @@
 package lordmonoxide.gradient.inventory;
 
 import lordmonoxide.gradient.GradientMod;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
+import java.io.IOException;
+
 public class GuiInventory3x3Crafting extends GuiInventory {
   public GuiInventory3x3Crafting(final EntityPlayer player) {
     super(player);
+  }
+  
+  @Override
+  public void initGui() {
+    super.initGui();
+    
+    for(GuiButton button : this.buttonList) {
+      if(button.id == 10) {
+        button.x = this.guiLeft + 152;
+        button.y = this.guiTop  +  47;
+        break;
+      }
+    }
+  }
+  
+  protected void actionPerformed(GuiButton button) throws IOException {
+    super.actionPerformed(button);
+    
+    if(button.id == 10) {
+      button.x = this.guiLeft + 152;
+      button.y = this.guiTop  +  47;
+    }
   }
   
   @Override

@@ -92,7 +92,7 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
   }
   
   @Override
-  public float getStrVsBlock(ItemStack stack, IBlockState state) {
+  public float getDestroySpeed(ItemStack stack, IBlockState state) {
     return this.canHarvestBlock(state, stack) ? getMetal(stack).harvestSpeed : 0.0f;
   }
   

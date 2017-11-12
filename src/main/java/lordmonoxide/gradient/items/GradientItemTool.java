@@ -53,7 +53,7 @@ public class GradientItemTool extends GradientItem {
   }
   
   @Override
-  public float getStrVsBlock(final ItemStack stack, final IBlockState state) {
+  public float getDestroySpeed(final ItemStack stack, final IBlockState state) {
     return this.canHarvestBlock(state, stack) ? this.harvestSpeed : 0.0f;
   }
   

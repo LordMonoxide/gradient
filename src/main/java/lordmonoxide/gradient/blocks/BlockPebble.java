@@ -78,7 +78,7 @@ public class BlockPebble extends GradientBlock {
     IBlockState down = world.getBlockState(pos.down());
     
     return
-      world.getBlockState(pos).getBlock().isReplaceable(world, pos) && (
+      super.canPlaceBlockAt(world, pos) && (
         down.getMaterial() == Material.CLAY ||
         down.getMaterial() == Material.GRASS ||
         down.getMaterial() == Material.GROUND ||
@@ -86,6 +86,8 @@ public class BlockPebble extends GradientBlock {
         down.getMaterial() == Material.PACKED_ICE ||
         down.getMaterial() == Material.ROCK ||
         down.getMaterial() == Material.SAND
+      ) && (
+        down.getBlock() != this
       )
     ;
   }

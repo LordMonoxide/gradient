@@ -7,7 +7,6 @@
   "ingredients": [{
     "item": "minecraft:clay_ball"
   }, {
-    "item": "minecraft:sand",
-      "data": 32767
+    "item": "#SAND"
   }]
 }

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "SAND",
+    "ingredient": [
+      {
+        "item": "minecraft:sand",
+        "data": 0
+      },
+      {
+        "item": "minecraft:sand",
+        "data": 1
+      }
+    ]
+  }
+]

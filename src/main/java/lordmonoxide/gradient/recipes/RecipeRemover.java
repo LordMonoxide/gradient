@@ -3,6 +3,7 @@ package lordmonoxide.gradient.recipes;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
+import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.Tool;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -11,8 +12,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +24,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
@@ -93,20 +95,18 @@ public final class RecipeRemover {
         System.out.println("Failed to remove recipe: " + loc);
       }
     }
-    
-    replacePlankRecipes();
   }
   
-  private static void replacePlankRecipes() {
+  @SubscribeEvent
+  public static void replacePlankRecipes(final RegistryEvent.Register<IRecipe> event) {
     final List<IRecipe> toAdd = new ArrayList<>();
+    final List<IRecipe> toRemove = new ArrayList<>();
     
-    final Iterator<IRecipe> it = CraftingManager.REGISTRY.iterator();
+    final IForgeRegistryModifiable<IRecipe> registry = (IForgeRegistryModifiable)event.getRegistry();
     
     int removed = 0;
     
-    while(it.hasNext()) {
-      final IRecipe recipe = it.next();
-      
+    for(final IRecipe recipe : registry) {
       final ItemStack output = recipe.getRecipeOutput();
       
       outerLoop:
@@ -137,12 +137,12 @@ public final class RecipeRemover {
                 inv.setInventorySlotContents(0, stackLog);
                 
                 if(recipe.matches(inv, null)) {
-                  //TODO
-                  /*toAdd.add(new ShapelessRecipes(
+                  toAdd.add(new ShapelessRecipes(
+                    GradientMod.MODID,
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
-                    Lists.newArrayList(stackLog, new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE))
-                  ));*/
-                  
+                    NonNullList.from(null, Ingredient.fromStacks(stackLog), Ingredient.fromStacks(new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE)))
+                  ).setRegistryName(GradientMod.MODID, GradientItems.STONE_MATTOCK.getUnlocalizedName() + ".chop." + stackLog.getUnlocalizedName()));
+
                   for(final GradientMetals.Metal metal : GradientMetals.metals) {
                     final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
                     tool.setItemDamage(OreDictionary.WILDCARD_VALUE);
@@ -151,11 +151,10 @@ public final class RecipeRemover {
                       new ItemStack(output.getItem(), 2, output.getMetadata()),
                       stackLog,
                       tool
-                    ));
+                    ).setRegistryName(GradientMod.MODID, tool.getUnlocalizedName() + ".chop." + stackLog.getUnlocalizedName()));
                   }
                   
-                  //TODO
-                  //it.remove();
+                  toRemove.add(recipe);
                   
                   removed++;
                   
@@ -168,10 +167,13 @@ public final class RecipeRemover {
       }
     }
     
-    //TODO
-    /*for(final IRecipe recipe : toAdd) {
-      GameRegistry.addRecipe(recipe);
-    }*/
+    for(final IRecipe recipe : toRemove) {
+      registry.remove(recipe.getRegistryName());
+    }
+    
+    for(final IRecipe recipe : toAdd) {
+      registry.register(recipe);
+    }
     
     if(removed == 0) {
       System.out.println("Failed to replaced plank recipes!");

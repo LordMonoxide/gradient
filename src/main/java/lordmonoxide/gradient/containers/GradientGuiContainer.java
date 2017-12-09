@@ -20,6 +20,12 @@ public abstract class GradientGuiContainer extends GuiContainer {
     super(container);
   }
   
+  public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
+    this.drawDefaultBackground();
+    super.drawScreen(mouseX, mouseY, partialTicks);
+    this.renderHoveredToolTip(mouseX, mouseY);
+  }
+  
   public void drawSprite(final double xIn, final double yIn, final double width, final double height, final TextureAtlasSprite sprite, final int color, final double scaleIn) {
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     Tessellator tessellator = Tessellator.getInstance();

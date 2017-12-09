@@ -12,13 +12,21 @@ import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucible;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
+import lordmonoxide.gradient.blocks.pebble.BlockPebble;
+import lordmonoxide.gradient.blocks.pebble.EntityPebble;
+import lordmonoxide.gradient.blocks.pebble.ItemPebble;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
+import net.minecraft.dispenser.BehaviorProjectileDispense;
+import net.minecraft.dispenser.IPosition;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
@@ -35,7 +43,12 @@ public final class GradientBlocks {
   
   public static final BlockOreMagnesium ORE_MAGNESIUM = RegistrationHandler.register(new BlockOreMagnesium());
   
-  public static final BlockPebble PEBBLE = RegistrationHandler.register(new BlockPebble());
+  public static final BlockPebble PEBBLE;
+  
+  static {
+    final BlockPebble block = new BlockPebble();
+    PEBBLE = RegistrationHandler.register(block, new ItemPebble(block));
+  }
   
   public static final BlockFirePit FIRE_PIT = RegistrationHandler.register(new BlockFirePit());
   
@@ -102,6 +115,12 @@ public final class GradientBlocks {
         item.setRegistryName(item.getBlock().getRegistryName());
         event.getRegistry().register(item);
         ITEM_BLOCKS.add(item);
+      });
+      
+      BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ItemBlock.getItemFromBlock(PEBBLE), new BehaviorProjectileDispense() {
+        protected IProjectile getProjectileEntity(final World world, final IPosition position, final ItemStack stack) {
+        return new EntityPebble(world, position.getX(), position.getY(), position.getZ());
+        }
       });
       
       registerTileEntities();

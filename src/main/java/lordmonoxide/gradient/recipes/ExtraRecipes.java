@@ -56,11 +56,6 @@ public final class ExtraRecipes {
   }
   
   private static void registerCasts(final RegistryEvent.Register<IRecipe> event) {
-    final IForgeRegistryModifiable registry = (IForgeRegistryModifiable)event.getRegistry();
-    for(Object res : registry.getKeys()) {
-      registry.remove((ResourceLocation)res);
-    }
-    
     //for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       //for(final GradientMetals.Metal metal : GradientMetals.metals) {
     final GradientCasts.Cast cast = GradientCasts.getCast("pickaxe");

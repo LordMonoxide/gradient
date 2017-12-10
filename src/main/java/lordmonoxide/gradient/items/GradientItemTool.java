@@ -24,8 +24,6 @@ public class GradientItemTool extends GradientItem {
     this.harvestSpeed = harvestSpeed;
     this.attackSpeed  = attackSpeed;
     this.attackDamage = attackDamage;
-    
-    this.setContainerItem(this);
   }
   
   public ItemStack getWildcardItemStack() {

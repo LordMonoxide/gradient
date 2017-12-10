@@ -41,6 +41,16 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
     return stack;
   }
   
+  public static ItemStack getTool(final GradientTools.Type type, final GradientMetals.Metal metal, final int amount, final int damage) {
+    final NBTTagCompound tag = new NBTTagCompound();
+    tag.setString("type", type.cast.name);
+    tag.setString("metal", metal.name);
+    
+    final ItemStack stack = new ItemStack(GradientItems.TOOL, amount, damage);
+    stack.setTagCompound(tag);
+    return stack;
+  }
+  
   public static GradientTools.Type getType(final ItemStack stack) {
     if(!stack.hasTagCompound()) {
       return GradientTools.PICKAXE;
@@ -94,11 +104,6 @@ public class Tool extends GradientItemTool implements ModelManager.CustomModel {
   @Override
   public float getDestroySpeed(ItemStack stack, IBlockState state) {
     return this.canHarvestBlock(state, stack) ? getMetal(stack).harvestSpeed : 0.0f;
-  }
-  
-  @Override
-  public int getMetadata(final int metadata) {
-    return metadata;
   }
   
   @Override

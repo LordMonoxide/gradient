@@ -137,20 +137,19 @@ public final class RecipeRemover {
                 inv.setInventorySlotContents(0, stackLog);
                 
                 if(recipe.matches(inv, null)) {
-                  toAdd.add(new ShapelessRecipes(
+                  toAdd.add(new ShapelessToolRecipe(
                     GradientMod.MODID,
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
                     NonNullList.from(null, Ingredient.fromStacks(stackLog), Ingredient.fromStacks(new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE)))
                   ).setRegistryName(GradientMod.MODID, GradientItems.STONE_MATTOCK.getUnlocalizedName() + ".chop." + stackLog.getUnlocalizedName()));
 
                   for(final GradientMetals.Metal metal : GradientMetals.metals) {
-                    final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal);
-                    tool.setItemDamage(OreDictionary.WILDCARD_VALUE);
+                    final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE);
                     
-                    toAdd.add(new ShapelessMetaAwareRecipe(
+                    toAdd.add(new ShapelessToolRecipe(
+                      GradientMod.MODID,
                       new ItemStack(output.getItem(), 2, output.getMetadata()),
-                      stackLog,
-                      tool
+                      NonNullList.from(null, Ingredient.fromStacks(stackLog), Ingredient.fromStacks(tool))
                     ).setRegistryName(GradientMod.MODID, tool.getUnlocalizedName() + ".chop." + stackLog.getUnlocalizedName()));
                   }
                   

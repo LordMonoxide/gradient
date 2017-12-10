@@ -142,7 +142,7 @@ public final class RecipeRemover {
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
                     NonNullList.from(null, Ingredient.fromStacks(stackLog), Ingredient.fromStacks(new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE)))
                   ).setRegistryName(GradientMod.MODID, GradientItems.STONE_MATTOCK.getUnlocalizedName() + ".chop." + stackLog.getUnlocalizedName()));
-
+                  
                   for(final GradientMetals.Metal metal : GradientMetals.metals) {
                     final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE);
                     

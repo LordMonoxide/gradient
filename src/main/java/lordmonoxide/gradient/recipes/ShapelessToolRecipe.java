@@ -24,7 +24,6 @@ public class ShapelessToolRecipe extends ShapelessRecipes {
     for(int i = 0; i < list.size(); ++i) {
       final ItemStack stack = inv.getStackInSlot(i);
       
-      //TODO Item is getting consumed rather than damaged...
       if(stack.getItem() instanceof GradientItemTool) {
         stack.attemptDamageItem(1, rand, null);
         

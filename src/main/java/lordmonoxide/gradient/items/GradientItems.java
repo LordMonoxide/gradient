@@ -2,6 +2,7 @@ package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
@@ -54,7 +55,16 @@ public final class GradientItems {
   public static final GradientItem MORTAR = RegistrationHandler.register(new Mortar());
   
   public static final GradientItem CAST_ITEM = RegistrationHandler.register(new CastItem());
-  public static final GradientItem TOOL      = RegistrationHandler.register(new Tool());
+  
+  static {
+    for(final GradientTools.Type type : GradientTools.types()) {
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+        if(metal.canMakeTools) {
+          RegistrationHandler.register(new Tool(type, metal));
+        }
+      }
+    }
+  }
   
   public static final GradientItem BRONZE_MACHINE_HULL = RegistrationHandler.register(new BronzeMachineHull());
   public static final GradientItem IGNITER = RegistrationHandler.register(new Igniter());

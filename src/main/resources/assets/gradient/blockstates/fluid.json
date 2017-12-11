@@ -4,13 +4,6 @@
     "model": "forge:fluid"
   },
   "variants": {
-    "invalid": [
-      {
-        "custom": {
-          "fluid": "invalid"
-        }
-      }
-    ],
     "copper": [
       {
         "custom": {

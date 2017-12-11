@@ -17,7 +17,7 @@ public final class GradientMetals {
   
   private static final Map<Integer, Meltable> meltables = new HashMap<>();
   
-  public static final Metal    INVALID_METAL    = addMetal("invalid", Integer.MAX_VALUE, 0, 0).add();
+  public static final Metal    INVALID_METAL    = new Metal("invalid", Float.POSITIVE_INFINITY, 0.0f, 0.0f, false, false, false);
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
   
   public static final Metal COPPER    = addMetal("copper",    1085.00f, 3.0f,  63.55f).add();

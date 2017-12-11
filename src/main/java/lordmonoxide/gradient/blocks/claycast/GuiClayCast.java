@@ -11,8 +11,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.IOException;
-
 public class GuiClayCast extends GradientGuiContainer {
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_cast.png");
   
@@ -45,12 +43,12 @@ public class GuiClayCast extends GradientGuiContainer {
   }
   
   private GuiButton addButtonForTool(final GradientCasts.Cast cast, final int x, final int y) {
-    final ItemStack override = cast.itemOverride.get(GradientMetals.INVALID_METAL);
-    return this.addButton(new ItemButton(cast.id, override != null ? override : CastItem.getCastItem(cast, GradientMetals.INVALID_METAL, 1), x, y));
+    final ItemStack override = cast.itemOverride.get(GradientMetals.COPPER);
+    return this.addButton(new ItemButton(cast.id, override != null ? override : CastItem.getCastItem(cast, GradientMetals.COPPER, 1), x, y));
   }
   
   @Override
-  protected void actionPerformed(final GuiButton button) throws IOException {
+  protected void actionPerformed(final GuiButton button) {
     if(button instanceof ItemButton) {
       final ItemButton cast = (ItemButton)button;
       this.selectedCast.enabled = true;

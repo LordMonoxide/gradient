@@ -82,7 +82,7 @@ public final class GradientBlocks {
   public static class RegistrationHandler {
     private static final Map<GradientBlock, ItemBlock> blocks = new HashMap<>();
     
-    public static final Set<ItemBlock> ITEM_BLOCKS = new HashSet<>();
+    public static final List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
     
     private static <T extends GradientBlock> T register(final T block) {
       if(block instanceof ItemBlockProvider) {

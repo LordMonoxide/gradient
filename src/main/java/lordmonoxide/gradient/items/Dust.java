@@ -3,37 +3,22 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Dust extends GradientItem {
-  public Dust() {
-    super("dust", CreativeTabs.MATERIALS);
-    this.setHasSubtypes(true);
+  private static Map<GradientMetals.Metal, Dust> items = new HashMap<>();
+  
+  public static ItemStack getDust(final GradientMetals.Metal metal, final int amount) {
+    return items.get(metal).getItemStack(amount);
   }
   
-  public static ItemStack getDust(final GradientMetals.Metal metal) {
-    return GradientItems.DUST.getItemStack(1, metal.id);
-  }
+  public final GradientMetals.Metal metal;
   
-  public static ItemStack getDust(final GradientMetals.Metal metal, int amount) {
-    return getDust(metal);
-  }
-  
-  @Override
-  public int getMetadata(final int metadata) {
-    return metadata;
-  }
-  
-  @Override
-  public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName() + '.' + GradientMetals.getMetal(stack.getMetadata()).name;
-  }
-  
-  @Override
-  @SideOnly(Side.CLIENT)
-  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().map(Dust::getDust).forEach(list::add);
+  public Dust(final GradientMetals.Metal metal) {
+    super("dust." + metal.name, CreativeTabs.MATERIALS);
+    items.put(metal, this);
+    this.metal = metal;
   }
 }

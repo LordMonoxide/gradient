@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "gradient:tool",
-    "data": 0,
-    "nbt": "{\"type\":\"hammer\",\"metal\":\"tin\"}"
+    "item": "gradient:tool.hammer.tin"
   },
   "pattern": [
     "H",

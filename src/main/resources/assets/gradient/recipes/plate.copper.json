@@ -1,8 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "gradient:plate",
-    "data": 1
+    "item": "gradient:plate.copper"
   },
   "ingredients": [{
     "type": "gradient:tool",

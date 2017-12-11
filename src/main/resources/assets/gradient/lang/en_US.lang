@@ -66,6 +66,13 @@ item.cast_item.hammer.iron.name=Iron Forge Hammer Head
 item.cast_item.hammer.gold.name=Gold Forge Hammer Head
 item.cast_item.hammer.bronze.name=Bronze Forge Hammer Head
 item.cast_item.hammer.magnesium.name=Magnesium Forge Hammer Head
+item.cast_item.ingot.invalid.name=Invalid Ingot
+item.cast_item.ingot.copper.name=Copper Ingot
+item.cast_item.ingot.tin.name=Tin Ingot
+item.cast_item.ingot.iron.name=Iron Ingot
+item.cast_item.ingot.gold.name=Gold Ingot
+item.cast_item.ingot.bronze.name=Bronze Ingot
+item.cast_item.ingot.magnesium.name=Magnesium Ingot
 item.cast_item.block.invalid.name=Block of Invalid
 item.cast_item.block.copper.name=Block of Copper
 item.cast_item.block.tin.name=Block of Tin
@@ -77,13 +84,6 @@ item.cloth_shirt.name=Cloth Shirt
 item.cloth_pants.name=Cloth Pants
 
 # Metals
-item.ingot.invalid.name=Invalid Ingot
-item.ingot.copper.name=Copper Ingot
-item.ingot.tin.name=Tin Ingot
-item.ingot.iron.name=Iron Ingot
-item.ingot.gold.name=Gold Ingot
-item.ingot.bronze.name=Bronze Ingot
-item.ingot.magnesium.name=Magnesium Ingot
 item.nugget.invalid.name=Invalid Nugget
 item.nugget.copper.name=Copper Nugget
 item.nugget.tin.name=Tin Nugget

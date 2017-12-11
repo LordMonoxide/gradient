@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "gradient:tool",
-    "data": 0,
-    "nbt": "{\"type\":\"mattock\",\"metal\":\"tin\"}"
+    "item": "gradient:tool.mattock.tin"
   },
   "pattern": [
     "H",

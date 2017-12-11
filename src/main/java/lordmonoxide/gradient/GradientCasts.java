@@ -1,7 +1,6 @@
 package lordmonoxide.gradient;
 
 import com.google.common.base.Optional;
-import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -19,7 +18,7 @@ public final class GradientCasts {
   public static final Cast MATTOCK = register("mattock").tool().add();
   public static final Cast SWORD   = register("sword").tool().add();
   public static final Cast HAMMER  = register("hammer").tool().add();
-  public static final Cast INGOT   = register("ingot").itemOverride(GradientItems.INGOT).add();
+  public static final Cast INGOT   = register("ingot").add();
   
   public static final Cast BLOCK = register("block")
     .itemOverride(GradientMetals.IRON,  new ItemStack(Blocks.IRON_BLOCK))

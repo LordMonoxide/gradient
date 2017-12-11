@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gradient:items/ingot_invalid"
+    "layer0": "gradient:items/cast_item.ingot.copper"
   }
 }

@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "gradient:cast_item",
-    "data": 0,
-    "nbt": "{\"cast\":\"mattock\",\"metal\":\"gold\"}"
+    "item": "gradient:cast_item.mattock.gold"
   },
   "ingredients": [{
     "type": "gradient:bucket",

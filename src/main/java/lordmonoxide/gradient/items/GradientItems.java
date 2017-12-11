@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.items;
 
+import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
@@ -45,18 +46,30 @@ public final class GradientItems {
   public static final GradientArmour CLOTH_SHIRT = RegistrationHandler.register(new ClothShirt());
   public static final GradientArmour CLOTH_PANTS = RegistrationHandler.register(new ClothPants());
   
-  public static final GradientItem INGOT  = RegistrationHandler.register(new Ingot());
-  public static final GradientItem NUGGET = RegistrationHandler.register(new Nugget());
-  public static final GradientItem DUST   = RegistrationHandler.register(new Dust());
-  public static final GradientItem PLATE  = RegistrationHandler.register(new Plate());
-  
   public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
   
   public static final GradientItem MORTAR = RegistrationHandler.register(new Mortar());
   
-  public static final GradientItem CAST_ITEM = RegistrationHandler.register(new CastItem());
-  
   static {
+    // Register nuggets
+    GradientMetals.metals.stream().filter(metal -> metal.canMakeNuggets).map(Nugget::new).forEach(RegistrationHandler::register);
+    
+    // Register dusts
+    GradientMetals.metals.stream().map(Dust::new).forEach(RegistrationHandler::register);
+    
+    // Register cast items
+    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+        if((!cast.tool || metal.canMakeTools) && cast.itemOverride.get(metal) == null) {
+          RegistrationHandler.register(new CastItem(cast, metal));
+        }
+      }
+    }
+    
+    // Register plates
+    GradientMetals.metals.stream().filter(metal -> metal.canMakePlates).map(Plate::new).forEach(RegistrationHandler::register);
+    
+    // Register tools
     for(final GradientTools.Type type : GradientTools.types()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(metal.canMakeTools) {
@@ -90,11 +103,21 @@ public final class GradientItems {
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);
       
-      OreDictionary.registerOre("ingot" + caps, INGOT.getItemStack(1, metal.id));
-      OreDictionary.registerOre("nugget" + caps, NUGGET.getItemStack(1, metal.id));
-      OreDictionary.registerOre("dust" + caps, DUST.getItemStack(1, metal.id));
-      OreDictionary.registerOre("plate" + caps, PLATE.getItemStack(1, metal.id));
-      OreDictionary.registerOre("block" + caps, CAST_ITEM.getItemStack(1, metal.id));
+      if(metal.canMakeNuggets) {
+        OreDictionary.registerOre("nugget" + caps, Nugget.getNugget(metal, 1));
+      }
+      
+      OreDictionary.registerOre("dust" + caps, Dust.getDust(metal, 1));
+      
+      if(metal.canMakeIngots) {
+        OreDictionary.registerOre("ingot" + caps, CastItem.getCastItem(GradientCasts.INGOT, metal, 1));
+      }
+      
+      OreDictionary.registerOre("block" + caps, CastItem.getCastItem(GradientCasts.BLOCK, metal, 1));
+      
+      if(metal.canMakePlates) {
+        OreDictionary.registerOre("plate" + caps, Plate.getPlate(metal, 1));
+      }
     }
     
     OreDictionary.registerOre("dustFlint", DUST_FLINT);
@@ -170,6 +193,8 @@ public final class GradientItems {
     
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void initOreDict(final RegistryEvent.Register<Item> event) {
+      System.out.println("Registering ore dict entries");
+      
       initialiseOreDict();
     }
   }

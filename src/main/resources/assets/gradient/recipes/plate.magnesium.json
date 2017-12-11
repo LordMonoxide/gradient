@@ -1,8 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "gradient:plate",
-    "data": 6
+    "item": "gradient:plate.magnesium"
   },
   "ingredients": [{
     "type": "gradient:tool",

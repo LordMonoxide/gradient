@@ -3,39 +3,22 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Nugget extends GradientItem {
-  public Nugget() {
-    super("nugget", CreativeTabs.MATERIALS);
-    this.setHasSubtypes(true);
+  private static Map<GradientMetals.Metal, Nugget> items = new HashMap<>();
+  
+  public static ItemStack getNugget(final GradientMetals.Metal metal, final int amount) {
+    return items.get(metal).getItemStack(amount);
   }
   
-  @SideOnly(Side.CLIENT)
-  public ItemStack getNugget(final GradientMetals.Metal metal) {
-    return this.getItemStack(1, metal.id);
-  }
+  public final GradientMetals.Metal metal;
   
-  @SideOnly(Side.CLIENT)
-  public ItemStack getNugget(final GradientMetals.Metal metal, int amount) {
-    return this.getNugget(metal);
-  }
-  
-  @Override
-  public int getMetadata(final int metadata) {
-    return metadata;
-  }
-  
-  @Override
-  public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName() + '.' + GradientMetals.getMetal(stack.getMetadata()).name;
-  }
-  
-  @Override
-  @SideOnly(Side.CLIENT)
-  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    GradientMetals.metals.stream().filter(metal -> metal.canMakeNuggets).map(this::getNugget).forEach(list::add);
+  public Nugget(final GradientMetals.Metal metal) {
+    super("nugget." + metal.name, CreativeTabs.MATERIALS);
+    items.put(metal, this);
+    this.metal = metal;
   }
 }

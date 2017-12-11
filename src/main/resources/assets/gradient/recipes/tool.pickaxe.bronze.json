@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "gradient:tool",
-    "data": 0,
-    "nbt": "{\"type\":\"pickaxe\",\"metal\":\"bronze\"}"
+    "item": "gradient:tool.pickaxe.bronze"
   },
   "pattern": [
     "H",

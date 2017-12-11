@@ -175,6 +175,7 @@ public final class GradientMetals {
     public final boolean canMakeTools;
     public final boolean canMakeNuggets;
     public final boolean canMakeIngots;
+    public final boolean canMakePlates;
     
     private ItemStack nugget;
     Fluid fluid;
@@ -198,6 +199,7 @@ public final class GradientMetals {
       this.canMakeTools = canMakeTools;
       this.canMakeNuggets = canMakeNuggets;
       this.canMakeIngots = canMakeIngots;
+      this.canMakePlates = hardness <= 4.0f;
     }
     
     public ItemStack getNugget() {

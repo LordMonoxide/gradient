@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "gradient:tool",
-    "data": 0,
-    "nbt": "{\"type\":\"mattock\",\"metal\":\"copper\"}"
+    "item": "gradient:tool.mattock.copper"
   },
   "pattern": [
     "H",

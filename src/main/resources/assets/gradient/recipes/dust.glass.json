@@ -1,8 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "gradient:dust",
-    "data": 7
+    "item": "gradient:dust.glass"
   },
   "ingredients": [{
     "item": "gradient:mortar"

@@ -1,8 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "gradient:plate",
-    "data": 2
+    "item": "gradient:plate.tin"
   },
   "ingredients": [{
     "type": "gradient:tool",

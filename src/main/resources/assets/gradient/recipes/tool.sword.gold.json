@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "gradient:tool",
-    "data": 0,
-    "nbt": "{\"type\":\"sword\",\"metal\":\"gold\"}"
+    "item": "gradient:tool.sword.gold"
   },
   "pattern": [
     "H",

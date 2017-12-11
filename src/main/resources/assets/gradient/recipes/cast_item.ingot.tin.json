@@ -1,8 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "gradient:ingot",
-    "data": 2
+    "item": "gradient:cast_item.ingot.tin"
   },
   "ingredients": [{
     "type": "gradient:bucket",

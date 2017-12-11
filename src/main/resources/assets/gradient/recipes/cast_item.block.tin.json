@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "gradient:cast_item",
-    "data": 0,
-    "nbt": "{\"cast\":\"block\",\"metal\":\"tin\"}"
+    "item": "gradient:cast_item.block.tin"
   },
   "ingredients": [{
     "type": "gradient:bucket",

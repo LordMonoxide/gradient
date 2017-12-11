@@ -14,7 +14,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -102,7 +101,7 @@ public final class RecipeRemover {
     final List<IRecipe> toAdd = new ArrayList<>();
     final List<IRecipe> toRemove = new ArrayList<>();
     
-    final IForgeRegistryModifiable<IRecipe> registry = (IForgeRegistryModifiable)event.getRegistry();
+    final IForgeRegistryModifiable<IRecipe> registry = (IForgeRegistryModifiable<IRecipe>)event.getRegistry();
     
     int removed = 0;
     

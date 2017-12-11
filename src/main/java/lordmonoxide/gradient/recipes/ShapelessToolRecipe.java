@@ -1,13 +1,11 @@
 package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.items.GradientItemTool;
-import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.Random;
 

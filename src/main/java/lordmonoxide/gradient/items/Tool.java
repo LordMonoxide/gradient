@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class Tool extends GradientItemTool {
+public class Tool extends GradientItemWorldTool {
   private static final Set<Tool> tools = new HashSet<>();
   
   public static ItemStack getTool(final GradientTools.Type type, final GradientMetals.Metal metal, final int amount, final int damage) {
@@ -29,13 +29,11 @@ public class Tool extends GradientItemTool {
   public final GradientMetals.Metal metal;
   
   public Tool(final GradientTools.Type type, final GradientMetals.Metal metal) {
-    super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier));
+    super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), metal.durability);
     tools.add(this);
     
     this.type = type;
     this.metal = metal;
-    
-    this.setMaxDamage(this.metal.durability - 1);
   }
   
   @Override

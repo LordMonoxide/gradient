@@ -8,12 +8,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class StoneMattock extends GradientItemTool {
+public class StoneMattock extends GradientItemWorldTool {
   public StoneMattock() {
-    super("stone_mattock", 0.5f, -2.4f, 4);
+    super("stone_mattock", 0.5f, -2.4f, 4, 20);
     this.setHarvestLevel("axe", 0);
     this.setHarvestLevel("shovel", 0);
-    this.setMaxDamage(19);
   }
   
   @Override

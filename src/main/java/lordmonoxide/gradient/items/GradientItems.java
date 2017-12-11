@@ -38,17 +38,17 @@ public final class GradientItems {
   
   public static final GradientItemTool BONE_NEEDLE = RegistrationHandler.register(new BoneNeedle());
   
-  public static final GradientItem     FIRE_STARTER  = RegistrationHandler.register(new FireStarter());
-  public static final GradientItemTool STONE_HAMMER  = RegistrationHandler.register(new StoneHammer());
-  public static final GradientItemTool STONE_MATTOCK = RegistrationHandler.register(new StoneMattock());
-  public static final GradientItemTool FLINT_KNIFE   = RegistrationHandler.register(new FlintKnife());
+  public static final GradientItem          FIRE_STARTER  = RegistrationHandler.register(new FireStarter());
+  public static final GradientItemWorldTool STONE_HAMMER  = RegistrationHandler.register(new StoneHammer());
+  public static final GradientItemWorldTool STONE_MATTOCK = RegistrationHandler.register(new StoneMattock());
+  public static final GradientItemWorldTool FLINT_KNIFE   = RegistrationHandler.register(new FlintKnife());
   
   public static final GradientArmour CLOTH_SHIRT = RegistrationHandler.register(new ClothShirt());
   public static final GradientArmour CLOTH_PANTS = RegistrationHandler.register(new ClothPants());
   
   public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
   
-  public static final GradientItem MORTAR = RegistrationHandler.register(new Mortar());
+  public static final GradientItemTool MORTAR = RegistrationHandler.register(new Mortar());
   
   static {
     // Register nuggets

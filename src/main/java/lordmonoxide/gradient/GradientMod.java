@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -38,5 +39,9 @@ public class GradientMod {
   @Mod.EventHandler
   public void postInit(final FMLPostInitializationEvent event) {
     proxy.postInit(event);
+  }
+  
+  public static ResourceLocation resource(final String path) {
+    return new ResourceLocation(MODID, path);
   }
 }

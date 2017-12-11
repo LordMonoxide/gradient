@@ -21,8 +21,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class GradientItems {
   private GradientItems() { }
@@ -145,7 +145,7 @@ public final class GradientItems {
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
     
-    public static final Set<Item> ITEMS = new HashSet<>();
+    public static final List<Item> ITEMS = new ArrayList<>();
     
     private static <T extends Item> T register(final T item) {
       ITEMS.add(item);
@@ -163,7 +163,6 @@ public final class GradientItems {
       
       for(final Item item : ITEMS) {
         registry.register(item);
-        ITEMS.add(item);
       }
       
       initialiseItems();

@@ -92,6 +92,7 @@ public final class GradientItems {
     OreDictionary.registerOre("infinicoal", INFINICOAL);
     
     OreDictionary.registerOre("coal", Items.COAL);
+    OreDictionary.registerOre("igniter", GradientItems.IGNITER);
     
     OreDictionary.registerOre("string", FIBRE);
     OreDictionary.registerOre("cloth",  CLOTH);

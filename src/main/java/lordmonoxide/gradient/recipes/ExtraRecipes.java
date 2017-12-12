@@ -80,21 +80,13 @@ public final class ExtraRecipes {
   
   private static void registerAlloys(final IForgeRegistry<IRecipe> registry) {
     GradientMetals.alloys.forEach(alloy -> {
-      final Ingredient[] ingredients = new Ingredient[alloy.inputs.size()];
-      String recipeName = "recipe.alloy." + alloy.output.amount + "." + alloy.output.metal.name + ".from";
-      
-      for(int i = 0; i < alloy.inputs.size(); i++) {
-        final GradientMetals.Metal input = alloy.inputs.get(i);
-        ingredients[i] = new IngredientNBT(GradientMetals.getBucket(input));
-        recipeName += "." + input.name;
-      }
+      String recipeName = "recipe.alloy." + alloy.output.amount + "." + alloy.output.metal.name + ".from." + alloy.inputs.stream().map(metal -> metal.name).reduce((acc, name) -> acc + "." + name).orElse("");
       
       System.out.println("Adding recipe " + recipeName);
       
-      registry.register(new ShapelessRecipes(
+      registry.register(new AlloyRecipe(
           GradientMod.MODID,
-          GradientMetals.getBucket(alloy.output),
-          NonNullList.from(null, ingredients)
+          alloy
       ).setRegistryName(GradientMod.resource(recipeName)));
     });
   }

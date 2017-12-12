@@ -37,9 +37,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import java.util.*;
 
 public final class GradientBlocks {
-  public static final Material       MATERIAL_CLAY_MACHINE = new Material(MapColor.BROWN);
-  public static final MaterialLiquid MATERIAL_LIQUID_METAL = new MaterialLiquid(MapColor.GRAY);
-  public static final Material       MATERIAL_BRONZE_MACHINE = new Material(MapColor.GOLD);
+  public static final Material MATERIAL_CLAY_MACHINE   = new Material(MapColor.BROWN);
+  public static final Material MATERIAL_BRONZE_MACHINE = new Material(MapColor.GOLD);
   
   public static final BlockOreMagnesium ORE_MAGNESIUM = RegistrationHandler.register(new BlockOreMagnesium());
   

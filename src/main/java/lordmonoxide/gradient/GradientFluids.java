@@ -34,7 +34,12 @@ public final class GradientFluids {
     if(FluidRegistry.isFluidRegistered(metal.name)) {
       fluid = FluidRegistry.getFluid(metal.name);
     } else {
-      fluid = new Fluid(metal.name, new ResourceLocation(GradientMod.MODID, "blocks/fluid_" + metal.name), new ResourceLocation(GradientMod.MODID, "blocks/fluid_" + metal.name + "_flowing"));
+      fluid = new Fluid(metal.name, GradientMod.resource("blocks/fluid_" + metal.name), GradientMod.resource("blocks/fluid_" + metal.name + "_flowing"))
+          .setDensity(3000)
+          .setLuminosity(9)
+          .setViscosity(5000)
+          .setTemperature((int)(metal.meltTemp + 273.15));
+      
       FluidRegistry.registerFluid(fluid);
     }
     

@@ -60,7 +60,8 @@ public class BlockFirePit extends HeatSinkerBlock implements ITileEntityProvider
     super.getDrops(drops, world, pos, state, fortune);
     
     if(state.getValue(HAS_FURNACE)) {
-      drops.add(new ItemStack(GradientBlocks.CLAY_FURNACE));
+      final Block furnace = GradientBlocks.CLAY_FURNACE;
+      drops.add(new ItemStack(furnace, 1, furnace.getMetaFromState(furnace.getDefaultState().withProperty(BlockClayFurnace.HARDENED, true))));
     }
   }
   

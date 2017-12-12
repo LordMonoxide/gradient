@@ -129,6 +129,10 @@ public class BlockFirePit extends HeatSinkerBlock implements ITileEntityProvider
         
         if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() instanceof BlockClayFurnace) {
           if(!state.getValue(HAS_FURNACE)) {
+            if(!GradientBlocks.CLAY_FURNACE.getStateFromMeta(stack.getMetadata()).getValue(BlockClayFurnace.HARDENED)) {
+              return false;
+            }
+            
             final TileFirePit te = (TileFirePit)world.getTileEntity(pos);
             
             if(te == null) {

@@ -98,7 +98,7 @@ public final class GradientBlocks {
   
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
-    private static final Map<GradientBlock, ItemBlock> blocks = new HashMap<>();
+    private static final Map<GradientBlock, ItemBlock> blocks = new LinkedHashMap<>();
     
     public static final List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
     

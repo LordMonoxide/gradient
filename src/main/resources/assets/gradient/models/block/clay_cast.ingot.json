@@ -3,7 +3,7 @@
     "parent": "block/block",
     "textures": {
         "particle": "blocks/hardened_clay",
-        "0": "blocks/hardened_clay"
+        "0": "gradient:blocks/clay_cast.ingot"
     },
     "elements": [
         {

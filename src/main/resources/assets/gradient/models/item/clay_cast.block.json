@@ -1,5 +1,5 @@
 {
-  "parent": "gradient:block/clay_cast.hammer",
+  "parent": "gradient:block/clay_cast.block",
   "display": {
     "thirdperson": {
       "rotation": [ -90, 0, 0 ],

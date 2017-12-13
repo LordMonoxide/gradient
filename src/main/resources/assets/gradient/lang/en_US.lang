@@ -98,7 +98,6 @@ item.plate.magnesium.name=Magnesium Plate
 item.mortar.name=Mortar and Pestle
 
 # Machine parts
-item.bronze_machine_hull.name=Bronze Machine Hull
 item.igniter.name=Ignition Powder
 
 # Fluids
@@ -140,6 +139,7 @@ tile.clay_cast.hammer.name=Clay Cast (Hammer)
 tile.clay_cast.ingot.name=Clay Cast (Ingot)
 tile.clay_cast.block.name=Clay Cast (Block)
 
+tile.bronze_machine_hull.name=Bronze Machine Hull
 tile.bronze_boiler.name=Bronze Boiler
 tile.bronze_boiler.fuel=Fuel
 tile.bronze_boiler.heat=Heat: %d °C

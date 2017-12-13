@@ -73,6 +73,7 @@ public final class GradientBlocks {
   
   public static final BlockClayBowl CLAY_BOWL = RegistrationHandler.register(new BlockClayBowl());
   
+  public static final BlockBronzeMachineHull BRONZE_MACHINE_HULL = RegistrationHandler.register(new BlockBronzeMachineHull());
   public static final BlockBronzeBoiler BRONZE_BOILER = RegistrationHandler.register(new BlockBronzeBoiler());
   
   public static final Map<GradientMetals.Metal, Block> CAST_BLOCK;

@@ -1,13 +1,15 @@
 package lordmonoxide.gradient;
 
 import com.google.common.base.Optional;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.block.properties.PropertyHelper;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public final class GradientCasts {
   private GradientCasts() { }
@@ -21,9 +23,7 @@ public final class GradientCasts {
   public static final Cast INGOT   = register("ingot").add();
   
   public static final Cast BLOCK = register("block")
-    .itemOverride(GradientMetals.IRON,  new ItemStack(Blocks.IRON_BLOCK))
-    .itemOverride(GradientMetals.GOLD,  new ItemStack(Blocks.GOLD_BLOCK))
-    .itemOverride(GradientMetals.GLASS, new ItemStack(Blocks.GLASS))
+    .itemOverride(metal -> new ItemStack(GradientBlocks.CAST_BLOCK.get(metal)))
     .amount(Fluid.BUCKET_VOLUME * 8)
     .add();
   
@@ -62,9 +62,9 @@ public final class GradientCasts {
     public final String name;
     public final int amount;
     public final boolean tool;
-    public final Map<GradientMetals.Metal, ItemStack> itemOverride;
+    public final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride;
     
-    public Cast(final String name, final int amount, final boolean tool, final Map<GradientMetals.Metal, ItemStack> itemOverride) {
+    public Cast(final String name, final int amount, final boolean tool, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride) {
       this.id = currentId++;
       this.name = name;
       this.amount = amount;
@@ -129,7 +129,7 @@ public final class GradientCasts {
     private int amount = 1000;
     private boolean tool;
     
-    private final Map<GradientMetals.Metal, ItemStack> itemOverride = new HashMap<>();
+    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride = new HashMap<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>>();
     
     private CastBuilder(final String name) {
       this.name = name;
@@ -144,19 +144,14 @@ public final class GradientCasts {
       this.tool = true;
       return this;
     }
-  
-    public CastBuilder itemOverride(final ItemStack item) {
-      GradientMetals.metals.forEach(metal -> this.itemOverride.put(metal, item));
+    
+    public CastBuilder itemOverride(final Function<GradientMetals.Metal, ItemStack> callback) {
+      GradientMetals.metals.forEach(metal -> this.itemOverride.put(metal, callback));
       return this;
     }
-  
-    public CastBuilder itemOverride(final Item item) {
-      GradientMetals.metals.forEach(metal -> this.itemOverride.put(metal, new ItemStack(item, 1, metal.id)));
-      return this;
-    }
-  
-    public CastBuilder itemOverride(final GradientMetals.Metal metal, final ItemStack item) {
-      this.itemOverride.put(metal, item);
+    
+    public CastBuilder itemOverride(final GradientMetals.Metal metal, final Function<GradientMetals.Metal, ItemStack> callback) {
+      this.itemOverride.put(metal, callback);
       return this;
     }
     

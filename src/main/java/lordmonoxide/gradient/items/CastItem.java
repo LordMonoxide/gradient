@@ -11,6 +11,10 @@ public class CastItem extends GradientItem {
   private static final Set<CastItem> items = new HashSet<>();
   
   public static ItemStack getCastItem(final GradientCasts.Cast cast, final GradientMetals.Metal metal, final int amount) {
+    if(cast.itemOverride.containsKey(metal)) {
+      return cast.itemOverride.get(metal).apply(metal);
+    }
+    
     for(final CastItem item : items) {
       if(item.cast == cast && item.metal == metal) {
         return new ItemStack(item, amount);

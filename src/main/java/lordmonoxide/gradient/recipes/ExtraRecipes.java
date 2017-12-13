@@ -101,15 +101,13 @@ public final class ExtraRecipes {
           ingredients[amount] = Ingredient.fromStacks(ItemClayCast.getCast(cast));
           Arrays.fill(ingredients, 0, amount, new IngredientNBT(GradientMetals.getBucket(metal)));
           
-          final ItemStack override = cast.itemOverride.get(metal);
-          
           final String recipeName = "cast." + cast.name + "." + metal.name;
           
           System.out.println("Adding recipe " + recipeName);
           
           registry.register(new ShapelessRecipes(
               GradientMod.MODID,
-              override == null ? CastItem.getCastItem(cast, metal, 1) : override,
+              CastItem.getCastItem(cast, metal, 1),
               NonNullList.from(null, ingredients)
           ).setRegistryName(GradientMod.resource(recipeName)));
         }

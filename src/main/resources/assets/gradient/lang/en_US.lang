@@ -64,10 +64,10 @@ item.cast_item.ingot.iron.name=Iron Ingot
 item.cast_item.ingot.gold.name=Gold Ingot
 item.cast_item.ingot.bronze.name=Bronze Ingot
 item.cast_item.ingot.magnesium.name=Magnesium Ingot
-item.cast_item.block.copper.name=Block of Copper
-item.cast_item.block.tin.name=Block of Tin
-item.cast_item.block.bronze.name=Block of Bronze
-item.cast_item.block.magnesium.name=Block of Magnesium
+tile.cast_block.copper.name=Block of Copper
+tile.cast_block.tin.name=Block of Tin
+tile.cast_block.bronze.name=Block of Bronze
+tile.cast_block.magnesium.name=Block of Magnesium
 
 # Armour
 item.cloth_shirt.name=Cloth Shirt

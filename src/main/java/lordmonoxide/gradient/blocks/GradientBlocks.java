@@ -1,5 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
+import com.google.common.collect.ImmutableMap;
+import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.bronzeboiler.BlockBronzeBoiler;
 import lordmonoxide.gradient.blocks.claybowl.BlockClayBowl;
@@ -20,10 +22,10 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -72,6 +74,23 @@ public final class GradientBlocks {
   public static final BlockClayBowl CLAY_BOWL = RegistrationHandler.register(new BlockClayBowl());
   
   public static final BlockBronzeBoiler BRONZE_BOILER = RegistrationHandler.register(new BlockBronzeBoiler());
+  
+  public static final Map<GradientMetals.Metal, Block> CAST_BLOCK;
+  
+  static {
+    Map<GradientMetals.Metal, Block> map = new HashMap<>();
+    map.put(GradientMetals.IRON, Blocks.IRON_BLOCK);
+    map.put(GradientMetals.GOLD, Blocks.GOLD_BLOCK);
+    map.put(GradientMetals.GLASS, Blocks.GLASS);
+    
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      if(!map.containsKey(metal)) {
+        map.put(metal, RegistrationHandler.register(new CastBlock(metal)));
+      }
+    }
+    
+    CAST_BLOCK = ImmutableMap.copyOf(map);
+  }
   
   private GradientBlocks() {
     

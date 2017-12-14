@@ -1,13 +1,10 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.GradientTools;
-import lordmonoxide.gradient.items.GradientItems;
-import lordmonoxide.gradient.items.Tool;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemBlock;
@@ -139,18 +136,8 @@ public final class RecipeRemover {
                   toAdd.add(new ShapelessToolRecipe(
                     GradientMod.MODID,
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
-                    NonNullList.from(null, Ingredient.fromStacks(stackLog), Ingredient.fromStacks(new ItemStack(GradientItems.STONE_MATTOCK, 1, OreDictionary.WILDCARD_VALUE)))
-                  ).setRegistryName(GradientMod.MODID, GradientItems.STONE_MATTOCK.getUnlocalizedName() + ".chop." + stackLog.getUnlocalizedName()));
-                  
-                  for(final GradientMetals.Metal metal : GradientMetals.metals) {
-                    final ItemStack tool = Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE);
-                    
-                    toAdd.add(new ShapelessToolRecipe(
-                      GradientMod.MODID,
-                      new ItemStack(output.getItem(), 2, output.getMetadata()),
-                      NonNullList.from(null, Ingredient.fromStacks(stackLog), Ingredient.fromStacks(tool))
-                    ).setRegistryName(GradientMod.MODID, tool.getUnlocalizedName() + ".chop." + stackLog.getUnlocalizedName()));
-                  }
+                    NonNullList.from(null, Ingredient.fromStacks(stackLog), new IngredientOre("toolMattock"))
+                  ).setRegistryName(GradientMod.resource(output.getUnlocalizedName() + ".from." + stackLog.getUnlocalizedName() + ".with.mattock")));
                   
                   toRemove.add(recipe);
                   
@@ -172,6 +159,12 @@ public final class RecipeRemover {
     for(final IRecipe recipe : toAdd) {
       registry.register(recipe);
     }
+    
+    registry.register(new ShapelessToolRecipe(
+      GradientMod.MODID,
+      new ItemStack(Items.STICK, 2),
+      NonNullList.from(null, new IngredientOre("plankWood"), new IngredientOre("toolMattock"))
+    ).setRegistryName(GradientMod.resource("sticks.from.planks.with.mattock")));
     
     if(removed == 0) {
       System.out.println("Failed to replaced plank recipes!");

@@ -52,6 +52,8 @@ public final class GradientItems {
   
   public static final GradientItemTool MORTAR = RegistrationHandler.register(new Mortar());
   
+  public static final MushroomStew MUSHROOM_STEW = RegistrationHandler.register(new MushroomStew());
+  
   static {
     // Register nuggets
     GradientMetals.metals.stream().filter(metal -> metal.canMakeNuggets).map(Nugget::new).forEach(RegistrationHandler::register);

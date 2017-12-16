@@ -19,7 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -38,12 +38,28 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME *  8);
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
+  public final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
+    public int fill(FluidStack resource, boolean doFill) {
+      int amount = super.fill(resource, doFill);
+      
+      if(amount != 0) {
+        TileBronzeBoiler.this.sync();
+      }
+      
+      return amount;
+    }
+  };
   
   private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
   
   private long nextSync;
   
   private float heat;
+  
+  public TileBronzeBoiler() {
+    this.tanks.addHandler(WATER, this.tankWater);
+    this.tanks.addHandler(STEAM, this.tankSteam);
+  }
   
   public boolean hasHeat() {
     return this.heat != 0;
@@ -263,23 +279,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-      if(facing != null) {
-        IFluidHandler handler = FluidUtil.getFluidHandler(this.world, this.getPos().offset(facing), facing.getOpposite());
-        
-        if(handler != null) {
-          FluidStack stack = handler.drain(1, false);
-          
-          if(stack != null) {
-            if(stack.getFluid() == WATER) {
-              return (T)this.tankWater;
-            }
-          }
-          
-          return (T)this.tankSteam;
-        }
-      }
-      
-      return (T)this.tankWater;
+      return (T)this.tanks;
     }
     
     return
@@ -287,7 +287,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
       super.getCapability(capability, facing);
   }
   
-  protected void sync() {
+  private void sync() {
     if(!this.getWorld().isRemote) {
       final IBlockState state = this.getWorld().getBlockState(this.getPos());
       this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);

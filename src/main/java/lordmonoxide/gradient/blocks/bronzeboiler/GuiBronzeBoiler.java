@@ -4,7 +4,6 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.containers.GradientContainer;
 import lordmonoxide.gradient.containers.GradientGuiContainer;
-import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -36,11 +35,11 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
   }
   
   @Override
-  protected void actionPerformed(final GuiButton button) throws IOException {
+  protected void actionPerformed(final GuiButton button) {
     if(button instanceof ItemButton) {
       final ItemButton itemButton = (ItemButton)button;
       
-      if(itemButton.item.getItem() == GradientItems.FIRE_STARTER) {
+      if(itemButton.item.getItem() == Items.FLINT_AND_STEEL) {
         PacketLightBoiler.send(this.boiler.getPos());
       }
     }

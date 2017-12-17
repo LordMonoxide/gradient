@@ -14,23 +14,19 @@ public class ContainerBronzeFurnace extends GradientContainer {
   public ContainerBronzeFurnace(final InventoryPlayer inventory, final TileBronzeFurnace furnace) {
     super(furnace);
     
-    for(int i = 0; i < TileBronzeFurnace.INPUT_SLOTS_COUNT; i++) {
-      this.addSlotToContainer(new SlotFurnaceInput(this.inventory, TileBronzeFurnace.FIRST_INPUT_SLOT + i, INPUT_SLOTS_X + (i % 3) * (SLOT_X_SPACING + 8), INPUT_SLOTS_Y + (i / 3) * (SLOT_Y_SPACING + 8)) {
-        @Override public void onSlotChanged() {
-          super.onSlotChanged();
-          furnace.markDirty();
-        }
-      });
-    }
+    this.addSlotToContainer(new SlotFurnaceInput(this.inventory, TileBronzeFurnace.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
+      @Override public void onSlotChanged() {
+        super.onSlotChanged();
+        furnace.markDirty();
+      }
+    });
     
-    for(int i = 0; i < TileBronzeFurnace.OUTPUT_SLOTS_COUNT; i++) {
-      this.addSlotToContainer(new SlotOutput(this.inventory, TileBronzeFurnace.FIRST_OUTPUT_SLOT + i, OUTPUT_SLOTS_X + (i % 3) * (SLOT_X_SPACING + 8), OUTPUT_SLOTS_Y + (i / 3) * (SLOT_Y_SPACING + 8)) {
-        @Override public void onSlotChanged() {
-          super.onSlotChanged();
-          furnace.markDirty();
-        }
-      });
-    }
+    this.addSlotToContainer(new SlotOutput(this.inventory, TileBronzeFurnace.OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y) {
+      @Override public void onSlotChanged() {
+        super.onSlotChanged();
+        furnace.markDirty();
+      }
+    });
     
     this.addPlayerSlots(inventory);
   }

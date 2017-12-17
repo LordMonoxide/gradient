@@ -30,6 +30,10 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
     final int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
     
+    if(this.furnace.isCooking()) {
+      this.drawTexturedModalRect(x + 32, y + 35, 192, 0, (int)(16.0f * this.furnace.getCookPercent()), 14);
+    }
+    
     this.fluidRender.renderFluid(this.furnace.tankSteam, 148, 19, 12, 47);
   }
   

@@ -3,6 +3,8 @@ package lordmonoxide.gradient.blocks.bronzefurnace;
 import ic2.core.ref.FluidName;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -24,14 +26,11 @@ import javax.annotation.Nullable;
 public class TileBronzeFurnace extends TileEntity implements ITickable {
   private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
   
-  public static final int INPUT_SLOTS_COUNT = 1;
-  public static final int OUTPUT_SLOTS_COUNT = 1;
-  public static final int TOTAL_SLOTS_COUNT = INPUT_SLOTS_COUNT + OUTPUT_SLOTS_COUNT;
+  public static final int INPUT_SLOT = 0;
+  public static final int OUTPUT_SLOT = 1;
+  public static final int COOKING_SLOT = 2;
   
-  public static final int FIRST_INPUT_SLOT = 0;
-  public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT;
-  
-  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
+  private final ItemStackHandler inventory = new ItemStackHandler(3);
   
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
   public final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
@@ -48,6 +47,8 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   
   private long nextSync = 0;
   
+  private int cookTicks = 0;
+  
   public TileBronzeFurnace() {
     this.tanks.addHandler(STEAM, this.tankSteam);
   }
@@ -63,10 +64,51 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   
   @Override
   public void update() {
+    this.cook();
+    
     if(!this.getWorld().isRemote) {
       if(System.currentTimeMillis() >= this.nextSync) {
-        this.nextSync = System.currentTimeMillis() + 10000;
+        this.nextSync = System.currentTimeMillis() + 10000L;
         this.sync();
+      }
+    }
+  }
+  
+  public boolean isCooking() {
+    return !this.inventory.getStackInSlot(COOKING_SLOT).isEmpty();
+  }
+  
+  private boolean isCooked() {
+    return this.cookTicks >= 200;
+  }
+  
+  public float getCookPercent() {
+    return this.cookTicks / 200.0f;
+  }
+  
+  private ItemStack getInputStack() {
+    return this.inventory.getStackInSlot(INPUT_SLOT);
+  }
+  
+  private void cook() {
+    if(!this.isCooking() && !this.getInputStack().isEmpty()) {
+      final ItemStack cooked = FurnaceRecipes.instance().getSmeltingResult(this.getInputStack()).copy();
+      
+      if(this.inventory.insertItem(OUTPUT_SLOT, cooked, true).isEmpty()) {
+        this.inventory.extractItem(INPUT_SLOT, 1, false);
+        this.inventory.setStackInSlot(COOKING_SLOT, cooked);
+        this.cookTicks = 0;
+      }
+    }
+    
+    if(this.isCooking()) {
+      if(this.tankSteam.drain(5, true).amount >= 5) {
+        this.cookTicks++;
+      }
+      
+      if(this.isCooked()) {
+        final ItemStack cooked = this.inventory.extractItem(COOKING_SLOT, 1, false);
+        this.inventory.insertItem(OUTPUT_SLOT, cooked, false);
       }
     }
   }
@@ -75,6 +117,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setTag("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
+    compound.setInteger("cookTicks", this.cookTicks);
     return super.writeToNBT(compound);
   }
   
@@ -82,6 +125,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   public void readFromNBT(final NBTTagCompound compound) {
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.tankSteam.readFromNBT(compound.getCompoundTag("steam"));
+    this.cookTicks = compound.getInteger("cookTicks");
     super.readFromNBT(compound);
   }
   

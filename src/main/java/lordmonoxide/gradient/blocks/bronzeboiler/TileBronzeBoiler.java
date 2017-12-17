@@ -57,6 +57,8 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   private float heat;
   
   public TileBronzeBoiler() {
+    this.tankWater.setCanDrain(false);
+    
     this.tanks.addHandler(WATER, this.tankWater);
     this.tanks.addHandler(STEAM, this.tankSteam);
   }
@@ -203,7 +205,9 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   private void boilWater() {
     if(this.getHeat() >= 100) {
       if(this.tankWater.getFluidAmount() > 0 && this.tankSteam.getFluidAmount() < this.tankSteam.getCapacity()) {
-        FluidStack water = this.tankWater.drain(1, true);
+        this.tankWater.setCanDrain(true);
+        FluidStack water = this.tankWater.drain(Math.round(this.getHeat() / 100), true);
+        this.tankWater.setCanDrain(false);
         FluidStack steam = new FluidStack(STEAM, water.amount);
         this.tankSteam.fill(steam, true);
         this.markDirty();

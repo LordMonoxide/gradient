@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "gradient:bronze_furnace", "y": 180 },
+    "facing=south": { "model": "gradient:bronze_furnace" },
+    "facing=west":  { "model": "gradient:bronze_furnace", "y":  90 },
+    "facing=east":  { "model": "gradient:bronze_furnace", "y": 270 }
+  }
+}

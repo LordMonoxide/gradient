@@ -143,6 +143,7 @@ tile.bronze_machine_hull.name=Bronze Machine Hull
 tile.bronze_boiler.name=Bronze Boiler
 tile.bronze_boiler.fuel=Fuel
 tile.bronze_boiler.heat=Heat: %d °C
+tile.bronze_furnace.name=Bronze Furnace
 
 # Fuel
 fuel.ignition_temp=Ignition Temperature: %f °C

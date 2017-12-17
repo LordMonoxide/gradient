@@ -31,7 +31,7 @@ public class ItemClayCast extends ItemBlock {
   
   @Override
   public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName(stack) + "." + GradientCasts.getCast(stack.getMetadata()).name;
+    return super.getUnlocalizedName(stack) + '.' + GradientCasts.getCast(stack.getMetadata()).name;
   }
   
   @Override

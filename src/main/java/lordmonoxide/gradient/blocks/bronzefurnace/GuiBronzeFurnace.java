@@ -26,8 +26,8 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
   protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
     GlStateManager.color(1, 1, 1, 1);
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
-    int x = (this.width  - this.xSize) / 2;
-    int y = (this.height - this.ySize) / 2;
+    final int x = (this.width  - this.xSize) / 2;
+    final int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
     
     this.fluidRender.renderFluid(this.furnace.tankSteam, 148, 19, 12, 47);

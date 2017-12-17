@@ -76,7 +76,7 @@ public class BlockPebble extends GradientBlock {
   
   @Override
   public boolean canPlaceBlockAt(final World world, final BlockPos pos) {
-    IBlockState down = world.getBlockState(pos.down());
+    final IBlockState down = world.getBlockState(pos.down());
     
     return
       super.canPlaceBlockAt(world, pos) && (

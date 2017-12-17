@@ -45,7 +45,7 @@ public class GradientContainer extends Container {
   
   @Override
   public ItemStack transferStackInSlot(final EntityPlayer player, final int index) {
-    Slot slot = this.inventorySlots.get(index);
+    final Slot slot = this.inventorySlots.get(index);
     
     if(slot == null || !slot.getHasStack()) {
       return ItemStack.EMPTY;

@@ -117,6 +117,7 @@ public final class ModelManager {
    *
    * @author diesieben07
    */
+  @FunctionalInterface
   interface MeshDefinitionFix extends ItemMeshDefinition {
     ModelResourceLocation getLocation(final ItemStack stack);
     
@@ -131,6 +132,7 @@ public final class ModelManager {
     }
   }
   
+  @FunctionalInterface
   public interface CustomModel {
     void registerCustomModels();
   }

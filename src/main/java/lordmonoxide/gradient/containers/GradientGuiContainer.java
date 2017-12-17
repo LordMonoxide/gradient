@@ -20,6 +20,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
     super(container);
   }
   
+  @Override
   public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
     this.drawDefaultBackground();
     super.drawScreen(mouseX, mouseY, partialTicks);
@@ -28,8 +29,8 @@ public abstract class GradientGuiContainer extends GuiContainer {
   
   public void drawSprite(final double xIn, final double yIn, final double width, final double height, final TextureAtlasSprite sprite, final int color, final double scaleIn) {
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-    Tessellator tessellator = Tessellator.getInstance();
-    BufferBuilder buffer = tessellator.getBuffer();
+    final Tessellator tessellator = Tessellator.getInstance();
+    final BufferBuilder buffer = tessellator.getBuffer();
     buffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
   
     final double x = xIn + this.guiLeft;
@@ -73,7 +74,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
     }
     
     @Override
-    public void drawButton(final Minecraft mc, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawButton(final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
       super.drawButton(mc, mouseX, mouseY, partialTicks);
       
       if(this.visible) {
@@ -85,7 +86,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
   protected class FluidRenderer {
     public FluidRenderer() { }
     
-    public void renderFluid(FluidTank tank, double x, double y, double width, double height) {
+    public void renderFluid(final FluidTank tank, final double x, final double y, final double width, final double height) {
       if(tank.getFluid() == null || tank.getFluidAmount() == 0) {
         return;
       }

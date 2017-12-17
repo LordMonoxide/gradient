@@ -32,7 +32,7 @@ public class TileClayCrucible extends HeatSinker {
   
   private final MeltingMetal[] melting = new MeltingMetal[METAL_SLOTS_COUNT];
   
-  private int lastLight;
+  private int lastLight = 0;
   
   public boolean isMelting(final int slot) {
     return this.melting[slot] != null;

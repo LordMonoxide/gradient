@@ -12,7 +12,7 @@ public final class GradientNet {
   
   public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(GradientMod.MODID);
   
-  private static int id;
+  private static int id = 0;
   
   static void register() {
     CHANNEL.registerMessage(PacketSwitchCast.Handler.class, PacketSwitchCast.class, id++, Side.SERVER);

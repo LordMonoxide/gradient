@@ -18,6 +18,7 @@ public class MushroomStew extends ItemSoup {
     this.setCreativeTab(CreativeTabs.FOOD);
   }
   
+  @Override
   public ItemStack onItemUseFinish(final ItemStack stack, final World world, final EntityLivingBase entityLiving) {
     super.onItemUseFinish(stack, world, entityLiving);
     

@@ -49,7 +49,7 @@ public class TileFirePit extends HeatProducer {
   
   private boolean firstTick = true;
   
-  private int lastLight;
+  private int lastLight = 0;
   
   public boolean hasFurnace(final IBlockState state) {
     return state.getValue(BlockFirePit.HAS_FURNACE);

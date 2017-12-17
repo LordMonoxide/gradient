@@ -36,7 +36,7 @@ public final class GradientCasts {
   }
   
   public static Cast getCast(final String name) {
-    Cast cast = CASTS.get(name);
+    final Cast cast = CASTS.get(name);
     
     if(cast == null) {
       return PICKAXE;
@@ -56,7 +56,7 @@ public final class GradientCasts {
   }
   
   public static class Cast implements Comparable<Cast> {
-    private static int currentId;
+    private static int currentId = 0;
     
     public final int id;
     public final String name;
@@ -108,7 +108,7 @@ public final class GradientCasts {
     
     @Override
     public Optional<Cast> parseValue(final String value) {
-      Cast cast = CASTS.get(value);
+      final Cast cast = CASTS.get(value);
       
       if(cast == null) {
         return Optional.absent();
@@ -127,7 +127,7 @@ public final class GradientCasts {
     private final String name;
     
     private int amount = 1000;
-    private boolean tool;
+    private boolean tool = false;
     
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride = new HashMap<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>>();
     
@@ -135,7 +135,7 @@ public final class GradientCasts {
       this.name = name;
     }
     
-    public CastBuilder amount(int amount) {
+    public CastBuilder amount(final int amount) {
       this.amount = amount;
       return this;
     }

@@ -40,7 +40,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
   public final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
     public int fill(FluidStack resource, boolean doFill) {
-      int amount = super.fill(resource, doFill);
+      final int amount = super.fill(resource, doFill);
       
       if(amount != 0) {
         TileBronzeBoiler.this.sync();
@@ -52,9 +52,9 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   
   private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
   
-  private long nextSync;
+  private long nextSync = 0;
   
-  private float heat;
+  private float heat = 0.0f;
   
   public TileBronzeBoiler() {
     this.tankWater.setCanDrain(false);
@@ -206,9 +206,9 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     if(this.getHeat() >= 100) {
       if(this.tankWater.getFluidAmount() > 0 && this.tankSteam.getFluidAmount() < this.tankSteam.getCapacity()) {
         this.tankWater.setCanDrain(true);
-        FluidStack water = this.tankWater.drain(Math.round(this.getHeat() / 100), true);
+        final FluidStack water = this.tankWater.drain(Math.round(this.getHeat() / 100), true);
         this.tankWater.setCanDrain(false);
-        FluidStack steam = new FluidStack(STEAM, water.amount);
+        final FluidStack steam = new FluidStack(STEAM, water.amount);
         this.tankSteam.fill(steam, true);
         this.markDirty();
       }

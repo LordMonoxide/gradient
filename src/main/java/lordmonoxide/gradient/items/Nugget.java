@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Nugget extends GradientItem {
-  private static Map<GradientMetals.Metal, Nugget> items = new HashMap<>();
+  private static final Map<GradientMetals.Metal, Nugget> items = new HashMap<>();
   
   public static ItemStack getNugget(final GradientMetals.Metal metal, final int amount) {
     return items.get(metal).getItemStack(amount);

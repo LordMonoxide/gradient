@@ -36,7 +36,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
   public final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
     public int fill(FluidStack resource, boolean doFill) {
-      int amount = super.fill(resource, doFill);
+      final int amount = super.fill(resource, doFill);
       
       if(amount != 0) {
         TileBronzeFurnace.this.sync();
@@ -46,7 +46,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     }
   };
   
-  private long nextSync;
+  private long nextSync = 0;
   
   public TileBronzeFurnace() {
     this.tanks.addHandler(STEAM, this.tankSteam);

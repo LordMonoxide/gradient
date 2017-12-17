@@ -41,12 +41,14 @@ public class Tool extends GradientItemWorldTool {
     return this.type.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
   
+  @Override
   public Set<String> getToolClasses(final ItemStack stack) {
     final Set<String> set = new HashSet<>();
     Collections.addAll(set, this.type.toolClass);
     return set;
   }
   
+  @Override
   public int getHarvestLevel(final ItemStack stack, final String toolClass, @Nullable final EntityPlayer player, @Nullable final IBlockState blockState) {
     if(Arrays.stream(this.type.toolClass).anyMatch(toolClass::equals)) {
       return this.metal.harvestLevel;

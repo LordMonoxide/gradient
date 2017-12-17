@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 public class IngredientCastItemFactory implements IIngredientFactory {
   @Nonnull
   @Override
-  public Ingredient parse(JsonContext context, JsonObject json) {
+  public Ingredient parse(final JsonContext context, final JsonObject json) {
     final String castName  = JsonUtils.getString(json, "cast");
     final String metalName = JsonUtils.getString(json, "metal");
     
@@ -22,7 +22,7 @@ public class IngredientCastItemFactory implements IIngredientFactory {
     final GradientMetals.Metal metal = GradientMetals.getMetal(metalName);
     
     if(metal == GradientMetals.INVALID_METAL) {
-      throw new JsonSyntaxException("Unknown metal '" + metalName + "'");
+      throw new JsonSyntaxException("Unknown metal '" + metalName + '\'');
     }
     
     return new IngredientCastItem(cast, metal);

@@ -18,7 +18,7 @@ public class GuiInventory3x3Crafting extends GuiInventory {
   public void initGui() {
     super.initGui();
     
-    for(GuiButton button : this.buttonList) {
+    for(final GuiButton button : this.buttonList) {
       if(button.id == 10) {
         button.x = this.guiLeft + 152;
         button.y = this.guiTop  +  47;
@@ -27,7 +27,8 @@ public class GuiInventory3x3Crafting extends GuiInventory {
     }
   }
   
-  protected void actionPerformed(GuiButton button) throws IOException {
+  @Override
+  protected void actionPerformed(final GuiButton button) throws IOException {
     super.actionPerformed(button);
     
     if(button.id == 10) {

@@ -65,7 +65,7 @@ public class BlockBronzeFurnace extends GradientBlock implements ITileEntityProv
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    EnumFacing facing = EnumFacing.getHorizontal(meta);
+    final EnumFacing facing = EnumFacing.getHorizontal(meta);
     
     return this.getDefaultState().withProperty(FACING, facing);
   }

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Dust extends GradientItem {
-  private static Map<GradientMetals.Metal, Dust> items = new HashMap<>();
+  private static final Map<GradientMetals.Metal, Dust> items = new HashMap<>();
   
   public static ItemStack getDust(final GradientMetals.Metal metal, final int amount) {
     return items.get(metal).getItemStack(amount);

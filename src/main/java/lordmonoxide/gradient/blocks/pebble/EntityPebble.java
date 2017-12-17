@@ -22,6 +22,7 @@ public class EntityPebble extends EntityThrowable {
     super(world, x, y, z);
   }
   
+  @Override
   protected void onImpact(final RayTraceResult result) {
     if(result.entityHit != null) {
       result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.5f);

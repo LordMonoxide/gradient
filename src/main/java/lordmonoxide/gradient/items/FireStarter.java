@@ -20,7 +20,7 @@ public class FireStarter extends GradientItem {
   }
   
   public EnumActionResult onItemUse(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-    BlockPos posFacing = pos.offset(facing);
+    final BlockPos posFacing = pos.offset(facing);
     
     if(!player.canPlayerEdit(posFacing, facing, stack)) {
       return EnumActionResult.FAIL;

@@ -46,7 +46,7 @@ public class BlockClayBowl extends GradientBlock implements Hardenable, ItemBloc
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    boolean hardened = meta == 1;
+    final boolean hardened = meta == 1;
   
     return this.getDefaultState().withProperty(HARDENED, hardened);
   }
@@ -57,7 +57,7 @@ public class BlockClayBowl extends GradientBlock implements Hardenable, ItemBloc
   }
   
   @Override
-  public int damageDropped(IBlockState state) {
+  public int damageDropped(final IBlockState state) {
     return this.getMetaFromState(state);
   }
   
@@ -83,7 +83,7 @@ public class BlockClayBowl extends GradientBlock implements Hardenable, ItemBloc
   
   @Override
   public String getItemName(final IBlockState state) {
-    return this.getUnlocalizedName() + "." + (state.getValue(HARDENED) ? "hardened" : "unhardened");
+    return this.getUnlocalizedName() + '.' + (state.getValue(HARDENED) ? "hardened" : "unhardened");
   }
   
   @Override

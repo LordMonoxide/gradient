@@ -32,7 +32,7 @@ public final class KeyBindings {
   
   @SubscribeEvent
   public void onKeyInput(final InputEvent.KeyInputEvent event) {
-    for(Map.Entry<KeyBinding, Consumer<KeyBinding>> entry : keys.entrySet()) {
+    for(final Map.Entry<KeyBinding, Consumer<KeyBinding>> entry : keys.entrySet()) {
       if(entry.getKey().isPressed()) {
         entry.getValue().accept(entry.getKey());
       }

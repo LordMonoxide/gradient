@@ -29,7 +29,7 @@ public class GuiClayCast extends GradientGuiContainer {
     super.initGui();
     
     int x = 12;
-    int y = 33;
+    final int y = 33;
     
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       final GuiButton button = this.addButtonForTool(cast, x, y);

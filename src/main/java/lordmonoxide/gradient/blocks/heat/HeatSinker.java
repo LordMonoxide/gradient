@@ -16,9 +16,9 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   private final Map<BlockPos, HeatSinker> sinks = new HashMap<>();
   
   private boolean firstTick = true;
-  private long nextSync;
+  private long nextSync = 0;
   
-  private float heat;
+  private float heat = 0;
   
   private IBlockState state;
   

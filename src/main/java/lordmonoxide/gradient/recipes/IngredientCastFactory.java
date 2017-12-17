@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 public class IngredientCastFactory implements IIngredientFactory {
   @Nonnull
   @Override
-  public Ingredient parse(JsonContext context, JsonObject json) {
+  public Ingredient parse(final JsonContext context, final JsonObject json) {
     final String castName = JsonUtils.getString(json, "cast");
     final GradientCasts.Cast cast = GradientCasts.getCast(castName);
     return new IngredientNBT(ItemClayCast.getCast(cast));

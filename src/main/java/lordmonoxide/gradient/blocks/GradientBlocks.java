@@ -81,7 +81,7 @@ public final class GradientBlocks {
   public static final Map<GradientMetals.Metal, Block> CAST_BLOCK;
   
   static {
-    Map<GradientMetals.Metal, Block> map = new HashMap<>();
+    final Map<GradientMetals.Metal, Block> map = new HashMap<>();
     map.put(GradientMetals.IRON, Blocks.IRON_BLOCK);
     map.put(GradientMetals.GOLD, Blocks.GOLD_BLOCK);
     map.put(GradientMetals.GLASS, Blocks.GLASS);

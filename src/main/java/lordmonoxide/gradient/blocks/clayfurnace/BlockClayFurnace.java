@@ -74,7 +74,7 @@ public class BlockClayFurnace extends GradientBlock implements Hardenable, ItemB
   }
   
   @Override
-  public int damageDropped(IBlockState state) {
+  public int damageDropped(final IBlockState state) {
     return this.getMetaFromState(state.withProperty(FACING, EnumFacing.SOUTH));
   }
   
@@ -95,7 +95,7 @@ public class BlockClayFurnace extends GradientBlock implements Hardenable, ItemB
   
   @Override
   public String getItemName(final IBlockState state) {
-    return this.getUnlocalizedName() + "." + (state.getValue(HARDENED) ? "hardened" : "unhardened");
+    return this.getUnlocalizedName() + '.' + (state.getValue(HARDENED) ? "hardened" : "unhardened");
   }
   
   @Override

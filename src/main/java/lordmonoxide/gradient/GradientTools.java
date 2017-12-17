@@ -30,8 +30,8 @@ public final class GradientTools {
     return TYPES.values();
   }
   
-  public static Type getType(String name) {
-    Type type = TYPES.get(name);
+  public static Type getType(final String name) {
+    final Type type = TYPES.get(name);
     
     if(type == null) {
       return PICKAXE;
@@ -49,7 +49,7 @@ public final class GradientTools {
   }
   
   public static class Type implements Comparable<Type> {
-    private static int currentId;
+    private static int currentId = 0;
     
     public final int id;
     public final GradientCasts.Cast cast;
@@ -111,7 +111,7 @@ public final class GradientTools {
     
     @Override
     public Optional<Type> parseValue(final String value) {
-      Type type = TYPES.get(value);
+      final Type type = TYPES.get(value);
       
       if(type == null) {
         return Optional.absent();
@@ -149,7 +149,7 @@ public final class GradientTools {
       return this;
     }
     
-    public ToolBuilder weapon(double attackDamage, double attackSpeed) {
+    public ToolBuilder weapon(final double attackDamage, final double attackSpeed) {
       this.attackDamage = attackDamage;
       this.attackSpeed  = attackSpeed;
       return this;

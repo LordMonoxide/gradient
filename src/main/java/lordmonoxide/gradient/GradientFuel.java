@@ -30,8 +30,8 @@ public final class GradientFuel {
   }
   
   public static Fuel get(final ItemStack stack) {
-    for(int id : OreDictionary.getOreIDs(stack)) {
-      Fuel fuel = fuels.get(id);
+    for(final int id : OreDictionary.getOreIDs(stack)) {
+      final Fuel fuel = fuels.get(id);
       
       if(fuel != null) {
         return fuel;

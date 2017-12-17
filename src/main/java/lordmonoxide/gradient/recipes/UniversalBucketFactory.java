@@ -19,13 +19,13 @@ public class UniversalBucketFactory implements IIngredientFactory {
     final Fluid fluid = FluidRegistry.getFluid(fluidName);
     
     if(fluid == null) {
-      throw new JsonSyntaxException("Unknown fluid '" + fluidName + "'");
+      throw new JsonSyntaxException("Unknown fluid '" + fluidName + '\'');
     }
     
     final ItemStack filledBucket = FluidUtil.getFilledBucket(new FluidStack(fluid, 0));
     
     if(filledBucket.isEmpty()) {
-      throw new JsonSyntaxException("No bucket registered for fluid '" + fluidName + "'");
+      throw new JsonSyntaxException("No bucket registered for fluid '" + fluidName + '\'');
     }
     
     return new IngredientNBT(filledBucket);

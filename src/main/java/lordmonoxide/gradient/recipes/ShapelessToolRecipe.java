@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.ForgeHooks;
 
 import java.util.Random;
 
@@ -16,6 +17,7 @@ public class ShapelessToolRecipe extends ShapelessRecipes {
     super(group, output, ingredients);
   }
   
+  @Override
   public NonNullList<ItemStack> getRemainingItems(final InventoryCrafting inv) {
     final NonNullList<ItemStack> list = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
     
@@ -31,7 +33,7 @@ public class ShapelessToolRecipe extends ShapelessRecipes {
           list.set(i, stack.copy());
         }
       } else {
-        list.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(stack));
+        list.set(i, ForgeHooks.getContainerItem(stack));
       }
     }
     

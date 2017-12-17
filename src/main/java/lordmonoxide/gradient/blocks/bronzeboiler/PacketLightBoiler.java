@@ -17,7 +17,9 @@ public class PacketLightBoiler implements IMessage {
   
   private BlockPos pos;
   
-  public PacketLightBoiler() { }
+  public PacketLightBoiler() {
+    
+  }
   
   public PacketLightBoiler(final BlockPos pos) {
     this.pos = pos;
@@ -27,9 +29,9 @@ public class PacketLightBoiler implements IMessage {
   public void fromBytes(final ByteBuf buf) {
     try {
       this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-    } catch(Exception e) {
+    } catch(final IndexOutOfBoundsException e) {
       System.out.println("Invalid position in PacketLightFurnace");
-      System.out.println(e);
+      e.printStackTrace();
       this.pos = BlockPos.ORIGIN;
     }
   }

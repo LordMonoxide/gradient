@@ -95,7 +95,7 @@ public final class GradientMetals {
   }
   
   public static Metal getMetal(final String name) {
-    for(Metal metal : metals) {
+    for(final Metal metal : metals) {
       if(metal.name.equals(name)) {
         return metal;
       }
@@ -125,8 +125,8 @@ public final class GradientMetals {
   }
   
   public static Meltable getMeltable(final ItemStack stack) {
-    for(int id : OreDictionary.getOreIDs(stack)) {
-      Meltable meltable = meltables.get(id);
+    for(final int id : OreDictionary.getOreIDs(stack)) {
+      final Meltable meltable = meltables.get(id);
       
       if(meltable != null) {
         return meltable;
@@ -145,7 +145,7 @@ public final class GradientMetals {
   }
   
   public static Metal getMetalForFluid(final Fluid fluid) {
-    for(Metal metal : metals) {
+    for(final Metal metal : metals) {
       if(metal.fluid == fluid) {
         return metal;
       }
@@ -155,7 +155,7 @@ public final class GradientMetals {
   }
   
   public static final class Metal {
-    private static int currentId;
+    private static int currentId = 0;
     
     public final int    id;
     public final String name;

@@ -16,7 +16,8 @@ public class ItemPebble extends ItemBlock {
     super(block);
   }
   
-  public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+  @Override
+  public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
     final ItemStack stack = player.getHeldItem(hand);
     
     if(!player.capabilities.isCreativeMode) {

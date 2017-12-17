@@ -31,9 +31,9 @@ public class PacketUpdateHeatNeighbours implements IMessage {
     try {
       this.entityPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
       this.updatePos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-    } catch(Exception e) {
+    } catch(final IndexOutOfBoundsException e) {
       System.out.println("Invalid position in PacketUpdateHeatNeighbours");
-      System.out.println(e);
+      e.printStackTrace();
       this.entityPos = BlockPos.ORIGIN;
       this.updatePos = BlockPos.ORIGIN;
     }

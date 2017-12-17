@@ -41,7 +41,7 @@ public final class ExtraRecipes {
   }
   
   private static void registerDusts(final IForgeRegistry<IRecipe> registry) {
-    Ingredient mortar = Ingredient.fromStacks(new ItemStack(GradientItems.MORTAR, 1, OreDictionary.WILDCARD_VALUE));
+    final Ingredient mortar = Ingredient.fromStacks(new ItemStack(GradientItems.MORTAR, 1, OreDictionary.WILDCARD_VALUE));
     
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       if(metal.canMakeDustWithMortar) {
@@ -59,7 +59,7 @@ public final class ExtraRecipes {
   }
   
   private static void registerPlates(final IForgeRegistry<IRecipe> registry) {
-    ItemStack[] hammers = GradientMetals.metals.stream().map(metal -> Tool.getTool(GradientTools.HAMMER, metal, 1, OreDictionary.WILDCARD_VALUE)).toArray(ItemStack[]::new);
+    final ItemStack[] hammers = GradientMetals.metals.stream().map(metal -> Tool.getTool(GradientTools.HAMMER, metal, 1, OreDictionary.WILDCARD_VALUE)).toArray(ItemStack[]::new);
     
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       if(!metal.canMakePlates) {
@@ -80,7 +80,7 @@ public final class ExtraRecipes {
   
   private static void registerAlloys(final IForgeRegistry<IRecipe> registry) {
     GradientMetals.alloys.forEach(alloy -> {
-      String recipeName = "recipe.alloy." + alloy.output.amount + "." + alloy.output.metal.name + ".from." + alloy.inputs.stream().map(metal -> metal.name).reduce((acc, name) -> acc + "." + name).orElse("");
+      final String recipeName = "recipe.alloy." + alloy.output.amount + '.' + alloy.output.metal.name + ".from." + alloy.inputs.stream().map(metal -> metal.name).reduce((acc, name) -> acc + '.' + name).orElse("");
       
       System.out.println("Adding recipe " + recipeName);
       
@@ -101,7 +101,7 @@ public final class ExtraRecipes {
           ingredients[amount] = Ingredient.fromStacks(ItemClayCast.getCast(cast));
           Arrays.fill(ingredients, 0, amount, new IngredientNBT(GradientMetals.getBucket(metal)));
           
-          final String recipeName = "cast." + cast.name + "." + metal.name;
+          final String recipeName = "cast." + cast.name + '.' + metal.name;
           
           System.out.println("Adding recipe " + recipeName);
           

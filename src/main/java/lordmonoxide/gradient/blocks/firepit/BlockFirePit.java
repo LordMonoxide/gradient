@@ -179,8 +179,8 @@ public class BlockFirePit extends HeatSinkerBlock implements ITileEntityProvider
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    EnumFacing facing = EnumFacing.getHorizontal(meta & 0b11);
-    boolean hasFurnace = (meta >>> 2) == 1;
+    final EnumFacing facing = EnumFacing.getHorizontal(meta & 0b11);
+    final boolean hasFurnace = (meta >>> 2) == 1;
     
     return this.getDefaultState().withProperty(FACING, facing).withProperty(HAS_FURNACE, hasFurnace);
   }

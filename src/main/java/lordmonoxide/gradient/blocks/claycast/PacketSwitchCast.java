@@ -31,9 +31,9 @@ public class PacketSwitchCast implements IMessage {
   public void fromBytes(final ByteBuf buf) {
     try {
       this.cast = GradientCasts.getCast(buf.readInt());
-    } catch(Exception e) {
+    } catch(final IndexOutOfBoundsException e) {
       System.out.println("Invalid type in PacketSwitchCast");
-      System.out.println(e);
+      e.printStackTrace();
       this.cast = GradientCasts.PICKAXE;
     }
   }

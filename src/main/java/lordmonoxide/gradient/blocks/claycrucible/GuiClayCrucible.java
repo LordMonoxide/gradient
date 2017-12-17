@@ -27,8 +27,8 @@ public class GuiClayCrucible extends GradientGuiContainer {
   protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
     GlStateManager.color(1, 1, 1, 1);
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
-    int x = (this.width  - this.xSize) / 2;
-    int y = (this.height - this.ySize) / 2;
+    final int x = (this.width  - this.xSize) / 2;
+    final int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
   }
   
@@ -36,15 +36,15 @@ public class GuiClayCrucible extends GradientGuiContainer {
   protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
     for(int slot = 0; slot < TileClayCrucible.METAL_SLOTS_COUNT; slot++) {
       if(this.te.isMelting(slot)) {
-        int x = ContainerClayCrucible.METAL_SLOTS_X + (slot % 5) * (GradientContainer.SLOT_X_SPACING + 8) + 20;
-        int y = ContainerClayCrucible.METAL_SLOTS_Y + (slot / 5) * (GradientContainer.SLOT_Y_SPACING + 2);
-        float percent = this.te.getMeltingMetal(slot).meltPercent();
+        final int x = ContainerClayCrucible.METAL_SLOTS_X + (slot % 5) * (GradientContainer.SLOT_X_SPACING + 8) + 20;
+        final int y = ContainerClayCrucible.METAL_SLOTS_Y + (slot / 5) * (GradientContainer.SLOT_Y_SPACING + 2);
+        final float percent = this.te.getMeltingMetal(slot).meltPercent();
         
         drawRect(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
       }
     }
     
-    FluidStack molten = this.te.getMoltenMetal();
+    final FluidStack molten = this.te.getMoltenMetal();
     
     if(molten != null) {
       final int x = ContainerClayCrucible.METAL_SLOTS_X + (GradientContainer.SLOT_X_SPACING + 8);

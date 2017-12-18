@@ -27,7 +27,7 @@ public abstract class HeatSinkerBlock extends GradientBlock implements ITileEnti
   @Deprecated
   public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
     super.neighborChanged(state, world, pos, block, neighbor);
-  
+    
     final TileEntity te = world.getTileEntity(pos);
     
     if(te instanceof HeatSinker) {

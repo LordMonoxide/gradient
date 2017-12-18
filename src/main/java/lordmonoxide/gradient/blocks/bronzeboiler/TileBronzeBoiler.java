@@ -19,6 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -52,12 +53,18 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   
   private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
   
+  private boolean firstTick = true;
+  
   private long nextSync = 0;
   
   private float heat = 0.0f;
   
+  @Nullable
+  private IFluidHandler autoOutput = null;
+  
   public TileBronzeBoiler() {
     this.tankWater.setCanDrain(false);
+    this.tankSteam.setCanFill(false);
     
     this.tanks.addHandler(WATER, this.tankWater);
     this.tanks.addHandler(STEAM, this.tankSteam);
@@ -138,6 +145,10 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     }
   }
   
+  public void updateOutput(@Nullable final IFluidHandler handler) {
+    this.autoOutput = handler;
+  }
+  
   @Override
   public void update() {
     if(!this.hasHeat()) {
@@ -148,10 +159,16 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     this.heatUp();
     this.igniteFuel();
     this.boilWater();
+    this.autoOutput();
     
     if(!this.getWorld().isRemote) {
+      if(this.firstTick) {
+        this.updateOutput(FluidUtil.getFluidHandler(this.world, this.pos.up(), EnumFacing.DOWN));
+        this.firstTick = false;
+      }
+      
       if(System.currentTimeMillis() >= this.nextSync) {
-        this.nextSync = System.currentTimeMillis() + 10000;
+        this.nextSync = System.currentTimeMillis() + 10000L;
         this.sync();
       }
     }
@@ -208,10 +225,21 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
         this.tankWater.setCanDrain(true);
         final FluidStack water = this.tankWater.drain(Math.round(this.getHeat() / 100), true);
         this.tankWater.setCanDrain(false);
+        
         final FluidStack steam = new FluidStack(STEAM, water.amount);
+        
+        this.tankSteam.setCanFill(true);
         this.tankSteam.fill(steam, true);
+        this.tankSteam.setCanFill(false);
+        
         this.markDirty();
       }
+    }
+  }
+  
+  private void autoOutput() {
+    if(this.autoOutput != null) {
+      FluidUtil.tryFluidTransfer(this.autoOutput, this.tankSteam, 10, true);
     }
   }
   

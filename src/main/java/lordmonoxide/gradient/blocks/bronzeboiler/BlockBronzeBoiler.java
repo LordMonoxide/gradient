@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.properties.PropertyDirection;
@@ -13,6 +14,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
@@ -23,6 +25,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class BlockBronzeBoiler extends GradientBlock implements ITileEntityProvider {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -74,6 +77,25 @@ public class BlockBronzeBoiler extends GradientBlock implements ITileEntityProvi
   @Override
   public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
     world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  }
+  
+  @Override
+  @Deprecated
+  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
+    super.neighborChanged(state, world, pos, block, neighbor);
+    
+    final TileEntity te = world.getTileEntity(pos);
+    
+    final BlockPos rel = neighbor.subtract(pos);
+    final EnumFacing side = EnumFacing.getFacingFromVector(rel.getX(), rel.getY(), rel.getZ());
+    
+    if(side == EnumFacing.UP) {
+      final IFluidHandler handler = FluidUtil.getFluidHandler(world, neighbor, EnumFacing.DOWN);
+      
+      if(te instanceof TileBronzeBoiler) {
+        ((TileBronzeBoiler)te).updateOutput(handler);
+      }
+    }
   }
   
   @Override

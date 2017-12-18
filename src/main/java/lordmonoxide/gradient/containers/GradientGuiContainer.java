@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.containers;
 
 import ic2.core.util.Util;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -10,10 +11,14 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class GradientGuiContainer extends GuiContainer {
   protected GradientGuiContainer(final Container container) {
@@ -24,8 +29,30 @@ public abstract class GradientGuiContainer extends GuiContainer {
   public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
     this.drawDefaultBackground();
     super.drawScreen(mouseX, mouseY, partialTicks);
+    this.renderToolTips(mouseX, mouseY);
     this.renderHoveredToolTip(mouseX, mouseY);
   }
+  
+  protected void renderToolTips(final int mouseX, final int mouseY) { }
+  
+  protected void renderFluidTankToolTip(final FluidTank tank, final int x, final int y) {
+    this.drawHoveringText(this.getFluidTankToolTip(tank), x, y, this.fontRenderer);
+  }
+  
+  public List<String> getFluidTankToolTip(final FluidTank tank) {
+    final List<String> list = new ArrayList<>();
+    
+    if(tank.getFluid() != null) {
+      list.add(tank.getFluid().getLocalizedName());
+    } else {
+      list.add(GradientBlocks.BRONZE_BOILER.getUnlocalizedName() + ".fluid_empty");
+    }
+    
+    list.add(I18n.format(GradientBlocks.BRONZE_BOILER.getUnlocalizedName() + ".fluid_amount", tank.getFluidAmount(), tank.getCapacity()));
+    
+    return list;
+  }
+  
   
   public void drawSprite(final double xIn, final double yIn, final double width, final double height, final TextureAtlasSprite sprite, final int color, final double scaleIn) {
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -84,20 +111,38 @@ public abstract class GradientGuiContainer extends GuiContainer {
   }
   
   protected class FluidRenderer {
-    public FluidRenderer() { }
+    private final FluidTank tank;
+    private final double x;
+    private final double y;
+    private final double w;
+    private final double h;
     
-    public void renderFluid(final FluidTank tank, final double x, final double y, final double width, final double height) {
-      if(tank.getFluid() == null || tank.getFluidAmount() == 0) {
+    public FluidRenderer(final FluidTank tank, final double x, final double y, final double width, final double height) {
+      this.tank = tank;
+      this.x = x;
+      this.y = y;
+      this.w = width;
+      this.h = height;
+    }
+    
+    public void draw() {
+      if(this.tank.getFluid() == null || this.tank.getFluidAmount() == 0) {
         return;
       }
       
-      final Fluid fluid = tank.getFluid().getFluid();
-      final TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getStill(tank.getFluid()).toString());
-      final double renderHeight = height * Util.limit(tank.getFluidAmount() / (double)tank.getCapacity(), 0.0d, 1.0d);
-      final int color = fluid.getColor(tank.getFluid());
+      final Fluid fluid = this.tank.getFluid().getFluid();
+      final TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getStill(this.tank.getFluid()).toString());
+      final double renderHeight = this.h * Util.limit(this.tank.getFluidAmount() / (double)this.tank.getCapacity(), 0.0d, 1.0d);
+      final int color = fluid.getColor(this.tank.getFluid());
       
       Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-      GradientGuiContainer.this.drawSprite(x, (y + height) - renderHeight, width, renderHeight, sprite, color, 1.0d);
+      GradientGuiContainer.this.drawSprite(this.x, (this.y + this.h) - renderHeight, this.w, renderHeight, sprite, color, 1.0d);
+    }
+    
+    public boolean isMouseOver(final int mouseX, final int mouseY) {
+      final int mX = mouseX - GradientGuiContainer.this.guiLeft;
+      final int mY = mouseY - GradientGuiContainer.this.guiTop;
+      return mX >= this.x && mY >= this.y && mX < this.x + this.w && mY < this.y + this.h;
     }
   }
 }

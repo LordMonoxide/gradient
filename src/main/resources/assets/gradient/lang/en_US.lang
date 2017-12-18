@@ -143,6 +143,8 @@ tile.bronze_machine_hull.name=Bronze Machine Hull
 tile.bronze_boiler.name=Bronze Boiler
 tile.bronze_boiler.fuel=Fuel
 tile.bronze_boiler.heat=Heat: %d °C
+tile.bronze_boiler.fluid_amount=%d/%d mB
+tile.bronze_boiler.fluid_empty=Empty
 tile.bronze_furnace.name=Bronze Furnace
 
 # Fuel
@@ -160,7 +162,7 @@ item.mushroom_stew.name=Mushroom Stew
 # Metal
 metal.melt_temp=Melting Point: %f °C
 metal.melt_time=Melting Time: %d sec
-metal.amount=Amount: %d millibuckets
+metal.amount=Amount: %d mB
 
 # Journal
 journal.getting_started=Getting Started

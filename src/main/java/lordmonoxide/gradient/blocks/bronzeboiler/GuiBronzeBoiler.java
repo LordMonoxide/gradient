@@ -16,13 +16,15 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
   
   private final TileBronzeBoiler boiler;
   private final InventoryPlayer playerInv;
-  private final FluidRenderer fluidRender;
+  private final FluidRenderer waterRenderer;
+  private final FluidRenderer steamRenderer;
   
   public GuiBronzeBoiler(final ContainerBronzeBoiler container, final TileBronzeBoiler boiler, final InventoryPlayer playerInv) {
     super(container);
     this.boiler = boiler;
     this.playerInv = playerInv;
-    this.fluidRender = new FluidRenderer();
+    this.waterRenderer = new FluidRenderer(boiler.tankWater, 124, 19, 12, 47);
+    this.steamRenderer = new FluidRenderer(boiler.tankSteam, 148, 19, 12, 47);
   }
   
   @Override
@@ -51,8 +53,8 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
     final int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
     
-    this.fluidRender.renderFluid(this.boiler.tankWater, 124, 19, 12, 47);
-    this.fluidRender.renderFluid(this.boiler.tankSteam, 148, 19, 12, 47);
+    this.waterRenderer.draw();
+    this.steamRenderer.draw();
   }
   
   @Override
@@ -77,5 +79,16 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
     
     this.fontRenderer.drawString(heat, ContainerBronzeBoiler.FUEL_SLOTS_X, 55, 0x404040);
+  }
+  
+  @Override
+  protected void renderToolTips(final int mouseX, final int mouseY) {
+    if(this.waterRenderer.isMouseOver(mouseX, mouseY)) {
+      this.renderFluidTankToolTip(this.boiler.tankWater, mouseX, mouseY);
+    }
+  
+    if(this.steamRenderer.isMouseOver(mouseX, mouseY)) {
+      this.renderFluidTankToolTip(this.boiler.tankSteam, mouseX, mouseY);
+    }
   }
 }

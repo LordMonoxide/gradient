@@ -16,12 +16,14 @@ public class GradientItemWorldTool extends GradientItemTool {
   private final float harvestSpeed;
   private final float attackSpeed;
   private final int attackDamage;
+  private final int attackDurabilityLost;
   
-  public GradientItemWorldTool(final String name, final float harvestSpeed, final float attackSpeed, final int attackDamage, final int maxUses) {
+  public GradientItemWorldTool(final String name, final float harvestSpeed, final float attackSpeed, final int attackDamage, final int attackDurabilityLost, final int maxUses) {
     super(name, CreativeTabs.TOOLS, maxUses);
     this.harvestSpeed = harvestSpeed;
     this.attackSpeed  = attackSpeed;
     this.attackDamage = attackDamage;
+    this.attackDurabilityLost = attackDurabilityLost;
   }
   
   @Override
@@ -51,7 +53,7 @@ public class GradientItemWorldTool extends GradientItemTool {
   
   @Override
   public boolean hitEntity(final ItemStack stack, final EntityLivingBase target, final EntityLivingBase attacker) {
-    stack.damageItem(2, attacker);
+    stack.damageItem(this.attackDurabilityLost, attacker);
     return true;
   }
   

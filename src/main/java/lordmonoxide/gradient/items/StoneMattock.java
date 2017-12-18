@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 
 public class StoneMattock extends GradientItemWorldTool {
   public StoneMattock() {
-    super("stone_mattock", 0.5f, -2.4f, 4, 20);
+    super("stone_mattock", 0.5f, -2.4f, 4, 2, 20);
     this.setHarvestLevel("axe", 0);
     this.setHarvestLevel("shovel", 0);
   }

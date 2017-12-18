@@ -29,7 +29,7 @@ public class Tool extends GradientItemWorldTool {
   public final GradientMetals.Metal metal;
   
   public Tool(final GradientTools.Type type, final GradientMetals.Metal metal) {
-    super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), metal.durability);
+    super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, metal.durability);
     tools.add(this);
     
     this.type = type;

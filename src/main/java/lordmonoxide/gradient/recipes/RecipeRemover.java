@@ -71,9 +71,11 @@ public final class RecipeRemover {
       "minecraft:leather_leggings",
       "minecraft:leather_boots",
       
+      "minecraft:iron_block",
       "minecraft:iron_nugget",
       "minecraft:iron_ingot_from_block",
       "minecraft:iron_ingot_from_nuggets",
+      "minecraft:gold_block",
       "minecraft:gold_nugget",
       "minecraft:gold_ingot_from_block",
       "minecraft:gold_ingot_from_nuggets",

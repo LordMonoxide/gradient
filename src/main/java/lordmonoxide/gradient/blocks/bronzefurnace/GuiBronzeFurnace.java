@@ -35,6 +35,9 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
     }
     
     this.steamRenderer.draw();
+    
+    this.mc.getTextureManager().bindTexture(BG_TEXTURE);
+    this.drawTexturedModalRect(x + this.steamRenderer.x, y + this.steamRenderer.y, 177, 0, this.steamRenderer.w, this.steamRenderer.h);
   }
   
   @Override

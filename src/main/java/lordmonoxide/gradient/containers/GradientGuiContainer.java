@@ -112,12 +112,12 @@ public abstract class GradientGuiContainer extends GuiContainer {
   
   protected class FluidRenderer {
     private final FluidTank tank;
-    private final double x;
-    private final double y;
-    private final double w;
-    private final double h;
+    public final int x;
+    public final int y;
+    public final int w;
+    public final int h;
     
-    public FluidRenderer(final FluidTank tank, final double x, final double y, final double width, final double height) {
+    public FluidRenderer(final FluidTank tank, final int x, final int y, final int width, final int height) {
       this.tank = tank;
       this.x = x;
       this.y = y;

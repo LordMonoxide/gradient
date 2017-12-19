@@ -55,6 +55,10 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
     
     this.waterRenderer.draw();
     this.steamRenderer.draw();
+    
+    this.mc.getTextureManager().bindTexture(BG_TEXTURE);
+    this.drawTexturedModalRect(x + this.waterRenderer.x, y + this.waterRenderer.y, 177, 0, this.waterRenderer.w, this.waterRenderer.h);
+    this.drawTexturedModalRect(x + this.steamRenderer.x, y + this.steamRenderer.y, 177, 0, this.steamRenderer.w, this.steamRenderer.h);
   }
   
   @Override

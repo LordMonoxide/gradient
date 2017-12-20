@@ -147,7 +147,10 @@ public class BlockFirePit extends HeatSinkerBlock implements ITileEntityProvider
             world.setTileEntity(pos, te);
             te.attachFurnace();
             
-            stack.shrink(1);
+            if(!player.isCreative()) {
+              stack.shrink(1);
+            }
+            
             return true;
           }
         }

@@ -134,6 +134,7 @@ tile.clay_cast_unhardened.sword.name=Unhardened Clay Cast (Sword)
 tile.clay_cast_unhardened.hammer.name=Unhardened Clay Cast (Hammer)
 tile.clay_cast_unhardened.ingot.name=Unhardened Clay Cast (Ingot)
 tile.clay_cast_unhardened.block.name=Unhardened Clay Cast (Block)
+tile.clay_cast.metal_amount=Requires %d mB to cast
 tile.clay_cast.pickaxe.name=Clay Cast (Pickaxe)
 tile.clay_cast.mattock.name=Clay Cast (Mattock)
 tile.clay_cast.sword.name=Clay Cast (Sword)

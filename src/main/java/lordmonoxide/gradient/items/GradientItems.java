@@ -123,7 +123,9 @@ public final class GradientItems {
         OreDictionary.registerOre("plate" + caps, Plate.getPlate(metal, 1));
       }
       
-      OreDictionary.registerOre("toolMattock", Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE));
+      if(metal.canMakeTools) {
+        OreDictionary.registerOre("toolMattock", Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE));
+      }
     }
     
     OreDictionary.registerOre("dustFlint", DUST_FLINT);

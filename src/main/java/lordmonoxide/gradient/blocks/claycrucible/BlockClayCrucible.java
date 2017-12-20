@@ -1,19 +1,27 @@
 package lordmonoxide.gradient.blocks.claycrucible;
 
+import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
+import lordmonoxide.gradient.items.CastItem;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -75,6 +83,34 @@ public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityPro
         
         if(te == null) {
           return false;
+        }
+        
+        final ItemStack stack = player.getHeldItem(hand);
+        
+        // Cast item
+        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() == GradientBlocks.CLAY_CAST) {
+          final GradientCasts.Cast cast = GradientBlocks.CLAY_CAST.getStateFromMeta(stack.getMetadata()).getValue(BlockClayCast.CAST);
+          
+          if(te.getMoltenMetal() == null || te.getMoltenMetal().amount < cast.amount) {
+            player.sendMessage(new TextComponentTranslation("tile.clay_crucible.not_enough_metal", cast.amount).setStyle(new Style().setColor(TextFormatting.RED)));
+            return true;
+          }
+          
+          final GradientMetals.Metal metal = GradientMetals.getMetalForFluid(te.getMoltenMetal().getFluid());
+          
+          if(cast.tool && !metal.canMakeTools) {
+            player.sendMessage(new TextComponentTranslation("tile.clay_crucible.metal_cant_make_tools").setStyle(new Style().setColor(TextFormatting.RED)));
+            return true;
+          }
+          
+          if(!player.isCreative()) {
+            stack.shrink(1);
+            
+            te.consumeMetal(cast.amount);
+          }
+          
+          player.inventory.addItemStackToInventory(CastItem.getCastItem(cast, metal, 1));
+          return true;
         }
         
         if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {

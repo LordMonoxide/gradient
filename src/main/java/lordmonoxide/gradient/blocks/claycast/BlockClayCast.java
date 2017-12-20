@@ -13,7 +13,7 @@ import net.minecraft.world.IBlockAccess;
 public class BlockClayCast extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
   
-  private static final GradientCasts.PropertyCast CAST = GradientCasts.PropertyCast.create("cast");
+  public static final GradientCasts.PropertyCast CAST = GradientCasts.PropertyCast.create("cast");
   
   public BlockClayCast() {
     super("clay_cast", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);

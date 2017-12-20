@@ -62,6 +62,14 @@ public class TileClayCrucible extends HeatSinker {
     }
   }
   
+  public void consumeMetal(final int amount) {
+    final FluidStack result = this.tank.drain(amount, true);
+    
+    if(result != null && result.amount != 0) {
+      this.sync();
+    }
+  }
+  
   @Override
   protected void tickBeforeCooldown() {
     if(!this.world.isRemote) {

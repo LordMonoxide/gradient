@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks.claycast;
 
+import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.GradientCasts;
@@ -34,7 +35,11 @@ public class BlockClayCast extends GradientBlock {
   @Override
   @SideOnly(Side.CLIENT)
   public void addInformation(final ItemStack stack, @Nullable final World player, final List<String> tooltip, final ITooltipFlag advanced) {
-    tooltip.add(I18n.format("tile.clay_cast.metal_amount", this.getStateFromMeta(stack.getMetadata()).getValue(CAST).amount));
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      final String metalName = I18n.format("fluid." + metal.name);
+      final int metalAmount = this.getStateFromMeta(stack.getMetadata()).getValue(CAST).amountForMetal(metal);
+      tooltip.add(I18n.format("tile.clay_cast.metal_amount", metalName, metalAmount));
+    }
   }
   
   @Override

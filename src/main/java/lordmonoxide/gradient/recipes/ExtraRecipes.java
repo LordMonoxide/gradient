@@ -95,7 +95,7 @@ public final class ExtraRecipes {
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(!cast.tool || metal.canMakeTools) {
-          final int amount = cast.amount / Fluid.BUCKET_VOLUME;
+          final int amount = cast.amountForMetal(metal) / Fluid.BUCKET_VOLUME;
           
           final Ingredient[] ingredients = new Ingredient[amount + 1];
           ingredients[amount] = Ingredient.fromStacks(ItemClayCast.getCast(cast));

@@ -6,6 +6,7 @@ import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,8 @@ public final class GradientCasts {
   
   public static final Cast BLOCK = register("block")
     .itemOverride(metal -> new ItemStack(GradientBlocks.CAST_BLOCK.get(metal)))
-    .amount(Fluid.BUCKET_VOLUME * 8)
+    .amount(metal -> Fluid.BUCKET_VOLUME * 8)
+    .amount(GradientMetals.GLASS, Fluid.BUCKET_VOLUME)
     .add();
   
   public static CastBuilder register(final String name) {
@@ -60,16 +62,27 @@ public final class GradientCasts {
     
     public final int id;
     public final String name;
-    public final int amount;
     public final boolean tool;
-    public final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride;
+    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount;
+    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride;
     
-    public Cast(final String name, final int amount, final boolean tool, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride) {
+    public Cast(final String name, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount, final boolean tool, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride) {
       this.id = currentId++;
       this.name = name;
       this.amount = amount;
       this.tool = tool;
       this.itemOverride = itemOverride;
+    }
+    
+    public int amountForMetal(final GradientMetals.Metal metal) {
+      final Function<GradientMetals.Metal, Integer> amountFn = this.amount.get(metal);
+      return amountFn != null ? amountFn.apply(metal) : 0;
+    }
+    
+    @Nullable
+    public ItemStack itemForMetal(final GradientMetals.Metal metal) {
+      final Function<GradientMetals.Metal, ItemStack> stackFn = this.itemOverride.get(metal);
+      return stackFn != null ? stackFn.apply(metal) : null;
     }
     
     @Override
@@ -126,17 +139,23 @@ public final class GradientCasts {
   public static final class CastBuilder {
     private final String name;
     
-    private int amount = 1000;
     private boolean tool = false;
     
-    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride = new HashMap<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>>();
+    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount = new HashMap<>();
+    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride = new HashMap<>();
     
     private CastBuilder(final String name) {
       this.name = name;
+      this.amount(metal -> Fluid.BUCKET_VOLUME);
     }
     
-    public CastBuilder amount(final int amount) {
-      this.amount = amount;
+    public CastBuilder amount(final Function<GradientMetals.Metal, Integer> amount) {
+      GradientMetals.metals.forEach(metal -> this.amount.put(metal, amount));
+      return this;
+    }
+    
+    public CastBuilder amount(final GradientMetals.Metal metal, final int amount) {
+      this.amount.put(metal, m -> amount);
       return this;
     }
     
@@ -150,8 +169,8 @@ public final class GradientCasts {
       return this;
     }
     
-    public CastBuilder itemOverride(final GradientMetals.Metal metal, final Function<GradientMetals.Metal, ItemStack> callback) {
-      this.itemOverride.put(metal, callback);
+    public CastBuilder itemOverride(final GradientMetals.Metal metal, final ItemStack stack) {
+      this.itemOverride.put(metal, m -> stack);
       return this;
     }
     

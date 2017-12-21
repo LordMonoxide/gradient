@@ -91,12 +91,18 @@ public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityPro
         if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() == GradientBlocks.CLAY_CAST) {
           final GradientCasts.Cast cast = GradientBlocks.CLAY_CAST.getStateFromMeta(stack.getMetadata()).getValue(BlockClayCast.CAST);
           
-          if(te.getMoltenMetal() == null || te.getMoltenMetal().amount < cast.amount) {
-            player.sendMessage(new TextComponentTranslation("tile.clay_crucible.not_enough_metal", cast.amount).setStyle(new Style().setColor(TextFormatting.RED)));
+          if(te.getMoltenMetal() == null) {
+            player.sendMessage(new TextComponentTranslation("tile.clay_crucible.no_metal").setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
           
           final GradientMetals.Metal metal = GradientMetals.getMetalForFluid(te.getMoltenMetal().getFluid());
+          final int amount = cast.amountForMetal(metal);
+          
+          if(te.getMoltenMetal().amount < amount) {
+            player.sendMessage(new TextComponentTranslation("tile.clay_crucible.not_enough_metal", amount).setStyle(new Style().setColor(TextFormatting.RED)));
+            return true;
+          }
           
           if(cast.tool && !metal.canMakeTools) {
             player.sendMessage(new TextComponentTranslation("tile.clay_crucible.metal_cant_make_tools").setStyle(new Style().setColor(TextFormatting.RED)));
@@ -106,7 +112,7 @@ public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityPro
           if(!player.isCreative()) {
             stack.shrink(1);
             
-            te.consumeMetal(cast.amount);
+            te.consumeMetal(amount);
           }
           
           player.inventory.addItemStackToInventory(CastItem.getCastItem(cast, metal, 1));

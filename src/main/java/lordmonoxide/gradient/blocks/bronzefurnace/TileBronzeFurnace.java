@@ -1,10 +1,10 @@
 package lordmonoxide.gradient.blocks.bronzefurnace;
 
 import ic2.core.ref.FluidName;
+import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -17,7 +17,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -26,32 +25,21 @@ import javax.annotation.Nullable;
 public class TileBronzeFurnace extends TileEntity implements ITickable {
   private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
   
-  public static final int INPUT_SLOT = 0;
-  public static final int OUTPUT_SLOT = 1;
-  public static final int COOKING_SLOT = 2;
+  public static final int INPUT_SLOTS_COUNT = 3;
+  public static final int TOTAL_SLOTS_COUNT = INPUT_SLOTS_COUNT;
   
-  private final ItemStackHandler inventory = new ItemStackHandler(3);
+  public static final int FIRST_INPUT_SLOT = 0;
   
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
+  
+  public final FluidTank tankMetal = new FluidTank(Fluid.BUCKET_VOLUME * 16);
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
-  public final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
-    public int fill(FluidStack resource, boolean doFill) {
-      final int amount = super.fill(resource, doFill);
-      
-      if(amount != 0) {
-        TileBronzeFurnace.this.sync();
-      }
-      
-      return amount;
-    }
-  };
+  
+  private final MeltingMetal[] melting = new MeltingMetal[INPUT_SLOTS_COUNT];
+  
+  private float heat = 0;
   
   private long nextSync = 0;
-  
-  private int cookTicks = 0;
-  
-  public TileBronzeFurnace() {
-    this.tanks.addHandler(STEAM, this.tankSteam);
-  }
   
   public boolean useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
     if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
@@ -64,7 +52,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   
   @Override
   public void update() {
-    this.cook();
+    this.meltMetal();
     
     if(!this.getWorld().isRemote) {
       if(System.currentTimeMillis() >= this.nextSync) {
@@ -74,42 +62,73 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     }
   }
   
-  public boolean isCooking() {
-    return !this.inventory.getStackInSlot(COOKING_SLOT).isEmpty();
+  public boolean hasHeat() {
+    return this.heat != 0;
   }
   
-  private boolean isCooked() {
-    return this.cookTicks >= 200;
+  public float getHeat() {
+    return this.heat;
   }
   
-  public float getCookPercent() {
-    return this.cookTicks / 200.0f;
+  private ItemStack getInputStack(final int slot) {
+    return this.inventory.getStackInSlot(FIRST_INPUT_SLOT + slot);
   }
   
-  private ItemStack getInputStack() {
-    return this.inventory.getStackInSlot(INPUT_SLOT);
+  private void setInputStack(final int slot, final ItemStack stack) {
+    this.inventory.setStackInSlot(FIRST_INPUT_SLOT + slot, stack);
   }
   
-  private void cook() {
-    if(!this.isCooking() && !this.getInputStack().isEmpty()) {
-      final ItemStack cooked = FurnaceRecipes.instance().getSmeltingResult(this.getInputStack()).copy();
+  private boolean isMelting(final int slot) {
+    return this.melting[slot] != null;
+  }
+  
+  private MeltingMetal getMeltingMetal(final int slot) {
+    return this.melting[slot];
+  }
+  
+  @Nullable
+  private FluidStack getMoltenMetal() {
+    return this.tankMetal.getFluid();
+  }
+  
+  private boolean canMelt(final GradientMetals.Meltable meltable) {
+    return (this.tankMetal.getFluid() == null || this.tankMetal.getFluid().getFluid() == meltable.metal.getFluid()) && this.getHeat() >= meltable.metal.meltTemp;
+  }
+  
+  private void meltMetal() {
+    boolean update = false;
+    
+    for(int slot = 0; slot < INPUT_SLOTS_COUNT; slot++) {
+      if(!this.isMelting(slot) && !this.getInputStack(slot).isEmpty()) {
+        final GradientMetals.Meltable meltable = GradientMetals.getMeltable(this.getInputStack(slot));
+        
+        if(this.canMelt(meltable)) {
+          this.melting[slot] = new MeltingMetal(meltable);
+          update = true;
+        }
+      }
       
-      if(this.inventory.insertItem(OUTPUT_SLOT, cooked, true).isEmpty()) {
-        this.inventory.extractItem(INPUT_SLOT, 1, false);
-        this.inventory.setStackInSlot(COOKING_SLOT, cooked);
-        this.cookTicks = 0;
+      if(this.isMelting(slot)) {
+        final MeltingMetal melting = this.getMeltingMetal(slot);
+        melting.tick();
+        
+        if(melting.isMelted()) {
+          final ItemStack stack = this.getInputStack(slot);
+          
+          this.melting[slot] = null;
+          this.setInputStack(slot, ItemStack.EMPTY);
+          
+          final FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), GradientMetals.getMeltable(stack).amount);
+          
+          this.tankMetal.fill(fluid, true);
+          
+          update = true;
+        }
       }
     }
     
-    if(this.isCooking()) {
-      if(this.tankSteam.drain(5, true).amount >= 5) {
-        this.cookTicks++;
-      }
-      
-      if(this.isCooked()) {
-        final ItemStack cooked = this.inventory.extractItem(COOKING_SLOT, 1, false);
-        this.inventory.insertItem(OUTPUT_SLOT, cooked, false);
-      }
+    if(update) {
+      this.sync();
     }
   }
   
@@ -170,5 +189,33 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   @Override
   public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
     this.readFromNBT(pkt.getNbtCompound());
+  }
+  
+  public static final class MeltingMetal {
+    public final GradientMetals.Meltable meltable;
+    private final int totalTicks;
+    private int ticks;
+    
+    private MeltingMetal(final GradientMetals.Meltable meltable) {
+      this(meltable, 0);
+    }
+    
+    private MeltingMetal(final GradientMetals.Meltable meltable, final int ticks) {
+      this.meltable = meltable;
+      this.ticks = ticks;
+      this.totalTicks = Math.round(this.meltable.metal.meltTime * this.meltable.meltModifier * 20);
+    }
+    
+    public void tick() {
+      this.ticks++;
+    }
+    
+    public boolean isMelted() {
+      return this.ticks >= this.totalTicks;
+    }
+    
+    public float meltPercent() {
+      return (float)this.ticks / this.totalTicks;
+    }
   }
 }

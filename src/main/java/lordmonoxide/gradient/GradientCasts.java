@@ -17,11 +17,11 @@ public final class GradientCasts {
   
   private static final Map<String, Cast> CASTS = new HashMap<>();
   
-  public static final Cast PICKAXE = register("pickaxe").tool().add();
-  public static final Cast MATTOCK = register("mattock").tool().add();
-  public static final Cast SWORD   = register("sword").tool().add();
-  public static final Cast HAMMER  = register("hammer").tool().add();
-  public static final Cast INGOT   = register("ingot").add();
+  public static final Cast PICKAXE = register("pickaxe").isValid(metal -> metal.canMakeTools).add();
+  public static final Cast MATTOCK = register("mattock").isValid(metal -> metal.canMakeTools).add();
+  public static final Cast SWORD   = register("sword")  .isValid(metal -> metal.canMakeTools).add();
+  public static final Cast HAMMER  = register("hammer") .isValid(metal -> metal.canMakeTools).add();
+  public static final Cast INGOT   = register("ingot")  .isValid(metal -> metal.canMakeIngots).add();
   
   public static final Cast BLOCK = register("block")
     .itemOverride(metal -> new ItemStack(GradientBlocks.CAST_BLOCK.get(metal)))
@@ -62,16 +62,21 @@ public final class GradientCasts {
     
     public final int id;
     public final String name;
-    public final boolean tool;
+    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid;
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount;
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride;
     
-    public Cast(final String name, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount, final boolean tool, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride) {
+    public Cast(final String name, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride) {
       this.id = currentId++;
       this.name = name;
+      this.isValid = isValid;
       this.amount = amount;
-      this.tool = tool;
       this.itemOverride = itemOverride;
+    }
+    
+    public boolean isValidForMetal(final GradientMetals.Metal metal) {
+      final Function<GradientMetals.Metal, Boolean> validFn = this.isValid.get(metal);
+      return validFn != null ? validFn.apply(metal) : false;
     }
     
     public int amountForMetal(final GradientMetals.Metal metal) {
@@ -139,14 +144,24 @@ public final class GradientCasts {
   public static final class CastBuilder {
     private final String name;
     
-    private boolean tool = false;
-    
+    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid = new HashMap<>();
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount = new HashMap<>();
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride = new HashMap<>();
     
     private CastBuilder(final String name) {
       this.name = name;
+      this.isValid(metal -> true);
       this.amount(metal -> Fluid.BUCKET_VOLUME);
+    }
+    
+    public CastBuilder isValid(final Function<GradientMetals.Metal, Boolean> isValid) {
+      GradientMetals.metals.forEach(metal -> this.isValid.put(metal, isValid));
+      return this;
+    }
+    
+    public CastBuilder isValid(final GradientMetals.Metal metal, final boolean isValid) {
+      this.isValid.put(metal, m -> isValid);
+      return this;
     }
     
     public CastBuilder amount(final Function<GradientMetals.Metal, Integer> amount) {
@@ -156,11 +171,6 @@ public final class GradientCasts {
     
     public CastBuilder amount(final GradientMetals.Metal metal, final int amount) {
       this.amount.put(metal, m -> amount);
-      return this;
-    }
-    
-    public CastBuilder tool() {
-      this.tool = true;
       return this;
     }
     
@@ -175,7 +185,7 @@ public final class GradientCasts {
     }
     
     public Cast add() {
-      final Cast cast = new Cast(this.name, this.amount, this.tool, this.itemOverride);
+      final Cast cast = new Cast(this.name, this.isValid, this.amount, this.itemOverride);
       CASTS.put(this.name, cast);
       return cast;
     }

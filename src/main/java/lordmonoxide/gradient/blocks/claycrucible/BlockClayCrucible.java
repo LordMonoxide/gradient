@@ -104,7 +104,7 @@ public class BlockClayCrucible extends HeatSinkerBlock implements ITileEntityPro
             return true;
           }
           
-          if(cast.tool && !metal.canMakeTools) {
+          if(!cast.isValidForMetal(metal)) {
             player.sendMessage(new TextComponentTranslation("tile.clay_crucible.metal_cant_make_tools").setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }

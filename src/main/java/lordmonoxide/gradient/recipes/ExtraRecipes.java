@@ -94,7 +94,7 @@ public final class ExtraRecipes {
   private static void registerCasts(final IForgeRegistry<IRecipe> registry) {
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        if(!cast.tool || metal.canMakeTools) {
+        if(cast.isValidForMetal(metal)) {
           final int amount = cast.amountForMetal(metal) / Fluid.BUCKET_VOLUME;
           
           final Ingredient[] ingredients = new Ingredient[amount + 1];

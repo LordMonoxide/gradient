@@ -64,7 +64,7 @@ public final class GradientItems {
     // Register cast items
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        if((!cast.tool || metal.canMakeTools) && cast.itemForMetal(metal) == null) {
+        if((cast.isValidForMetal(metal)) && cast.itemForMetal(metal) == null) {
           RegistrationHandler.register(new CastItem(cast, metal));
         }
       }

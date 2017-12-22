@@ -33,8 +33,9 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   private final ItemStackHandler inventory = new ItemStackHandler(3);
   
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
-  public final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
-    public int fill(FluidStack resource, boolean doFill) {
+  private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
+    @Override
+    public int fill(final FluidStack resource, final boolean doFill) {
       final int amount = super.fill(resource, doFill);
       
       if(amount != 0) {

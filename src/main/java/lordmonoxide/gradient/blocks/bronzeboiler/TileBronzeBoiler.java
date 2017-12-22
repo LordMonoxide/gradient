@@ -39,8 +39,9 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME *  8);
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
-  public final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
-    public int fill(FluidStack resource, boolean doFill) {
+  private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
+    @Override
+    public int fill(final FluidStack resource, final boolean doFill) {
       final int amount = super.fill(resource, doFill);
       
       if(amount != 0) {
@@ -52,8 +53,6 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   };
   
   private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
-  
-  private boolean firstTick = true;
   
   private long nextSync = 0;
   
@@ -70,7 +69,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     this.tanks.addHandler(STEAM, this.tankSteam);
   }
   
-  public boolean hasHeat() {
+  private boolean hasHeat() {
     return this.heat != 0;
   }
   
@@ -78,7 +77,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     return this.heat;
   }
   
-  protected void setHeat(final float heat) {
+  private void setHeat(final float heat) {
     this.heat = heat;
   }
   
@@ -90,7 +89,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     this.heat = Math.max(0, this.heat - heat);
   }
   
-  public boolean isBurning() {
+  private boolean isBurning() {
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
       if(this.isBurning(i)) {
         return true;
@@ -150,6 +149,11 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   }
   
   @Override
+  public void onLoad() {
+    this.updateOutput(FluidUtil.getFluidHandler(this.world, this.pos.up(), EnumFacing.DOWN));
+  }
+  
+  @Override
   public void update() {
     if(!this.hasHeat()) {
       return;
@@ -162,11 +166,6 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     this.autoOutput();
     
     if(!this.getWorld().isRemote) {
-      if(this.firstTick) {
-        this.updateOutput(FluidUtil.getFluidHandler(this.world, this.pos.up(), EnumFacing.DOWN));
-        this.firstTick = false;
-      }
-      
       if(System.currentTimeMillis() >= this.nextSync) {
         this.nextSync = System.currentTimeMillis() + 10000L;
         this.sync();
@@ -182,11 +181,11 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     this.addHeat(this.calculateHeatGain() / 20.0f);
   }
   
-  protected float calculateHeatLoss() {
+  private float calculateHeatLoss() {
     return (float)Math.pow((this.getHeat() / 1600) + 1, 2);
   }
   
-  protected float calculateHeatGain() {
+  private float calculateHeatGain() {
     float temperatureChange = 0;
     
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {

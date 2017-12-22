@@ -45,7 +45,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
     if(tank.getFluid() != null) {
       list.add(tank.getFluid().getLocalizedName());
     } else {
-      list.add(GradientBlocks.BRONZE_BOILER.getUnlocalizedName() + ".fluid_empty");
+      list.add(I18n.format(GradientBlocks.BRONZE_BOILER.getUnlocalizedName() + ".fluid_empty"));
     }
     
     list.add(I18n.format(GradientBlocks.BRONZE_BOILER.getUnlocalizedName() + ".fluid_amount", tank.getFluidAmount(), tank.getCapacity()));

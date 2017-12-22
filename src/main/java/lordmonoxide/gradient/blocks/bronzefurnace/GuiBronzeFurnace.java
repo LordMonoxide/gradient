@@ -2,6 +2,7 @@ package lordmonoxide.gradient.blocks.bronzefurnace;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.firepit.ContainerFirePit;
 import lordmonoxide.gradient.containers.GradientGuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -13,13 +14,13 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
   
   private final TileBronzeFurnace furnace;
   private final InventoryPlayer playerInv;
-  private final FluidRenderer steamRenderer;
+  private final FluidRenderer metalRenderer;
   
   public GuiBronzeFurnace(final ContainerBronzeFurnace container, final TileBronzeFurnace furnace, final InventoryPlayer playerInv) {
     super(container);
     this.furnace = furnace;
     this.playerInv = playerInv;
-    this.steamRenderer = new FluidRenderer(furnace.tankSteam, 148, 19, 12, 47);
+    this.metalRenderer = new FluidRenderer(furnace.tankMetal, 148, 19, 12, 47);
   }
   
   @Override
@@ -30,28 +31,27 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
     final int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
     
-    if(this.furnace.isCooking()) {
-      this.drawTexturedModalRect(x + 32, y + 35, 192, 0, (int)(16.0f * this.furnace.getCookPercent()), 14);
-    }
-    
-    this.steamRenderer.draw();
+    this.metalRenderer.draw();
     
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
-    this.drawTexturedModalRect(x + this.steamRenderer.x, y + this.steamRenderer.y, 177, 0, this.steamRenderer.w, this.steamRenderer.h);
+    this.drawTexturedModalRect(x + this.metalRenderer.x, y + this.metalRenderer.y, 177, 0, this.metalRenderer.w, this.metalRenderer.h);
   }
   
   @Override
   protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
     final String name = I18n.format(GradientBlocks.BRONZE_FURNACE.getUnlocalizedName() + ".name");
+    final String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.furnace.getHeat());
     
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
+    
+    this.fontRenderer.drawString(heat, ContainerFirePit.FUEL_SLOTS_X, 58, 0x404040);
   }
   
   @Override
   protected void renderToolTips(final int mouseX, final int mouseY) {
-    if(this.steamRenderer.isMouseOver(mouseX, mouseY)) {
-      this.renderFluidTankToolTip(this.furnace.tankSteam, mouseX, mouseY);
+    if(this.metalRenderer.isMouseOver(mouseX, mouseY)) {
+      this.renderFluidTankToolTip(this.furnace.tankMetal, mouseX, mouseY);
     }
   }
 }

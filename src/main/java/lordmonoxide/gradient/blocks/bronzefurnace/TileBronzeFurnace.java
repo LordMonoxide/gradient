@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks.bronzefurnace;
 
+import com.google.common.collect.Lists;
 import ic2.core.ref.FluidName;
 import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.block.state.IBlockState;
@@ -17,15 +18,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 public class TileBronzeFurnace extends TileEntity implements ITickable {
   private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
   
-  public static final int INPUT_SLOTS_COUNT = 3;
+  public static final int INPUT_SLOTS_COUNT = 1;
   public static final int TOTAL_SLOTS_COUNT = INPUT_SLOTS_COUNT;
   
   public static final int FIRST_INPUT_SLOT = 0;
@@ -33,7 +38,8 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   
   public final FluidTank tankMetal = new FluidTank(Fluid.BUCKET_VOLUME * 16);
-  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
+  public final FluidTank tankSteam = new FluidTank(100);
+  private final FluidHandler fluidHandler = new FluidHandler(this.tankSteam, this.tankMetal);
   
   private final MeltingMetal[] melting = new MeltingMetal[INPUT_SLOTS_COUNT];
   
@@ -52,7 +58,9 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   
   @Override
   public void update() {
+    this.heatUp();
     this.meltMetal();
+    this.coolDown();
     
     if(!this.getWorld().isRemote) {
       if(System.currentTimeMillis() >= this.nextSync) {
@@ -70,6 +78,14 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     return this.heat;
   }
   
+  private void addHeat(final float heat) {
+    this.heat += heat;
+  }
+  
+  private void removeHeat(final float heat) {
+    this.heat = Math.max(0, this.heat - heat);
+  }
+  
   private ItemStack getInputStack(final int slot) {
     return this.inventory.getStackInSlot(FIRST_INPUT_SLOT + slot);
   }
@@ -78,7 +94,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     this.inventory.setStackInSlot(FIRST_INPUT_SLOT + slot, stack);
   }
   
-  private boolean isMelting(final int slot) {
+  boolean isMelting(final int slot) {
     return this.melting[slot] != null;
   }
   
@@ -132,19 +148,35 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     }
   }
   
+  private void coolDown() {
+    //this.removeHeat((float)Math.pow((this.getHeat() / 1600) + 1, 2) / 20.0f);
+  }
+  
+  private void heatUp() {
+    final FluidStack steam = this.tankSteam.drain(100, true);
+    
+    if(steam == null || steam.amount == 0) {
+      return;
+    }
+  
+    System.out.println("Adding heat " + steam.amount + "(" + this.heat + ")");
+    
+    this.addHeat(steam.amount / 20.0f);
+  }
+  
   @Override
   public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
+    compound.setTag("metal", this.tankMetal.writeToNBT(new NBTTagCompound()));
     compound.setTag("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
-    compound.setInteger("cookTicks", this.cookTicks);
     return super.writeToNBT(compound);
   }
   
   @Override
   public void readFromNBT(final NBTTagCompound compound) {
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
+    this.tankMetal.readFromNBT(compound.getCompoundTag("metal"));
     this.tankSteam.readFromNBT(compound.getCompoundTag("steam"));
-    this.cookTicks = compound.getInteger("cookTicks");
     super.readFromNBT(compound);
   }
   
@@ -160,7 +192,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-      return (T)this.tanks;
+      return (T)this.fluidHandler;
     }
     
     return
@@ -216,6 +248,65 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     
     public float meltPercent() {
       return (float)this.ticks / this.totalTicks;
+    }
+  }
+  
+  private static class FluidHandler implements IFluidHandler {
+    private final IFluidHandler steam;
+    private final IFluidHandler metal;
+    
+    public FluidHandler(final IFluidHandler steam, final IFluidHandler metal) {
+      this.steam = steam;
+      this.metal = metal;
+    }
+    
+    @Override
+    public IFluidTankProperties[] getTankProperties() {
+      final List<IFluidTankProperties> tanks = Lists.newArrayList();
+      Collections.addAll(tanks, this.steam.getTankProperties());
+      Collections.addAll(tanks, this.metal.getTankProperties());
+      return tanks.toArray(new IFluidTankProperties[tanks.size()]);
+    }
+    
+    @Nullable
+    private IFluidHandler getTankForFluid(@Nullable final FluidStack fluid) {
+      if(fluid == null) {
+        return null;
+      }
+      
+      if(fluid.getFluid() == STEAM) {
+        return this.steam;
+      }
+      
+      return this.metal;
+    }
+    
+    @Override
+    public int fill(final FluidStack fluid, final boolean doFill) {
+      final IFluidHandler tank = this.getTankForFluid(fluid);
+      
+      if(tank == null) {
+        return 0;
+      }
+      
+      return tank.fill(fluid, doFill);
+    }
+    
+    @Nullable
+    @Override
+    public FluidStack drain(final FluidStack fluid, final boolean doDrain) {
+      final IFluidHandler tank = this.getTankForFluid(fluid);
+      
+      if(tank == null) {
+        return null;
+      }
+      
+      return tank.drain(fluid, doDrain);
+    }
+    
+    @Override
+    public FluidStack drain(final int maxDrain, final boolean doDrain) {
+      return this.steam.drain(maxDrain, doDrain);
     }
   }
 }

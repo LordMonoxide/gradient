@@ -15,12 +15,14 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
   private final TileBronzeFurnace furnace;
   private final InventoryPlayer playerInv;
   private final FluidRenderer metalRenderer;
+  private final FluidRenderer steamRenderer;
   
   public GuiBronzeFurnace(final ContainerBronzeFurnace container, final TileBronzeFurnace furnace, final InventoryPlayer playerInv) {
     super(container);
     this.furnace = furnace;
     this.playerInv = playerInv;
-    this.metalRenderer = new FluidRenderer(furnace.tankMetal, 148, 19, 12, 47);
+    this.metalRenderer = new FluidRenderer(furnace.tankMetal, 128, 19, 12, 47);
+    this.steamRenderer = new FluidRenderer(furnace.tankSteam, 148, 19, 12, 47);
   }
   
   @Override
@@ -35,6 +37,7 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
     
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
     this.drawTexturedModalRect(x + this.metalRenderer.x, y + this.metalRenderer.y, 177, 0, this.metalRenderer.w, this.metalRenderer.h);
+    this.drawTexturedModalRect(x + this.steamRenderer.x, y + this.steamRenderer.y, 177, 0, this.steamRenderer.w, this.steamRenderer.h);
   }
   
   @Override
@@ -52,6 +55,10 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
   protected void renderToolTips(final int mouseX, final int mouseY) {
     if(this.metalRenderer.isMouseOver(mouseX, mouseY)) {
       this.renderFluidTankToolTip(this.furnace.tankMetal, mouseX, mouseY);
+    }
+    
+    if(this.steamRenderer.isMouseOver(mouseX, mouseY)) {
+      this.renderFluidTankToolTip(this.furnace.tankSteam, mouseX, mouseY);
     }
   }
 }

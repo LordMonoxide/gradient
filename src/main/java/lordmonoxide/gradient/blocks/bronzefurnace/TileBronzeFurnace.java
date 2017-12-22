@@ -7,6 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -16,6 +17,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -38,7 +40,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   
   public final FluidTank tankMetal = new FluidTank(Fluid.BUCKET_VOLUME * 16);
-  public final FluidTank tankSteam = new FluidTank(100);
+  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
   private final FluidHandler fluidHandler = new FluidHandler(this.tankSteam, this.tankMetal);
   
   private final MeltingMetal[] melting = new MeltingMetal[INPUT_SLOTS_COUNT];
@@ -149,19 +151,17 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   }
   
   private void coolDown() {
-    //this.removeHeat((float)Math.pow((this.getHeat() / 1600) + 1, 2) / 20.0f);
+    this.removeHeat((float)Math.pow((this.getHeat() / 1600) + 1, 2) / 20.0f);
   }
   
   private void heatUp() {
-    final FluidStack steam = this.tankSteam.drain(100, true);
+    final FluidStack steam = this.tankSteam.drain(Integer.MAX_VALUE, false);
     
     if(steam == null || steam.amount == 0) {
       return;
     }
-  
-    System.out.println("Adding heat " + steam.amount + "(" + this.heat + ")");
     
-    this.addHeat(steam.amount / 20.0f);
+    this.addHeat((float)steam.amount / Fluid.BUCKET_VOLUME);
   }
   
   @Override
@@ -169,6 +169,23 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setTag("metal", this.tankMetal.writeToNBT(new NBTTagCompound()));
     compound.setTag("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
+    
+    final NBTTagList meltings = new NBTTagList();
+    
+    for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
+      if(this.isMelting(i)) {
+        final MeltingMetal melting = this.getMeltingMetal(i);
+        
+        final NBTTagCompound tag = new NBTTagCompound();
+        tag.setInteger("slot", i);
+        tag.setInteger("ticks", melting.ticks);
+        meltings.appendTag(tag);
+      }
+    }
+    
+    compound.setTag("melting", meltings);
+    compound.setFloat("heat", this.heat);
+    
     return super.writeToNBT(compound);
   }
   
@@ -177,6 +194,24 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.tankMetal.readFromNBT(compound.getCompoundTag("metal"));
     this.tankSteam.readFromNBT(compound.getCompoundTag("steam"));
+    
+    final NBTTagList meltings = compound.getTagList("melting", Constants.NBT.TAG_COMPOUND);
+    
+    for(int i = 0; i < meltings.tagCount(); i++) {
+      final NBTTagCompound tag = meltings.getCompoundTagAt(i);
+      
+      final int slot = tag.getInteger("slot");
+      
+      if(slot < INPUT_SLOTS_COUNT) {
+        this.melting[slot] = new MeltingMetal(
+          GradientMetals.getMeltable(this.getInputStack(slot)),
+          tag.getInteger("ticks")
+        );
+      }
+    }
+    
+    this.heat = compound.getFloat("heat");
+    
     super.readFromNBT(compound);
   }
   

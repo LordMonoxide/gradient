@@ -151,6 +151,11 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   
   @Override
   public void update() {
+    if(this.firstTick) {
+      this.updateOutput(FluidUtil.getFluidHandler(this.world, this.pos.up(), EnumFacing.DOWN));
+      this.firstTick = false;
+    }
+    
     if(!this.hasHeat()) {
       return;
     }
@@ -162,11 +167,6 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     this.autoOutput();
     
     if(!this.getWorld().isRemote) {
-      if(this.firstTick) {
-        this.updateOutput(FluidUtil.getFluidHandler(this.world, this.pos.up(), EnumFacing.DOWN));
-        this.firstTick = false;
-      }
-      
       if(System.currentTimeMillis() >= this.nextSync) {
         this.nextSync = System.currentTimeMillis() + 10000L;
         this.sync();
@@ -239,7 +239,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
   
   private void autoOutput() {
     if(this.autoOutput != null) {
-      FluidUtil.tryFluidTransfer(this.autoOutput, this.tankSteam, 10, true);
+      FluidUtil.tryFluidTransfer(this.autoOutput, this.tankSteam, 20, true);
     }
   }
   

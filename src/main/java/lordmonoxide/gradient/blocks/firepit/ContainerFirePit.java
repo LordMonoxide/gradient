@@ -1,11 +1,13 @@
 package lordmonoxide.gradient.blocks.firepit;
 
+import lordmonoxide.gradient.GradientFood;
 import lordmonoxide.gradient.containers.GradientContainer;
 import lordmonoxide.gradient.containers.SlotFood;
 import lordmonoxide.gradient.containers.SlotFuel;
 import lordmonoxide.gradient.containers.SlotOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 
 public class ContainerFirePit extends GradientContainer {
   public static final int FUEL_SLOTS_X = 13;
@@ -31,24 +33,21 @@ public class ContainerFirePit extends GradientContainer {
       });
     }
     
-    for(int i = 0; i < TileFirePit.INPUT_SLOTS_COUNT; i++) {
-      final int i2 = i;
-      
-      this.addSlotToContainer(new SlotFood(this.inventory, TileFirePit.FIRST_INPUT_SLOT + i, INPUT_SLOTS_X + SLOT_X_SPACING * i, INPUT_SLOTS_Y) {
-        @Override public void onSlotChanged() {
-          firePit.markDirty();
-        }
-        @Override public boolean canTakeStack(final EntityPlayer player) { return !firePit.isCooking(i2); }
-      });
-    }
+    this.addSlotToContainer(new SlotFood(this.inventory, TileFirePit.FIRST_INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
+      @Override public void onSlotChanged() {
+        firePit.markDirty();
+      }
+      @Override public boolean isItemValid(final ItemStack stack) {
+        return firePit.canOutputItem(GradientFood.get(stack).cooked);
+      }
+      @Override public boolean canTakeStack(final EntityPlayer player) { return !firePit.isCooking(); }
+    });
     
-    for(int i = 0; i < TileFirePit.INPUT_SLOTS_COUNT; i++) {
-      this.addSlotToContainer(new SlotOutput(this.inventory, TileFirePit.FIRST_OUTPUT_SLOT + i, OUTPUT_SLOTS_X + SLOT_X_SPACING * i, OUTPUT_SLOTS_Y) {
-        @Override public void onSlotChanged() {
-          firePit.markDirty();
-        }
-      });
-    }
+    this.addSlotToContainer(new SlotOutput(this.inventory, TileFirePit.FIRST_OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y) {
+      @Override public void onSlotChanged() {
+        firePit.markDirty();
+      }
+    });
     
     this.addPlayerSlots(playerInv);
   }

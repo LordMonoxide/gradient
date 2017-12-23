@@ -35,8 +35,8 @@ public class GuiFirePit extends GradientGuiContainer {
     final int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
     
-    if(this.firePit.isCooking(0)) {
-      final float percent = this.firePit.getCookingFood(0).cookPercent();
+    if(this.firePit.isCooking()) {
+      final float percent = this.firePit.getCookingFood().cookPercent();
       
       this.drawTexturedModalRect(x + 122, y + 35, 176, 0, (int)(16 * percent), 14);
     }

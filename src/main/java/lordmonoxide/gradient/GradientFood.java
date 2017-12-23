@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import ic2.api.item.IC2Items;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
@@ -27,6 +28,8 @@ public final class GradientFood {
     add(Items.RABBIT,   Items.COOKED_RABBIT,   120, 200);
     add(Items.MUTTON,   Items.COOKED_MUTTON,   120, 200);
     add(Items.POTATO,   Items.BAKED_POTATO,    120, 200);
+    
+    add(IC2Items.getItem("misc_resource", "resin"), IC2Items.getItem("crafting", "rubber"), 30, 200);
   }
   
   public static void add(final Item raw, final Item cooked, final int duration, final float cookTemp) {

@@ -4,8 +4,9 @@
     "item": "gradient:bronze_boiler"
   },
   "pattern": [
-    "THT",
-    " I "
+    "TCT",
+    "PHP",
+    "PPP"
   ],
   "key": {
     "T": {
@@ -14,8 +15,14 @@
     "H": {
       "item": "gradient:bronze_machine_hull"
     },
-    "I": {
-      "item": "gradient:igniter"
+    "C": {
+      "type": "gradient:ic2",
+      "name": "crafting",
+      "variant": "heat_conductor"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateBronze"
     }
   }
 }

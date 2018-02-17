@@ -1,6 +1,12 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/cube",
   "textures": {
-    "all": "gradient:blocks/bronze_boiler"
+    "particle": "gradient:blocks/bronze_machine_hull",
+    "down": "gradient:blocks/bronze_machine_hull",
+    "up": "gradient:blocks/bronze_machine_hull",
+    "north": "gradient:blocks/bronze_boiler",
+    "east": "gradient:blocks/bronze_machine_hull",
+    "south": "gradient:blocks/bronze_machine_hull",
+    "west": "gradient:blocks/bronze_machine_hull"
   }
 }

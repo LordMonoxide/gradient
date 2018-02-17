@@ -38,7 +38,7 @@ public class ContainerFirePit extends GradientContainer {
         firePit.markDirty();
       }
       @Override public boolean isItemValid(final ItemStack stack) {
-        return firePit.canOutputItem(GradientFood.get(stack).cooked);
+        return super.isItemValid(stack) && firePit.canOutputItem(GradientFood.get(stack).cooked);
       }
       @Override public boolean canTakeStack(final EntityPlayer player) { return !firePit.isCooking(); }
     });

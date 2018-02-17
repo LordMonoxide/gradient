@@ -29,6 +29,9 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;
   public static final int COOKING_SLOT = 2;
+
+  private static final int COOK_TIME = 400;
+  private static final int STEAM_USE_PER_TICK = 4;
   
   private final ItemStackHandler inventory = new ItemStackHandler(3);
   
@@ -80,11 +83,11 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
   }
   
   private boolean isCooked() {
-    return this.cookTicks >= 200;
+    return this.cookTicks >= COOK_TIME;
   }
   
   public float getCookPercent() {
-    return this.cookTicks / 200.0f;
+    return (float)this.cookTicks / COOK_TIME;
   }
   
   private ItemStack getInputStack() {
@@ -103,7 +106,7 @@ public class TileBronzeFurnace extends TileEntity implements ITickable {
     }
     
     if(this.isCooking()) {
-      if(this.tankSteam.drain(5, true).amount >= 5) {
+      if(this.tankSteam.drain(STEAM_USE_PER_TICK, true).amount >= STEAM_USE_PER_TICK) {
         this.cookTicks++;
       }
       

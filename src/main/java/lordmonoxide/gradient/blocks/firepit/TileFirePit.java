@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -32,18 +33,18 @@ import java.util.stream.Collectors;
 
 public class TileFirePit extends HeatProducer {
   public static final int FUEL_SLOTS_COUNT = 3;
-  public static final int INPUT_SLOTS_COUNT = 1;
-  public static final int OUTPUT_SLOTS_COUNT = 1;
-  public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + INPUT_SLOTS_COUNT + OUTPUT_SLOTS_COUNT;
+  public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + 2;
   
   public static final int FIRST_FUEL_SLOT = 0;
   public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
-  public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT;
+  public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + 1;
   
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
   
   private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
-  private final GradientFood.CookingFood[] foods = new GradientFood.CookingFood[INPUT_SLOTS_COUNT];
+  
+  @Nullable
+  private GradientFood.CookingFood food = null;
   
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
   
@@ -74,21 +75,12 @@ public class TileFirePit extends HeatProducer {
   }
   
   public boolean isCooking() {
-    for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
-      if(this.isCooking(i)) {
-        return true;
-      }
-    }
-    
-    return false;
+    return this.food != null;
   }
   
-  public boolean isCooking(final int slot) {
-    return this.foods[slot] != null;
-  }
-  
-  public GradientFood.CookingFood getCookingFood(final int slot) {
-    return this.foods[slot];
+  @Nullable
+  public GradientFood.CookingFood getCookingFood() {
+    return this.food;
   }
   
   public int getLightLevel(final IBlockState state) {
@@ -184,23 +176,21 @@ public class TileFirePit extends HeatProducer {
   }
   
   private void cook() {
-    for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
-      if(!this.isCooking(i) && !this.getFoodSlot(i).isEmpty()) {
-        final GradientFood.Food food = GradientFood.get(this.getFoodSlot(i));
-        
-        if(this.canCook(food)) {
-          this.foods[i] = new GradientFood.CookingFood(food);
-        }
-      }
+    if(!this.isCooking() && !this.getFoodSlot().isEmpty()) {
+      final GradientFood.Food food = GradientFood.get(this.getFoodSlot());
       
-      if(this.isCooking(i)) {
-        final GradientFood.CookingFood food = this.getCookingFood(i);
+      if(this.canCook(food)) {
+        this.food = new GradientFood.CookingFood(food);
+      }
+    }
+    
+    if(this.food != null) {
+      if(this.food.isCooked()) {
+        final ItemStack stack = this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
+        final ItemStack output = ItemHandlerHelper.copyStackWithSize(this.food.food.cooked, stack.getCount());
+        this.inventory.insertItem(FIRST_OUTPUT_SLOT, output, false);
         
-        if(food.isCooked()) {
-          this.foods[i] = null;
-          this.setFoodSlot(i, ItemStack.EMPTY);
-          this.setCookedSlot(i, food.food.cooked.copy());
-        }
+        this.food = null;
       }
     }
   }
@@ -306,28 +296,23 @@ public class TileFirePit extends HeatProducer {
     return this.getHeat() >= fuel.ignitionTemp;
   }
   
-  private ItemStack getFoodSlot(final int slot) {
-    return this.inventory.getStackInSlot(FIRST_INPUT_SLOT + slot);
-  }
-  
-  private void setFoodSlot(final int slot, final ItemStack stack) {
-    this.inventory.setStackInSlot(FIRST_INPUT_SLOT + slot, stack);
+  private ItemStack getFoodSlot() {
+    return this.inventory.getStackInSlot(FIRST_INPUT_SLOT);
   }
   
   private boolean canCook(final GradientFood.Food food) {
     return this.getHeat() >= food.cookTemp;
   }
   
-  private void setCookedSlot(final int slot, final ItemStack stack) {
-    this.inventory.setStackInSlot(FIRST_OUTPUT_SLOT + slot, stack);
+  public boolean canOutputItem(final ItemStack stack) {
+    return this.inventory.insertItem(FIRST_OUTPUT_SLOT, stack, true).isEmpty();
   }
   
   @Override
   public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
-  
+    
     final NBTTagList fuels = new NBTTagList();
-    final NBTTagList foods = new NBTTagList();
     
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
       if(this.isBurning(i)) {
@@ -341,20 +326,16 @@ public class TileFirePit extends HeatProducer {
       }
     }
     
-    for(int i = 0; i < INPUT_SLOTS_COUNT; i++) {
-      if(this.isCooking(i)) {
-        final GradientFood.CookingFood food = this.getCookingFood(i);
-        
-        final NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger("slot", i);
-        tag.setLong("start", food.cookStart - System.currentTimeMillis());
-        tag.setLong("until", food.cookUntil - System.currentTimeMillis());
-        foods.appendTag(tag);
-      }
-    }
-    
     compound.setTag("fuel", fuels);
-    compound.setTag("food", foods);
+    
+    final GradientFood.CookingFood food = this.getCookingFood();
+    
+    if(food != null) {
+      final NBTTagCompound tag = new NBTTagCompound();
+      tag.setLong("start", food.cookStart - System.currentTimeMillis());
+      tag.setLong("until", food.cookUntil - System.currentTimeMillis());
+      compound.setTag("food", tag);
+    }
     
     return super.writeToNBT(compound);
   }
@@ -364,12 +345,10 @@ public class TileFirePit extends HeatProducer {
     this.lastLight = -1;
     
     Arrays.fill(this.fuels, null);
-    Arrays.fill(this.foods, null);
     
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     
     final NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
-    final NBTTagList foods = compound.getTagList("food", Constants.NBT.TAG_COMPOUND);
     
     for(int i = 0; i < fuels.tagCount(); i++) {
       final NBTTagCompound tag = fuels.getCompoundTagAt(i);
@@ -385,18 +364,14 @@ public class TileFirePit extends HeatProducer {
       }
     }
     
-    for(int i = 0; i < foods.tagCount(); i++) {
-      final NBTTagCompound tag = foods.getCompoundTagAt(i);
+    if(!this.getFoodSlot().isEmpty()) {
+      final NBTTagCompound tag = compound.getCompoundTag("food");
       
-      final int slot = tag.getInteger("slot");
-      
-      if(slot < INPUT_SLOTS_COUNT) {
-        this.foods[slot] = new GradientFood.CookingFood(
-          GradientFood.get(this.getFoodSlot(slot)),
-          tag.getLong("start") + System.currentTimeMillis(),
-          tag.getLong("until") + System.currentTimeMillis()
-        );
-      }
+      this.food = new GradientFood.CookingFood(
+        GradientFood.get(this.getFoodSlot()),
+        tag.getLong("start") + System.currentTimeMillis(),
+        tag.getLong("until") + System.currentTimeMillis()
+      );
     }
     
     super.readFromNBT(compound);

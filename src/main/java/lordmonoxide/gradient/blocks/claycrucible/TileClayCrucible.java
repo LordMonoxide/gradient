@@ -143,7 +143,7 @@ public class TileClayCrucible extends HeatSinker {
   
   @Override
   protected float calculateHeatLoss(final IBlockState state) {
-    return (float)Math.pow(this.getHeat() / 800, 2);
+    return (float)Math.max(0.5d, Math.pow(this.getHeat() / 800, 2));
   }
   
   @Override

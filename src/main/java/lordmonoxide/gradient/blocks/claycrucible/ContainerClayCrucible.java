@@ -4,6 +4,7 @@ import lordmonoxide.gradient.containers.GradientContainer;
 import lordmonoxide.gradient.containers.SlotMetal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 
 public class ContainerClayCrucible extends GradientContainer {
   public static final int METAL_SLOTS_X = 13;
@@ -20,6 +21,9 @@ public class ContainerClayCrucible extends GradientContainer {
           te.markDirty();
         }
         @Override public boolean canTakeStack(final EntityPlayer player) { return !te.isMelting(i2); }
+        @Override public boolean isItemValid(final ItemStack stack) {
+          return te.tank.getFluidAmount() < te.tank.getCapacity() && super.isItemValid(stack);
+        }
       });
     }
     

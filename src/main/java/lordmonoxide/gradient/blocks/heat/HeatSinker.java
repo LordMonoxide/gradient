@@ -114,7 +114,8 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
       final HeatSinker sink = entry.getValue();
       
       if(sink.getHeat() < this.getHeat()) {
-        final float heat = this.calculateHeatLoss(this.state) * sink.heatTransferEfficiency() / 20.0f;
+        final float mod = Math.max(1.0f, 5.0f - (sink.getHeat() / this.getHeat() * 4));
+        final float heat = (this.calculateHeatLoss(this.state) * sink.heatTransferEfficiency() * mod) / 20.0f;
         this.removeHeat(heat);
         sink.addHeat(heat);
       }

@@ -28,7 +28,7 @@ public class TileClayCrucible extends HeatSinker {
   public static final int FIRST_METAL_SLOT = 0;
   
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
-  private final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * 8);
+  public final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * 8);
   
   private final MeltingMetal[] melting = new MeltingMetal[METAL_SLOTS_COUNT];
   

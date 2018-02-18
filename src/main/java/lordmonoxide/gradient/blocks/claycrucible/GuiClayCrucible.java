@@ -9,18 +9,19 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 
 public class GuiClayCrucible extends GradientGuiContainer {
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_crucible.png");
   
   private final TileClayCrucible te;
   private final InventoryPlayer playerInv;
-  
+  private final FluidRenderer metalRenderer;
+
   public GuiClayCrucible(final ContainerClayCrucible container, final TileClayCrucible te, final InventoryPlayer playerInv) {
     super(container);
     this.te = te;
     this.playerInv = playerInv;
+    this.metalRenderer = new FluidRenderer(te.tank, 148, 19, 12, 47);
   }
   
   @Override
@@ -30,6 +31,11 @@ public class GuiClayCrucible extends GradientGuiContainer {
     final int x = (this.width  - this.xSize) / 2;
     final int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+
+    this.metalRenderer.draw();
+
+    this.mc.getTextureManager().bindTexture(BG_TEXTURE);
+    this.drawTexturedModalRect(x + this.metalRenderer.x, y + this.metalRenderer.y, 177, 0, this.metalRenderer.w, this.metalRenderer.h);
   }
   
   @Override
@@ -44,16 +50,6 @@ public class GuiClayCrucible extends GradientGuiContainer {
       }
     }
     
-    final FluidStack molten = this.te.getMoltenMetal();
-    
-    if(molten != null) {
-      final int x = ContainerClayCrucible.METAL_SLOTS_X + (GradientContainer.SLOT_X_SPACING + 8);
-      final int y = ContainerClayCrucible.METAL_SLOTS_Y;
-      
-      final String text = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".molten", molten.getFluid().getLocalizedName(molten), molten.amount);
-      this.fontRenderer.drawString(text, x, y, 0x404040);
-    }
-    
     final String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".name");
     final String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.te.getHeat());
     
@@ -61,5 +57,12 @@ public class GuiClayCrucible extends GradientGuiContainer {
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
     
     this.fontRenderer.drawString(heat, ContainerFirePit.FUEL_SLOTS_X, 58, 0x404040);
+  }
+
+  @Override
+  protected void renderToolTips(final int mouseX, final int mouseY) {
+    if(this.metalRenderer.isMouseOver(mouseX, mouseY)) {
+      this.renderFluidTankToolTip(this.te.tank, mouseX, mouseY);
+    }
   }
 }

@@ -185,6 +185,8 @@ public class TileFirePit extends HeatProducer {
     }
     
     if(this.food != null) {
+      this.food.tick();
+
       if(this.food.isCooked()) {
         final ItemStack stack = this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
         final ItemStack output = ItemHandlerHelper.copyStackWithSize(this.food.food.cooked, stack.getCount());
@@ -202,6 +204,7 @@ public class TileFirePit extends HeatProducer {
     
     this.hardenables.keySet().removeIf(pos -> !(this.getWorld().getBlockState(pos).getBlock() instanceof Hardenable) || ((Hardenable)this.getWorld().getBlockState(pos).getBlock()).isHardened(this.getWorld().getBlockState(pos)));
     this.hardenables.values().stream()
+      .map(Hardening::tick)
       .filter(Hardening::isHardened)
       .collect(Collectors.toList()) // Gotta decouple here to avoid concurrent modification exceptions
       .forEach(hardenable -> this.getWorld().setBlockState(hardenable.pos, hardenable.block.getHardened(this.getWorld().getBlockState(hardenable.pos))));
@@ -257,7 +260,9 @@ public class TileFirePit extends HeatProducer {
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
       if(this.isBurning(slot)) {
         final GradientFuel.BurningFuel fuel = this.fuels[slot];
-        
+
+        fuel.tick();
+
         if(fuel.isDepleted()) {
           this.fuels[slot] = null;
           this.setFuelSlot(slot, ItemStack.EMPTY);
@@ -320,8 +325,7 @@ public class TileFirePit extends HeatProducer {
         
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
-        tag.setLong("start", fuel.burnStart - System.currentTimeMillis());
-        tag.setLong("until", fuel.burnUntil - System.currentTimeMillis());
+        fuel.writeToNbt(tag);
         fuels.appendTag(tag);
       }
     }
@@ -331,10 +335,7 @@ public class TileFirePit extends HeatProducer {
     final GradientFood.CookingFood food = this.getCookingFood();
     
     if(food != null) {
-      final NBTTagCompound tag = new NBTTagCompound();
-      tag.setLong("start", food.cookStart - System.currentTimeMillis());
-      tag.setLong("until", food.cookUntil - System.currentTimeMillis());
-      compound.setTag("food", tag);
+      compound.setTag("food", food.writeToNbt(new NBTTagCompound()));
     }
     
     return super.writeToNBT(compound);
@@ -356,22 +357,12 @@ public class TileFirePit extends HeatProducer {
       final int slot = tag.getInteger("slot");
       
       if(slot < FUEL_SLOTS_COUNT) {
-        this.fuels[slot] = new GradientFuel.BurningFuel(
-          GradientFuel.get(this.getFuelSlot(slot)),
-          tag.getLong("start") + System.currentTimeMillis(),
-          tag.getLong("until") + System.currentTimeMillis()
-        );
+        this.fuels[slot] = GradientFuel.BurningFuel.fromNbt(GradientFuel.get(this.getFuelSlot(slot)), tag);
       }
     }
     
     if(!this.getFoodSlot().isEmpty()) {
-      final NBTTagCompound tag = compound.getCompoundTag("food");
-      
-      this.food = new GradientFood.CookingFood(
-        GradientFood.get(this.getFoodSlot()),
-        tag.getLong("start") + System.currentTimeMillis(),
-        tag.getLong("until") + System.currentTimeMillis()
-      );
+      this.food = GradientFood.CookingFood.fromNbt(GradientFood.get(this.getFoodSlot()), compound.getCompoundTag("food"));
     }
     
     super.readFromNBT(compound);
@@ -391,22 +382,26 @@ public class TileFirePit extends HeatProducer {
   public final class Hardening {
     public final Hardenable block;
     public final BlockPos pos;
-    private final long hardenStart;
-    private final long hardenUntil;
-    
+    private final int hardenTicksTotal;
+    private int hardenTicks;
+
     private Hardening(final Hardenable block, final BlockPos pos) {
-      this(block, pos, System.currentTimeMillis(), System.currentTimeMillis() + block.getHardeningTime(TileFirePit.this.world.getBlockState(pos)) * 1000L);
+      this(block, pos, block.getHardeningTime(TileFirePit.this.world.getBlockState(pos)) * 20);
     }
     
-    private Hardening(final Hardenable block, final BlockPos pos, final long hardenStart, final long hardenUntil) {
+    private Hardening(final Hardenable block, final BlockPos pos, final int hardenTicksTotal) {
       this.block = block;
       this.pos = pos;
-      this.hardenStart = hardenStart;
-      this.hardenUntil = hardenUntil;
+      this.hardenTicksTotal = hardenTicksTotal;
+    }
+
+    public Hardening tick() {
+      this.hardenTicks++;
+      return this;
     }
     
     public boolean isHardened() {
-      return System.currentTimeMillis() >= this.hardenUntil;
+      return this.hardenTicks >= this.hardenTicksTotal;
     }
   }
 }

@@ -13,7 +13,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -74,8 +77,9 @@ public class TileClayCrucible extends HeatSinker {
   protected void tickBeforeCooldown() {
     if(!this.world.isRemote) {
       this.meltMetal();
-      this.checkForMoltenMetal();
     }
+
+    this.checkForMoltenMetal();
   }
   
   @Override
@@ -108,18 +112,22 @@ public class TileClayCrucible extends HeatSinker {
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(this.isMelting(slot)) {
         final MeltingMetal melting = this.getMeltingMetal(slot);
-        
-        if(melting.isMelted()) {
-          final ItemStack stack = this.getMetalSlot(slot);
-          
-          this.melting[slot] = null;
-          this.setMetalSlot(slot, ItemStack.EMPTY);
-          
-          final FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), GradientMetals.getMeltable(stack).amount);
-          
-          this.tank.fill(fluid, true);
-          
-          update = true;
+
+        melting.tick();
+
+        if(!this.world.isRemote) {
+          if(melting.isMelted()) {
+            final ItemStack stack = this.getMetalSlot(slot);
+
+            this.melting[slot] = null;
+            this.setMetalSlot(slot, ItemStack.EMPTY);
+
+            final FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), GradientMetals.getMeltable(stack).amount);
+
+            this.tank.fill(fluid, true);
+
+            update = true;
+          }
         }
       }
     }
@@ -173,8 +181,7 @@ public class TileClayCrucible extends HeatSinker {
         
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
-        tag.setLong("start", melting.meltStart - System.currentTimeMillis());
-        tag.setLong("until", melting.meltUntil - System.currentTimeMillis());
+        melting.writeToNbt(tag);
         meltings.appendTag(tag);
       }
     }
@@ -200,11 +207,7 @@ public class TileClayCrucible extends HeatSinker {
       final int slot = tag.getInteger("slot");
       
       if(slot < METAL_SLOTS_COUNT) {
-        this.melting[slot] = new MeltingMetal(
-          GradientMetals.getMeltable(this.getMetalSlot(slot)),
-          tag.getLong("start") + System.currentTimeMillis(),
-          tag.getLong("until") + System.currentTimeMillis()
-        );
+        this.melting[slot] = MeltingMetal.fromNbt(GradientMetals.getMeltable(this.getMetalSlot(slot)), tag);
       }
     }
     
@@ -230,25 +233,41 @@ public class TileClayCrucible extends HeatSinker {
   
   public static final class MeltingMetal {
     public final GradientMetals.Meltable meltable;
-    private final long meltStart;
-    private final long meltUntil;
-    
+    private final int meltTicksTotal;
+    private int meltTicks;
+
+    public static MeltingMetal fromNbt(final GradientMetals.Meltable metal, final NBTTagCompound tag) {
+      MeltingMetal melting = new MeltingMetal(metal, tag.getInteger("ticksTotal"));
+      melting.meltTicks = tag.getInteger("ticks");
+      return melting;
+    }
+
     private MeltingMetal(final GradientMetals.Meltable meltable) {
-      this(meltable, System.currentTimeMillis(), System.currentTimeMillis() + (long)(meltable.metal.meltTime * meltable.meltModifier * 1000));
+      this(meltable, (int)(meltable.metal.meltTime * meltable.meltModifier * 20));
     }
     
-    private MeltingMetal(final GradientMetals.Meltable meltable, final long meltStart, final long meltUntil) {
+    private MeltingMetal(final GradientMetals.Meltable meltable, final int meltTicksTotal) {
       this.meltable = meltable;
-      this.meltStart = meltStart;
-      this.meltUntil = meltUntil;
+      this.meltTicksTotal = meltTicksTotal;
+    }
+
+    public MeltingMetal tick() {
+      this.meltTicks++;
+      return this;
     }
     
     public boolean isMelted() {
-      return System.currentTimeMillis() >= this.meltUntil;
+      return this.meltTicks >= this.meltTicksTotal;
     }
     
     public float meltPercent() {
-      return (float)(System.currentTimeMillis() - this.meltStart) / (this.meltUntil - this.meltStart);
+      return (float)this.meltTicks / this.meltTicksTotal;
+    }
+
+    public NBTTagCompound writeToNbt(final NBTTagCompound tag) {
+      tag.setInteger("ticksTotal", this.meltTicksTotal);
+      tag.setInteger("ticks", this.meltTicks);
+      return tag;
     }
   }
 }

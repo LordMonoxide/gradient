@@ -191,7 +191,9 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
       if(this.isBurning(slot)) {
         final GradientFuel.BurningFuel fuel = this.fuels[slot];
-        
+
+        fuel.tick();
+
         if(fuel.isDepleted()) {
           this.fuels[slot] = null;
           this.setFuelSlot(slot, ItemStack.EMPTY);
@@ -260,8 +262,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
         
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
-        tag.setLong("start", fuel.burnStart - System.currentTimeMillis());
-        tag.setLong("until", fuel.burnUntil - System.currentTimeMillis());
+        fuel.writeToNbt(tag);
         fuels.appendTag(tag);
       }
     }
@@ -289,11 +290,7 @@ public class TileBronzeBoiler extends TileEntity implements ITickable {
       final int slot = tag.getInteger("slot");
       
       if(slot < FUEL_SLOTS_COUNT) {
-        this.fuels[slot] = new GradientFuel.BurningFuel(
-          GradientFuel.get(this.getFuelSlot(slot)),
-          tag.getLong("start") + System.currentTimeMillis(),
-          tag.getLong("until") + System.currentTimeMillis()
-        );
+        this.fuels[slot] = GradientFuel.BurningFuel.fromNbt(GradientFuel.get(this.getFuelSlot(slot)), tag);
       }
     }
     

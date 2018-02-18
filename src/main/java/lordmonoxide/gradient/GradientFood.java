@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,25 +73,41 @@ public final class GradientFood {
   
   public static final class CookingFood {
     public final GradientFood.Food food;
-    public final long cookStart;
-    public final long cookUntil;
-    
-    public CookingFood(final GradientFood.Food food) {
-      this(food, System.currentTimeMillis(), System.currentTimeMillis() + food.duration * 1000L);
+    private final int cookTicksTotal;
+    private int cookTicks;
+
+    public static CookingFood fromNbt(final GradientFood.Food food, final NBTTagCompound tag) {
+      CookingFood cooking = new CookingFood(food, tag.getInteger("ticksTotal"));
+      cooking.cookTicks = tag.getInteger("ticks");
+      return cooking;
     }
     
-    public CookingFood(final GradientFood.Food food, final long cookStart, final long cookUntil) {
+    public CookingFood(final GradientFood.Food food) {
+      this(food, food.duration * 20);
+    }
+    
+    private CookingFood(final Food food, final int cookTicksTotal) {
       this.food = food;
-      this.cookStart = cookStart;
-      this.cookUntil = cookUntil;
+      this.cookTicksTotal = cookTicksTotal;
+    }
+
+    public CookingFood tick() {
+      this.cookTicks++;
+      return this;
     }
     
     public boolean isCooked() {
-      return System.currentTimeMillis() >= this.cookUntil;
+      return this.cookTicks >= this.cookTicksTotal;
     }
     
     public float cookPercent() {
-      return (float)(System.currentTimeMillis() - this.cookStart) / (this.cookUntil - this.cookStart);
+      return (float)this.cookTicks / this.cookTicksTotal;
+    }
+
+    public NBTTagCompound writeToNbt(final NBTTagCompound tag) {
+      tag.setInteger("ticksTotal", this.cookTicksTotal);
+      tag.setInteger("ticks", this.cookTicks);
+      return tag;
     }
   }
 }

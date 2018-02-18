@@ -1,6 +1,7 @@
 package lordmonoxide.gradient;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public final class GradientFuel {
     add("logWood",      900, 300,  750,  0.76f);
     add("coal",        1200, 700, 2700,  1.50f);
     
-    add("infinicoal", Integer.MAX_VALUE, 0, 2700, 1.50f);
+    add("infinicoal", Integer.MAX_VALUE / 20, 0, 2700, 1.50f);
   }
   
   public static void add(final String oreDictName, final int duration, final float ignitionTemp, final float burnTemp, final float heatPerSec) {
@@ -61,25 +62,41 @@ public final class GradientFuel {
   
   public static final class BurningFuel {
     public final GradientFuel.Fuel fuel;
-    public final long burnStart;
-    public final long burnUntil;
-    
+    private final int burnTicksTotal;
+    private int burnTicks;
+
+    public static BurningFuel fromNbt(final Fuel fuel, final NBTTagCompound tag) {
+      BurningFuel burning = new BurningFuel(fuel, tag.getInteger("ticksTotal"));
+      burning.burnTicks = tag.getInteger("ticks");
+      return burning;
+    }
+
     public BurningFuel(final GradientFuel.Fuel fuel) {
-      this(fuel, System.currentTimeMillis(), System.currentTimeMillis() + fuel.duration * 1000L);
+      this(fuel, fuel.duration * 20);
     }
     
-    public BurningFuel(final GradientFuel.Fuel fuel, final long burnStart, final long burnUntil) {
+    private BurningFuel(final GradientFuel.Fuel fuel, final int burnTicksTotal) {
       this.fuel = fuel;
-      this.burnStart = burnStart;
-      this.burnUntil = burnUntil;
+      this.burnTicksTotal = burnTicksTotal;
+    }
+
+    public BurningFuel tick() {
+      this.burnTicks++;
+      return this;
     }
     
     public boolean isDepleted() {
-      return System.currentTimeMillis() >= this.burnUntil;
+      return this.burnTicks >= this.burnTicksTotal;
     }
     
     public float burnPercent() {
-      return (float)(System.currentTimeMillis() - this.burnStart) / (this.burnUntil - this.burnStart);
+      return (float)this.burnTicks / this.burnTicksTotal;
+    }
+
+    public NBTTagCompound writeToNbt(final NBTTagCompound tag) {
+      tag.setInteger("ticksTotal", this.burnTicksTotal);
+      tag.setInteger("ticks", this.burnTicks);
+      return tag;
     }
   }
 }

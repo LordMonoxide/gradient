@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.bronzeboiler.BlockBronzeBoiler;
 import lordmonoxide.gradient.blocks.bronzefurnace.BlockBronzeFurnace;
+import lordmonoxide.gradient.blocks.bronzegrinder.BlockBronzeGrinder;
 import lordmonoxide.gradient.blocks.claybowl.BlockClayBowl;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
@@ -75,8 +76,9 @@ public final class GradientBlocks {
   public static final BlockClayBowl CLAY_BOWL = RegistrationHandler.register(new BlockClayBowl());
   
   public static final BlockBronzeMachineHull BRONZE_MACHINE_HULL = RegistrationHandler.register(new BlockBronzeMachineHull());
-  public static final BlockBronzeBoiler BRONZE_BOILER = RegistrationHandler.register(new BlockBronzeBoiler());
-  public static final BlockBronzeFurnace BRONZE_FURNACE = RegistrationHandler.register(new BlockBronzeFurnace());
+  public static final BlockBronzeBoiler      BRONZE_BOILER       = RegistrationHandler.register(new BlockBronzeBoiler());
+  public static final BlockBronzeFurnace     BRONZE_FURNACE      = RegistrationHandler.register(new BlockBronzeFurnace());
+  public static final BlockBronzeGrinder     BRONZE_GRINDER      = RegistrationHandler.register(new BlockBronzeGrinder());
   
   public static final Map<GradientMetals.Metal, Block> CAST_BLOCK;
   

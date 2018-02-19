@@ -99,6 +99,7 @@ item.mortar.name=Mortar and Pestle
 
 # Machine parts
 item.igniter.name=Ignition Powder
+item.grinding_head.name=Grinding Head
 
 # Fluids
 fluid.copper=Molten Copper
@@ -150,6 +151,7 @@ tile.bronze_boiler.heat=Heat: %d °C
 tile.bronze_boiler.fluid_amount=%d/%d mB
 tile.bronze_boiler.fluid_empty=Empty
 tile.bronze_furnace.name=Bronze Furnace
+tile.bronze_grinder.name=Bronze Grinder
 
 # Fuel
 fuel.ignition_temp=Ignition Temperature: %f °C

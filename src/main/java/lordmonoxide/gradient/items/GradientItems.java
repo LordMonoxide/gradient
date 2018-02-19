@@ -53,7 +53,7 @@ public final class GradientItems {
   public static final GradientItemTool MORTAR = RegistrationHandler.register(new Mortar());
   
   public static final MushroomStew MUSHROOM_STEW = RegistrationHandler.register(new MushroomStew());
-  
+
   static {
     // Register nuggets
     GradientMetals.metals.stream().filter(metal -> metal.canMakeNuggets).map(Nugget::new).forEach(RegistrationHandler::register);
@@ -84,7 +84,9 @@ public final class GradientItems {
   }
   
   public static final GradientItem IGNITER = RegistrationHandler.register(new Igniter());
-  
+
+  public static final GrindingHead GRINDING_HEAD = RegistrationHandler.register(new GrindingHead());
+
   private static void initialiseItems() {
     MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());
   }

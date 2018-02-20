@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.recipes;
 
+import ic2.api.recipe.Recipes;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
@@ -11,6 +12,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
@@ -38,6 +40,7 @@ public final class ExtraRecipes {
     registerAlloys(registry);
     registerCasts(registry);
     registerTools(registry);
+    registerOreWashingRecipes(registry);
   }
   
   private static void registerDusts(final IForgeRegistry<IRecipe> registry) {
@@ -128,5 +131,13 @@ public final class ExtraRecipes {
         }
       }
     }
+  }
+
+  private static void registerOreWashingRecipes(final IForgeRegistry<IRecipe> Registry) {
+    NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setInteger("amount", 1000); // Water amount
+
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictionary.getOres("crushedPurifiedBronze").iterator().next());
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictionary.getOres("crushedPurifiedMagnesium").iterator().next());
   }
 }

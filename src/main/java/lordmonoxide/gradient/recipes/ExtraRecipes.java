@@ -133,7 +133,7 @@ public final class ExtraRecipes {
     }
   }
 
-  private static void registerOreWashingRecipes(final IForgeRegistry<IRecipe> Registry) {
+  private static void registerOreWashingRecipes(final IForgeRegistry<IRecipe> registry) {
     NBTTagCompound nbt = new NBTTagCompound();
     nbt.setInteger("amount", 1000); // Water amount
 

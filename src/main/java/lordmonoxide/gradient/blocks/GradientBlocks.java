@@ -21,9 +21,9 @@ import lordmonoxide.gradient.blocks.pebble.EntityPebble;
 import lordmonoxide.gradient.blocks.pebble.ItemPebble;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
@@ -151,10 +151,10 @@ public final class GradientBlocks {
     
     private static void registerTileEntities() {
       for(final GradientBlock block : blocks.keySet()) {
-        if(block instanceof ITileEntityProvider) {
+        if(block.hasTileEntity()) {
           try {
             //noinspection unchecked
-            GameRegistry.registerTileEntity((Class<? extends TileEntity>)((ITileEntityProvider)block).getClass().getMethod("createNewTileEntity", World.class, int.class).getReturnType(), block.getRegistryName().toString());
+            GameRegistry.registerTileEntity((Class<? extends TileEntity>)block.getClass().getMethod("createTileEntity", World.class, IBlockState.class).getReturnType(), block.getRegistryName().toString());
           } catch(final NoSuchMethodException ignored) { }
         }
       }

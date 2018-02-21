@@ -5,7 +5,6 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -21,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class BlockBronzeGrinder extends GradientBlock implements ITileEntityProvider {
+public class BlockBronzeGrinder extends GradientBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
   public BlockBronzeGrinder() {
@@ -32,7 +31,12 @@ public class BlockBronzeGrinder extends GradientBlock implements ITileEntityProv
   }
 
   @Override
-  public TileBronzeGrinder createNewTileEntity(final World world, final int meta) {
+  public boolean hasTileEntity(IBlockState state) {
+    return true;
+  }
+
+  @Override
+  public TileBronzeGrinder createTileEntity(World world, IBlockState state) {
     return new TileBronzeGrinder();
   }
 

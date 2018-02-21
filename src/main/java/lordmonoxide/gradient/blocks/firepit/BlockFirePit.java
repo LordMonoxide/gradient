@@ -8,7 +8,6 @@ import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -31,7 +30,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class BlockFirePit extends HeatSinkerBlock implements ITileEntityProvider {
+public class BlockFirePit extends HeatSinkerBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
   
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -102,12 +101,17 @@ public class BlockFirePit extends HeatSinkerBlock implements ITileEntityProvider
     
     return state.getLightValue(world, pos);
   }
-  
+
   @Override
-  public TileFirePit createNewTileEntity(final World world, final int meta) {
+  public boolean hasTileEntity(IBlockState state) {
+    return true;
+  }
+
+  @Override
+  public TileFirePit createTileEntity(World world, IBlockState state) {
     return new TileFirePit();
   }
-  
+
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {

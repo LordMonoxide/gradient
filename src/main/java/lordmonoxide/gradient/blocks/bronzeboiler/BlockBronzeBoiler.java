@@ -6,7 +6,6 @@ import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -27,7 +26,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class BlockBronzeBoiler extends GradientBlock implements ITileEntityProvider {
+public class BlockBronzeBoiler extends GradientBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
   
   private static final Fluid WATER = FluidRegistry.getFluid("water");
@@ -40,10 +39,15 @@ public class BlockBronzeBoiler extends GradientBlock implements ITileEntityProvi
   }
   
   @Override
-  public TileBronzeBoiler createNewTileEntity(final World world, final int meta) {
+  public boolean hasTileEntity(IBlockState state) {
+    return true;
+  }
+
+  @Override
+  public TileBronzeBoiler createTileEntity(World world, IBlockState state) {
     return new TileBronzeBoiler();
   }
-  
+
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {

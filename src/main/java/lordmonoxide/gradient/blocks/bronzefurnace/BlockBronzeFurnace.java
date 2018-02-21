@@ -5,7 +5,6 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -21,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class BlockBronzeFurnace extends GradientBlock implements ITileEntityProvider {
+public class BlockBronzeFurnace extends GradientBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
   
   public BlockBronzeFurnace() {
@@ -30,12 +29,17 @@ public class BlockBronzeFurnace extends GradientBlock implements ITileEntityProv
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }
-  
+
   @Override
-  public TileBronzeFurnace createNewTileEntity(final World world, final int meta) {
+  public boolean hasTileEntity(IBlockState state) {
+    return true;
+  }
+
+  @Override
+  public TileBronzeFurnace createTileEntity(World world, IBlockState state) {
     return new TileBronzeFurnace();
   }
-  
+
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {

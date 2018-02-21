@@ -13,8 +13,10 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -90,6 +92,8 @@ public final class GradientItems {
   public static final GradientItem IGNITER = RegistrationHandler.register(new Igniter());
 
   public static final GrindingHead GRINDING_HEAD = RegistrationHandler.register(new GrindingHead());
+
+  public static final UniversalBucket CLAY_BUCKET = new UniversalBucket();
 
   private static void initialiseItems() {
     MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());
@@ -197,7 +201,11 @@ public final class GradientItems {
       
       // Trigger item registration
       new GradientItems();
-      
+
+      CLAY_BUCKET.setUnlocalizedName("clay_bucket");
+      event.getRegistry().register(CLAY_BUCKET.setRegistryName(GradientMod.MODID, "clay_bucket"));
+      MinecraftForge.EVENT_BUS.register(CLAY_BUCKET);
+
       final IForgeRegistry<Item> registry = event.getRegistry();
       
       for(final Item item : ITEMS) {

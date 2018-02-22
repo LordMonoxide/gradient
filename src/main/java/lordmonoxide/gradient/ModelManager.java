@@ -31,7 +31,7 @@ public final class ModelManager {
   @SubscribeEvent
   public static void registerModels(final ModelRegistryEvent event) {
     System.out.println("Registering models");
-    
+
     registerFluidModels();
     registerBlockModels();
     registerItemModels();
@@ -72,7 +72,7 @@ public final class ModelManager {
     //registerItemModel(ModItems.SNOWBALL_LAUNCHER, "minecraft:fishing_rod");
     
     //registerVariantItemModels(ModItems.VARIANTS_ITEM, "variant", ItemVariants.EnumType.values());
-    
+
     // Then register items with default model names
     GradientItems.RegistrationHandler.ITEMS.stream()
       .filter(item -> !itemsRegistered.contains(item))
@@ -107,7 +107,7 @@ public final class ModelManager {
     
     stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory")));
   }
-  
+
   /**
    * A hackish adapter that allows lambdas to be used as {@link ItemMeshDefinition} implementations without breaking ForgeGradle's
    * reobfuscation and causing {@link AbstractMethodError}s.

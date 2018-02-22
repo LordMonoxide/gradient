@@ -3,19 +3,19 @@ package lordmonoxide.gradient.blocks.claybucket;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.ItemBlockProvider;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
+import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-
-import java.util.Random;
+import net.minecraft.world.World;
 
 public class BlockClayBucket extends GradientBlock implements Hardenable, ItemBlockProvider {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(3.0d / 16.0d, 0.0d, 3.0d / 16.0d, 1.0d - 3.0d / 16.0d, 0.5d, 1.0d - 3.0d / 16.0d);
@@ -28,17 +28,18 @@ public class BlockClayBucket extends GradientBlock implements Hardenable, ItemBl
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }
-  
+
   @Override
-  public Item getItemDropped(final IBlockState state, final Random rand, final int fortune) {
+  public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
     if(!state.getValue(HARDENED)) {
-      return super.getItemDropped(state, rand, fortune);
+      drops.add(new ItemStack(super.getItemDropped(state, world instanceof World ? ((World)world).rand : RANDOM, fortune)));
+      return;
     }
-    
-    //TODO
-    return Items.BUCKET;
+
+    drops.add(GradientItems.CLAY_BUCKET.getItemStack());
   }
-  
+
+
   @Override
   @Deprecated
   public boolean isOpaqueCube(final IBlockState state) {

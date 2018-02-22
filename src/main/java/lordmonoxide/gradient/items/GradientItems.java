@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
@@ -13,6 +14,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -91,8 +93,12 @@ public final class GradientItems {
 
   public static final GrindingHead GRINDING_HEAD = RegistrationHandler.register(new GrindingHead());
 
+  public static final ItemClayBucket CLAY_BUCKET = RegistrationHandler.register(new ItemClayBucket());
+
   private static void initialiseItems() {
     MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());
+
+    MinecraftForge.EVENT_BUS.register(CLAY_BUCKET);
   }
   
   private static void initialiseOreDict() {
@@ -197,7 +203,7 @@ public final class GradientItems {
       
       // Trigger item registration
       new GradientItems();
-      
+
       final IForgeRegistry<Item> registry = event.getRegistry();
       
       for(final Item item : ITEMS) {

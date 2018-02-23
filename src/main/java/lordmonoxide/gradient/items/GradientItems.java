@@ -152,11 +152,15 @@ public final class GradientItems {
 
     OreDictionary.registerOre("dustFlint", DUST_FLINT);
 
-    //TODO: these aren't working to water for some reason
-    for(Fluid fluid : FluidRegistry.getBucketFluids()) {
-      final String name = StringUtils.capitalize(fluid.getName());
-      OreDictionary.registerOre("bucket" + name, ItemClayBucket.getFilledBucket(fluid));
-      OreDictionary.registerOre("bucket" + name, FluidUtil.getFilledBucket(new FluidStack(fluid, Fluid.BUCKET_VOLUME)));
+    OreDictionary.registerOre("bucketWater", ItemClayBucket.getFilledBucket(FluidRegistry.WATER));
+    OreDictionary.registerOre("bucketLava",  ItemClayBucket.getFilledBucket(FluidRegistry.LAVA));
+    OreDictionary.registerOre("bucketWater", FluidUtil.getFilledBucket(new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME)));
+    OreDictionary.registerOre("bucketLava",  FluidUtil.getFilledBucket(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME)));
+
+    for(final Fluid fluid : FluidRegistry.getBucketFluids()) {
+      final String name = "bucket" + StringUtils.capitalize(fluid.getName());
+      OreDictionary.registerOre(name, ItemClayBucket.getFilledBucket(fluid));
+      OreDictionary.registerOre(name, FluidUtil.getFilledBucket(new FluidStack(fluid, Fluid.BUCKET_VOLUME)));
     }
 
     Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);

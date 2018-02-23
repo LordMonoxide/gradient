@@ -178,6 +178,10 @@ food.duration=Cook Duration: %d sec
 food.cooked=Cooked: %s
 
 item.mushroom_stew.name=Mushroom Stew
+item.sugarcane_paste.name=Sugarcane Paste
+item.salt.name=Salt
+item.flour.name=Flour
+item.dough.name=Dough
 
 # Metal
 metal.melt_temp=Melting Point: %f °C

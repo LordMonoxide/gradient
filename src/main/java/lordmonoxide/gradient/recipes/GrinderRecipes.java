@@ -2,6 +2,7 @@ package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,6 +32,8 @@ public class GrinderRecipes {
 
     add(Items.FLINT, "dustFlint");
     add("coal", "dustCoal");
+    add("sugarcane", new ItemStack(Items.SUGAR, 2));
+    add("cropWheat", GradientItems.FLOUR.getItemStack());
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String name = StringUtils.capitalize(metal.name);

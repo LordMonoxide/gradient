@@ -84,6 +84,9 @@ public final class RecipeRemover {
       "minecraft:furnace",
       "minecraft:torch",
       "minecraft:string_to_wool",
+
+      "minecraft:sugar",
+      "minecraft:bread",
     };
     
     final IForgeRegistryModifiable registry = (IForgeRegistryModifiable)event.getRegistry();

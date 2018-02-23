@@ -1,12 +1,19 @@
 package lordmonoxide.gradient;
 
 import ic2.api.item.IC2Items;
+import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
+import lordmonoxide.gradient.items.GradientItem;
+import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +21,9 @@ import java.util.Map;
 public final class GradientFood {
   private GradientFood() { }
   
-  public static final Food INVALID_FOOD = new Food(ItemStack.EMPTY, 0, 0);
+  private static final Fluid WATER = FluidRegistry.getFluid("water");
+
+  public static final Food INVALID_FOOD = new Food(ItemStack.EMPTY, 0, Integer.MAX_VALUE);
   
   private static final Map<ItemStack, Food> foods = new HashMap<>();
   
@@ -31,12 +40,20 @@ public final class GradientFood {
     add(Items.POTATO,   Items.BAKED_POTATO,    120, 200);
     
     add(IC2Items.getItem("misc_resource", "resin"), IC2Items.getItem("crafting", "rubber"), 30, 200);
+    add(GradientItems.SUGARCANE_PASTE, new ItemStack(Items.SUGAR, 2), 30, 200);
+    add(FluidUtil.getFilledBucket(new FluidStack(WATER, Fluid.BUCKET_VOLUME)), GradientItems.SALT.getItemStack(), 30, 200);
+    add(ItemClayBucket.getFilledBucket(WATER), GradientItems.SALT.getItemStack(), 30, 200);
+    add(GradientItems.DOUGH, new ItemStack(Items.BREAD, 4), 120, 200);
   }
   
   public static void add(final Item raw, final Item cooked, final int duration, final float cookTemp) {
     add(new ItemStack(raw), new ItemStack(cooked), duration, cookTemp);
   }
   
+  public static void add(final Item raw, final ItemStack cooked, final int duration, final float cookTemp) {
+    add(new ItemStack(raw), cooked, duration, cookTemp);
+  }
+
   public static void add(final ItemStack raw, final ItemStack cooked, final int duration, final float cookTemp) {
     add(raw, new Food(cooked, duration, cookTemp));
   }
@@ -47,7 +64,7 @@ public final class GradientFood {
   
   public static Food get(final ItemStack raw) {
     for(final Map.Entry<ItemStack, Food> entry : foods.entrySet()) {
-      if(ItemStack.areItemsEqual(raw, entry.getKey())) {
+      if(ItemStack.areItemStacksEqual(raw, entry.getKey())) {
         return entry.getValue();
       }
     }

@@ -2,6 +2,7 @@ package lordmonoxide.gradient.blocks.claybucket;
 
 import lordmonoxide.gradient.ModelManager;
 import lordmonoxide.gradient.items.GradientItem;
+import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,6 +42,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
     this.capacity = Fluid.BUCKET_VOLUME;
 
     this.setMaxStackSize(1);
+    this.setContainerItem(this);
 
     BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, DispenseFluidContainer.getInstance());
   }
@@ -82,6 +84,17 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
     }
 
     return I18n.translateToLocalFormatted(unloc + ".name", fluidStack.getLocalizedName());
+  }
+
+  public static ItemStack getFilledBucket(final Fluid fluid) {
+    ItemStack filledBucket = new ItemStack(GradientItems.CLAY_BUCKET);
+    FluidStack fluidContents = new FluidStack(fluid, Fluid.BUCKET_VOLUME);
+
+    NBTTagCompound tag = new NBTTagCompound();
+    fluidContents.writeToNBT(tag);
+    filledBucket.setTagCompound(tag);
+
+    return filledBucket;
   }
 
   @Nullable

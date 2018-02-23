@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:dough"
+  },
+  "ingredients": [{
+    "item": "gradient:flour"
+  }, {
+    "item": "gradient:flour"
+  }, {
+    "item": "gradient:flour"
+  }, {
+    "item": "gradient:salt"
+  }, {
+    "item": "minecraft:sugar"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "bucketWater"
+  }]
+}

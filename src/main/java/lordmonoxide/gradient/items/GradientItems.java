@@ -17,6 +17,10 @@ import net.minecraft.item.ItemArmor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -55,6 +59,10 @@ public final class GradientItems {
   public static final GradientItemTool MORTAR = RegistrationHandler.register(new Mortar());
   
   public static final MushroomStew MUSHROOM_STEW = RegistrationHandler.register(new MushroomStew());
+  public static final SugarcanePaste SUGARCANE_PASTE = RegistrationHandler.register(new SugarcanePaste());
+  public static final Salt SALT = RegistrationHandler.register(new Salt());
+  public static final Flour FLOUR = RegistrationHandler.register(new Flour());
+  public static final Dough DOUGH = RegistrationHandler.register(new Dough());
 
   static {
     // Register nuggets
@@ -141,9 +149,16 @@ public final class GradientItems {
         OreDictionary.registerOre("toolMattock", Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE));
       }
     }
-    
+
     OreDictionary.registerOre("dustFlint", DUST_FLINT);
-    
+
+    //TODO: these aren't working to water for some reason
+    for(Fluid fluid : FluidRegistry.getBucketFluids()) {
+      final String name = StringUtils.capitalize(fluid.getName());
+      OreDictionary.registerOre("bucket" + name, ItemClayBucket.getFilledBucket(fluid));
+      OreDictionary.registerOre("bucket" + name, FluidUtil.getFilledBucket(new FluidStack(fluid, Fluid.BUCKET_VOLUME)));
+    }
+
     Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);
     Blocks.SPRUCE_STAIRS.setHarvestLevel("axe", 0);
     Blocks.BIRCH_STAIRS.setHarvestLevel("axe", 0);

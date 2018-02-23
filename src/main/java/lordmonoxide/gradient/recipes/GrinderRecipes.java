@@ -22,14 +22,6 @@ public class GrinderRecipes {
 
   @SubscribeEvent
   public static void register(final RegistryEvent.Register<IRecipe> event) {
-    for(final String name : OreDictionary.getOreNames()) {
-      System.out.println(name);
-
-      for(final ItemStack stack : OreDictionary.getOres(name)) {
-        System.out.println(stack);
-      }
-    }
-
     add(Items.FLINT, "dustFlint");
     add("coal", "dustCoal");
     add("sugarcane", new ItemStack(Items.SUGAR, 2));

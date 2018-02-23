@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "gradient:shapeless_tool_recipe",
   "result": {
     "item": "gradient:bone_needle"
   },
@@ -7,7 +7,7 @@
     "type": "forge:ore_dict",
     "ore": "bone"
   }, {
-    "type": "forge:ore_dict",
+    "type": "gradient:ore",
     "ore": "toolHammer"
   }]
 }

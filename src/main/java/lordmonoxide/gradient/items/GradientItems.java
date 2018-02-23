@@ -123,6 +123,7 @@ public final class GradientItems {
     OreDictionary.registerOre("needle", BONE_NEEDLE.getWildcardItemStack());
     OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
     OreDictionary.registerOre("toolMattock", STONE_MATTOCK.getWildcardItemStack());
+    OreDictionary.registerOre("toolMortar", MORTAR.getWildcardItemStack());
     
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);

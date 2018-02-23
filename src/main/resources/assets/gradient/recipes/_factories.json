@@ -1,8 +1,13 @@
 {
+  "recipes": {
+    "shaped_tool_recipe": "lordmonoxide.gradient.recipes.ShapedToolRecipeFactory",
+    "shapeless_tool_recipe": "lordmonoxide.gradient.recipes.ShapelessToolRecipeFactory"
+  },
   "ingredients": {
     "cast":      "lordmonoxide.gradient.recipes.IngredientCastFactory",
     "cast_item": "lordmonoxide.gradient.recipes.IngredientCastItemFactory",
     "bucket":    "lordmonoxide.gradient.recipes.UniversalBucketFactory",
-    "ic2":       "lordmonoxide.gradient.recipes.IngredientIC2Factory"
+    "ic2":       "lordmonoxide.gradient.recipes.IngredientIC2Factory",
+    "ore":       "lordmonoxide.gradient.recipes.IngredientOreFactory"
   }
 }

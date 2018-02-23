@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "gradient:shapeless_tool_recipe",
   "result": {
     "item": "gradient:flour"
   },
@@ -7,6 +7,7 @@
     "type": "forge:ore_dict",
     "ore": "cropWheat"
   }, {
-    "item": "gradient:mortar"
+    "type": "gradient:ore",
+    "ore": "toolMortar"
   }]
 }

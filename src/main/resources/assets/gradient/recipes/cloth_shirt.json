@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "gradient:shaped_tool_recipe",
   "result": {
     "item": "gradient:cloth_shirt"
   },

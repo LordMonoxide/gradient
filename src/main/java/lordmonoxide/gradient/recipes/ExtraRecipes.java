@@ -32,9 +32,9 @@ public final class ExtraRecipes {
   @SubscribeEvent
   public static void registerRecipes(final RegistryEvent.Register<IRecipe> event) {
     System.out.println("Registering recipes...");
-    
+
     final IForgeRegistry<IRecipe> registry = event.getRegistry();
-    
+
     registerDusts(registry);
     registerPlates(registry);
     registerAlloys(registry);

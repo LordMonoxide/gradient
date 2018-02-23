@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "gradient:sugarcane_paste"
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "sugarcane"
+  }, {
+    "item": "gradient:mortar"
+  }]
+}

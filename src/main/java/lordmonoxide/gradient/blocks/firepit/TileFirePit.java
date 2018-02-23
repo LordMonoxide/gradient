@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -179,7 +178,7 @@ public class TileFirePit extends HeatProducer {
     if(!this.isCooking() && !this.getFoodSlot().isEmpty()) {
       final GradientFood.Food food = GradientFood.get(this.getFoodSlot());
       
-      if(this.canCook(food)) {
+      if(food != GradientFood.INVALID_FOOD && this.canCook(food)) {
         this.food = new GradientFood.CookingFood(food);
       }
     }
@@ -188,11 +187,18 @@ public class TileFirePit extends HeatProducer {
       this.food.tick();
 
       if(this.food.isCooked()) {
-        final ItemStack stack = this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
-        final ItemStack output = ItemHandlerHelper.copyStackWithSize(this.food.food.cooked, stack.getCount());
-        this.inventory.insertItem(FIRST_OUTPUT_SLOT, output, false);
-        
+        final ItemStack output = this.food.food.cooked.copy();
         this.food = null;
+
+        final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
+
+        System.out.println(input);
+        System.out.println(input.getItem().hasContainerItem(input));
+        if(input.getItem().hasContainerItem(input)) {
+          this.inventory.insertItem(FIRST_INPUT_SLOT, input.getItem().getContainerItem(input), false);
+        }
+
+        this.inventory.insertItem(FIRST_OUTPUT_SLOT, output, false);
       }
     }
   }
@@ -361,8 +367,10 @@ public class TileFirePit extends HeatProducer {
       }
     }
     
-    if(!this.getFoodSlot().isEmpty()) {
+    if(compound.hasKey("food")) {
       this.food = GradientFood.CookingFood.fromNbt(GradientFood.get(this.getFoodSlot()), compound.getCompoundTag("food"));
+    } else {
+      this.food = null;
     }
     
     super.readFromNBT(compound);

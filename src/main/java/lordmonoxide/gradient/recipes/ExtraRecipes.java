@@ -41,6 +41,7 @@ public final class ExtraRecipes {
     registerCasts(registry);
     registerTools(registry);
     registerOreWashingRecipes(registry);
+    registerExtractorRecipes(registry);
   }
   
   private static void registerDusts(final IForgeRegistry<IRecipe> registry) {
@@ -139,5 +140,9 @@ public final class ExtraRecipes {
 
     Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictionary.getOres("crushedPurifiedBronze").iterator().next());
     Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictionary.getOres("crushedPurifiedMagnesium").iterator().next());
+  }
+
+  private static void registerExtractorRecipes(final IForgeRegistry<IRecipe> registry) {
+    Recipes.extractor.addRecipe(Recipes.inputFactory.forOreDict("bucketWater"), null, false, GradientItems.SALT.getItemStack(4));
   }
 }

@@ -15,6 +15,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
@@ -33,7 +34,7 @@ public final class RecipeRemover {
     }
   };
   
-  @SubscribeEvent
+  @SubscribeEvent(priority = EventPriority.LOWEST)
   public static void remove(final RegistryEvent.Register<IRecipe> event) {
     final String[] toRemove = {
       "minecraft:wooden_pickaxe",
@@ -87,8 +88,12 @@ public final class RecipeRemover {
 
       "minecraft:sugar",
       "minecraft:bread",
+
+      "natura:common/barley_flour",
+      "natura:common/wheat_flour",
+      "natura:common/bread",
     };
-    
+
     final IForgeRegistryModifiable registry = (IForgeRegistryModifiable)event.getRegistry();
     
     for(final String loc : toRemove) {

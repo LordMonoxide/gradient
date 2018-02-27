@@ -88,7 +88,7 @@ public class BlockPebble extends GradientBlock {
         down.getMaterial() == Material.ROCK ||
         down.getMaterial() == Material.SAND
       ) && (
-        down.getBlock() != this
+        down.isFullBlock()
       )
     ;
   }

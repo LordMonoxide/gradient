@@ -14,7 +14,7 @@
   }, {
     "item": "minecraft:sugar"
   }, {
-    "type": "forge:ore_dict",
-    "ore": "bucketWater"
+    "type": "gradient:fluid",
+    "fluid": "water"
   }]
 }

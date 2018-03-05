@@ -14,6 +14,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
@@ -110,24 +111,26 @@ public final class GradientItems {
   }
   
   private static void initialiseOreDict() {
-    OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);
-    
     OreDictionary.registerOre("infinicoal", INFINICOAL);
-    
+
     OreDictionary.registerOre("coal", Items.COAL);
-    OreDictionary.registerOre("igniter", GradientItems.IGNITER);
-    
+
     OreDictionary.registerOre("string", FIBRE);
     OreDictionary.registerOre("cloth",  CLOTH);
-    
+
+    // Tools
+    OreDictionary.registerOre("igniter", GradientItems.IGNITER);
     OreDictionary.registerOre("needle", BONE_NEEDLE.getWildcardItemStack());
     OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
     OreDictionary.registerOre("toolMattock", STONE_MATTOCK.getWildcardItemStack());
     OreDictionary.registerOre("toolMortar", MORTAR.getWildcardItemStack());
-    
+
+    // Metals/metal tools
+    OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);
+
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);
-      
+
       if(metal.canMakeNuggets) {
         OreDictionary.registerOre("nugget" + caps, Nugget.getNugget(metal, 1));
         OreDictionary.registerOre("crushed" + caps, Crushed.get(metal, 1));
@@ -153,6 +156,19 @@ public final class GradientItems {
 
     OreDictionary.registerOre("dustFlint", DUST_FLINT);
 
+    // Crops/food
+    OreDictionary.registerOre("ingredientFlour", GradientItems.FLOUR);
+    OreDictionary.registerOre("ingredientSalt", GradientItems.SALT);
+    OreDictionary.registerOre("ingredientSugar", Items.SUGAR);
+
+    final Item naturaMaterials = Item.getByNameOrId("natura:materials");
+    if(naturaMaterials != null) {
+      OreDictionary.registerOre("cropWheat", new ItemStack(naturaMaterials, 1, 0)); // Barley
+      OreDictionary.registerOre("ingredientFlour", new ItemStack(naturaMaterials, 1, 1)); // Barley flour
+      OreDictionary.registerOre("ingredientFlour", new ItemStack(naturaMaterials, 1, 2)); // Wheat flour
+    }
+
+    // Buckets
     OreDictionary.registerOre("bucketWater", ItemClayBucket.getFilledBucket(FluidRegistry.WATER));
     OreDictionary.registerOre("bucketLava",  ItemClayBucket.getFilledBucket(FluidRegistry.LAVA));
     OreDictionary.registerOre("bucketWater", FluidUtil.getFilledBucket(new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME)));

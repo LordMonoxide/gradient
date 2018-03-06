@@ -175,7 +175,7 @@ fuel.duration=Burn Duration: %d sec
 # Food
 food.cook_temp=Cook Temperature: %f °C
 food.duration=Cook Duration: %d sec
-food.cooked=Cooked: %s
+food.cooked=Cooked: %dx %s
 
 item.mushroom_stew.name=Mushroom Stew
 item.sugarcane_paste.name=Sugarcane Paste

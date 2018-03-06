@@ -20,6 +20,6 @@ public final class CookingTooltips {
     
     event.getToolTip().add(I18n.format("food.cook_temp", food.cookTemp));
     event.getToolTip().add(I18n.format("food.duration", food.duration));
-    event.getToolTip().add(I18n.format("food.cooked", food.cooked.getDisplayName()));
+    event.getToolTip().add(I18n.format("food.cooked", food.cooked.getCount(), food.cooked.getDisplayName()));
   }
 }

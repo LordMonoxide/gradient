@@ -30,46 +30,46 @@ public class GradientGuiHandler implements IGuiHandler {
   public static final int BRONZE_BOILER = 3;
   public static final int BRONZE_FURNACE = 4;
   public static final int BRONZE_GRINDER = 5;
-  
+
   @Override
   public Container getServerGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
     final TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
-    
+
     switch(id) {
       case FIRE_PIT:
         if(te == null) {
           return null;
         }
-        
+
         return new ContainerFirePit(player.inventory, (TileFirePit)te);
-        
+
       case CLAY_CRUCIBLE:
         if(te == null) {
           return null;
         }
-        
+
         return new ContainerClayCrucible(player.inventory, (TileClayCrucible)te);
-        
+
       case CLAY_CAST:
         return new Container() {
           @Override
-          public boolean canInteractWith(EntityPlayer playerIn) {
+          public boolean canInteractWith(final EntityPlayer playerIn) {
             return true;
           }
         };
-      
+
       case BRONZE_BOILER:
         if(te == null) {
           return null;
         }
-        
+
         return new ContainerBronzeBoiler(player.inventory, (TileBronzeBoiler)te);
-      
+
       case BRONZE_FURNACE:
         if(te == null) {
           return null;
         }
-        
+
         return new ContainerBronzeFurnace(player.inventory, (TileBronzeFurnace)te);
 
       case BRONZE_GRINDER:
@@ -79,38 +79,38 @@ public class GradientGuiHandler implements IGuiHandler {
 
         return new ContainerBronzeGrinder(player.inventory, (TileBronzeGrinder)te);
     }
-    
+
     return null;
   }
-  
+
   @Override
   public Object getClientGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
     final BlockPos pos = new BlockPos(x, y, z);
     final TileEntity te = world.getTileEntity(pos);
-    
+
     switch(id) {
       case FIRE_PIT:
         if(te == null) {
           return null;
         }
-        
+
         return new GuiFirePit((ContainerFirePit)this.getServerGuiElement(id, player, world, x, y, z), (TileFirePit)te, world.getBlockState(pos), player.inventory);
-      
+
       case CLAY_CRUCIBLE:
         if(te == null) {
           return null;
         }
-        
+
         return new GuiClayCrucible((ContainerClayCrucible)this.getServerGuiElement(id, player, world, x, y ,z), (TileClayCrucible)te, player.inventory);
-      
+
       case CLAY_CAST:
         return new GuiClayCast(this.getServerGuiElement(id, player, world, x, y ,z), player.getHeldItemMainhand());
-      
+
       case BRONZE_BOILER:
         if(te == null) {
           return null;
         }
-        
+
         return new GuiBronzeBoiler((ContainerBronzeBoiler)this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeBoiler)te, player.inventory);
 
       case BRONZE_FURNACE:
@@ -127,7 +127,7 @@ public class GradientGuiHandler implements IGuiHandler {
 
         return new GuiBronzeGrinder((ContainerBronzeGrinder) this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeGrinder) te, player.inventory);
     }
-    
+
     return null;
   }
 }

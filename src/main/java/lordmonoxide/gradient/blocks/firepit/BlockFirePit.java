@@ -103,12 +103,12 @@ public class BlockFirePit extends HeatSinkerBlock {
   }
 
   @Override
-  public boolean hasTileEntity(IBlockState state) {
+  public boolean hasTileEntity(final IBlockState state) {
     return true;
   }
 
   @Override
-  public TileFirePit createTileEntity(World world, IBlockState state) {
+  public TileFirePit createTileEntity(final World world, final IBlockState state) {
     return new TileFirePit();
   }
 

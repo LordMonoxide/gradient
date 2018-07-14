@@ -28,49 +28,49 @@ import net.minecraftforge.fluids.FluidUtil;
 
 public class BlockClayCrucible extends HeatSinkerBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
-  
+
   public BlockClayCrucible() {
     super("clay_crucible", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }
-  
+
   @Override
   @Deprecated
   public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
-  
+
   @Override
   @Deprecated
   public boolean isFullCube(final IBlockState state) {
     return false;
   }
-  
+
   @Override
   @Deprecated
   public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
     return AABB;
   }
-  
+
   @Override
   public int getLightValue(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
     final IBlockState other = world.getBlockState(pos);
     if(other.getBlock() != this) {
       return other.getLightValue(world, pos);
     }
-  
+
     final TileEntity te = world.getTileEntity(pos);
-    
+
     if(te instanceof TileClayCrucible) {
       return ((TileClayCrucible)te).getLightLevel();
     }
-    
+
     return state.getLightValue(world, pos);
   }
 
   @Override
-  public TileClayCrucible createTileEntity(World world, IBlockState state) {
+  public TileClayCrucible createTileEntity(final World world, final IBlockState state) {
     return new TileClayCrucible();
   }
 
@@ -79,66 +79,66 @@ public class BlockClayCrucible extends HeatSinkerBlock {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
         final TileClayCrucible te = (TileClayCrucible)world.getTileEntity(pos);
-        
+
         if(te == null) {
           return false;
         }
-        
+
         final ItemStack stack = player.getHeldItem(hand);
-        
+
         // Cast item
         if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() == GradientBlocks.CLAY_CAST) {
           final GradientCasts.Cast cast = GradientBlocks.CLAY_CAST.getStateFromMeta(stack.getMetadata()).getValue(BlockClayCast.CAST);
-          
+
           if(te.getMoltenMetal() == null) {
             player.sendMessage(new TextComponentTranslation("tile.clay_crucible.no_metal").setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
-          
+
           final GradientMetals.Metal metal = GradientMetals.getMetalForFluid(te.getMoltenMetal().getFluid());
           final int amount = cast.amountForMetal(metal);
-          
+
           if(te.getMoltenMetal().amount < amount) {
             player.sendMessage(new TextComponentTranslation("tile.clay_crucible.not_enough_metal", amount).setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
-          
+
           if(!cast.isValidForMetal(metal)) {
             player.sendMessage(new TextComponentTranslation("tile.clay_crucible.metal_cant_make_tools").setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
-          
+
           if(!player.isCreative()) {
             stack.shrink(1);
-            
+
             te.consumeMetal(amount);
           }
-          
+
           player.inventory.addItemStackToInventory(CastItem.getCastItem(cast, metal, 1));
           return true;
         }
-        
+
         if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
           final FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand));
-          
+
           // Make sure the fluid handler is either empty, or contains metal
           if(fluid != null) {
             final GradientMetals.Metal metal = GradientMetals.getMetalForFluid(fluid.getFluid());
-            
+
             if(metal == GradientMetals.INVALID_METAL) {
               return true;
             }
           }
-          
+
           te.useBucket(player, hand, world, pos, side);
-          
+
           return true;
         }
-        
+
         player.openGui(GradientMod.instance, GradientGuiHandler.CLAY_CRUCIBLE, world, pos.getX(), pos.getY(), pos.getZ());
       }
     }
-    
+
     return true;
   }
 }

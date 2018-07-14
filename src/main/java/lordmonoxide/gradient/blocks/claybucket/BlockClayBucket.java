@@ -30,7 +30,7 @@ public class BlockClayBucket extends GradientBlock implements Hardenable, ItemBl
   }
 
   @Override
-  public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+  public void getDrops(final NonNullList<ItemStack> drops, final IBlockAccess world, final BlockPos pos, final IBlockState state, final int fortune) {
     if(!state.getValue(HARDENED)) {
       drops.add(new ItemStack(super.getItemDropped(state, world instanceof World ? ((World)world).rand : RANDOM, fortune)));
       return;

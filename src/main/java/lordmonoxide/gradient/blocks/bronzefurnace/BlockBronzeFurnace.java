@@ -31,12 +31,12 @@ public class BlockBronzeFurnace extends GradientBlock {
   }
 
   @Override
-  public boolean hasTileEntity(IBlockState state) {
+  public boolean hasTileEntity(final IBlockState state) {
     return true;
   }
 
   @Override
-  public TileBronzeFurnace createTileEntity(World world, IBlockState state) {
+  public TileBronzeFurnace createTileEntity(final World world, final IBlockState state) {
     return new TileBronzeFurnace();
   }
 

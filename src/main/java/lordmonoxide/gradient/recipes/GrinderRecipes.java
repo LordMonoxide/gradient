@@ -74,7 +74,7 @@ public class GrinderRecipes {
   }
 
   public static ItemStack getOutput(final ItemStack input) {
-    for(Map.Entry<ItemStack, ItemStack> entry : recipes.entrySet()) {
+    for(final Map.Entry<ItemStack, ItemStack> entry : recipes.entrySet()) {
       if(OreDictionary.itemMatches(entry.getKey(), input, false)) {
         return entry.getValue();
       }

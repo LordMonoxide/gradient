@@ -39,12 +39,12 @@ public class BlockBronzeBoiler extends GradientBlock {
   }
 
   @Override
-  public boolean hasTileEntity(IBlockState state) {
+  public boolean hasTileEntity(final IBlockState state) {
     return true;
   }
 
   @Override
-  public TileBronzeBoiler createTileEntity(World world, IBlockState state) {
+  public TileBronzeBoiler createTileEntity(final World world, final IBlockState state) {
     return new TileBronzeBoiler();
   }
 

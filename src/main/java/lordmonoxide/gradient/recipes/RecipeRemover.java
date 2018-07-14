@@ -29,7 +29,7 @@ public final class RecipeRemover {
 
   private static final Container DUMMY_CONTAINER = new Container() {
     @Override
-    public boolean canInteractWith(EntityPlayer player) {
+    public boolean canInteractWith(final EntityPlayer player) {
       return true;
     }
   };

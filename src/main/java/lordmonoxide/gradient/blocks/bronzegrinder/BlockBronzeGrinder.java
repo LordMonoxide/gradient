@@ -31,12 +31,12 @@ public class BlockBronzeGrinder extends GradientBlock {
   }
 
   @Override
-  public boolean hasTileEntity(IBlockState state) {
+  public boolean hasTileEntity(final IBlockState state) {
     return true;
   }
 
   @Override
-  public TileBronzeGrinder createTileEntity(World world, IBlockState state) {
+  public TileBronzeGrinder createTileEntity(final World world, final IBlockState state) {
     return new TileBronzeGrinder();
   }
 

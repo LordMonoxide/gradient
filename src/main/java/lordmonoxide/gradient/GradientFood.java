@@ -2,7 +2,6 @@ package lordmonoxide.gradient;
 
 import ic2.api.item.IC2Items;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
-import lordmonoxide.gradient.items.GradientItem;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -14,6 +13,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,8 +63,10 @@ public final class GradientFood {
   }
 
   public static Food get(final ItemStack raw) {
+    final ItemStack copy = ItemHandlerHelper.copyStackWithSize(raw, 1);
+
     for(final Map.Entry<ItemStack, Food> entry : foods.entrySet()) {
-      if(ItemStack.areItemStacksEqual(raw, entry.getKey())) {
+      if(ItemStack.areItemStacksEqual(copy, entry.getKey())) {
         return entry.getValue();
       }
     }

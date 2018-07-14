@@ -22,7 +22,7 @@ import net.minecraftforge.fluids.FluidUtil;
 
 public class BlockBronzeFurnace extends GradientBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
-  
+
   public BlockBronzeFurnace() {
     super("bronze_furnace", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_BRONZE_MACHINE); //$NON-NLS-1$
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
@@ -45,52 +45,52 @@ public class BlockBronzeFurnace extends GradientBlock {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
         final TileBronzeFurnace te = (TileBronzeFurnace)world.getTileEntity(pos);
-      
+
         if(te == null) {
           return false;
         }
-        
+
         if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
           return te.useBucket(player, hand, world, pos, side);
         }
-        
+
         player.openGui(GradientMod.instance, GradientGuiHandler.BRONZE_FURNACE, world, pos.getX(), pos.getY(), pos.getZ());
       }
     }
-    
+
     return true;
   }
-  
+
   @Override
   public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
     world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
   }
-  
+
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    final EnumFacing facing = EnumFacing.getHorizontal(meta);
-    
+    final EnumFacing facing = EnumFacing.byHorizontalIndex(meta);
+
     return this.getDefaultState().withProperty(FACING, facing);
   }
-  
+
   @Override
   public int getMetaFromState(final IBlockState state) {
     return state.getValue(FACING).getHorizontalIndex();
   }
-  
+
   @Override
   @Deprecated
   public IBlockState withRotation(final IBlockState state, final Rotation rot) {
     return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
   }
-  
+
   @Override
   @Deprecated
   public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
     return state.withRotation(mirror.toRotation(state.getValue(FACING)));
   }
-  
+
   @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer(this, FACING);

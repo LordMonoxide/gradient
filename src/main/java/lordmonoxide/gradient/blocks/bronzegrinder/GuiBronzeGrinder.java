@@ -42,7 +42,7 @@ public class GuiBronzeGrinder extends GradientGuiContainer {
 
   @Override
   protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
-    final String name = I18n.format(GradientBlocks.BRONZE_GRINDER.getUnlocalizedName() + ".name");
+    final String name = I18n.format(GradientBlocks.BRONZE_GRINDER.getTranslationKey() + ".name");
 
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);

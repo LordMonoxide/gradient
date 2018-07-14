@@ -22,33 +22,33 @@ public class ItemClayCastUnhardened extends ItemBlock {
     super(block);
     this.setHasSubtypes(true);
   }
-  
+
   @Override
   public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
     final ActionResult<ItemStack> result = super.onItemRightClick(world, player, hand);
-    
+
     if(result.getType() != EnumActionResult.SUCCESS) {
       if(!world.isRemote) {
         final BlockPos pos = player.getPosition();
         player.openGui(GradientMod.instance, GradientGuiHandler.CLAY_CAST, world, pos.getX(), pos.getY(), pos.getZ());
-        
+
         return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
       }
     }
-    
+
     return result;
   }
-  
+
   @Override
   public int getMetadata(final int damage) {
     return damage;
   }
-  
+
   @Override
-  public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName(stack) + '.' + GradientCasts.getCast(stack.getMetadata()).name;
+  public String getTranslationKey(final ItemStack stack) {
+    return super.getTranslationKey(stack) + '.' + GradientCasts.getCast(stack.getMetadata()).name;
   }
-  
+
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {

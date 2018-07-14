@@ -69,7 +69,7 @@ public class BlockBronzeGrinder extends GradientBlock {
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    final EnumFacing facing = EnumFacing.getHorizontal(meta);
+    final EnumFacing facing = EnumFacing.byHorizontalIndex(meta);
 
     return this.getDefaultState().withProperty(FACING, facing);
   }

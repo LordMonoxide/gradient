@@ -15,17 +15,17 @@ public interface ItemBlockProvider {
       {
         this.setHasSubtypes(ItemBlockProvider.this.hasSubBlocks());
       }
-      
+
       @Override
-      public String getUnlocalizedName(final ItemStack stack) {
+      public String getTranslationKey(final ItemStack stack) {
         return ItemBlockProvider.this.getItemName(this.block.getStateFromMeta(stack.getMetadata()));
       }
-      
+
       @Override
       public int getMetadata(final int metadata) {
         return this.getHasSubtypes() ? metadata : 0;
       }
-      
+
       @Override
       @SideOnly(Side.CLIENT)
       public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
@@ -33,15 +33,15 @@ public interface ItemBlockProvider {
       }
     };
   }
-  
+
   default String getItemName(final IBlockState state) {
-    return state.getBlock().getUnlocalizedName();
+    return state.getBlock().getTranslationKey();
   }
-  
+
   default boolean hasSubBlocks() {
     return false;
   }
-  
+
   default void getSubItems(final ItemBlock item, final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
     if(!this.hasSubBlocks()) {
       item.getBlock().getSubBlocks(tab, subItems);

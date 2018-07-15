@@ -1,5 +1,5 @@
 {
-  "parent": "gradient:block/bronze_furnace",
+  "parent": "gradient:block/bronze_oven",
   "display": {
     "thirdperson": {
       "rotation": [ -90, 0, 0 ],

@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "gradient:bronze_furnace"
+    "item": "gradient:bronze_oven"
   },
   "pattern": [
     "PPP",

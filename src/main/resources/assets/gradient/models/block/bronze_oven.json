@@ -4,7 +4,7 @@
     "particle": "gradient:blocks/bronze_machine_hull",
     "down": "gradient:blocks/bronze_machine_hull",
     "up": "gradient:blocks/bronze_machine_hull",
-    "north": "gradient:blocks/bronze_furnace",
+    "north": "gradient:blocks/bronze_oven",
     "east": "gradient:blocks/bronze_machine_hull",
     "south": "gradient:blocks/bronze_machine_hull",
     "west": "gradient:blocks/bronze_machine_hull"

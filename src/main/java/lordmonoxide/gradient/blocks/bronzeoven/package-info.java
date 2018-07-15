@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package lordmonoxide.gradient.blocks.bronzefurnace;
+package lordmonoxide.gradient.blocks.bronzeoven;
 
 import mcp.MethodsReturnNonnullByDefault;
 

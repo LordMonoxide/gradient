@@ -1,4 +1,4 @@
-package lordmonoxide.gradient.blocks.bronzefurnace;
+package lordmonoxide.gradient.blocks.bronzeoven;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
@@ -8,18 +8,18 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiBronzeFurnace extends GradientGuiContainer {
-  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_furnace.png");
+public class GuiBronzeOven extends GradientGuiContainer {
+  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_oven.png");
 
-  private final TileBronzeFurnace furnace;
+  private final TileBronzeOven oven;
   private final InventoryPlayer playerInv;
   private final FluidRenderer steamRenderer;
 
-  public GuiBronzeFurnace(final ContainerBronzeFurnace container, final TileBronzeFurnace furnace, final InventoryPlayer playerInv) {
+  public GuiBronzeOven(final ContainerBronzeOven container, final TileBronzeOven oven, final InventoryPlayer playerInv) {
     super(container);
-    this.furnace = furnace;
+    this.oven = oven;
     this.playerInv = playerInv;
-    this.steamRenderer = new FluidRenderer(furnace.tankSteam, 148, 19, 12, 47);
+    this.steamRenderer = new FluidRenderer(oven.tankSteam, 148, 19, 12, 47);
   }
 
   @Override
@@ -30,8 +30,8 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
     final int y = (this.height - this.ySize) / 2;
     this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
 
-    if(this.furnace.isCooking()) {
-      this.drawTexturedModalRect(x + 32, y + 35, 192, 0, (int)(16.0f * this.furnace.getCookPercent()), 14);
+    if(this.oven.isCooking()) {
+      this.drawTexturedModalRect(x + 32, y + 35, 192, 0, (int)(16.0f * this.oven.getCookPercent()), 14);
     }
 
     this.steamRenderer.draw();
@@ -42,7 +42,7 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
 
   @Override
   protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
-    final String name = I18n.format(GradientBlocks.BRONZE_FURNACE.getTranslationKey() + ".name");
+    final String name = I18n.format(GradientBlocks.BRONZE_OVEN.getTranslationKey() + ".name");
 
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
@@ -51,7 +51,7 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
   @Override
   protected void renderToolTips(final int mouseX, final int mouseY) {
     if(this.steamRenderer.isMouseOver(mouseX, mouseY)) {
-      this.renderFluidTankToolTip(this.furnace.tankSteam, mouseX, mouseY);
+      this.renderFluidTankToolTip(this.oven.tankSteam, mouseX, mouseY);
     }
   }
 }

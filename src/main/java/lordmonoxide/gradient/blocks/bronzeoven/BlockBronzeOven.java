@@ -1,4 +1,4 @@
-package lordmonoxide.gradient.blocks.bronzefurnace;
+package lordmonoxide.gradient.blocks.bronzeoven;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
@@ -20,11 +20,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class BlockBronzeFurnace extends GradientBlock {
+public class BlockBronzeOven extends GradientBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
-  public BlockBronzeFurnace() {
-    super("bronze_furnace", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_BRONZE_MACHINE); //$NON-NLS-1$
+  public BlockBronzeOven() {
+    super("bronze_oven", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_BRONZE_MACHINE); //$NON-NLS-1$
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     this.setResistance(5.0f);
     this.setHardness(1.0f);
@@ -36,15 +36,15 @@ public class BlockBronzeFurnace extends GradientBlock {
   }
 
   @Override
-  public TileBronzeFurnace createTileEntity(final World world, final IBlockState state) {
-    return new TileBronzeFurnace();
+  public TileBronzeOven createTileEntity(final World world, final IBlockState state) {
+    return new TileBronzeOven();
   }
 
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        final TileBronzeFurnace te = (TileBronzeFurnace)world.getTileEntity(pos);
+        final TileBronzeOven te = (TileBronzeOven)world.getTileEntity(pos);
 
         if(te == null) {
           return false;
@@ -54,7 +54,7 @@ public class BlockBronzeFurnace extends GradientBlock {
           return te.useBucket(player, hand, world, pos, side);
         }
 
-        player.openGui(GradientMod.instance, GradientGuiHandler.BRONZE_FURNACE, world, pos.getX(), pos.getY(), pos.getZ());
+        player.openGui(GradientMod.instance, GradientGuiHandler.BRONZE_OVEN, world, pos.getX(), pos.getY(), pos.getZ());
       }
     }
 

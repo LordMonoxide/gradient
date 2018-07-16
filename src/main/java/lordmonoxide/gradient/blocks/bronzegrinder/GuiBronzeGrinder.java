@@ -9,7 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiBronzeGrinder extends GradientGuiContainer {
-  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_furnace.png");
+  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_grinder.png");
 
   private final TileBronzeGrinder grinder;
   private final InventoryPlayer playerInv;

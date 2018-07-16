@@ -1,6 +1,5 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.bronzeboiler.PacketLightBoiler;
 import lordmonoxide.gradient.blocks.bronzefurnace.PacketLightBronzeFurnace;
 import lordmonoxide.gradient.blocks.claycast.PacketSwitchCast;
 import lordmonoxide.gradient.blocks.heat.PacketUpdateHeatNeighbours;
@@ -18,7 +17,6 @@ public final class GradientNet {
   static void register() {
     CHANNEL.registerMessage(PacketSwitchCast.Handler.class, PacketSwitchCast.class, id++, Side.SERVER);
     CHANNEL.registerMessage(PacketUpdateHeatNeighbours.Handler.class, PacketUpdateHeatNeighbours.class, id++, Side.CLIENT);
-    CHANNEL.registerMessage(PacketLightBoiler.Handler.class, PacketLightBoiler.class, id++, Side.SERVER);
     CHANNEL.registerMessage(PacketLightBronzeFurnace.Handler.class, PacketLightBronzeFurnace.class, id++, Side.SERVER);
   }
 }

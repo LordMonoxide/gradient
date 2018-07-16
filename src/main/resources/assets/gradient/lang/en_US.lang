@@ -163,7 +163,6 @@ tile.bronze_furnace.name=Bronze Furnace
 tile.bronze_furnace.fuel=Fuel
 tile.bronze_furnace.heat=Heat: %d °C
 tile.bronze_boiler.name=Bronze Boiler
-tile.bronze_boiler.fuel=Fuel
 tile.bronze_boiler.heat=Heat: %d °C
 tile.bronze_boiler.fluid_amount=%d/%d mB
 tile.bronze_boiler.fluid_empty=Empty

@@ -2,8 +2,8 @@ package lordmonoxide.gradient.blocks.bronzeboiler;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
@@ -26,7 +26,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class BlockBronzeBoiler extends GradientBlock {
+public class BlockBronzeBoiler extends HeatSinkerBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
   private static final Fluid WATER = FluidRegistry.getFluid("water");
@@ -36,11 +36,6 @@ public class BlockBronzeBoiler extends GradientBlock {
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     this.setResistance(5.0f);
     this.setHardness(1.0f);
-  }
-
-  @Override
-  public boolean hasTileEntity(final IBlockState state) {
-    return true;
   }
 
   @Override

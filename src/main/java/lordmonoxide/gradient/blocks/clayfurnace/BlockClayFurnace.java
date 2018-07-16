@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.blocks.clayfurnace;
 
-import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.ItemBlockProvider;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
@@ -20,7 +19,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockClayFurnace extends GradientBlock implements Hardenable, ItemBlockProvider {
+public class BlockClayFurnace extends Hardenable implements ItemBlockProvider {
   public static final PropertyBool HARDENED = PropertyBool.create("hardened");
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
 

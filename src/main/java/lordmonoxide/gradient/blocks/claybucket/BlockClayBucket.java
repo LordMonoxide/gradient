@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.blocks.claybucket;
 
-import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.ItemBlockProvider;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.items.GradientItems;
@@ -17,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockClayBucket extends GradientBlock implements Hardenable, ItemBlockProvider {
+public class BlockClayBucket extends Hardenable implements ItemBlockProvider {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(3.0d / 16.0d, 0.0d, 3.0d / 16.0d, 1.0d - 3.0d / 16.0d, 0.5d, 1.0d - 3.0d / 16.0d);
 
   public static final PropertyBool HARDENED = PropertyBool.create("hardened");

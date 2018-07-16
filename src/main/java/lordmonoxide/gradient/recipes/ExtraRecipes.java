@@ -41,6 +41,7 @@ public final class ExtraRecipes {
     registerAlloys(registry);
     registerCasts(registry);
     registerTools(registry);
+    registerNuggets(registry);
     registerOreWashingRecipes(registry);
     registerExtractorRecipes(registry);
   }
@@ -57,7 +58,7 @@ public final class ExtraRecipes {
         registry.register(new ShapelessToolRecipe(
             GradientMod.MODID,
             Dust.getDust(metal, 1),
-            NonNullList.from(null, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), mortar)
+            NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), mortar)
         ).setRegistryName(GradientMod.resource(recipeName)));
       }
     }
@@ -78,7 +79,7 @@ public final class ExtraRecipes {
       registry.register(new ShapelessToolRecipe(
           GradientMod.MODID,
           Plate.getPlate(metal, 1),
-          NonNullList.from(null, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(hammers))
+          NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(hammers))
       ).setRegistryName(GradientMod.resource(recipeName)));
     }
   }
@@ -113,7 +114,7 @@ public final class ExtraRecipes {
           registry.register(new ShapelessRecipes(
               GradientMod.MODID,
               CastItem.getCastItem(cast, metal, 1),
-              NonNullList.from(null, ingredients)
+              NonNullList.from(Ingredient.EMPTY, ingredients)
           ).setRegistryName(GradientMod.resource(recipeName)));
         }
       }
@@ -127,11 +128,31 @@ public final class ExtraRecipes {
           registry.register(new ShapedRecipes(
               GradientMod.MODID,
               1, 3,
-              NonNullList.from(null, Ingredient.fromStacks(CastItem.getCastItem(type.cast, metal, 1)), new OreIngredient("string"), new OreIngredient("stickWood")),
+              NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(CastItem.getCastItem(type.cast, metal, 1)), new OreIngredient("string"), new OreIngredient("stickWood")),
               Tool.getTool(type, metal, 1, 0)
           ).setRegistryName(GradientMod.resource("tool." + type.cast.name + '.' + metal.name)));
         }
       }
+    }
+  }
+
+  private static void registerNuggets(final IForgeRegistry<IRecipe> registry) {
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      if(!metal.canMakeNuggets) {
+        continue;
+      }
+
+      final ItemStack[] pickaxes = GradientMetals.metals.stream().filter(m -> m.hardness >= metal.hardness).map(m -> Tool.getTool(GradientTools.PICKAXE, m, 1, OreDictionary.WILDCARD_VALUE)).toArray(ItemStack[]::new);
+
+      final String recipeName = "recipe.nugget." + metal.name + ".pickaxed";
+
+      System.out.println("Adding recipe " + recipeName);
+
+      registry.register(new ShapelessToolRecipe(
+          GradientMod.MODID,
+          Nugget.getNugget(metal, 4),
+          NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(pickaxes))
+      ).setRegistryName(GradientMod.resource(recipeName)));
     }
   }
 

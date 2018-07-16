@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -41,6 +42,7 @@ public final class ExtraRecipes {
     registerCasts(registry);
     registerTools(registry);
     registerOreWashingRecipes(registry);
+    registerExtractorRecipes(registry);
   }
 
   private static void registerDusts(final IForgeRegistry<IRecipe> registry) {
@@ -139,5 +141,9 @@ public final class ExtraRecipes {
 
     Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictHelper.getFirst("crushedPurifiedBronze"));
     Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictHelper.getFirst("crushedPurifiedMagnesium"));
+  }
+
+  private static void registerExtractorRecipes(final IForgeRegistry<IRecipe> registry) {
+    Recipes.extractor.addRecipe(Recipes.inputFactory.forFluidContainer(FluidRegistry.WATER), null, false, GradientItems.SALT.getItemStack(4));
   }
 }

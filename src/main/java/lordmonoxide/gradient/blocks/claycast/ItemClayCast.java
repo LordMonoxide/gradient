@@ -15,25 +15,25 @@ public class ItemClayCast extends ItemBlock {
     super(block);
     this.setHasSubtypes(true);
   }
-  
+
   public static ItemStack getCast(final GradientCasts.Cast cast, final int amount) {
     return new ItemStack(Item.getItemFromBlock(GradientBlocks.CLAY_CAST), amount, cast.id);
   }
-  
+
   public static ItemStack getCast(final GradientCasts.Cast cast) {
     return getCast(cast, 1);
   }
-  
+
   @Override
   public int getMetadata(final int damage) {
     return damage;
   }
-  
+
   @Override
-  public String getUnlocalizedName(final ItemStack stack) {
-    return super.getUnlocalizedName(stack) + '.' + GradientCasts.getCast(stack.getMetadata()).name;
+  public String getTranslationKey(final ItemStack stack) {
+    return super.getTranslationKey(stack) + '.' + GradientCasts.getCast(stack.getMetadata()).name;
   }
-  
+
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {

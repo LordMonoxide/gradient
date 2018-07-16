@@ -3,17 +3,17 @@ package lordmonoxide.gradient.progression.components;
 import lordmonoxide.gradient.progression.GuiJournalEntry;
 
 public class JournalPageBreak extends JournalComponent {
-  public JournalPageBreak(String id) {
+  public JournalPageBreak(final String id) {
     super(id);
   }
-  
+
   @Override
-  public void render(GuiJournalEntry gui) {
-    
+  public void render(final GuiJournalEntry gui) {
+
   }
-  
+
   @Override
-  public int getRenderedHeight(GuiJournalEntry gui) {
+  public int getRenderedHeight(final GuiJournalEntry gui) {
     return 0;
   }
 }

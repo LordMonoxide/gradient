@@ -14,11 +14,11 @@ public class GradientEntities {
   @SubscribeEvent
   public static void registerEntities(final RegistryEvent.Register<EntityEntry> event) {
     System.out.println("Registering entities");
-    
+
     EntityRegistry.registerModEntity(
-        new ResourceLocation(GradientMod.MODID, GradientBlocks.PEBBLE.getUnlocalizedName()),
+        new ResourceLocation(GradientMod.MODID, GradientBlocks.PEBBLE.getTranslationKey()),
         EntityPebble.class,
-        GradientBlocks.PEBBLE.getUnlocalizedName(),
+        GradientBlocks.PEBBLE.getTranslationKey(),
         1,
         GradientMod.MODID,
         20,

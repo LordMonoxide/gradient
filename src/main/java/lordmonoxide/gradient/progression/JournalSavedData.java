@@ -8,31 +8,31 @@ import net.minecraft.world.storage.WorldSavedData;
 
 public class JournalSavedData extends WorldSavedData {
   private static final String DATA_NAME = GradientMod.MODID + "_journal";
-  
-  public static JournalSavedData get(World world) {
-    MapStorage storage = world.getMapStorage();
-    
+
+  public static JournalSavedData get(final World world) {
+    final MapStorage storage = world.getMapStorage();
+
     JournalSavedData instance = (JournalSavedData)storage.getOrLoadData(JournalSavedData.class, DATA_NAME);
-    
+
     if(instance == null) {
       instance = new JournalSavedData();
       storage.setData(DATA_NAME, instance);
     }
-    
+
     return instance;
   }
-  
+
   public JournalSavedData() {
     super(DATA_NAME);
   }
-  
+
   @Override
-  public void readFromNBT(NBTTagCompound nbt) {
-    
+  public void readFromNBT(final NBTTagCompound nbt) {
+
   }
-  
+
   @Override
-  public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     return null;
   }
 }

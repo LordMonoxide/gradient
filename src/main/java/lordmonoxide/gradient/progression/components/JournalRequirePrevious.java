@@ -7,22 +7,22 @@ import java.util.Arrays;
 
 public class JournalRequirePrevious extends JournalComponent {
   private final JournalEntry[] entries;
-  
-  public JournalRequirePrevious(String id, JournalEntry... entries) {
+
+  public JournalRequirePrevious(final String id, final JournalEntry... entries) {
     super(id);
     this.entries = entries;
   }
-  
+
   @Override
-  public void render(GuiJournalEntry gui) {
-    
+  public void render(final GuiJournalEntry gui) {
+
   }
-  
+
   @Override
-  public int getRenderedHeight(GuiJournalEntry gui) {
+  public int getRenderedHeight(final GuiJournalEntry gui) {
     return 0;
   }
-  
+
   @Override
   public boolean isAvailable() {
     return Arrays.stream(this.entries).allMatch(JournalEntry::isCompleted);

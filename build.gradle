@@ -55,9 +55,9 @@ repositories {
 }
 
 dependencies {
-  deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.54-ex112'
+  deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.92-ex112'
 
-  deobfCompile 'com.mod-buildcraft:buildcraft:7.99.15'
+  deobfCompile 'com.mod-buildcraft:buildcraft:7.99.17'
 
   // you may put jars on which you depend on in ./libs
   // or you may define them like so..

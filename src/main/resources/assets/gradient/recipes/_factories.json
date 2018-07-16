@@ -8,6 +8,7 @@
     "cast_item": "lordmonoxide.gradient.recipes.IngredientCastItemFactory",
     "bucket":    "lordmonoxide.gradient.recipes.UniversalBucketFactory",
     "ic2":       "lordmonoxide.gradient.recipes.IngredientIC2Factory",
-    "ore":       "lordmonoxide.gradient.recipes.IngredientOreFactory"
+    "ore":       "lordmonoxide.gradient.recipes.IngredientOreFactory",
+    "fluid":     "lordmonoxide.gradient.recipes.FluidHandlerFactory"
   }
 }

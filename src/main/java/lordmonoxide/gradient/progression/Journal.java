@@ -12,12 +12,12 @@ import net.minecraft.util.NonNullList;
 
 public final class Journal {
   public static final Journal instance = new Journal();
-  
+
   public final NonNullList<JournalEntry> entries = NonNullList.create();
-  
+
   public final JournalEntry gettingStarted;
   public final JournalEntry textiles;
-  
+
   private Journal() {
     this.gettingStarted = this.add(
       new JournalEntry(
@@ -25,10 +25,10 @@ public final class Journal {
         new ItemStack(Items.STICK),
         JournalEntry.EntryType.UNLOCKABLE,
         0, 0,
-        
+
         paragraph("getting_started.p1"),
         paragraph("getting_started.p2"),
-        
+
         gather(
           "getting_started.gather1",
           new ItemStack(GradientItems.FIBRE, 10),
@@ -37,14 +37,14 @@ public final class Journal {
         )
       )
     );
-    
+
     this.textiles = this.add(
       new JournalEntry(
         "textiles",
         new ItemStack(GradientItems.CLOTH),
         JournalEntry.EntryType.NORMAL,
         -3, 0,
-        
+
         requirePrevious(
           "textiles.req1",
           this.gettingStarted
@@ -52,21 +52,21 @@ public final class Journal {
       )
     );
   }
-  
-  public JournalEntry add(JournalEntry entry) {
+
+  public JournalEntry add(final JournalEntry entry) {
     this.entries.add(entry);
     return entry;
   }
-  
-  private static JournalParagraph paragraph(String id) {
+
+  private static JournalParagraph paragraph(final String id) {
     return new JournalParagraph(id);
   }
-  
-  private static JournalGather gather(String id, ItemStack... stacks) {
+
+  private static JournalGather gather(final String id, final ItemStack... stacks) {
     return new JournalGather(id, Minecraft.getMinecraft().player, stacks);
   }
-  
-  private static JournalRequirePrevious requirePrevious(String id, JournalEntry... entries) {
+
+  private static JournalRequirePrevious requirePrevious(final String id, final JournalEntry... entries) {
     return new JournalRequirePrevious(id, entries);
   }
 }

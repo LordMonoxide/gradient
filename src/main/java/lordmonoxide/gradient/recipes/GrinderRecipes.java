@@ -2,7 +2,6 @@ package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,8 +23,8 @@ public class GrinderRecipes {
   public static void register(final RegistryEvent.Register<IRecipe> event) {
     add(Items.FLINT, "dustFlint");
     add("coal", "dustCoal");
-    add("sugarcane", new ItemStack(Items.SUGAR, 2));
-    add("cropWheat", GradientItems.FLOUR.getItemStack());
+    add("sugarcane", OreDictHelper.getFirst("ingredientSugar", 2));
+    add("cropWheat", "ingredientFlour");
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String name = StringUtils.capitalize(metal.name);
@@ -53,7 +52,7 @@ public class GrinderRecipes {
   }
 
   public static boolean add(final Item input, final String output) {
-    return add(input, OreDictionary.getOres(output).iterator().next());
+    return add(input, OreDictHelper.getFirst(output));
   }
 
   public static boolean add(final String input, final ItemStack output) {
@@ -67,7 +66,7 @@ public class GrinderRecipes {
   }
 
   public static boolean add(final String input, final String output) {
-    return add(input, OreDictionary.getOres(output).iterator().next());
+    return add(input, OreDictHelper.getFirst(output));
   }
 
   public static boolean remove(final ItemStack input) {
@@ -75,7 +74,7 @@ public class GrinderRecipes {
   }
 
   public static ItemStack getOutput(final ItemStack input) {
-    for(Map.Entry<ItemStack, ItemStack> entry : recipes.entrySet()) {
+    for(final Map.Entry<ItemStack, ItemStack> entry : recipes.entrySet()) {
       if(OreDictionary.itemMatches(entry.getKey(), input, false)) {
         return entry.getValue();
       }

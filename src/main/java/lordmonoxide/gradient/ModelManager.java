@@ -25,9 +25,9 @@ import java.util.Set;
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = GradientMod.MODID)
 public final class ModelManager {
   private ModelManager() { }
-  
+
   private static final Set<Item> itemsRegistered = new HashSet<>();
-  
+
   @SubscribeEvent
   public static void registerModels(final ModelRegistryEvent event) {
     System.out.println("Registering models");
@@ -36,23 +36,23 @@ public final class ModelManager {
     registerBlockModels();
     registerItemModels();
   }
-  
+
   private static void registerFluidModels() {
     GradientMetals.metals.stream()
       .map(GradientMetals.Metal::getFluid)
       .forEach(ModelManager::registerFluidModel);
   }
-  
+
   private static void registerFluidModel(final Fluid fluid) {
     final Item item = Item.getItemFromBlock(fluid.getBlock());
     assert item != Items.AIR;
-    
+
     ModelBakery.registerItemVariants(item);
-    
+
     final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, "fluid"), fluid.getName());
-    
+
     ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> modelResourceLocation));
-    
+
     ModelLoader.setCustomStateMapper(fluid.getBlock(), new StateMapperBase() {
       @Override
       protected ModelResourceLocation getModelResourceLocation(final IBlockState state) {
@@ -60,17 +60,17 @@ public final class ModelManager {
       }
     });
   }
-  
+
   private static void registerBlockModels() {
     GradientBlocks.RegistrationHandler.ITEM_BLOCKS.stream()
       .filter(item -> !itemsRegistered.contains(item))
       .forEach(ModelManager::registerItemModel);
   }
-  
+
   private static void registerItemModels() {
     // Register items with custom model names first
     //registerItemModel(ModItems.SNOWBALL_LAUNCHER, "minecraft:fishing_rod");
-    
+
     //registerVariantItemModels(ModItems.VARIANTS_ITEM, "variant", ItemVariants.EnumType.values());
 
     // Then register items with default model names
@@ -78,34 +78,34 @@ public final class ModelManager {
       .filter(item -> !itemsRegistered.contains(item))
       .forEach(ModelManager::registerItemModel);
   }
-  
+
   private static void registerItemModel(final Item item) {
     registerItemModel(item, item.getRegistryName().toString());
   }
-  
+
   private static void registerItemModel(final Item item, final String modelLocation) {
     final ModelResourceLocation fullModelLocation = new ModelResourceLocation(modelLocation, "inventory");
     registerItemModel(item, fullModelLocation);
   }
-  
+
   private static void registerItemModel(final Item item, final ModelResourceLocation fullModelLocation) {
     itemsRegistered.add(item);
-    
+
     if(item instanceof CustomModel) {
       ((CustomModel)item).registerCustomModels();
       return;
     }
-    
+
     if(!item.getHasSubtypes()) {
       ModelBakery.registerItemVariants(item, fullModelLocation);
       ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> fullModelLocation));
       return;
     }
-    
+
     final NonNullList<ItemStack> stacks = NonNullList.create();
     item.getSubItems(item.getCreativeTab(), stacks);
-    
-    stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getUnlocalizedName(stack).substring(5)), "inventory")));
+
+    stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getTranslationKey(stack).substring(5)), "inventory")));
   }
 
   /**
@@ -120,18 +120,18 @@ public final class ModelManager {
   @FunctionalInterface
   interface MeshDefinitionFix extends ItemMeshDefinition {
     ModelResourceLocation getLocation(final ItemStack stack);
-    
+
     // Helper method to easily create lambda instances of this class
     static ItemMeshDefinition create(final MeshDefinitionFix lambda) {
       return lambda;
     }
-    
+
     @Override
     default ModelResourceLocation getModelLocation(final ItemStack stack) {
       return this.getLocation(stack);
     }
   }
-  
+
   @FunctionalInterface
   public interface CustomModel {
     void registerCustomModels();

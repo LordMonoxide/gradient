@@ -29,7 +29,7 @@ import java.util.Arrays;
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public final class ExtraRecipes {
   private ExtraRecipes() { }
-  
+
   @SubscribeEvent
   public static void registerRecipes(final RegistryEvent.Register<IRecipe> event) {
     System.out.println("Registering recipes...");
@@ -44,16 +44,16 @@ public final class ExtraRecipes {
     registerOreWashingRecipes(registry);
     registerExtractorRecipes(registry);
   }
-  
+
   private static void registerDusts(final IForgeRegistry<IRecipe> registry) {
     final Ingredient mortar = Ingredient.fromStacks(new ItemStack(GradientItems.MORTAR, 1, OreDictionary.WILDCARD_VALUE));
-    
+
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       if(metal.canMakeDustWithMortar) {
         final String recipeName = "recipe.dust." + metal.name;
-        
+
         System.out.println("Adding recipe " + recipeName);
-        
+
         registry.register(new ShapelessToolRecipe(
             GradientMod.MODID,
             Dust.getDust(metal, 1),
@@ -62,19 +62,19 @@ public final class ExtraRecipes {
       }
     }
   }
-  
+
   private static void registerPlates(final IForgeRegistry<IRecipe> registry) {
     final ItemStack[] hammers = GradientMetals.metals.stream().map(metal -> Tool.getTool(GradientTools.HAMMER, metal, 1, OreDictionary.WILDCARD_VALUE)).toArray(ItemStack[]::new);
-    
+
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       if(!metal.canMakePlates) {
         continue;
       }
-      
+
       final String recipeName = "recipe.plate." + metal.name + ".hammered";
-      
+
       System.out.println("Adding recipe " + recipeName);
-      
+
       registry.register(new ShapelessToolRecipe(
           GradientMod.MODID,
           Plate.getPlate(metal, 1),
@@ -82,34 +82,34 @@ public final class ExtraRecipes {
       ).setRegistryName(GradientMod.resource(recipeName)));
     }
   }
-  
+
   private static void registerAlloys(final IForgeRegistry<IRecipe> registry) {
     GradientMetals.alloys.forEach(alloy -> {
       final String recipeName = "recipe.alloy." + alloy.output.amount + '.' + alloy.output.metal.name + ".from." + alloy.inputs.stream().map(metal -> metal.name).reduce((acc, name) -> acc + '.' + name).orElse("");
-      
+
       System.out.println("Adding recipe " + recipeName);
-      
+
       registry.register(new AlloyRecipe(
           GradientMod.MODID,
           alloy
       ).setRegistryName(GradientMod.resource(recipeName)));
     });
   }
-  
+
   private static void registerCasts(final IForgeRegistry<IRecipe> registry) {
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(cast.isValidForMetal(metal)) {
           final int amount = cast.amountForMetal(metal) / Fluid.BUCKET_VOLUME;
-          
+
           final Ingredient[] ingredients = new Ingredient[amount + 1];
           ingredients[amount] = Ingredient.fromStacks(ItemClayCast.getCast(cast));
           Arrays.fill(ingredients, 0, amount, new IngredientNBT(GradientMetals.getBucket(metal)));
-          
+
           final String recipeName = "cast." + cast.name + '.' + metal.name;
-          
+
           System.out.println("Adding recipe " + recipeName);
-          
+
           registry.register(new ShapelessRecipes(
               GradientMod.MODID,
               CastItem.getCastItem(cast, metal, 1),
@@ -119,7 +119,7 @@ public final class ExtraRecipes {
       }
     }
   }
-  
+
   private static void registerTools(final IForgeRegistry<IRecipe> registry) {
     for(final GradientTools.Type type : GradientTools.types()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
@@ -136,11 +136,11 @@ public final class ExtraRecipes {
   }
 
   private static void registerOreWashingRecipes(final IForgeRegistry<IRecipe> registry) {
-    NBTTagCompound nbt = new NBTTagCompound();
+    final NBTTagCompound nbt = new NBTTagCompound();
     nbt.setInteger("amount", 1000); // Water amount
 
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictionary.getOres("crushedPurifiedBronze").iterator().next());
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictionary.getOres("crushedPurifiedMagnesium").iterator().next());
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictHelper.getFirst("crushedPurifiedBronze"));
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictHelper.getFirst("crushedPurifiedMagnesium"));
   }
 
   private static void registerExtractorRecipes(final IForgeRegistry<IRecipe> registry) {

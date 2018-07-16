@@ -1,14 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "gradient:bronze_furnace"
+    "item": "gradient:bronze_oven"
   },
   "pattern": [
-    "PCP",
-    "CHC",
-    "PCP"
+    "PPP",
+    "PHP",
+    "CTC"
   ],
   "key": {
+    "T": {
+      "item": "buildcraftfactory:tank"
+    },
     "H": {
       "item": "gradient:bronze_machine_hull"
     },

@@ -4,17 +4,22 @@
     "item": "gradient:dough"
   },
   "ingredients": [{
-    "item": "gradient:flour"
-  }, {
-    "item": "gradient:flour"
-  }, {
-    "item": "gradient:flour"
-  }, {
-    "item": "gradient:salt"
-  }, {
-    "item": "minecraft:sugar"
+    "type": "forge:ore_dict",
+    "ore": "ingredientFlour"
   }, {
     "type": "forge:ore_dict",
-    "ore": "bucketWater"
+    "ore": "ingredientFlour"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "ingredientFlour"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "ingredientSalt"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "ingredientSugar"
+  }, {
+    "type": "gradient:fluid",
+    "fluid": "water"
   }]
 }

@@ -14,13 +14,13 @@ public abstract class HeatSinkerBlock extends GradientBlock {
   protected HeatSinkerBlock(final String name, final CreativeTabs creativeTab, final Material material, final MapColor mapColor) {
     super(name, creativeTab, material, mapColor);
   }
-  
+
   protected HeatSinkerBlock(final String name, final CreativeTabs creativeTab, final Material material) {
     super(name, creativeTab, material);
   }
 
   @Override
-  public boolean hasTileEntity(IBlockState state) {
+  public boolean hasTileEntity(final IBlockState state) {
     return true;
   }
 
@@ -31,9 +31,9 @@ public abstract class HeatSinkerBlock extends GradientBlock {
   @Deprecated
   public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
     super.neighborChanged(state, world, pos, block, neighbor);
-    
+
     final TileEntity te = world.getTileEntity(pos);
-    
+
     if(te instanceof HeatSinker) {
       ((HeatSinker)te).updateSink(neighbor);
       PacketUpdateHeatNeighbours.send(pos, neighbor);

@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiClayCrucible extends GradientGuiContainer {
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_crucible.png");
-  
+
   private final TileClayCrucible te;
   private final InventoryPlayer playerInv;
   private final FluidRenderer metalRenderer;
@@ -23,7 +23,7 @@ public class GuiClayCrucible extends GradientGuiContainer {
     this.playerInv = playerInv;
     this.metalRenderer = new FluidRenderer(te.tank, 148, 19, 12, 47);
   }
-  
+
   @Override
   protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
     GlStateManager.color(1, 1, 1, 1);
@@ -37,7 +37,7 @@ public class GuiClayCrucible extends GradientGuiContainer {
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
     this.drawTexturedModalRect(x + this.metalRenderer.x, y + this.metalRenderer.y, 177, 0, this.metalRenderer.w, this.metalRenderer.h);
   }
-  
+
   @Override
   protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
     for(int slot = 0; slot < TileClayCrucible.METAL_SLOTS_COUNT; slot++) {
@@ -45,17 +45,17 @@ public class GuiClayCrucible extends GradientGuiContainer {
         final int x = ContainerClayCrucible.METAL_SLOTS_X + (slot % 5) * (GradientContainer.SLOT_X_SPACING + 8) + 20;
         final int y = ContainerClayCrucible.METAL_SLOTS_Y + (slot / 5) * (GradientContainer.SLOT_Y_SPACING + 2);
         final float percent = this.te.getMeltingMetal(slot).meltPercent();
-        
+
         drawRect(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
       }
     }
-    
-    final String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getUnlocalizedName() + ".name");
-    final String heat = I18n.format(GradientBlocks.FIRE_PIT.getUnlocalizedName() + ".heat", (int)this.te.getHeat());
-    
+
+    final String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getTranslationKey() + ".name");
+    final String heat = I18n.format(GradientBlocks.FIRE_PIT.getTranslationKey() + ".heat", (int)this.te.getHeat());
+
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
-    
+
     this.fontRenderer.drawString(heat, ContainerFirePit.FUEL_SLOTS_X, 58, 0x404040);
   }
 

@@ -1,33 +1,28 @@
 package lordmonoxide.gradient.blocks.bronzefurnace;
 
 import lordmonoxide.gradient.containers.GradientContainer;
-import lordmonoxide.gradient.containers.SlotFurnaceInput;
-import lordmonoxide.gradient.containers.SlotOutput;
+import lordmonoxide.gradient.containers.SlotFuel;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 public class ContainerBronzeFurnace extends GradientContainer {
-  public static final int INPUT_SLOTS_X = 13;
-  public static final int INPUT_SLOTS_Y = 34;
-  public static final int OUTPUT_SLOTS_X = 51;
-  public static final int OUTPUT_SLOTS_Y = 34;
-  
-  public ContainerBronzeFurnace(final InventoryPlayer inventory, final TileBronzeFurnace furnace) {
+  public static final int FUEL_SLOTS_X = 13;
+  public static final int FUEL_SLOTS_Y = 24;
+
+  public ContainerBronzeFurnace(final InventoryPlayer playerInv, final TileBronzeFurnace furnace) {
     super(furnace);
-    
-    this.addSlotToContainer(new SlotFurnaceInput(this.inventory, TileBronzeFurnace.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
-      @Override public void onSlotChanged() {
-        super.onSlotChanged();
-        furnace.markDirty();
-      }
-    });
-    
-    this.addSlotToContainer(new SlotOutput(this.inventory, TileBronzeFurnace.OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y) {
-      @Override public void onSlotChanged() {
-        super.onSlotChanged();
-        furnace.markDirty();
-      }
-    });
-    
-    this.addPlayerSlots(inventory);
+
+    for(int i = 0; i < TileBronzeFurnace.FUEL_SLOTS_COUNT; i++) {
+      final int i2 = i;
+
+      this.addSlotToContainer(new SlotFuel(this.inventory, TileBronzeFurnace.FIRST_FUEL_SLOT + i, FUEL_SLOTS_X + i % 3 * (SLOT_X_SPACING + 8), FUEL_SLOTS_Y + i / 3 * (SLOT_Y_SPACING + 2)) {
+        @Override public void onSlotChanged() {
+          furnace.markDirty();
+        }
+        @Override public boolean canTakeStack(final EntityPlayer player) { return !furnace.isBurning(i2); }
+      });
+    }
+
+    this.addPlayerSlots(playerInv);
   }
 }

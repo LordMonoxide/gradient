@@ -6,6 +6,9 @@ import lordmonoxide.gradient.blocks.bronzeboiler.TileBronzeBoiler;
 import lordmonoxide.gradient.blocks.bronzefurnace.ContainerBronzeFurnace;
 import lordmonoxide.gradient.blocks.bronzefurnace.GuiBronzeFurnace;
 import lordmonoxide.gradient.blocks.bronzefurnace.TileBronzeFurnace;
+import lordmonoxide.gradient.blocks.bronzeoven.ContainerBronzeOven;
+import lordmonoxide.gradient.blocks.bronzeoven.GuiBronzeOven;
+import lordmonoxide.gradient.blocks.bronzeoven.TileBronzeOven;
 import lordmonoxide.gradient.blocks.bronzegrinder.ContainerBronzeGrinder;
 import lordmonoxide.gradient.blocks.bronzegrinder.GuiBronzeGrinder;
 import lordmonoxide.gradient.blocks.bronzegrinder.TileBronzeGrinder;
@@ -27,9 +30,10 @@ public class GradientGuiHandler implements IGuiHandler {
   public static final int FIRE_PIT = 0;
   public static final int CLAY_CRUCIBLE = 1;
   public static final int CLAY_CAST = 2;
-  public static final int BRONZE_BOILER = 3;
-  public static final int BRONZE_FURNACE = 4;
-  public static final int BRONZE_GRINDER = 5;
+  public static final int BRONZE_FURNACE = 3;
+  public static final int BRONZE_BOILER = 4;
+  public static final int BRONZE_OVEN = 5;
+  public static final int BRONZE_GRINDER = 6;
 
   @Override
   public Container getServerGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
@@ -58,6 +62,13 @@ public class GradientGuiHandler implements IGuiHandler {
           }
         };
 
+      case BRONZE_FURNACE:
+        if(te == null) {
+          return null;
+        }
+
+        return new ContainerBronzeFurnace(player.inventory, (TileBronzeFurnace)te);
+
       case BRONZE_BOILER:
         if(te == null) {
           return null;
@@ -65,12 +76,12 @@ public class GradientGuiHandler implements IGuiHandler {
 
         return new ContainerBronzeBoiler(player.inventory, (TileBronzeBoiler)te);
 
-      case BRONZE_FURNACE:
+      case BRONZE_OVEN:
         if(te == null) {
           return null;
         }
 
-        return new ContainerBronzeFurnace(player.inventory, (TileBronzeFurnace)te);
+        return new ContainerBronzeOven(player.inventory, (TileBronzeOven)te);
 
       case BRONZE_GRINDER:
         if(te == null) {
@@ -106,6 +117,13 @@ public class GradientGuiHandler implements IGuiHandler {
       case CLAY_CAST:
         return new GuiClayCast(this.getServerGuiElement(id, player, world, x, y ,z), player.getHeldItemMainhand());
 
+      case BRONZE_FURNACE:
+        if(te == null) {
+          return null;
+        }
+
+        return new GuiBronzeFurnace((ContainerBronzeFurnace)this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeFurnace)te, player.inventory);
+
       case BRONZE_BOILER:
         if(te == null) {
           return null;
@@ -113,12 +131,12 @@ public class GradientGuiHandler implements IGuiHandler {
 
         return new GuiBronzeBoiler((ContainerBronzeBoiler)this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeBoiler)te, player.inventory);
 
-      case BRONZE_FURNACE:
+      case BRONZE_OVEN:
         if(te == null) {
           return null;
         }
 
-        return new GuiBronzeFurnace((ContainerBronzeFurnace)this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeFurnace)te, player.inventory);
+        return new GuiBronzeOven((ContainerBronzeOven)this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeOven)te, player.inventory);
 
       case BRONZE_GRINDER:
         if(te == null) {

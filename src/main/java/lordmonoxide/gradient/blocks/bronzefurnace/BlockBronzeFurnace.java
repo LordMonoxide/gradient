@@ -2,8 +2,8 @@ package lordmonoxide.gradient.blocks.bronzefurnace;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -12,15 +12,16 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidUtil;
 
-public class BlockBronzeFurnace extends GradientBlock {
+public class BlockBronzeFurnace extends HeatSinkerBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
   public BlockBronzeFurnace() {
@@ -31,8 +32,19 @@ public class BlockBronzeFurnace extends GradientBlock {
   }
 
   @Override
-  public boolean hasTileEntity(final IBlockState state) {
-    return true;
+  public int getLightValue(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+    final IBlockState other = world.getBlockState(pos);
+    if(other.getBlock() != this) {
+      return other.getLightValue(world, pos);
+    }
+
+    final TileEntity te = world.getTileEntity(pos);
+
+    if(te instanceof TileBronzeFurnace) {
+      return ((TileBronzeFurnace)te).getLightLevel();
+    }
+
+    return state.getLightValue(world, pos);
   }
 
   @Override
@@ -44,16 +56,6 @@ public class BlockBronzeFurnace extends GradientBlock {
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        final TileBronzeFurnace te = (TileBronzeFurnace)world.getTileEntity(pos);
-
-        if(te == null) {
-          return false;
-        }
-
-        if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
-          return te.useBucket(player, hand, world, pos, side);
-        }
-
         player.openGui(GradientMod.instance, GradientGuiHandler.BRONZE_FURNACE, world, pos.getX(), pos.getY(), pos.getZ());
       }
     }
@@ -69,8 +71,7 @@ public class BlockBronzeFurnace extends GradientBlock {
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    final EnumFacing facing = EnumFacing.byHorizontalIndex(meta);
-
+    final EnumFacing facing = EnumFacing.byHorizontalIndex(meta & 0b11);
     return this.getDefaultState().withProperty(FACING, facing);
   }
 

@@ -1,4 +1,4 @@
-package lordmonoxide.gradient.blocks.bronzeboiler;
+package lordmonoxide.gradient.blocks.bronzefurnace;
 
 import io.netty.buffer.ByteBuf;
 import lordmonoxide.gradient.GradientNet;
@@ -10,53 +10,53 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import javax.annotation.Nullable;
 
-public class PacketLightBoiler implements IMessage {
+public class PacketLightBronzeFurnace implements IMessage {
   public static void send(final BlockPos pos) {
-    GradientNet.CHANNEL.sendToServer(new PacketLightBoiler(pos));
+    GradientNet.CHANNEL.sendToServer(new PacketLightBronzeFurnace(pos));
   }
-  
+
   private BlockPos pos;
-  
-  public PacketLightBoiler() {
-    
+
+  public PacketLightBronzeFurnace() {
+
   }
-  
-  public PacketLightBoiler(final BlockPos pos) {
+
+  public PacketLightBronzeFurnace(final BlockPos pos) {
     this.pos = pos;
   }
-  
+
   @Override
   public void fromBytes(final ByteBuf buf) {
     try {
       this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
     } catch(final IndexOutOfBoundsException e) {
-      System.out.println("Invalid position in PacketLightFurnace");
+      System.out.println("Invalid position in PacketLightBronzeFurnace");
       e.printStackTrace();
       this.pos = BlockPos.ORIGIN;
     }
   }
-  
+
   @Override
   public void toBytes(final ByteBuf buf) {
     buf.writeInt(this.pos.getX());
     buf.writeInt(this.pos.getY());
     buf.writeInt(this.pos.getZ());
   }
-  
-  public static class Handler implements IMessageHandler<PacketLightBoiler, IMessage> {
+
+  public static class Handler implements IMessageHandler<PacketLightBronzeFurnace, IMessage> {
     @Override
     @Nullable
-    public IMessage onMessage(final PacketLightBoiler packet, final MessageContext ctx) {
+    public IMessage onMessage(final PacketLightBronzeFurnace packet, final MessageContext ctx) {
       ctx.getServerHandler().player.getServerWorld().addScheduledTask(() -> {
         final TileEntity te = ctx.getServerHandler().player.world.getTileEntity(packet.pos);
-        
-        if(!(te instanceof TileBronzeBoiler)) {
+
+        if(!(te instanceof TileBronzeFurnace)) {
           return;
         }
-        
-        ((TileBronzeBoiler)te).light();
+
+        ((TileBronzeFurnace)te).light();
       });
-      
+
       return null;
     }
   }

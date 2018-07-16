@@ -190,6 +190,9 @@ metal.melt_temp=Melting Point: %f °C
 metal.melt_time=Melting Time: %d sec
 metal.amount=Amount: %d mB
 
+# Hardenable tooltip
+hardenable.tooltip=Place next to a fire pit to harden (%d sec)
+
 # Journal
 journal.getting_started=Getting Started
 journal.getting_started.p1=I woke up in a strange land today.  I don't know where I am or how I got here, but gods, it feels like I've been asleep for a month.  I need to find shelter and take in my surroundings.  Maybe then I'll be able to figure out what's going on.  What can I do?  If I can make some tools and start a fire, I might be in better shape.

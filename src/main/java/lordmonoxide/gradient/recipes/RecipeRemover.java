@@ -92,9 +92,11 @@ public final class RecipeRemover {
       "natura:common/barley_flour",
       "natura:common/wheat_flour",
       "natura:common/bread",
+
+      "extrautils2:teleporter",
     };
 
-    final IForgeRegistryModifiable registry = (IForgeRegistryModifiable)event.getRegistry();
+    final IForgeRegistryModifiable<IRecipe> registry = (IForgeRegistryModifiable<IRecipe>)event.getRegistry();
 
     for(final String loc : toRemove) {
       if(registry.remove(new ResourceLocation(loc)) == null) {

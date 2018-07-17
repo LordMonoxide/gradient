@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Nugget extends GradientItem {
-  private static final Map<GradientMetals.Metal, Nugget> items = new HashMap<>();
+public class AlloyNugget extends GradientItem {
+  private static final Map<GradientMetals.Metal, AlloyNugget> items = new HashMap<>();
 
   public static ItemStack get(final GradientMetals.Metal metal, final int amount) {
     return items.get(metal).getItemStack(amount);
@@ -20,8 +20,8 @@ public class Nugget extends GradientItem {
 
   public final GradientMetals.Metal metal;
 
-  public Nugget(final GradientMetals.Metal metal) {
-    super("nugget." + metal.name, CreativeTabs.MATERIALS);
+  public AlloyNugget(final GradientMetals.Metal metal) {
+    super("alloy_nugget." + metal.name, CreativeTabs.MATERIALS);
     items.put(metal, this);
     this.metal = metal;
   }

@@ -79,7 +79,7 @@ public final class GradientItems {
     // Register cast items
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        if((cast.isValidForMetal(metal)) && cast.itemForMetal(metal) == null) {
+        if(cast.isValidForMetal(metal) && cast.itemForMetal(metal) == null) {
           RegistrationHandler.register(new CastItem(cast, metal));
         }
       }
@@ -95,6 +95,11 @@ public final class GradientItems {
           RegistrationHandler.register(new Tool(type, metal));
         }
       }
+    }
+
+    // Register alloy nuggets
+    for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
+      RegistrationHandler.register(new AlloyNugget(alloy.output.metal));
     }
   }
 
@@ -132,7 +137,7 @@ public final class GradientItems {
       final String caps = StringUtils.capitalize(metal.name);
 
       if(metal.canMakeNuggets) {
-        OreDictionary.registerOre("nugget" + caps, Nugget.getNugget(metal, 1));
+        OreDictionary.registerOre("nugget" + caps, Nugget.get(metal, 1));
         OreDictionary.registerOre("crushed" + caps, Crushed.get(metal, 1));
         OreDictionary.registerOre("crushedPurified" + caps, CrushedPurified.get(metal, 1));
       }
@@ -152,6 +157,12 @@ public final class GradientItems {
       if(metal.canMakeTools) {
         OreDictionary.registerOre("toolMattock", Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE));
       }
+    }
+
+    for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
+      final String name = StringUtils.capitalize(alloy.output.metal.name);
+
+      OreDictionary.registerOre("alloyNugget" + name, AlloyNugget.get(alloy.output.metal));
     }
 
     OreDictionary.registerOre("dustFlint", DUST_FLINT);

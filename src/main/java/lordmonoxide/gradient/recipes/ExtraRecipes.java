@@ -85,16 +85,26 @@ public final class ExtraRecipes {
   }
 
   private static void registerAlloys(final IForgeRegistry<IRecipe> registry) {
-    GradientMetals.alloys.forEach(alloy -> {
-      final String recipeName = "recipe.alloy." + alloy.output.amount + '.' + alloy.output.metal.name + ".from." + alloy.inputs.stream().map(metal -> metal.name).reduce((acc, name) -> acc + '.' + name).orElse("");
+    for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
+      final ItemStack output = AlloyNugget.get(alloy.output.metal, alloy.output.amount);
+
+      final Ingredient[] ingredients = new Ingredient[alloy.inputs.size()];
+
+      final StringBuilder recipeName = new StringBuilder("recipe.alloy_nugget." + alloy.output.metal.name + '.' + alloy.output.amount);
+
+      for(int i = 0; i < ingredients.length; i++) {
+        ingredients[i] = new OreIngredient("nugget" + StringUtils.capitalize(alloy.inputs.get(i).name));
+        recipeName.append('.').append(alloy.inputs.get(i).name);
+      }
 
       System.out.println("Adding recipe " + recipeName);
 
-      registry.register(new AlloyRecipe(
+      registry.register(new ShapelessRecipes(
           GradientMod.MODID,
-          alloy
-      ).setRegistryName(GradientMod.resource(recipeName)));
-    });
+          output,
+          NonNullList.from(Ingredient.EMPTY, ingredients)
+      ).setRegistryName(GradientMod.resource(recipeName.toString())));
+    }
   }
 
   private static void registerCasts(final IForgeRegistry<IRecipe> registry) {
@@ -150,7 +160,7 @@ public final class ExtraRecipes {
 
       registry.register(new ShapelessToolRecipe(
           GradientMod.MODID,
-          Nugget.getNugget(metal, 4),
+          Nugget.get(metal, 4),
           NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(pickaxes))
       ).setRegistryName(GradientMod.resource(recipeName)));
     }

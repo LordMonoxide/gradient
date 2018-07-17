@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gradient:items/plate_magnesium"
+    "layer0": "gradient:items/plate.magnesium"
   }
 }

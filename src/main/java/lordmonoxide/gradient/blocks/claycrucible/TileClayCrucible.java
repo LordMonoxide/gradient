@@ -146,7 +146,7 @@ public class TileClayCrucible extends HeatSinker {
   }
 
   private boolean canMelt(final GradientMetals.Meltable meltable) {
-    return (this.tank.getFluid() == null || this.tank.getFluid().getFluid() == meltable.metal.getFluid()) && this.getHeat() >= meltable.metal.meltTemp;
+    return (this.tank.getFluid() == null || this.tank.getFluid().getFluid() == meltable.metal.getFluid()) && this.getHeat() >= meltable.meltTemp;
   }
 
   @Override

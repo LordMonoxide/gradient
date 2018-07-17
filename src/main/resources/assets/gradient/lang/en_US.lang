@@ -80,6 +80,7 @@ item.nugget.iron.name=Iron Nugget
 item.nugget.gold.name=Gold Nugget
 item.nugget.bronze.name=Bronze Nugget
 item.nugget.magnesium.name=Magnesium Nugget
+item.alloy_nugget.bronze.name=Bronze Alloy Nugget
 item.dust.copper.name=Copper Dust
 item.dust.tin.name=Tin Dust
 item.dust.iron.name=Iron Dust

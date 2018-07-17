@@ -352,7 +352,9 @@ public class TileFirePit extends HeatProducer {
 
     Arrays.fill(this.fuels, null);
 
-    this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
+    final NBTTagCompound inv = compound.getCompoundTag("inventory");
+    inv.removeTag("Size");
+    this.inventory.deserializeNBT(inv);
 
     final NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
 

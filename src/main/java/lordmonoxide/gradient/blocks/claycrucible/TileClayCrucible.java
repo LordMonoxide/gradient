@@ -196,7 +196,11 @@ public class TileClayCrucible extends HeatSinker {
     this.lastLight = this.getLightLevel();
 
     Arrays.fill(this.melting, null);
-    this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
+
+    final NBTTagCompound inv = compound.getCompoundTag("inventory");
+    inv.removeTag("Size");
+    this.inventory.deserializeNBT(inv);
+
     this.tank.readFromNBT(compound);
 
     final NBTTagList meltings = compound.getTagList("melting", Constants.NBT.TAG_COMPOUND);

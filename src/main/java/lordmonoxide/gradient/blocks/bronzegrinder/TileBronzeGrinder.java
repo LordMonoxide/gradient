@@ -29,11 +29,12 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;
   public static final int WORKING_SLOT = 2;
+  public static final int TOTAL_SLOTS_COUNT = 3;
 
   private static final int WORK_TIME = 600;
   private static final int STEAM_USE_PER_TICK = 4;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(3);
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
 
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
   private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
@@ -127,7 +128,10 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
 
   @Override
   public void readFromNBT(final NBTTagCompound compound) {
-    this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
+    final NBTTagCompound inv = compound.getCompoundTag("inventory");
+    inv.removeTag("Size");
+    this.inventory.deserializeNBT(inv);
+
     this.tankSteam.readFromNBT(compound.getCompoundTag("steam"));
     this.workTicks = compound.getInteger("workTicks");
     super.readFromNBT(compound);

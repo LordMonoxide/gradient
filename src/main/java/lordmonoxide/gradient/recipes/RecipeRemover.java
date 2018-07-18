@@ -94,6 +94,7 @@ public final class RecipeRemover {
       "natura:common/bread",
 
       "extrautils2:teleporter",
+      "extrautils2:golden_lasso",
     };
 
     final IForgeRegistryModifiable<IRecipe> registry = (IForgeRegistryModifiable<IRecipe>)event.getRegistry();

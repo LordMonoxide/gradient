@@ -1,0 +1,31 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "extrautils2"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "extrautils2:goldenlasso",
+    "data": 0
+  },
+  "pattern": [
+    "SPS",
+    "PUP",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    },
+    "P": {
+      "item": "minecraft:ender_pearl"
+    },
+    "U": {
+      "item": "extrautils2:unstableingots",
+      "data": 0
+    }
+  }
+}

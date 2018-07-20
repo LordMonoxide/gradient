@@ -18,11 +18,14 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import javax.annotation.Nullable;
 
 public class TileBronzeBoiler extends HeatSinker {
+  public static final int WATER_CAPACITY = 16;
+  public static final int STEAM_CAPACITY = 32;
+
   private static final Fluid WATER = FluidRegistry.getFluid("water");
   private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
 
-  public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME * 16);
-  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 32);
+  public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME * WATER_CAPACITY);
+  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * STEAM_CAPACITY);
   private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
     @Override
     public int fill(final FluidStack resource, final boolean doFill) {

@@ -16,13 +16,13 @@ public class ClientProxy extends CommonProxy {
   @Override
   public void preInit(final FMLPreInitializationEvent e) {
     super.preInit(e);
-    
+
     MinecraftForge.EVENT_BUS.register(BurningTooltips.instance);
     MinecraftForge.EVENT_BUS.register(CookingTooltips.instance);
     MinecraftForge.EVENT_BUS.register(MetalTooltips.instance);
-    
+
     MinecraftForge.EVENT_BUS.register(KeyBindings.instance);
-  
+
     RenderingRegistry.registerEntityRenderingHandler(EntityPebble.class, manager -> new RenderSnowball<>(manager, ItemBlock.getItemFromBlock(GradientBlocks.PEBBLE), Minecraft.getMinecraft().getRenderItem()));
   }
 }

@@ -6,7 +6,9 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,19 +16,22 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.common.property.Properties;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockBronzeBoiler extends HeatSinkerBlock {
+  public static final IUnlistedProperty<Integer> WATER_LEVEL = new Properties.PropertyAdapter<>(PropertyInteger.create("waterLevel", 0, TileBronzeBoiler.WATER_CAPACITY));
+  public static final IUnlistedProperty<Integer> STEAM_LEVEL = new Properties.PropertyAdapter<>(PropertyInteger.create("SteamLevel", 0, TileBronzeBoiler.STEAM_CAPACITY));
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
   private static final Fluid WATER = FluidRegistry.getFluid("water");
@@ -123,6 +128,50 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING);
+    final IUnlistedProperty[] unlisted = {WATER_LEVEL, STEAM_LEVEL};
+    final IProperty[] listed = {FACING};
+
+    return new ExtendedBlockState(this, listed, unlisted);
+  }
+
+  @Override
+  public IBlockState getExtendedState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+    final IExtendedBlockState extendedState = (IExtendedBlockState) state;
+
+    final TileEntity te = world.getTileEntity(pos);
+
+    if(te instanceof TileBronzeBoiler) {
+      final float waterAmount = ((TileBronzeBoiler)te).tankWater.getFluidAmount();
+      final float steamAmount = ((TileBronzeBoiler)te).tankSteam.getFluidAmount();
+
+      return extendedState
+        .withProperty(WATER_LEVEL, (int)Math.ceil(waterAmount / Fluid.BUCKET_VOLUME))
+        .withProperty(STEAM_LEVEL, (int)Math.ceil(steamAmount / Fluid.BUCKET_VOLUME));
+    }
+
+    return extendedState.withProperty(WATER_LEVEL, 0).withProperty(STEAM_LEVEL, 0);
+  }
+
+  @Override
+  @Deprecated
+  public boolean isOpaqueCube(final IBlockState state) {
+    return false;
+  }
+
+  @Override
+  @Deprecated
+  public boolean isFullCube(final IBlockState state) {
+    return false;
+  }
+
+  @SideOnly(Side.CLIENT)
+  @Override
+  public BlockRenderLayer getRenderLayer() {
+    return BlockRenderLayer.TRANSLUCENT;
+  }
+
+  @Override
+  public boolean canRenderInLayer(final IBlockState state, final BlockRenderLayer layer) {
+    return layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BlockRenderLayer.TRANSLUCENT;
   }
 }

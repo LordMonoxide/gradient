@@ -52,7 +52,8 @@ public class TileBronzeBoiler extends HeatSinker {
 
   public void useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
     if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
-      this.sync();
+      final IBlockState state = world.getBlockState(pos);
+      world.markAndNotifyBlock(pos, null, state, state, 2);
     }
   }
 

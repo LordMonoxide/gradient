@@ -50,29 +50,27 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
 
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
-    if(!world.isRemote) {
-      if(!player.isSneaking()) {
-        final TileBronzeBoiler te = (TileBronzeBoiler)world.getTileEntity(pos);
+    if(!player.isSneaking()) {
+      final TileBronzeBoiler te = (TileBronzeBoiler)world.getTileEntity(pos);
 
-        if(te == null) {
-          return false;
-        }
+      if(te == null) {
+        return false;
+      }
 
-        if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
-          final FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand));
+      if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
+        final FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand));
 
-          // Make sure the fluid handler is either empty, or contains water
-          if(fluid != null && fluid.getFluid() != WATER) {
-            return true;
-          }
-
-          te.useBucket(player, hand, world, pos, side);
-
+        // Make sure the fluid handler is either empty, or contains water
+        if(fluid != null && fluid.getFluid() != WATER) {
           return true;
         }
 
-        player.openGui(GradientMod.instance, GradientGuiHandler.BRONZE_BOILER, world, pos.getX(), pos.getY(), pos.getZ());
+        te.useBucket(player, hand, world, pos, side);
+
+        return true;
       }
+
+      player.openGui(GradientMod.instance, GradientGuiHandler.BRONZE_BOILER, world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     return true;

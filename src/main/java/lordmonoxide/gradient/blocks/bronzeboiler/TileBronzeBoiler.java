@@ -57,14 +57,14 @@ public class TileBronzeBoiler extends HeatSinker {
     }
   }
 
-  public void updateOutput(@Nullable final IFluidHandler handler) {
-    this.autoOutput = handler;
+  public void updateOutput(@Nullable final BlockPos pos) {
+    this.autoOutput = FluidUtil.getFluidHandler(this.world, pos, EnumFacing.DOWN);
   }
 
   @Override
   public void onLoad() {
     super.onLoad();
-    this.updateOutput(FluidUtil.getFluidHandler(this.world, this.pos.up(), EnumFacing.DOWN));
+    this.updateOutput(this.pos.up());
   }
 
   @Override

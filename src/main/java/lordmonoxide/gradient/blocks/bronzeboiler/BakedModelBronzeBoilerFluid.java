@@ -39,9 +39,9 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
       this.faceQuads.put(side, ImmutableList.of());
     }
 
-    final float filled = Math.min((float)level / capacity, 1.0f - offset);
+    final float filled = (float)level / capacity;
 
-    final float y = Math.min((float)level / capacity * height, 1.0f - offset);
+    final float y = Math.min(filled * height, height - offset);
 
     final TextureAtlasSprite texture = this.getParticleTexture();
 
@@ -61,7 +61,7 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
       X = Math.min(Math.max(x[i], offset), 1.0f - offset);
       Z = Math.min(Math.max(z[i], offset), 1.0f - offset);
 
-      this.putVertex(quadBuilder, side, X, yOffset + y - offset, Z, texture.getInterpolatedU(x[i] * 16), texture.getInterpolatedV(z[i] * 16));
+      this.putVertex(quadBuilder, side, X, yOffset + y, Z, texture.getInterpolatedU(x[i] * 16), texture.getInterpolatedV(z[i] * 16));
     }
 
     this.faceQuads.put(side, ImmutableList.of(quadBuilder.build()));
@@ -92,10 +92,10 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
     quadBuilder.setQuadOrientation(side);
     quadBuilder.setTexture(texture);
 
-    this.putVertex(quadBuilder, side, x[2] - offset, yOffset + y, z[2], texture.getInterpolatedU(0), texture.getInterpolatedV(16 * filled));
+    this.putVertex(quadBuilder, side, x[2] - offset, yOffset + y, z[2], texture.getInterpolatedU(0), texture.getInterpolatedV(16 * (1 - filled)));
     this.putVertex(quadBuilder, side, x[2] - offset, yOffset + offset, z[2], texture.getInterpolatedU(0), texture.getInterpolatedV(16));
     this.putVertex(quadBuilder, side, x[3] - offset, yOffset + offset, z[3], texture.getInterpolatedU(16), texture.getInterpolatedV(16));
-    this.putVertex(quadBuilder, side, x[3] - offset, yOffset + y, z[3], texture.getInterpolatedU(16), texture.getInterpolatedV(16 * filled));
+    this.putVertex(quadBuilder, side, x[3] - offset, yOffset + y, z[3], texture.getInterpolatedU(16), texture.getInterpolatedV(16 * (1 - filled)));
 
     this.faceQuads.put(side, ImmutableList.of(quadBuilder.build()));
 
@@ -107,10 +107,10 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
     quadBuilder.setQuadOrientation(side);
     quadBuilder.setTexture(texture);
 
-    this.putVertex(quadBuilder, side, x[0] + offset, yOffset + y, z[0], texture.getInterpolatedU(0), texture.getInterpolatedV(16 * filled));
+    this.putVertex(quadBuilder, side, x[0] + offset, yOffset + y, z[0], texture.getInterpolatedU(0), texture.getInterpolatedV(16 * (1 - filled)));
     this.putVertex(quadBuilder, side, x[0] + offset, yOffset + offset, z[0], texture.getInterpolatedU(0), texture.getInterpolatedV(16));
     this.putVertex(quadBuilder, side, x[1] + offset, yOffset + offset, z[1], texture.getInterpolatedU(16), texture.getInterpolatedV(16));
-    this.putVertex(quadBuilder, side, x[1] + offset, yOffset + y, z[1], texture.getInterpolatedU(16), texture.getInterpolatedV(16 * filled));
+    this.putVertex(quadBuilder, side, x[1] + offset, yOffset + y, z[1], texture.getInterpolatedU(16), texture.getInterpolatedV(16 * (1 - filled)));
 
     this.faceQuads.put(side, ImmutableList.of(quadBuilder.build()));
 
@@ -122,10 +122,10 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
     quadBuilder.setQuadOrientation(side);
     quadBuilder.setTexture(texture);
 
-    this.putVertex(quadBuilder, side, x[1], yOffset + y, z[1] - offset, texture.getInterpolatedU(0), texture.getInterpolatedV(16 * filled));
+    this.putVertex(quadBuilder, side, x[1], yOffset + y, z[1] - offset, texture.getInterpolatedU(0), texture.getInterpolatedV(16 * (1 - filled)));
     this.putVertex(quadBuilder, side, x[1], yOffset + offset, z[1] - offset, texture.getInterpolatedU(0), texture.getInterpolatedV(16));
     this.putVertex(quadBuilder, side, x[2], yOffset + offset, z[2] - offset, texture.getInterpolatedU(16), texture.getInterpolatedV(16));
-    this.putVertex(quadBuilder, side, x[2], yOffset + y, z[2] - offset, texture.getInterpolatedU(16), texture.getInterpolatedV(16 * filled));
+    this.putVertex(quadBuilder, side, x[2], yOffset + y, z[2] - offset, texture.getInterpolatedU(16), texture.getInterpolatedV(16 * (1 - filled)));
 
     this.faceQuads.put(side, ImmutableList.of(quadBuilder.build()));
 
@@ -137,10 +137,10 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
     quadBuilder.setQuadOrientation(side);
     quadBuilder.setTexture(texture);
 
-    this.putVertex(quadBuilder, side, x[3], yOffset + y, z[3] + offset, texture.getInterpolatedU(0), texture.getInterpolatedV(16 * filled));
+    this.putVertex(quadBuilder, side, x[3], yOffset + y, z[3] + offset, texture.getInterpolatedU(0), texture.getInterpolatedV(16 * (1 - filled)));
     this.putVertex(quadBuilder, side, x[3], yOffset + offset, z[3] + offset, texture.getInterpolatedU(0), texture.getInterpolatedV(16));
     this.putVertex(quadBuilder, side, x[0], yOffset + offset, z[0] + offset, texture.getInterpolatedU(16), texture.getInterpolatedV(16));
-    this.putVertex(quadBuilder, side, x[0], yOffset + y, z[0] + offset, texture.getInterpolatedU(16), texture.getInterpolatedV(16 * filled));
+    this.putVertex(quadBuilder, side, x[0], yOffset + y, z[0] + offset, texture.getInterpolatedU(16), texture.getInterpolatedV(16 * (1 - filled)));
 
     this.faceQuads.put(side, ImmutableList.of(quadBuilder.build()));
   }

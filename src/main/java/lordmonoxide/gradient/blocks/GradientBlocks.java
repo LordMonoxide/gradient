@@ -157,7 +157,7 @@ public final class GradientBlocks {
         if(block.hasTileEntity()) {
           try {
             //noinspection unchecked
-            GameRegistry.registerTileEntity((Class<? extends TileEntity>)block.getClass().getMethod("createTileEntity", World.class, IBlockState.class).getReturnType(), block.getRegistryName().toString());
+            GameRegistry.registerTileEntity((Class<? extends TileEntity>)block.getClass().getMethod("createTileEntity", World.class, IBlockState.class).getReturnType(), block.getRegistryName());
           } catch(final NoSuchMethodException ignored) { }
         }
       }

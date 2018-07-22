@@ -24,8 +24,10 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
-import net.minecraftforge.fluids.*;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -88,15 +90,16 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
 
     final TileEntity te = world.getTileEntity(pos);
 
+    if(!(te instanceof TileBronzeBoiler)) {
+      return;
+    }
+
     final BlockPos rel = neighbor.subtract(pos);
     final EnumFacing side = EnumFacing.getFacingFromVector(rel.getX(), rel.getY(), rel.getZ());
 
     if(side == EnumFacing.UP) {
-      final IFluidHandler handler = FluidUtil.getFluidHandler(world, neighbor, EnumFacing.DOWN);
-
-      if(te instanceof TileBronzeBoiler) {
-        ((TileBronzeBoiler)te).updateOutput(handler);
-      }
+      ((TileBronzeBoiler)te).updateOutput(neighbor);
+      PacketUpdateBronzeBoilerSteamSink.send(pos, neighbor);
     }
   }
 

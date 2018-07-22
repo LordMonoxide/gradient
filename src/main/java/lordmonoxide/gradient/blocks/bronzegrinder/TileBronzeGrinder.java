@@ -50,8 +50,6 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
     }
   };
 
-  private long nextSync = 0;
-
   private int workTicks = 0;
 
   public TileBronzeGrinder() {
@@ -70,13 +68,6 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   @Override
   public void update() {
     this.work();
-
-    if(!this.getWorld().isRemote) {
-      if(System.currentTimeMillis() >= this.nextSync) {
-        this.nextSync = System.currentTimeMillis() + 10000L;
-        this.sync();
-      }
-    }
   }
 
   public boolean isWorking() {

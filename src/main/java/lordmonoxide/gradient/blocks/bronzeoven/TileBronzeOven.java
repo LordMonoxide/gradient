@@ -50,8 +50,6 @@ public class TileBronzeOven extends TileEntity implements ITickable {
     }
   };
 
-  private long nextSync;
-
   private int cookTicks;
 
   public TileBronzeOven() {
@@ -70,13 +68,6 @@ public class TileBronzeOven extends TileEntity implements ITickable {
   @Override
   public void update() {
     this.cook();
-
-    if(!this.getWorld().isRemote) {
-      if(System.currentTimeMillis() >= this.nextSync) {
-        this.nextSync = System.currentTimeMillis() + 10000L;
-        this.sync();
-      }
-    }
   }
 
   public boolean isCooking() {

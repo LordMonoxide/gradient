@@ -142,12 +142,9 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     final TileEntity te = world.getTileEntity(pos);
 
     if(te instanceof TileBronzeBoiler) {
-      final float waterAmount = ((TileBronzeBoiler)te).tankWater.getFluidAmount();
-      final float steamAmount = ((TileBronzeBoiler)te).tankSteam.getFluidAmount();
-
       return extendedState
-        .withProperty(WATER_LEVEL, (int)Math.ceil(waterAmount / Fluid.BUCKET_VOLUME))
-        .withProperty(STEAM_LEVEL, (int)Math.ceil(steamAmount / Fluid.BUCKET_VOLUME));
+        .withProperty(WATER_LEVEL, ((TileBronzeBoiler)te).getWaterLevel())
+        .withProperty(STEAM_LEVEL, ((TileBronzeBoiler)te).getSteamLevel());
     }
 
     return extendedState.withProperty(WATER_LEVEL, 0).withProperty(STEAM_LEVEL, 0);

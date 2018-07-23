@@ -42,6 +42,9 @@ public class TileBronzeBoiler extends HeatSinker {
   @Nullable
   private IFluidHandler autoOutput;
 
+  private int lastWaterLevel;
+  private int lastSteamLevel;
+
   public TileBronzeBoiler() {
     this.tankWater.setCanDrain(false);
     this.tankSteam.setCanFill(false);
@@ -103,6 +106,14 @@ public class TileBronzeBoiler extends HeatSinker {
         this.tankSteam.fill(steam, true);
         this.tankSteam.setCanFill(false);
 
+        if(this.lastWaterLevel != this.getWaterLevel() || this.lastSteamLevel != this.getSteamLevel()) {
+          this.lastWaterLevel = this.getWaterLevel();
+          this.lastSteamLevel = this.getSteamLevel();
+
+          final IBlockState state = this.world.getBlockState(this.pos);
+          this.world.markAndNotifyBlock(this.pos, null, state, state, 2);
+        }
+
         this.markDirty();
       }
     }
@@ -112,6 +123,14 @@ public class TileBronzeBoiler extends HeatSinker {
     if(this.autoOutput != null) {
       FluidUtil.tryFluidTransfer(this.autoOutput, this.tankSteam, 20, true);
     }
+  }
+
+  public int getWaterLevel() {
+    return (int)Math.ceil((float)this.tankWater.getFluidAmount() / Fluid.BUCKET_VOLUME);
+  }
+
+  public int getSteamLevel() {
+    return (int)Math.ceil((float)this.tankSteam.getFluidAmount() / Fluid.BUCKET_VOLUME);
   }
 
   @Override

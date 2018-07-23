@@ -48,24 +48,17 @@ public class BakedModelBronzeBoiler implements IBakedModel {
       final int waterLevel = exState.getValue(BlockBronzeBoiler.WATER_LEVEL);
       final int steamLevel = exState.getValue(BlockBronzeBoiler.STEAM_LEVEL);
 
-      // The top quad of the fluid model needs a separate culling logic from the
-      // rest of the tank, because the top needs to be visible if the tank isn't
-      // full, even if there's a tank above.
-      // (Note that 'side' is null for quads that don't have a cullface annotation in the .json.
-      // The tank model has cullface annotations for every side.)
-      if(side != null ? side != EnumFacing.UP : true) {
-        final List<BakedQuad> quads = new ArrayList<>();
+      final List<BakedQuad> quads = new ArrayList<>();
 
-        if(waterLevel > 0) {
-          quads.addAll(FLUID_MODELS.get("water")[waterLevel - 1].getQuads(null, side, rand));
-        }
-
-        if(steamLevel > 0) {
-          quads.addAll(FLUID_MODELS.get("ic2steam")[steamLevel - 1].getQuads(null, side, rand));
-        }
-
-        return quads;
+      if(waterLevel > 0) {
+        quads.addAll(FLUID_MODELS.get("water")[waterLevel - 1].getQuads(null, side, rand));
       }
+
+      if(steamLevel > 0) {
+        quads.addAll(FLUID_MODELS.get("ic2steam")[steamLevel - 1].getQuads(null, side, rand));
+      }
+
+      return quads;
     }
 
     return new ArrayList<>();

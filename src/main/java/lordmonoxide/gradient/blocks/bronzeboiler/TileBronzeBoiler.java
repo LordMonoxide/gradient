@@ -10,14 +10,17 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fluids.*;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 
 import javax.annotation.Nullable;
 
 public class TileBronzeBoiler extends HeatSinker {
+  @CapabilityInject(IFluidHandler.class)
+  private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
+
   public static final int WATER_CAPACITY = 16;
   public static final int STEAM_CAPACITY = 32;
 
@@ -156,15 +159,15 @@ public class TileBronzeBoiler extends HeatSinker {
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     return
-      capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
+      capability == FLUID_HANDLER_CAPABILITY ||
       super.hasCapability(capability, facing);
   }
 
   @Nullable
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-      return (T)this.tanks;
+    if(capability == FLUID_HANDLER_CAPABILITY) {
+      return FLUID_HANDLER_CAPABILITY.cast(this.tanks);
     }
 
     return super.getCapability(capability, facing);

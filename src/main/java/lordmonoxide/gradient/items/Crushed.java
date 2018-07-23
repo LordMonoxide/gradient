@@ -2,7 +2,6 @@ package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashMap;

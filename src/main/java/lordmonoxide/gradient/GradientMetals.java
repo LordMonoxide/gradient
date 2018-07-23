@@ -181,7 +181,7 @@ public final class GradientMetals {
   }
 
   public static final class Metal {
-    private static int currentId = 0;
+    private static int currentId;
 
     public final int    id;
     public final String name;
@@ -220,7 +220,7 @@ public final class GradientMetals {
       this.harvestLevel = Math.round(hardness / 2);
       this.harvestSpeed = 1 / weight * 130;
 
-      this.attackDamageMultiplier = (hardness / 2) * weight / 100;
+      this.attackDamageMultiplier = hardness / 2 * weight / 100;
       this.attackSpeedMultiplier  = 1 / weight * 100;
 
       this.canMakeTools = canMakeTools;

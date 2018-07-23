@@ -17,6 +17,8 @@ import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class GrinderRecipes {
+  private GrinderRecipes() { }
+
   private static final Map<ItemStack, ItemStack> recipes = new HashMap<>();
 
   @SubscribeEvent
@@ -28,13 +30,15 @@ public class GrinderRecipes {
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String name = StringUtils.capitalize(metal.name);
+
       final String crushedName = "crushed" + name;
-      final String dustName = "dust" + name;
 
       // Ores
       if(OreDictionary.doesOreNameExist(crushedName)) {
         add("ore" + name, crushedName);
       }
+
+      final String dustName = "dust" + name;
 
       // Ingots
       if(OreDictionary.doesOreNameExist(dustName)) {

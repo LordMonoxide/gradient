@@ -11,9 +11,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class FurnaceRecipes {
+  private FurnaceRecipes() { }
+
   @SubscribeEvent
   public static void registerRecipes(final RegistryEvent.Register<IRecipe> event) {
-    System.out.println("Registering furnace recipes...");
+    GradientMod.logger.info("Registering furnace recipes...");
 
     net.minecraft.item.crafting.FurnaceRecipes.instance().addSmelting(GradientItems.SUGARCANE_PASTE, new ItemStack(Items.SUGAR), 0.25f);
     net.minecraft.item.crafting.FurnaceRecipes.instance().addSmelting(GradientItems.DOUGH, new ItemStack(Items.BREAD, 4), 0.35f);

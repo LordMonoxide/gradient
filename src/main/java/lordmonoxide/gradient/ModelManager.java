@@ -30,7 +30,7 @@ public final class ModelManager {
 
   @SubscribeEvent
   public static void registerModels(final ModelRegistryEvent event) {
-    System.out.println("Registering models");
+    GradientMod.logger.info("Registering models");
 
     registerFluidModels();
     registerBlockModels();

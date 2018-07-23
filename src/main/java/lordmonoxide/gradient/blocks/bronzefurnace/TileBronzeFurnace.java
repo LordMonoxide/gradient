@@ -11,14 +11,18 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class TileBronzeFurnace extends HeatProducer {
+  @CapabilityInject(IItemHandler.class)
+  private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
+
   public static final int FUEL_SLOTS_COUNT = 6;
   public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT;
 
@@ -232,12 +236,18 @@ public class TileBronzeFurnace extends HeatProducer {
 
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    return
+      capability == ITEM_HANDLER_CAPABILITY ||
+      super.hasCapability(capability, facing);
   }
 
   @Nullable
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory : super.getCapability(capability, facing);
+    if(capability == ITEM_HANDLER_CAPABILITY) {
+      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+    }
+
+    return super.getCapability(capability, facing);
   }
 }

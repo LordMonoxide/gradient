@@ -65,15 +65,15 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
   @Override
   public String getItemStackDisplayName(final ItemStack stack) {
-    final FluidStack fluidStack = getFluid(stack);
+    final FluidStack fluidStack = this.getFluid(stack);
     if(fluidStack == null) {
       return I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".empty.name").trim();
     }
 
     final String unloc = this.getUnlocalizedNameInefficiently(stack);
 
-    if(I18n.canTranslate(unloc + "." + fluidStack.getFluid().getName())) {
-      return I18n.translateToLocal(unloc + "." + fluidStack.getFluid().getName());
+    if(I18n.canTranslate(unloc + '.' + fluidStack.getFluid().getName())) {
+      return I18n.translateToLocal(unloc + '.' + fluidStack.getFluid().getName());
     }
 
     return I18n.translateToLocalFormatted(unloc + ".name", fluidStack.getLocalizedName());
@@ -103,7 +103,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
   @Override
   public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
     final ItemStack itemstack = player.getHeldItem(hand);
-    final FluidStack fluidStack = getFluid(itemstack);
+    final FluidStack fluidStack = this.getFluid(itemstack);
 
     // clicked on a block?
     final RayTraceResult mop = this.rayTrace(world, player, fluidStack == null);
@@ -116,7 +116,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
       }
     }
 
-    if(mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK) {
+    if(mop.typeOfHit != RayTraceResult.Type.BLOCK) {
       return ActionResult.newResult(EnumActionResult.PASS, itemstack);
     }
 
@@ -138,11 +138,11 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
           // check whether we replace the item or add the empty one to the inventory
           if(itemstack.isEmpty()) {
             return ActionResult.newResult(EnumActionResult.SUCCESS, emptyStack);
-          } else {
-            // add empty bucket to player inventory
-            ItemHandlerHelper.giveItemToPlayer(player, emptyStack);
-            return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
           }
+
+          // add empty bucket to player inventory
+          ItemHandlerHelper.giveItemToPlayer(player, emptyStack);
+          return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
         }
       }
     }
@@ -193,7 +193,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
   }
 
   public class FluidBucketWrapper implements IFluidHandlerItem, ICapabilityProvider {
-    protected ItemStack container;
+    protected final ItemStack container;
 
     public FluidBucketWrapper(final ItemStack container) {
       this.container = container;
@@ -201,11 +201,11 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
     @Override
     public ItemStack getContainer() {
-      return container;
+      return this.container;
     }
 
     public boolean canFillFluidType(final FluidStack fluid) {
-      if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == FluidRegistry.LAVA || fluid.getFluid().getName().equals("milk")) {
+      if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == FluidRegistry.LAVA || "milk".equals(fluid.getFluid().getName())) {
         return true;
       }
 
@@ -217,37 +217,29 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
       return ItemClayBucket.this.getFluid(this.container);
     }
 
-    /**
-     * @deprecated use the NBT-sensitive version {@link #setFluid(FluidStack)}
-     */
-    @Deprecated
-    protected void setFluid(@Nullable final Fluid fluid) {
-      setFluid(new FluidStack(fluid, Fluid.BUCKET_VOLUME));
-    }
-
     protected void setFluid(@Nullable final FluidStack fluidStack) {
       if(fluidStack == null) {
-        container.setTagCompound(new NBTTagCompound());
+        this.container.setTagCompound(new NBTTagCompound());
       } else {
         final NBTTagCompound tag = new NBTTagCompound();
         fluidStack.writeToNBT(tag);
-        container.setTagCompound(tag);
+        this.container.setTagCompound(tag);
       }
     }
 
     @Override
     public IFluidTankProperties[] getTankProperties() {
-      return new FluidTankProperties[] { new FluidTankProperties(getFluid(), Fluid.BUCKET_VOLUME) };
+      return new FluidTankProperties[] { new FluidTankProperties(this.getFluid(), Fluid.BUCKET_VOLUME) };
     }
 
     @Override
     public int fill(final FluidStack resource, final boolean doFill) {
-      if(container.getCount() != 1 || resource == null || resource.amount < Fluid.BUCKET_VOLUME || getFluid() != null || !canFillFluidType(resource)) {
+      if(this.container.getCount() != 1 || resource == null || resource.amount < Fluid.BUCKET_VOLUME || this.getFluid() != null || !this.canFillFluidType(resource)) {
         return 0;
       }
 
       if(doFill) {
-        setFluid(resource);
+        this.setFluid(resource);
       }
 
       return Fluid.BUCKET_VOLUME;
@@ -256,14 +248,14 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
     @Nullable
     @Override
     public FluidStack drain(final FluidStack resource, final boolean doDrain) {
-      if(container.getCount() != 1 || resource == null || resource.amount < Fluid.BUCKET_VOLUME) {
+      if(this.container.getCount() != 1 || resource == null || resource.amount < Fluid.BUCKET_VOLUME) {
         return null;
       }
 
-      final FluidStack fluidStack = getFluid();
+      final FluidStack fluidStack = this.getFluid();
       if(fluidStack != null && fluidStack.isFluidEqual(resource)) {
         if(doDrain) {
-          setFluid((FluidStack)null);
+          this.setFluid(null);
         }
 
         return fluidStack;
@@ -275,14 +267,14 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
     @Nullable
     @Override
     public FluidStack drain(final int maxDrain, final boolean doDrain) {
-      if(container.getCount() != 1 || maxDrain < Fluid.BUCKET_VOLUME) {
+      if(this.container.getCount() != 1 || maxDrain < Fluid.BUCKET_VOLUME) {
         return null;
       }
 
-      final FluidStack fluidStack = getFluid();
+      final FluidStack fluidStack = this.getFluid();
       if(fluidStack != null) {
         if(doDrain) {
-          setFluid((FluidStack)null);
+          this.setFluid(null);
         }
 
         return fluidStack;

@@ -32,7 +32,7 @@ public final class ExtraRecipes {
 
   @SubscribeEvent
   public static void registerRecipes(final RegistryEvent.Register<IRecipe> event) {
-    System.out.println("Registering recipes...");
+    GradientMod.logger.info("Registering recipes...");
 
     final IForgeRegistry<IRecipe> registry = event.getRegistry();
 
@@ -42,8 +42,8 @@ public final class ExtraRecipes {
     registerCasts(registry);
     registerTools(registry);
     registerNuggets(registry);
-    registerOreWashingRecipes(registry);
-    registerExtractorRecipes(registry);
+    registerOreWashingRecipes();
+    registerExtractorRecipes();
   }
 
   private static void registerDusts(final IForgeRegistry<IRecipe> registry) {
@@ -53,7 +53,7 @@ public final class ExtraRecipes {
       if(metal.canMakeDustWithMortar) {
         final String recipeName = "recipe.dust." + metal.name;
 
-        System.out.println("Adding recipe " + recipeName);
+        GradientMod.logger.info("Adding recipe {}", recipeName);
 
         registry.register(new ShapelessToolRecipe(
             GradientMod.MODID,
@@ -74,7 +74,7 @@ public final class ExtraRecipes {
 
       final String recipeName = "recipe.plate." + metal.name + ".hammered";
 
-      System.out.println("Adding recipe " + recipeName);
+      GradientMod.logger.info("Adding recipe {}", recipeName);
 
       registry.register(new ShapelessToolRecipe(
           GradientMod.MODID,
@@ -97,7 +97,7 @@ public final class ExtraRecipes {
         recipeName.append('.').append(alloy.inputs.get(i).name);
       }
 
-      System.out.println("Adding recipe " + recipeName);
+      GradientMod.logger.info("Adding recipe {}", recipeName);
 
       registry.register(new ShapelessRecipes(
           GradientMod.MODID,
@@ -119,7 +119,7 @@ public final class ExtraRecipes {
 
           final String recipeName = "cast." + cast.name + '.' + metal.name;
 
-          System.out.println("Adding recipe " + recipeName);
+          GradientMod.logger.info("Adding recipe {}", recipeName);
 
           registry.register(new ShapelessRecipes(
               GradientMod.MODID,
@@ -156,7 +156,7 @@ public final class ExtraRecipes {
 
       final String recipeName = "recipe.nugget." + metal.name + ".pickaxed";
 
-      System.out.println("Adding recipe " + recipeName);
+      GradientMod.logger.info("Adding recipe {}", recipeName);
 
       registry.register(new ShapelessToolRecipe(
           GradientMod.MODID,
@@ -166,7 +166,7 @@ public final class ExtraRecipes {
     }
   }
 
-  private static void registerOreWashingRecipes(final IForgeRegistry<IRecipe> registry) {
+  private static void registerOreWashingRecipes() {
     final NBTTagCompound nbt = new NBTTagCompound();
     nbt.setInteger("amount", 1000); // Water amount
 
@@ -174,7 +174,7 @@ public final class ExtraRecipes {
     Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictHelper.getFirst("crushedPurifiedMagnesium"));
   }
 
-  private static void registerExtractorRecipes(final IForgeRegistry<IRecipe> registry) {
+  private static void registerExtractorRecipes() {
     Recipes.extractor.addRecipe(Recipes.inputFactory.forFluidContainer(FluidRegistry.WATER), null, false, GradientItems.SALT.getItemStack(4));
   }
 }

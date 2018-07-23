@@ -15,15 +15,22 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fluids.*;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
 public class TileBronzeGrinder extends TileEntity implements ITickable {
+  @CapabilityInject(IItemHandler.class)
+  private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
+
+  @CapabilityInject(IFluidHandler.class)
+  private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
+
   private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
 
   public static final int INPUT_SLOT = 0;
@@ -50,7 +57,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
     }
   };
 
-  private int workTicks = 0;
+  private int workTicks;
 
   public TileBronzeGrinder() {
     this.tanks.addHandler(STEAM, this.tankSteam);
@@ -131,21 +138,23 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     return
-        capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
-            capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
-            super.hasCapability(capability, facing);
+      capability == ITEM_HANDLER_CAPABILITY ||
+      capability == FLUID_HANDLER_CAPABILITY ||
+      super.hasCapability(capability, facing);
   }
 
   @Nullable
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-      return (T)this.tanks;
+    if(capability == ITEM_HANDLER_CAPABILITY) {
+      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
     }
 
-    return
-      capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory :
-      super.getCapability(capability, facing);
+    if(capability == FLUID_HANDLER_CAPABILITY) {
+      return FLUID_HANDLER_CAPABILITY.cast(this.tanks);
+    }
+
+    return super.getCapability(capability, facing);
   }
 
   private void sync() {

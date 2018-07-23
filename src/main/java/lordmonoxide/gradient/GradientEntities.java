@@ -11,9 +11,11 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class GradientEntities {
+  private GradientEntities() { }
+
   @SubscribeEvent
   public static void registerEntities(final RegistryEvent.Register<EntityEntry> event) {
-    System.out.println("Registering entities");
+    GradientMod.logger.info("Registering entities");
 
     EntityRegistry.registerModEntity(
         new ResourceLocation(GradientMod.MODID, GradientBlocks.PEBBLE.getTranslationKey()),

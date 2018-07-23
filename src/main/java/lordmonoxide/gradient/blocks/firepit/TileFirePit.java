@@ -15,8 +15,9 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -31,6 +32,9 @@ import java.util.stream.Collectors;
 // Three layers of furnaces, 1725
 
 public class TileFirePit extends HeatProducer {
+  @CapabilityInject(IItemHandler.class)
+  private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
+
   public static final int FUEL_SLOTS_COUNT = 3;
   public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + 2;
 
@@ -192,8 +196,6 @@ public class TileFirePit extends HeatProducer {
 
         final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
 
-        System.out.println(input);
-        System.out.println(input.getItem().hasContainerItem(input));
         if(input.getItem().hasContainerItem(input)) {
           this.inventory.insertItem(FIRST_INPUT_SLOT, input.getItem().getContainerItem(input), false);
         }
@@ -379,13 +381,19 @@ public class TileFirePit extends HeatProducer {
 
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    return
+      capability == ITEM_HANDLER_CAPABILITY ||
+      super.hasCapability(capability, facing);
   }
 
   @Nullable
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory : super.getCapability(capability, facing);
+    if(capability == ITEM_HANDLER_CAPABILITY) {
+      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+    }
+
+    return super.getCapability(capability, facing);
   }
 
   public final class Hardening {

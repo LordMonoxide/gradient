@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks.heat;
 
 import io.netty.buffer.ByteBuf;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
@@ -15,30 +16,29 @@ public class PacketUpdateHeatNeighbours implements IMessage {
   public static void send(final BlockPos entityPos, final BlockPos updatePos) {
     GradientNet.CHANNEL.sendToAll(new PacketUpdateHeatNeighbours(entityPos, updatePos));
   }
-  
+
   private BlockPos entityPos;
   private BlockPos updatePos;
-  
+
   public PacketUpdateHeatNeighbours() { }
-  
+
   public PacketUpdateHeatNeighbours(final BlockPos entityPos, final BlockPos updatePos) {
     this.entityPos = entityPos;
     this.updatePos = updatePos;
   }
-  
+
   @Override
   public void fromBytes(final ByteBuf buf) {
     try {
       this.entityPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
       this.updatePos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
     } catch(final IndexOutOfBoundsException e) {
-      System.out.println("Invalid position in PacketUpdateHeatNeighbours");
-      e.printStackTrace();
+      GradientMod.logger.info("Invalid position in PacketUpdateHeatNeighbours", e);
       this.entityPos = BlockPos.ORIGIN;
       this.updatePos = BlockPos.ORIGIN;
     }
   }
-  
+
   @Override
   public void toBytes(final ByteBuf buf) {
     buf.writeInt(this.entityPos.getX());
@@ -48,21 +48,21 @@ public class PacketUpdateHeatNeighbours implements IMessage {
     buf.writeInt(this.updatePos.getY());
     buf.writeInt(this.updatePos.getZ());
   }
-  
+
   public static class Handler implements IMessageHandler<PacketUpdateHeatNeighbours, IMessage> {
     @Override
     @Nullable
     public IMessage onMessage(final PacketUpdateHeatNeighbours packet, final MessageContext ctx) {
       Minecraft.getMinecraft().addScheduledTask(() -> {
         final TileEntity te = Minecraft.getMinecraft().world.getTileEntity(packet.entityPos);
-        
+
         if(!(te instanceof HeatSinker)) {
           return;
         }
-        
+
         ((HeatSinker)te).updateSink(packet.updatePos);
       });
-      
+
       return null;
     }
   }

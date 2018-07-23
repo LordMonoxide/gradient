@@ -50,7 +50,7 @@ public class ShapedToolRecipeFactory implements IRecipeFactory {
 
     final String[] pattern = new String[patternJ.size()];
     for(int x = 0; x < pattern.length; ++x) {
-      final String line = JsonUtils.getString(patternJ.get(x), "pattern[" + x + "]");
+      final String line = JsonUtils.getString(patternJ.get(x), "pattern[" + x + ']');
 
       if(line.length() > 3) {
         throw new JsonSyntaxException("Invalid pattern: too many columns, 3 is maximum");

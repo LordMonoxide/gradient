@@ -236,8 +236,9 @@ public final class GradientItems {
 
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
-
     public static final List<Item> ITEMS = new ArrayList<>();
+
+    private RegistrationHandler() { }
 
     private static <T extends Item> T register(final T item) {
       ITEMS.add(item);
@@ -246,7 +247,7 @@ public final class GradientItems {
 
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> event) {
-      System.out.println("Registering items");
+      GradientMod.logger.info("Registering items");
 
       // Trigger item registration
       new GradientItems();
@@ -262,7 +263,7 @@ public final class GradientItems {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void initOreDict(final RegistryEvent.Register<Item> event) {
-      System.out.println("Registering ore dict entries");
+      GradientMod.logger.info("Registering ore dict entries");
 
       initialiseOreDict();
     }

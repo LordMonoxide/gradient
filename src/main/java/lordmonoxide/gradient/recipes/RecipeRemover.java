@@ -101,7 +101,7 @@ public final class RecipeRemover {
 
     for(final String loc : toRemove) {
       if(registry.remove(new ResourceLocation(loc)) == null) {
-        System.out.println("Failed to remove recipe: " + loc);
+        GradientMod.logger.warn("Failed to remove recipe: {}", loc);
       }
     }
   }
@@ -149,7 +149,7 @@ public final class RecipeRemover {
                   toAdd.add(new ShapelessToolRecipe(
                     GradientMod.MODID,
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
-                    NonNullList.from(null, Ingredient.fromStacks(stackLog), new IngredientOre("toolMattock"))
+                    NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(stackLog), new IngredientOre("toolMattock"))
                   ).setRegistryName(GradientMod.resource(output.getTranslationKey() + ".from." + stackLog.getTranslationKey() + ".with.mattock")));
 
                   toRemove.add(recipe);
@@ -176,13 +176,13 @@ public final class RecipeRemover {
     registry.register(new ShapelessToolRecipe(
       GradientMod.MODID,
       new ItemStack(Items.STICK, 2),
-      NonNullList.from(null, new IngredientOre("plankWood"), new IngredientOre("toolMattock"))
+      NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), new IngredientOre("toolMattock"))
     ).setRegistryName(GradientMod.resource("sticks.from.planks.with.mattock")));
 
     if(removed == 0) {
-      System.out.println("Failed to replaced plank recipes!");
+      GradientMod.logger.warn("Failed to replaced plank recipes!");
     } else {
-      System.out.println("Replaced " + removed + " plank recipes!");
+      GradientMod.logger.info("Replaced {} plank recipes!", removed);
     }
   }
 }

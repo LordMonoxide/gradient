@@ -84,6 +84,7 @@ public class BakedModelBronzeBoiler implements IBakedModel {
     return this.baseModel.getParticleTexture();
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public ItemCameraTransforms getItemCameraTransforms() {
     return this.baseModel.getItemCameraTransforms();

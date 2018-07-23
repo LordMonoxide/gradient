@@ -12,19 +12,26 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class TileClayCrucible extends HeatSinker {
+  @CapabilityInject(IItemHandler.class)
+  private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
+
+  @CapabilityInject(IFluidHandler.class)
+  private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
+
   public static final int METAL_SLOTS_COUNT = 1;
   public static final int TOTAL_SLOTS_COUNT = METAL_SLOTS_COUNT;
 
@@ -35,7 +42,7 @@ public class TileClayCrucible extends HeatSinker {
 
   private final MeltingMetal[] melting = new MeltingMetal[METAL_SLOTS_COUNT];
 
-  private int lastLight = 0;
+  private int lastLight;
 
   public boolean isMelting(final int slot) {
     return this.melting[slot] != null;
@@ -221,18 +228,23 @@ public class TileClayCrucible extends HeatSinker {
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     return
-      capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
-      capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
+      capability == ITEM_HANDLER_CAPABILITY ||
+      capability == FLUID_HANDLER_CAPABILITY ||
       super.hasCapability(capability, facing);
   }
 
   @Nullable
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    return
-      capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T)this.inventory :
-      capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T)this.tank :
-      super.getCapability(capability, facing);
+    if(capability == ITEM_HANDLER_CAPABILITY) {
+      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+    }
+
+    if(capability == FLUID_HANDLER_CAPABILITY) {
+      return FLUID_HANDLER_CAPABILITY.cast(this.tank);
+    }
+
+    return super.getCapability(capability, facing);
   }
 
   public static final class MeltingMetal {

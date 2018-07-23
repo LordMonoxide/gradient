@@ -1,8 +1,8 @@
 package lordmonoxide.gradient.blocks.bronzeboiler;
 
 import io.netty.buffer.ByteBuf;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
-import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -33,8 +33,7 @@ public class PacketUpdateBronzeBoilerSteamSink implements IMessage {
       this.entityPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
       this.updatePos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
     } catch(final IndexOutOfBoundsException e) {
-      System.out.println("Invalid position in PacketUpdateBronzeBoilerSteamSink");
-      e.printStackTrace();
+      GradientMod.logger.info("Invalid position in PacketUpdateBronzeBoilerSteamSink", e);
       this.entityPos = BlockPos.ORIGIN;
       this.updatePos = BlockPos.ORIGIN;
     }

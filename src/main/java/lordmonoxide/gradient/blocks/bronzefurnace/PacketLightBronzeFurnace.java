@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks.bronzefurnace;
 
 import io.netty.buffer.ByteBuf;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -30,8 +31,7 @@ public class PacketLightBronzeFurnace implements IMessage {
     try {
       this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
     } catch(final IndexOutOfBoundsException e) {
-      System.out.println("Invalid position in PacketLightBronzeFurnace");
-      e.printStackTrace();
+      GradientMod.logger.error("Invalid position in PacketLightBronzeFurnace", e);
       this.pos = BlockPos.ORIGIN;
     }
   }

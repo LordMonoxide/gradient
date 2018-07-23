@@ -99,15 +99,15 @@ public final class GradientBlocks {
     CAST_BLOCK = ImmutableMap.copyOf(map);
   }
 
-  private GradientBlocks() {
-
-  }
+  private GradientBlocks() { }
 
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
     private static final Map<GradientBlock, ItemBlock> blocks = new LinkedHashMap<>();
 
     public static final List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
+
+    private RegistrationHandler() { }
 
     private static <T extends GradientBlock> T register(final T block) {
       if(block instanceof ItemBlockProvider) {
@@ -124,7 +124,7 @@ public final class GradientBlocks {
 
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-      System.out.println("Registering blocks");
+      GradientMod.logger.info("Registering blocks");
 
       // Trigger block registration
       new GradientBlocks();
@@ -134,7 +134,7 @@ public final class GradientBlocks {
 
     @SubscribeEvent
     public static void registerItemBlocks(final RegistryEvent.Register<Item> event) {
-      System.out.println("Registering item blocks");
+      GradientMod.logger.info("Registering item blocks");
 
       blocks.forEach((block, item) -> {
         item.setRegistryName(item.getBlock().getRegistryName());

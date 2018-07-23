@@ -171,13 +171,12 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
 
   @Override
   public TextureAtlasSprite getParticleTexture() {
-    // Use the fluid still texture by default. If the fluid has no still texture, use the
-    // flowing texture instead. If there's no flowing texture either, use the water still texture.
-    final String fluidTextureLoc = this.fluid.getStill() != null ? this.fluid.getStill().toString() : this.fluid.getFlowing() != null ? this.fluid.getFlowing().toString() : FluidRegistry.WATER.getStill().toString();
+    final String fluidTextureLoc = (this.fluid.getStill() != null ? this.fluid.getStill() : this.fluid.getFlowing() != null ? this.fluid.getFlowing() : FluidRegistry.WATER.getStill()).toString();
 
     return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluidTextureLoc);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public ItemCameraTransforms getItemCameraTransforms() {
     return ItemCameraTransforms.DEFAULT;

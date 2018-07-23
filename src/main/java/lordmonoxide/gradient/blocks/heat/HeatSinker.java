@@ -17,7 +17,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
 
   private boolean firstTick = true;
 
-  private float heat = 0;
+  private float heat;
 
   private IBlockState state;
 

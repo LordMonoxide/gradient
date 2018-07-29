@@ -1,11 +1,11 @@
 package lordmonoxide.gradient.recipes;
 
 import ic2.api.recipe.Recipes;
-import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
+import lordmonoxide.gradient.init.CastRegistry;
 import lordmonoxide.gradient.items.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -108,7 +109,7 @@ public final class ExtraRecipes {
   }
 
   private static void registerCasts(final IForgeRegistry<IRecipe> registry) {
-    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
+    for(final CastRegistry.Cast cast : GameRegistry.findRegistry(CastRegistry.Cast.class)) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(cast.isValidForMetal(metal)) {
           final int amount = cast.amountForMetal(metal) / Fluid.BUCKET_VOLUME;
@@ -117,7 +118,7 @@ public final class ExtraRecipes {
           ingredients[amount] = Ingredient.fromStacks(ItemClayCast.getCast(cast));
           Arrays.fill(ingredients, 0, amount, new IngredientNBT(GradientMetals.getBucket(metal)));
 
-          final String recipeName = "cast." + cast.name + '.' + metal.name;
+          final String recipeName = "cast." + cast.getRegistryName() + '.' + metal.name;
 
           GradientMod.logger.info("Adding recipe {}", recipeName);
 
@@ -140,7 +141,7 @@ public final class ExtraRecipes {
               1, 3,
               NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(CastItem.getCastItem(type.cast, metal, 1)), new OreIngredient("string"), new OreIngredient("stickWood")),
               Tool.getTool(type, metal, 1, 0)
-          ).setRegistryName(GradientMod.resource("tool." + type.cast.name + '.' + metal.name)));
+          ).setRegistryName(GradientMod.resource("tool." + type.cast.getRegistryName() + '.' + metal.name)));
         }
       }
     }

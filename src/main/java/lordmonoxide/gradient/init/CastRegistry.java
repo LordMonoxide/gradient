@@ -1,54 +1,82 @@
-package lordmonoxide.gradient;
+package lordmonoxide.gradient.init;
 
 import com.google.common.base.Optional;
+import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryBuilder;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public final class GradientCasts {
-  private GradientCasts() { }
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@GameRegistry.ObjectHolder("gradient")
+public final class CastRegistry {
+  private CastRegistry() { }
 
-  private static final Map<String, Cast> CASTS = new HashMap<>();
+  @SuppressWarnings("ConstantConditions")
+  @Nonnull
+  public static final Cast PICKAXE = null;
+  @SuppressWarnings("ConstantConditions")
+  @Nonnull
+  public static final Cast MATTOCK = null;
+  @SuppressWarnings("ConstantConditions")
+  @Nonnull
+  public static final Cast SWORD = null;
+  @SuppressWarnings("ConstantConditions")
+  @Nonnull
+  public static final Cast HAMMER = null;
+  @SuppressWarnings("ConstantConditions")
+  @Nonnull
+  public static final Cast INGOT = null;
+  @SuppressWarnings("ConstantConditions")
+  @Nonnull
+  public static final Cast BLOCK = null;
 
-  public static final Cast PICKAXE = register("pickaxe").isValid(metal -> metal.canMakeTools).add();
-  public static final Cast MATTOCK = register("mattock").isValid(metal -> metal.canMakeTools).add();
-  public static final Cast SWORD   = register("sword")  .isValid(metal -> metal.canMakeTools).add();
-  public static final Cast HAMMER  = register("hammer") .isValid(metal -> metal.canMakeTools).add();
-  public static final Cast INGOT   = register("ingot")  .isValid(metal -> metal.canMakeIngots).add();
-
-  public static final Cast BLOCK = register("block")
-    .itemOverride(metal -> new ItemStack(GradientBlocks.CAST_BLOCK.get(metal)))
-    .amount(metal -> Fluid.BUCKET_VOLUME * 8)
-    .amount(GradientMetals.GLASS, Fluid.BUCKET_VOLUME)
-    .add();
-
-  public static CastBuilder register(final String name) {
-    return new CastBuilder(name);
+  @SubscribeEvent
+  public static void createRegistry(final RegistryEvent.NewRegistry event) {
+    final RegistryBuilder<Cast> builder = new RegistryBuilder<>();
+    builder
+        .setName(GradientMod.resource("casts"))
+        .setType(Cast.class)
+        .create();
   }
 
-  public static Collection<Cast> casts() {
-    return CASTS.values();
-  }
+  @SubscribeEvent
+  public static void registerCasts(final RegistryEvent.Register<Cast> event) {
+    final IForgeRegistry<Cast> registry = event.getRegistry();
 
-  public static Cast getCast(final String name) {
-    final Cast cast = CASTS.get(name);
+    registry.register(build("pickaxe").isValid(metal -> metal.canMakeTools).build());
+    registry.register(build("mattock").isValid(metal -> metal.canMakeTools).build());
+    registry.register(build("sword").isValid(metal -> metal.canMakeTools).build());
+    registry.register(build("hammer").isValid(metal -> metal.canMakeTools).build());
+    registry.register(build("ingot").isValid(metal -> metal.canMakeIngots).build());
 
-    if(cast == null) {
-      return PICKAXE;
-    }
-
-    return cast;
+    registry.register(
+      build("block")
+        .itemOverride(metal -> new ItemStack(GradientBlocks.CAST_BLOCK.get(metal)))
+        .amount(metal -> Fluid.BUCKET_VOLUME * 8)
+        .amount(GradientMetals.GLASS, Fluid.BUCKET_VOLUME)
+        .build()
+    );
   }
 
   public static Cast getCast(final int id) {
-    for(final Cast cast : CASTS.values()) {
+    for(final Cast cast : GameRegistry.findRegistry(Cast.class)) {
       if(cast.id == id) {
         return cast;
       }
@@ -57,18 +85,20 @@ public final class GradientCasts {
     return PICKAXE;
   }
 
-  public static class Cast implements Comparable<Cast> {
+  private static CastBuilder build(final String name) {
+    return new CastBuilder(GradientMod.resource(name));
+  }
+
+  public static class Cast extends IForgeRegistryEntry.Impl<Cast> implements Comparable<Cast> {
     private static int currentId;
 
     public final int id;
-    public final String name;
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid;
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount;
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride;
 
-    public Cast(final String name, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride) {
+    public Cast(final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride) {
       this.id = currentId++;
-      this.name = name;
       this.isValid = isValid;
       this.amount = amount;
       this.itemOverride = itemOverride;
@@ -99,9 +129,7 @@ public final class GradientCasts {
 
     @Override
     public boolean equals(final Object o) {
-      assert o instanceof Cast;
-
-      return this.id == ((Cast)o).id;
+      return o instanceof Cast && this.id == ((Cast)o).id;
     }
 
     @Override
@@ -121,12 +149,12 @@ public final class GradientCasts {
 
     @Override
     public Collection<Cast> getAllowedValues() {
-      return CASTS.values();
+      return GameRegistry.findRegistry(Cast.class).getValuesCollection();
     }
 
     @Override
     public Optional<Cast> parseValue(final String value) {
-      final Cast cast = CASTS.get(value);
+      final Cast cast = GameRegistry.findRegistry(Cast.class).getValue(new ResourceLocation(value));
 
       if(cast == null) {
         return Optional.absent();
@@ -137,18 +165,18 @@ public final class GradientCasts {
 
     @Override
     public String getName(final Cast cast) {
-      return cast.name;
+      return cast.getRegistryName().toString();
     }
   }
 
   public static final class CastBuilder {
-    private final String name;
+    private final ResourceLocation name;
 
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid = new HashMap<>();
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount = new HashMap<>();
     private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride = new HashMap<>();
 
-    private CastBuilder(final String name) {
+    private CastBuilder(final ResourceLocation name) {
       this.name = name;
       this.isValid(metal -> true);
       this.amount(metal -> Fluid.BUCKET_VOLUME);
@@ -184,10 +212,8 @@ public final class GradientCasts {
       return this;
     }
 
-    public Cast add() {
-      final Cast cast = new Cast(this.name, this.isValid, this.amount, this.itemOverride);
-      CASTS.put(this.name, cast);
-      return cast;
+    public Cast build() {
+      return new Cast(this.isValid, this.amount, this.itemOverride).setRegistryName(this.name);
     }
   }
 }

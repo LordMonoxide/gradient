@@ -1,8 +1,9 @@
 package lordmonoxide.gradient.blocks.claycast;
 
-import lordmonoxide.gradient.GradientCasts;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
+import lordmonoxide.gradient.init.CastRegistry;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -11,17 +12,27 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class BlockClayCastUnhardened extends Hardenable {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
 
-  private static final GradientCasts.PropertyCast CAST = GradientCasts.PropertyCast.create("cast");
+  private static final CastRegistry.PropertyCast CAST = CastRegistry.PropertyCast.create("cast");
 
   public BlockClayCastUnhardened() {
     super("clay_cast_unhardened", CreativeTabs.TOOLS, Material.CLAY, MapColor.CLAY);
-    this.setDefaultState(this.blockState.getBaseState().withProperty(CAST, GradientCasts.PICKAXE));
     this.setResistance(2.0f);
     this.setHardness(1.0f);
+  }
+
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public void onCastRegistryLoad(final RegistryEvent.Register<CastRegistry.Cast> event) {
+    GradientMod.logger.info("Registering default blockstate for BlockClayCastUnhardened");
+    this.setDefaultState(this.blockState.getBaseState().withProperty(CAST, event.getRegistry().iterator().next()));
   }
 
   @Override
@@ -32,7 +43,7 @@ public class BlockClayCastUnhardened extends Hardenable {
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(CAST, GradientCasts.getCast(meta));
+    return this.getDefaultState().withProperty(CAST, CastRegistry.getCast(meta));
   }
 
   @Override

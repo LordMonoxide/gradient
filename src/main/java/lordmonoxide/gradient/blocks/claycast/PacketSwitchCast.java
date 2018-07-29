@@ -1,9 +1,9 @@
 package lordmonoxide.gradient.blocks.claycast;
 
 import io.netty.buffer.ByteBuf;
-import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
+import lordmonoxide.gradient.init.CastRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,29 +12,29 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import javax.annotation.Nullable;
 
 public class PacketSwitchCast implements IMessage {
-  public static void send(final GradientCasts.Cast cast) {
+  public static void send(final CastRegistry.Cast cast) {
     GradientNet.CHANNEL.sendToServer(new PacketSwitchCast(cast));
   }
 
-  private GradientCasts.Cast cast;
+  private CastRegistry.Cast cast;
 
   public PacketSwitchCast() { }
 
-  public PacketSwitchCast(final GradientCasts.Cast cast) {
+  public PacketSwitchCast(final CastRegistry.Cast cast) {
     this.cast = cast;
   }
 
-  public GradientCasts.Cast getCast() {
+  public CastRegistry.Cast getCast() {
     return this.cast;
   }
 
   @Override
   public void fromBytes(final ByteBuf buf) {
     try {
-      this.cast = GradientCasts.getCast(buf.readInt());
+      this.cast = CastRegistry.getCast(buf.readInt());
     } catch(final IndexOutOfBoundsException e) {
       GradientMod.logger.info("Invalid type in PacketSwitchCast", e);
-      this.cast = GradientCasts.PICKAXE;
+      this.cast = CastRegistry.PICKAXE;
     }
   }
 

@@ -2,7 +2,7 @@ package lordmonoxide.gradient.blocks.claycast;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.GradientCasts;
+import lordmonoxide.gradient.init.CastRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +14,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -46,13 +47,13 @@ public class ItemClayCastUnhardened extends ItemBlock {
 
   @Override
   public String getTranslationKey(final ItemStack stack) {
-    return super.getTranslationKey(stack) + '.' + GradientCasts.getCast(stack.getMetadata()).name;
+    return super.getTranslationKey(stack) + '.' + CastRegistry.getCast(stack.getMetadata()).getRegistryName();
   }
 
   @Override
   @SideOnly(Side.CLIENT)
   public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list) {
-    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
+    for(final CastRegistry.Cast cast : GameRegistry.findRegistry(CastRegistry.Cast.class)) {
       list.add(new ItemStack(this, 1, cast.id));
     }
   }

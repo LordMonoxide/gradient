@@ -1,12 +1,12 @@
 package lordmonoxide.gradient.blocks.claycrucible;
 
-import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
+import lordmonoxide.gradient.init.CastRegistry;
 import lordmonoxide.gradient.items.CastItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -88,7 +88,7 @@ public class BlockClayCrucible extends HeatSinkerBlock {
 
         // Cast item
         if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() == GradientBlocks.CLAY_CAST) {
-          final GradientCasts.Cast cast = GradientBlocks.CLAY_CAST.getStateFromMeta(stack.getMetadata()).getValue(BlockClayCast.CAST);
+          final CastRegistry.Cast cast = GradientBlocks.CLAY_CAST.getStateFromMeta(stack.getMetadata()).getValue(BlockClayCast.CAST);
 
           if(te.getMoltenMetal() == null) {
             player.sendMessage(new TextComponentTranslation("tile.clay_crucible.no_metal").setStyle(new Style().setColor(TextFormatting.RED)));

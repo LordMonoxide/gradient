@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import lordmonoxide.gradient.init.CastRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.util.EnumActionResult;
@@ -17,12 +18,12 @@ public final class GradientTools {
 
   private static final Map<String, Type> TYPES = new HashMap<>();
 
-  public static final Type PICKAXE = register(GradientCasts.PICKAXE).tool("pickaxe")      .weapon(1.0d, 1.0d, 2).add();
-  public static final Type MATTOCK = register(GradientCasts.MATTOCK).tool("axe", "shovel").weapon(4.5d, 0.5d, 2).onItemUse(GradientTools::onMattockUse).add();
-  public static final Type SWORD   = register(GradientCasts.SWORD)  .tool("sword")        .weapon(3.0d, 1.0f, 1).add();
-  public static final Type HAMMER  = register(GradientCasts.HAMMER).add();
+  public static final Type PICKAXE = register(CastRegistry.PICKAXE).tool("pickaxe")      .weapon(1.0d, 1.0d, 2).add();
+  public static final Type MATTOCK = register(CastRegistry.MATTOCK).tool("axe", "shovel").weapon(4.5d, 0.5d, 2).onItemUse(GradientTools::onMattockUse).add();
+  public static final Type SWORD   = register(CastRegistry.SWORD)  .tool("sword")        .weapon(3.0d, 1.0f, 1).add();
+  public static final Type HAMMER  = register(CastRegistry.HAMMER).add();
 
-  public static ToolBuilder register(final GradientCasts.Cast cast) {
+  public static ToolBuilder register(final CastRegistry.Cast cast) {
     return new ToolBuilder(cast);
   }
 
@@ -52,7 +53,7 @@ public final class GradientTools {
     private static int currentId;
 
     public final int id;
-    public final GradientCasts.Cast cast;
+    public final CastRegistry.Cast cast;
     public final String[] toolClass;
 
     public final double attackDamage;
@@ -61,7 +62,7 @@ public final class GradientTools {
 
     private final OnItemUse onItemUse;
 
-    public Type(final GradientCasts.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed, final int attackDurabilityLost, final OnItemUse onItemUse) {
+    public Type(final CastRegistry.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed, final int attackDurabilityLost, final OnItemUse onItemUse) {
       this.id = currentId++;
       this.cast = cast;
       this.toolClass = toolClass;
@@ -103,7 +104,7 @@ public final class GradientTools {
   }
 
   public static final class ToolBuilder {
-    private final GradientCasts.Cast cast;
+    private final CastRegistry.Cast cast;
 
     private String[] toolClass;
 
@@ -113,7 +114,7 @@ public final class GradientTools {
 
     private OnItemUse onItemUse = GradientTools::onItemUsePass;
 
-    private ToolBuilder(final GradientCasts.Cast cast) {
+    private ToolBuilder(final CastRegistry.Cast cast) {
       this.cast = cast;
     }
 
@@ -136,7 +137,7 @@ public final class GradientTools {
 
     public Type add() {
       final Type type = new Type(this.cast, this.toolClass, this.attackDamage, this.attackSpeed, this.attackDurabilityLost, this.onItemUse);
-      TYPES.put(this.cast.name, type);
+      TYPES.put(this.cast.getRegistryName().toString(), type);
       return type;
     }
   }

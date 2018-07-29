@@ -1,11 +1,11 @@
 package lordmonoxide.gradient.items;
 
-import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
+import lordmonoxide.gradient.init.CastRegistry;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
 import lordmonoxide.gradient.items.armour.GradientArmour;
@@ -25,6 +25,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
@@ -77,7 +78,7 @@ public final class GradientItems {
     GradientMetals.metals.stream().map(Dust::new).forEach(RegistrationHandler::register);
 
     // Register cast items
-    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
+    for(final CastRegistry.Cast cast : GameRegistry.findRegistry(CastRegistry.Cast.class)) {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(cast.isValidForMetal(metal) && cast.itemForMetal(metal) == null) {
           RegistrationHandler.register(new CastItem(cast, metal));
@@ -145,10 +146,10 @@ public final class GradientItems {
       OreDictionary.registerOre("dust" + caps, Dust.getDust(metal, 1));
 
       if(metal.canMakeIngots) {
-        OreDictionary.registerOre("ingot" + caps, CastItem.getCastItem(GradientCasts.INGOT, metal, 1));
+        OreDictionary.registerOre("ingot" + caps, CastItem.getCastItem(CastRegistry.INGOT, metal, 1));
       }
 
-      OreDictionary.registerOre("block" + caps, CastItem.getCastItem(GradientCasts.BLOCK, metal, 1));
+      OreDictionary.registerOre("block" + caps, CastItem.getCastItem(CastRegistry.BLOCK, metal, 1));
 
       if(metal.canMakePlates) {
         OreDictionary.registerOre("plate" + caps, Plate.getPlate(metal, 1));

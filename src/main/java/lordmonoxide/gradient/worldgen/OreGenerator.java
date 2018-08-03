@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.worldgen;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
@@ -14,6 +15,21 @@ import java.util.Random;
 
 public class OreGenerator implements IWorldGenerator {
   private final WorldGenerator magnesium = new WorldGenMinable(GradientBlocks.ORE_MAGNESIUM.getDefaultState(), 4);
+  private final WorldGenerator carbon = WorldOreGenerator.create(generator -> {
+    generator.addStage(stage -> {
+      stage.replace(state -> true);
+      stage.block(Blocks.GLASS.getDefaultState());
+      stage.maxRadius(10);
+      stage.spawnChance(0.05f);
+    });
+
+    generator.addStage(stage -> {
+      stage.replace(state -> true);
+      stage.block(Blocks.PUMPKIN.getDefaultState());
+      stage.maxRadius(0);
+      stage.spawnChance(1.0f);
+    });
+  });
 
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {

@@ -4,8 +4,11 @@ import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public final class OreBlocker {
-  private OreBlocker() { }
+/**
+ * Disables all vanilla ore spawning
+ */
+public final class DisableVanillaOre {
+  private DisableVanillaOre() { }
 
   @SubscribeEvent
   public static void blockOreSpawn(final OreGenEvent.GenerateMinable event) {
@@ -18,7 +21,6 @@ public final class OreBlocker {
       case EMERALD:
       case REDSTONE:
         event.setResult(Event.Result.DENY);
-        return;
     }
   }
 }

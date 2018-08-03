@@ -2,7 +2,7 @@ package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.overrides.*;
-import lordmonoxide.gradient.worldgen.OreBlocker;
+import lordmonoxide.gradient.worldgen.DisableVanillaOre;
 import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,7 +51,7 @@ public class GradientMod {
     logger.info("------------------- PREINIT -------------------");
 
     MinecraftForge.EVENT_BUS.register(OverrideInventory.instance);
-    MinecraftForge.ORE_GEN_BUS.register(OreBlocker.class);
+    MinecraftForge.ORE_GEN_BUS.register(DisableVanillaOre.class);
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
 
     proxy.preInit(event);

@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.worldgen;
 
-import com.google.common.base.Predicate;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -13,8 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public class WorldOreGenerator extends WorldGenerator {
+public final class WorldOreGenerator extends WorldGenerator {
   public static WorldOreGenerator create(final Consumer<WorldOreGeneratorBuilder> callback) {
     final WorldOreGeneratorBuilder builder = new WorldOreGeneratorBuilder();
     callback.accept(builder);
@@ -30,39 +30,55 @@ public class WorldOreGenerator extends WorldGenerator {
   }
 
   private final Stage[] stages;
-  private final int length;
+  private final int minLength;
+  private final int maxLength;
 
-  private WorldOreGenerator(final Stage[] stages,  final int length) {
+  private WorldOreGenerator(final Stage[] stages, final int minLength, final int maxLength) {
     this.stages = stages;
-    this.length = length;
+    this.minLength = minLength;
+    this.maxLength = maxLength;
   }
 
   @Override
-  public boolean generate(final World world, final Random rand, final BlockPos position) {
+  public boolean generate(final World world, final Random rand, final BlockPos root) {
+    final int length = rand.nextInt(this.maxLength - this.minLength) + this.minLength;
 
+    for(final Stage stage : this.stages) {
+      final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(root);
+
+      for(int x = 0; x < length; x++) {
+        pos.setPos(pos.getX() + 1, pos.getY(), pos.getZ());
+
+        final IBlockState state = world.getBlockState(pos);
+        if(state.getBlock().isReplaceableOreGen(state, world, pos, stage.replace::test)) {
+          world.setBlockState(pos, stage.ore, 2);
+        }
+      }
+    }
 
     return true;
   }
 
-  private static class Stage {
+  private static final class Stage {
     private final Predicate<IBlockState> replace;
-    private final IBlockState state;
+    private final IBlockState ore;
     private final int minRadius;
     private final int maxRadius;
     private final float spawnChance;
 
-    private Stage(final Predicate<IBlockState> replace, final IBlockState state, final int minRadius, final int maxRadius, final float spawnChance) {
+    private Stage(final Predicate<IBlockState> replace, final IBlockState ore, final int minRadius, final int maxRadius, final float spawnChance) {
       this.replace = replace;
-      this.state = state;
+      this.ore = ore;
       this.minRadius = minRadius;
       this.maxRadius = maxRadius;
       this.spawnChance = spawnChance;
     }
   }
 
-  public static class WorldOreGeneratorBuilder {
+  public static final class WorldOreGeneratorBuilder {
     private final List<Stage> stages = new ArrayList<>();
-    private int length;
+    private int minLength = 3;
+    private int maxLength = 5;
 
     private WorldOreGeneratorBuilder() { }
 
@@ -73,32 +89,37 @@ public class WorldOreGenerator extends WorldGenerator {
       return this;
     }
 
-    public WorldOreGeneratorBuilder length(final int length) {
-      this.length = length;
+    public WorldOreGeneratorBuilder minLength(final int length) {
+      this.minLength = length;
+      return this;
+    }
+
+    public WorldOreGeneratorBuilder maxLength(final int length) {
+      this.maxLength = length;
       return this;
     }
 
     private WorldOreGenerator build() {
-      return new WorldOreGenerator(this.stages.toArray(new Stage[0]), this.length);
+      return new WorldOreGenerator(this.stages.toArray(new Stage[0]), this.minLength, this.maxLength);
     }
   }
 
-  public static class StageBuilder {
-    private java.util.function.Predicate<IBlockState> replace = WorldOreGenerator::stonePredicate;
-    private IBlockState state = Blocks.STONE.getDefaultState();
+  public static final class StageBuilder {
+    private Predicate<IBlockState> replace = WorldOreGenerator::stonePredicate;
+    private IBlockState ore = Blocks.STONE.getDefaultState();
     private int minRadius;
     private int maxRadius = 5;
     private float spawnChance = 0.1f;
 
     private StageBuilder() { }
 
-    public StageBuilder replace(final java.util.function.Predicate<IBlockState> replace) {
+    public StageBuilder replace(final Predicate<IBlockState> replace) {
       this.replace = replace;
       return this;
     }
 
-    public StageBuilder block(final IBlockState state) {
-      this.state = state;
+    public StageBuilder ore(final IBlockState ore) {
+      this.ore = ore;
       return this;
     }
 
@@ -118,7 +139,7 @@ public class WorldOreGenerator extends WorldGenerator {
     }
 
     private Stage build() {
-      return new Stage(this.replace, this.state, this.minRadius, this.maxRadius, this.spawnChance);
+      return new Stage(this.replace, this.ore, this.minRadius, this.maxRadius, this.spawnChance);
     }
   }
 }

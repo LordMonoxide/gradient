@@ -44,11 +44,12 @@ public final class WorldOreGenerator extends WorldGenerator {
   }
 
   @Override
-  public boolean generate(final World world, final Random rand, final BlockPos root) {
+  public boolean generate(final World world, final Random rand, final BlockPos start) {
     final int length = rand.nextInt(this.maxLength - this.minLength) + this.minLength;
 
     final Matrix3f rotation = new Matrix3f();
     final Vector3f pos = new Vector3f();
+    final Vector3f root = new Vector3f(start.getX(), start.getY(), start.getZ());
 
     float xRotation = rand.nextFloat() * PI * 2;
     float yRotation = rand.nextFloat() * PI * 2;
@@ -58,12 +59,35 @@ public final class WorldOreGenerator extends WorldGenerator {
 
     final BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 
-    for(int blockIndex = 0; blockIndex < length; blockIndex++) {
-      pos.set(blockIndex, 0.0f, 0.0f);
+    int changeDirectionDivisor = 30;
+    int directionIndex = 0;
+
+    for(int blockIndex = 0; blockIndex < length; blockIndex++, directionIndex++) {
+      if(rand.nextInt(changeDirectionDivisor) == 0) {
+        changeDirectionDivisor += 30;
+
+        float rotationChangeBudget = PI / 2;
+        float rotationChange = rand.nextFloat() * rotationChangeBudget;
+        rotationChangeBudget -= rotationChange;
+        xRotation += rand.nextFloat() * rotationChange - rotationChange / 2;
+        rotationChange = rand.nextFloat() * rotationChangeBudget;
+        rotationChangeBudget -= rotationChange;
+        yRotation += rand.nextFloat() * rotationChange - rotationChange / 2;
+        rotationChange = rand.nextFloat() * rotationChangeBudget;
+        zRotation += rand.nextFloat() * rotationChange - rotationChange / 2;
+
+        rotation.rotateXYZ(xRotation, yRotation, zRotation);
+        root.add(pos);
+        directionIndex = 0;
+      }
+
+      changeDirectionDivisor--;
+
+      pos.set(directionIndex, 0.0f, 0.0f);
       pos.mul(rotation);
 
       for(final Stage stage : this.stages) {
-        blockPos.setPos(root.getX() + pos.x, root.getY() + pos.y, root.getZ() + pos.z);
+        blockPos.setPos(root.x + pos.x + 8, root.y + pos.y, root.z + pos.z + 8);
 
         final IBlockState state = world.getBlockState(blockPos);
         if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {

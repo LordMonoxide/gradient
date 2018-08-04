@@ -47,22 +47,27 @@ public final class WorldOreGenerator extends WorldGenerator {
   public boolean generate(final World world, final Random rand, final BlockPos start) {
     final int length = rand.nextInt(this.maxLength - this.minLength) + this.minLength;
 
+    // Initial position
     final Matrix3f rotation = new Matrix3f();
     final Vector3f pos = new Vector3f();
     final Vector3f root = new Vector3f(start.getX(), start.getY(), start.getZ());
 
+    // Initial rotation
     float xRotation = rand.nextFloat() * PI * 2;
     float yRotation = rand.nextFloat() * PI * 2;
     float zRotation = rand.nextFloat() * PI * 2;
-
     rotation.rotateXYZ(xRotation, yRotation, zRotation);
 
     final BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 
+    // 1/x chance for a vein to change direction by up to 45 degrees total (across all axes).
+    // Each block that is generated will decrease this value, making it more likely that the
+    // vein will change directions.  If it changes directions, the divisor is incremented by 30.
     int changeDirectionDivisor = 30;
     int directionIndex = 0;
 
     for(int blockIndex = 0; blockIndex < length; blockIndex++, directionIndex++) {
+      // Change direction?
       if(rand.nextInt(changeDirectionDivisor) == 0) {
         changeDirectionDivisor += 30;
 
@@ -81,6 +86,7 @@ public final class WorldOreGenerator extends WorldGenerator {
         directionIndex = 0;
       }
 
+      // More likely to change direction the longer we go without doing so
       changeDirectionDivisor--;
 
       pos.set(directionIndex, 0.0f, 0.0f);

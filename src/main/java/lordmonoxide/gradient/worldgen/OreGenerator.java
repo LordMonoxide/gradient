@@ -20,7 +20,6 @@ public class OreGenerator implements IWorldGenerator {
     generator.maxLength(35);
 
     generator.addStage(stage -> {
-      stage.replace(state -> true);
       stage.ore(Blocks.GLASS.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(12);
@@ -29,8 +28,7 @@ public class OreGenerator implements IWorldGenerator {
     });
 
     generator.addStage(stage -> {
-      stage.replace(state -> true);
-      stage.ore(Blocks.PUMPKIN.getDefaultState());
+      stage.ore(Blocks.DIAMOND_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(1);
       stage.blockSpawnChance(0.75f);
@@ -43,8 +41,8 @@ public class OreGenerator implements IWorldGenerator {
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
       this.runGenerator(this.magnesium, world, random, chunkX, chunkZ, 4, 0, 128);
 
-      if(random.nextInt(25) == 0) {
-        this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 1, 80, 112);
+      if(random.nextInt(64) == 0) {
+        this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 32);
       }
     }
   }
@@ -59,7 +57,9 @@ public class OreGenerator implements IWorldGenerator {
       final int y = minHeight + rand.nextInt(heightDiff);
       final int z = chunkZ * 16 + rand.nextInt(16);
 
-      generator.generate(world, rand, new BlockPos(x, y, z));
+      if(generator.generate(world, rand, new BlockPos(x, y, z))) {
+        break;
+      }
     }
   }
 }

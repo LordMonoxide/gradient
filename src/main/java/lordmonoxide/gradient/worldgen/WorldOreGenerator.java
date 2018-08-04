@@ -74,6 +74,10 @@ public final class WorldOreGenerator extends WorldGenerator {
     int changeDirectionDivisor = 30;
     int segmentIndex = 0;
 
+    // Return false if we weren't able to place more than 1/3 of the blocks
+    int blocksPlaced = 0;
+    int blocksTotal = 0;
+
     for(int blockIndex = 0; blockIndex < length; blockIndex++, segmentIndex++) {
       // Change direction?
       if(rand.nextInt(changeDirectionDivisor) == 0) {
@@ -112,14 +116,17 @@ public final class WorldOreGenerator extends WorldGenerator {
               final IBlockState state = world.getBlockState(blockPos);
               if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {
                 world.setBlockState(blockPos, stage.ore, 2);
+                blocksPlaced++;
               }
+
+              blocksTotal++;
             }
           }
         }
       }
     }
 
-    return true;
+    return (float)blocksPlaced / blocksTotal >= 1/3;
   }
 
   private static final class Stage {

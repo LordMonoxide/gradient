@@ -72,9 +72,9 @@ public final class WorldOreGenerator extends WorldGenerator {
     // Each block that is generated will decrease this value, making it more likely that the
     // vein will change directions.  If it changes directions, the divisor is incremented by 30.
     int changeDirectionDivisor = 30;
-    int directionIndex = 0;
+    int segmentIndex = 0;
 
-    for(int blockIndex = 0; blockIndex < length; blockIndex++, directionIndex++) {
+    for(int blockIndex = 0; blockIndex < length; blockIndex++, segmentIndex++) {
       // Change direction?
       if(rand.nextInt(changeDirectionDivisor) == 0) {
         changeDirectionDivisor += 30;
@@ -91,7 +91,7 @@ public final class WorldOreGenerator extends WorldGenerator {
 
         rotation.rotateXYZ(xRotation, yRotation, zRotation);
         root.add(pos);
-        directionIndex = 0;
+        segmentIndex = 0;
       }
 
       // More likely to change direction the longer we go without doing so
@@ -104,7 +104,7 @@ public final class WorldOreGenerator extends WorldGenerator {
           for(int i = 0; i < radius - stage.minRadius; i++) {
             if(stage.blockSpawnChance >= rand.nextFloat()) {
               final float angle = rand.nextFloat() * PI * 2;
-              pos.set(directionIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
+              pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
               pos.mul(rotation);
 
               blockPos.setPos(root.x + pos.x + 8, root.y + pos.y, root.z + pos.z + 8);

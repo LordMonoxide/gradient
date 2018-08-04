@@ -16,21 +16,23 @@ import java.util.Random;
 public class OreGenerator implements IWorldGenerator {
   private final WorldGenerator magnesium = new WorldGenMinable(GradientBlocks.ORE_MAGNESIUM.getDefaultState(), 4);
   private final WorldGenerator carbon = WorldOreGenerator.create(generator -> {
-    generator.minLength(15);
-    generator.maxLength(25);
+    generator.minLength(25);
+    generator.maxLength(35);
 
     generator.addStage(stage -> {
       stage.replace(state -> true);
       stage.ore(Blocks.GLASS.getDefaultState());
-      stage.maxRadius(10);
-      stage.spawnChance(0.05f);
+      stage.minRadius(0);
+      stage.maxRadius(12);
+      stage.spawnChance(0.75f);
     });
 
     generator.addStage(stage -> {
       stage.replace(state -> true);
       stage.ore(Blocks.PUMPKIN.getDefaultState());
-      stage.maxRadius(0);
-      stage.spawnChance(1.0f);
+      stage.minRadius(0);
+      stage.maxRadius(1);
+      stage.spawnChance(0.75f);
     });
   });
 

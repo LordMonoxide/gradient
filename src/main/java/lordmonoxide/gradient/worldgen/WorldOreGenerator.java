@@ -45,7 +45,7 @@ public final class WorldOreGenerator extends WorldGenerator {
 
   @Override
   public boolean generate(final World world, final Random rand, final BlockPos start) {
-    final int length = rand.nextInt(this.maxLength - this.minLength) + this.minLength;
+    final int length = rand.nextInt(this.maxLength - this.minLength + 1) + this.minLength;
 
     // Initial position
     final Matrix3f rotation = new Matrix3f();
@@ -89,15 +89,22 @@ public final class WorldOreGenerator extends WorldGenerator {
       // More likely to change direction the longer we go without doing so
       changeDirectionDivisor--;
 
-      pos.set(directionIndex, 0.0f, 0.0f);
-      pos.mul(rotation);
-
       for(final Stage stage : this.stages) {
-        blockPos.setPos(root.x + pos.x + 8, root.y + pos.y, root.z + pos.z + 8);
+        final int radius = rand.nextInt(stage.maxRadius - stage.minRadius + 1) + stage.minRadius;
 
-        final IBlockState state = world.getBlockState(blockPos);
-        if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {
-          world.setBlockState(blockPos, stage.ore, 2);
+        for(int i = 0; i < radius - stage.minRadius; i++) {
+          if(stage.spawnChance >= rand.nextFloat()) {
+            final float angle = rand.nextFloat() * PI * 2;
+            pos.set(directionIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
+            pos.mul(rotation);
+
+            blockPos.setPos(root.x + pos.x + 8, root.y + pos.y, root.z + pos.z + 8);
+
+            final IBlockState state = world.getBlockState(blockPos);
+            if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {
+              world.setBlockState(blockPos, stage.ore, 2);
+            }
+          }
         }
       }
     }

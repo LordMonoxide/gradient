@@ -6,6 +6,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+import org.joml.Matrix3f;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public final class WorldOreGenerator extends WorldGenerator {
+  private static final float PI = (float)Math.PI;
+
   public static WorldOreGenerator create(final Consumer<WorldOreGeneratorBuilder> callback) {
     final WorldOreGeneratorBuilder builder = new WorldOreGeneratorBuilder();
     callback.accept(builder);
@@ -43,15 +47,27 @@ public final class WorldOreGenerator extends WorldGenerator {
   public boolean generate(final World world, final Random rand, final BlockPos root) {
     final int length = rand.nextInt(this.maxLength - this.minLength) + this.minLength;
 
-    for(final Stage stage : this.stages) {
-      final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(root);
+    final Matrix3f rotation = new Matrix3f();
+    final Vector3f pos = new Vector3f();
 
-      for(int x = 0; x < length; x++) {
-        pos.setPos(pos.getX() + 1, pos.getY(), pos.getZ());
+    float xRotation = rand.nextFloat() * PI * 2;
+    float yRotation = rand.nextFloat() * PI * 2;
+    float zRotation = rand.nextFloat() * PI * 2;
 
-        final IBlockState state = world.getBlockState(pos);
-        if(state.getBlock().isReplaceableOreGen(state, world, pos, stage.replace::test)) {
-          world.setBlockState(pos, stage.ore, 2);
+    rotation.rotateXYZ(xRotation, yRotation, zRotation);
+
+    final BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
+
+    for(int blockIndex = 0; blockIndex < length; blockIndex++) {
+      pos.set(blockIndex, 0.0f, 0.0f);
+      pos.mul(rotation);
+
+      for(final Stage stage : this.stages) {
+        blockPos.setPos(root.getX() + pos.x, root.getY() + pos.y, root.getZ() + pos.z);
+
+        final IBlockState state = world.getBlockState(blockPos);
+        if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {
+          world.setBlockState(blockPos, stage.ore, 2);
         }
       }
     }

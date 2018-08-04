@@ -20,6 +20,14 @@ public class OreGenerator implements IWorldGenerator {
     generator.maxLength(35);
 
     generator.addStage(stage -> {
+      stage.ore(Blocks.COAL_ORE.getDefaultState());
+      stage.minRadius(8);
+      stage.maxRadius(18);
+      stage.blockSpawnChance(0.75f);
+      stage.stageSpawnChance(0.90f);
+    });
+
+    generator.addStage(stage -> {
       stage.ore(Blocks.GLASS.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(12);
@@ -47,7 +55,7 @@ public class OreGenerator implements IWorldGenerator {
     }
   }
 
-  private void runGenerator(final WorldGenerator generator, final World world, final Random rand, final int chunkX, final int chunkZ, final int chancesToSpawn, final int minHeight, final int maxHeight) {
+  private boolean runGenerator(final WorldGenerator generator, final World world, final Random rand, final int chunkX, final int chunkZ, final int chancesToSpawn, final int minHeight, final int maxHeight) {
     assert minHeight >= 0 && maxHeight <= 256 && minHeight <= maxHeight : "Illegal Height Arguments for WorldGenerator";
 
     final int heightDiff = maxHeight - minHeight + 1;
@@ -58,8 +66,10 @@ public class OreGenerator implements IWorldGenerator {
       final int z = chunkZ * 16 + rand.nextInt(16);
 
       if(generator.generate(world, rand, new BlockPos(x, y, z))) {
-        break;
+        return true;
       }
     }
+
+    return false;
   }
 }

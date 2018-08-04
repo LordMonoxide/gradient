@@ -126,7 +126,7 @@ public final class WorldOreGenerator extends WorldGenerator {
       }
     }
 
-    return (float)blocksPlaced / blocksTotal >= 1/3;
+    return (float)blocksPlaced / blocksTotal >= 1.0f / 3.0f;
   }
 
   private static final class Stage {

@@ -11,7 +11,9 @@ import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -60,6 +62,12 @@ public final class WorldOreGenerator extends WorldGenerator {
 
     final BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 
+    final Map<Stage, Boolean> shouldSpawn = new HashMap<>();
+
+    for(final Stage stage : this.stages) {
+      shouldSpawn.put(stage, stage.stageSpawnChance >= rand.nextFloat());
+    }
+
     // 1/x chance for a vein to change direction by up to 45 degrees total (across all axes).
     // Each block that is generated will decrease this value, making it more likely that the
     // vein will change directions.  If it changes directions, the divisor is incremented by 30.
@@ -90,19 +98,21 @@ public final class WorldOreGenerator extends WorldGenerator {
       changeDirectionDivisor--;
 
       for(final Stage stage : this.stages) {
-        final int radius = rand.nextInt(stage.maxRadius - stage.minRadius + 1) + stage.minRadius;
+        if(shouldSpawn.get(stage)) {
+          final int radius = rand.nextInt(stage.maxRadius - stage.minRadius + 1) + stage.minRadius;
 
-        for(int i = 0; i < radius - stage.minRadius; i++) {
-          if(stage.spawnChance >= rand.nextFloat()) {
-            final float angle = rand.nextFloat() * PI * 2;
-            pos.set(directionIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
-            pos.mul(rotation);
+          for(int i = 0; i < radius - stage.minRadius; i++) {
+            if(stage.blockSpawnChance >= rand.nextFloat()) {
+              final float angle = rand.nextFloat() * PI * 2;
+              pos.set(directionIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
+              pos.mul(rotation);
 
-            blockPos.setPos(root.x + pos.x + 8, root.y + pos.y, root.z + pos.z + 8);
+              blockPos.setPos(root.x + pos.x + 8, root.y + pos.y, root.z + pos.z + 8);
 
-            final IBlockState state = world.getBlockState(blockPos);
-            if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {
-              world.setBlockState(blockPos, stage.ore, 2);
+              final IBlockState state = world.getBlockState(blockPos);
+              if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {
+                world.setBlockState(blockPos, stage.ore, 2);
+              }
             }
           }
         }
@@ -117,14 +127,16 @@ public final class WorldOreGenerator extends WorldGenerator {
     private final IBlockState ore;
     private final int minRadius;
     private final int maxRadius;
-    private final float spawnChance;
+    private final float blockSpawnChance;
+    private final float stageSpawnChance;
 
-    private Stage(final Predicate<IBlockState> replace, final IBlockState ore, final int minRadius, final int maxRadius, final float spawnChance) {
+    private Stage(final Predicate<IBlockState> replace, final IBlockState ore, final int minRadius, final int maxRadius, final float blockSpawnChance, final float stageSpawnChance) {
       this.replace = replace;
       this.ore = ore;
       this.minRadius = minRadius;
       this.maxRadius = maxRadius;
-      this.spawnChance = spawnChance;
+      this.blockSpawnChance = blockSpawnChance;
+      this.stageSpawnChance = stageSpawnChance;
     }
   }
 
@@ -162,7 +174,8 @@ public final class WorldOreGenerator extends WorldGenerator {
     private IBlockState ore = Blocks.STONE.getDefaultState();
     private int minRadius;
     private int maxRadius = 5;
-    private float spawnChance = 0.1f;
+    private float blockSpawnChance = 0.75f;
+    private float stageSpawnChance = 1.0f;
 
     private StageBuilder() { }
 
@@ -186,13 +199,18 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this;
     }
 
-    public StageBuilder spawnChance(final float spawnChance) {
-      this.spawnChance = spawnChance;
+    public StageBuilder blockSpawnChance(final float spawnChance) {
+      this.blockSpawnChance = spawnChance;
+      return this;
+    }
+
+    public StageBuilder stageSpawnChance(final float spawnChance) {
+      this.stageSpawnChance = spawnChance;
       return this;
     }
 
     private Stage build() {
-      return new Stage(this.replace, this.ore, this.minRadius, this.maxRadius, this.spawnChance);
+      return new Stage(this.replace, this.ore, this.minRadius, this.maxRadius, this.blockSpawnChance, this.stageSpawnChance);
     }
   }
 }

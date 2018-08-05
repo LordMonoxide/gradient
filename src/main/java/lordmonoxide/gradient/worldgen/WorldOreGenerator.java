@@ -10,11 +10,7 @@ import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -113,7 +109,7 @@ public final class WorldOreGenerator extends WorldGenerator {
 
           final int radius = rand.nextInt(maxRadius - minRadius + 1) + minRadius;
 
-          for(int i = 0; i < radius - minRadius; i++) {
+          for(int i = 0; i < (radius - minRadius) * 3; i++) {
             if(blockSpawnChance >= rand.nextFloat()) {
               final float angle = rand.nextFloat() * PI * 2;
               pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
@@ -132,6 +128,10 @@ public final class WorldOreGenerator extends WorldGenerator {
           }
         }
       }
+    }
+
+    if((float)blocksPlaced / blocksTotal >= 1.0f / 3.0f) {
+      System.out.println("Coal spawn " + start + " " + blocksPlaced + "/" + blocksTotal);
     }
 
     return (float)blocksPlaced / blocksTotal >= 1.0f / 3.0f;

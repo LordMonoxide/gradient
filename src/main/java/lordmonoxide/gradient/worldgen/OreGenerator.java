@@ -12,6 +12,7 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
+import java.util.function.Function;
 
 public class OreGenerator implements IWorldGenerator {
   private final WorldGenerator magnesium = new WorldGenMinable(GradientBlocks.ORE_MAGNESIUM.getDefaultState(), 4);
@@ -44,13 +45,32 @@ public class OreGenerator implements IWorldGenerator {
     });
   });
 
+  private final WorldGenerator coal = WorldOreGenerator.create(generator -> {
+    final Function<Integer, Float> scale = depth -> 1.0f / ((depth + 64) / 64.0f);
+
+    generator.minLength(depth -> (int)(scale.apply(depth) * 10));
+    generator.maxLength(depth -> (int)(scale.apply(depth) * 30));
+
+    generator.addStage(stage -> {
+      stage.replace(state -> true);
+      stage.ore(Blocks.COAL_ORE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(depth -> (int)(scale.apply(depth) * 4));
+      stage.blockSpawnChance(1.0f);
+    });
+  });
+
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
       this.runGenerator(this.magnesium, world, random, chunkX, chunkZ, 4, 0, 128);
 
       if(random.nextInt(64) == 0) {
-        this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 32);
+        //this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 32);
+      }
+
+      if(random.nextInt(9) == 0) {
+        this.runGenerator(this.coal, world, random, chunkX, chunkZ, 15, 0, 128);
       }
     }
   }

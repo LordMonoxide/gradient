@@ -4,13 +4,18 @@ import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -49,10 +54,10 @@ public final class WorldOreGenerator extends WorldGenerator {
 
     final int length = rand.nextInt(maxLength - minLength + 1) + minLength;
 
-    // Initial position
+    // Initial position (offset by 8 to help prevent cascading)
     final Matrix3f rotation = new Matrix3f();
     final Vector3f pos = new Vector3f();
-    final Vector3f root = new Vector3f(start.getX(), start.getY(), start.getZ());
+    final Vector3f root = new Vector3f(start.getX() + 8, start.getY(), start.getZ() + 8);
 
     // Initial rotation
     float xRotation = rand.nextFloat() * PI * 2;
@@ -115,11 +120,10 @@ public final class WorldOreGenerator extends WorldGenerator {
               pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
               pos.mul(rotation);
 
-              blockPos.setPos(root.x + pos.x + 8, root.y + pos.y, root.z + pos.z + 8);
+              blockPos.setPos(root.x + pos.x, root.y + pos.y, root.z + pos.z);
 
-              final IBlockState state = world.getBlockState(blockPos);
-              if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {
-                if(world.setBlockState(blockPos, stage.ore, 2)) {
+              if(!world.isOutsideBuildHeight(blockPos)) {
+                if(this.placeBlock(world, blockPos, stage)) {
                   blocksPlaced++;
                 }
               }
@@ -132,6 +136,47 @@ public final class WorldOreGenerator extends WorldGenerator {
     }
 
     return (float)blocksPlaced / blocksTotal >= 1.0f / 3.0f;
+  }
+
+  //TODO: this needs to take dimension into account
+  private final Map<ChunkPos, Map<BlockPos, Stage>> deferredOres = new HashMap<>();
+
+  private boolean placeBlock(final World world, final BlockPos pos, final Stage stage) {
+    final ChunkPos chunkPos = new ChunkPos(pos);
+
+    if(!world.isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
+      final Map<BlockPos, Stage> deferred;
+
+      if(this.deferredOres.containsKey(chunkPos)) {
+        deferred = this.deferredOres.get(chunkPos);
+      } else {
+        deferred = new HashMap<>();
+        this.deferredOres.put(chunkPos, deferred);
+      }
+
+      deferred.put(pos, stage);
+      return true;
+    }
+
+    final IBlockState state = world.getBlockState(pos);
+    if(state.getBlock().isReplaceableOreGen(state, world, pos, stage.replace::test)) {
+      return world.setBlockState(pos, stage.ore, 0x2 | 0x10);
+    }
+
+    return false;
+  }
+
+  public void generateDeferredOres(final World world, final ChunkPos chunkPos) {
+    if(this.deferredOres.containsKey(chunkPos)) {
+      this.deferredOres.get(chunkPos).forEach((pos, stage) -> {
+        final IBlockState oldState = world.getBlockState(pos);
+        if(oldState.getBlock().isReplaceableOreGen(oldState, world, pos, stage.replace::test)) {
+          world.setBlockState(pos, stage.ore, 2);
+        }
+      });
+
+      this.deferredOres.remove(chunkPos);
+    }
   }
 
   private static final class Stage {

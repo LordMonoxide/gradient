@@ -3,6 +3,7 @@ package lordmonoxide.gradient.worldgen;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 
 public class OreGenerator implements IWorldGenerator {
   private final WorldGenerator magnesium = new WorldGenMinable(GradientBlocks.ORE_MAGNESIUM.getDefaultState(), 4);
-  private final WorldGenerator carbon = WorldOreGenerator.create(generator -> {
+  private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);
     generator.maxLength(35);
 
@@ -45,7 +46,7 @@ public class OreGenerator implements IWorldGenerator {
     });
   });
 
-  private final WorldGenerator coal = WorldOreGenerator.create(generator -> {
+  private final WorldOreGenerator coal = WorldOreGenerator.create(generator -> {
     final Function<Integer, Float> scale = depth -> 1.0f / ((depth + 64) / 64.0f);
 
     generator.minLength(depth -> (int)(scale.apply(depth) * 10));
@@ -61,6 +62,11 @@ public class OreGenerator implements IWorldGenerator {
 
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
+    final ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
+
+    this.carbon.generateDeferredOres(world, chunkPos);
+    this.coal.generateDeferredOres(world, chunkPos);
+
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
       this.runGenerator(this.magnesium, world, random, chunkX, chunkZ, 4, 0, 128);
 

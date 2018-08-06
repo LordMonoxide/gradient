@@ -3,6 +3,7 @@ package lordmonoxide.gradient;
 import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.overrides.*;
 import lordmonoxide.gradient.worldgen.DisableVanillaOre;
+import lordmonoxide.gradient.worldgen.GeneratePebbles;
 import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;

@@ -119,8 +119,9 @@ public final class WorldOreGenerator extends WorldGenerator {
 
               final IBlockState state = world.getBlockState(blockPos);
               if(state.getBlock().isReplaceableOreGen(state, world, blockPos, stage.replace::test)) {
-                world.setBlockState(blockPos, stage.ore, 2);
-                blocksPlaced++;
+                if(world.setBlockState(blockPos, stage.ore, 2)) {
+                  blocksPlaced++;
+                }
               }
 
               blocksTotal++;
@@ -128,10 +129,6 @@ public final class WorldOreGenerator extends WorldGenerator {
           }
         }
       }
-    }
-
-    if((float)blocksPlaced / blocksTotal >= 1.0f / 3.0f) {
-      System.out.println("Coal spawn " + start + " " + blocksPlaced + "/" + blocksTotal);
     }
 
     return (float)blocksPlaced / blocksTotal >= 1.0f / 3.0f;

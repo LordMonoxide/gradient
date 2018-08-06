@@ -52,7 +52,6 @@ public class OreGenerator implements IWorldGenerator {
     generator.maxLength(depth -> (int)(scale.apply(depth) * 30));
 
     generator.addStage(stage -> {
-      stage.replace(state -> true);
       stage.ore(Blocks.COAL_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(depth -> (int)(scale.apply(depth) * 4));
@@ -66,7 +65,7 @@ public class OreGenerator implements IWorldGenerator {
       this.runGenerator(this.magnesium, world, random, chunkX, chunkZ, 4, 0, 128);
 
       if(random.nextInt(64) == 0) {
-        //this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 32);
+        this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 32);
       }
 
       if(random.nextInt(9) == 0) {

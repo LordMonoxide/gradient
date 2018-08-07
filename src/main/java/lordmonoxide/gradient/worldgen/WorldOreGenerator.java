@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public final class WorldOreGenerator extends WorldGenerator {
   private static final float PI = (float)Math.PI;
@@ -138,28 +137,18 @@ public final class WorldOreGenerator extends WorldGenerator {
     return (float)blocksPlaced / blocksTotal >= 1.0f / 3.0f;
   }
 
-  //TODO: this needs to take dimension into account
-  private final Map<ChunkPos, Map<BlockPos, Stage>> deferredOres = new HashMap<>();
-
   private boolean placeBlock(final World world, final BlockPos pos, final Stage stage) {
     final ChunkPos chunkPos = new ChunkPos(pos);
 
     if(!world.isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
-      final Map<BlockPos, Stage> deferred;
-
-      if(this.deferredOres.containsKey(chunkPos)) {
-        deferred = this.deferredOres.get(chunkPos);
-      } else {
-        deferred = new HashMap<>();
-        this.deferredOres.put(chunkPos, deferred);
-      }
-
-      deferred.put(pos, stage);
+      final DeferredOreStorage deferredOres = DeferredOreStorage.get(world);
+      deferredOres.get(chunkPos).put(pos, stage.ore);
+      deferredOres.markDirty();
       return true;
     }
 
     final IBlockState state = world.getBlockState(pos);
-    if(state.getBlock().isReplaceableOreGen(state, world, pos, stage.replace::test)) {
+    if(state.getBlock().isReplaceableOreGen(state, world, pos, WorldOreGenerator::stonePredicate)) {
       return world.setBlockState(pos, stage.ore, 0x2 | 0x10);
     }
 
@@ -167,28 +156,29 @@ public final class WorldOreGenerator extends WorldGenerator {
   }
 
   public void generateDeferredOres(final World world, final ChunkPos chunkPos) {
-    if(this.deferredOres.containsKey(chunkPos)) {
-      this.deferredOres.get(chunkPos).forEach((pos, stage) -> {
+    final DeferredOreStorage deferredOres = DeferredOreStorage.get(world);
+
+    if(deferredOres.has(chunkPos)) {
+      deferredOres.get(chunkPos).forEach((pos, ore) -> {
         final IBlockState oldState = world.getBlockState(pos);
-        if(oldState.getBlock().isReplaceableOreGen(oldState, world, pos, stage.replace::test)) {
-          world.setBlockState(pos, stage.ore, 2);
+        if(oldState.getBlock().isReplaceableOreGen(oldState, world, pos, WorldOreGenerator::stonePredicate)) {
+          world.setBlockState(pos, ore, 2);
         }
       });
 
-      this.deferredOres.remove(chunkPos);
+      deferredOres.remove(chunkPos);
+      deferredOres.markDirty();
     }
   }
 
-  private static final class Stage {
-    private final Predicate<IBlockState> replace;
+  static final class Stage {
     private final IBlockState ore;
     private final Function<Integer, Integer> minRadius;
     private final Function<Integer, Integer> maxRadius;
     private final Function<Integer, Float> blockSpawnChance;
     private final Function<Integer, Float> stageSpawnChance;
 
-    private Stage(final Predicate<IBlockState> replace, final IBlockState ore, final Function<Integer, Integer> minRadius, final Function<Integer, Integer> maxRadius, final Function<Integer, Float> blockSpawnChance, final Function<Integer, Float> stageSpawnChance) {
-      this.replace = replace;
+    private Stage(final IBlockState ore, final Function<Integer, Integer> minRadius, final Function<Integer, Integer> maxRadius, final Function<Integer, Float> blockSpawnChance, final Function<Integer, Float> stageSpawnChance) {
       this.ore = ore;
       this.minRadius = minRadius;
       this.maxRadius = maxRadius;
@@ -229,13 +219,14 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this;
     }
 
+    private static final Stage[] ZERO_LENGTH_STAGE = new Stage[0];
+
     private WorldOreGenerator build() {
-      return new WorldOreGenerator(this.stages.toArray(new Stage[0]), this.minLength, this.maxLength);
+      return new WorldOreGenerator(this.stages.toArray(ZERO_LENGTH_STAGE), this.minLength, this.maxLength);
     }
   }
 
   public static final class StageBuilder {
-    private Predicate<IBlockState> replace = WorldOreGenerator::stonePredicate;
     private IBlockState ore = Blocks.STONE.getDefaultState();
     private Function<Integer, Integer> minRadius = depth -> 0;
     private Function<Integer, Integer> maxRadius = depth -> 5;
@@ -243,11 +234,6 @@ public final class WorldOreGenerator extends WorldGenerator {
     private Function<Integer, Float> stageSpawnChance = depth -> 1.0f;
 
     private StageBuilder() { }
-
-    public StageBuilder replace(final Predicate<IBlockState> replace) {
-      this.replace = replace;
-      return this;
-    }
 
     public StageBuilder ore(final IBlockState ore) {
       this.ore = ore;
@@ -291,7 +277,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     }
 
     private Stage build() {
-      return new Stage(this.replace, this.ore, this.minRadius, this.maxRadius, this.blockSpawnChance, this.stageSpawnChance);
+      return new Stage(this.ore, this.minRadius, this.maxRadius, this.blockSpawnChance, this.stageSpawnChance);
     }
   }
 }

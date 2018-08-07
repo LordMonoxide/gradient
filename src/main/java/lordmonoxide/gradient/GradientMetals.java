@@ -20,15 +20,15 @@ public final class GradientMetals {
 
   private static final Map<Integer, Meltable> meltables = new HashMap<>();
 
-  public static final Metal    INVALID_METAL    = new Metal("invalid", Float.POSITIVE_INFINITY, 0.0f, 0.0f, false, false, false);
+  public static final Metal    INVALID_METAL    = new Metal("invalid", Float.POSITIVE_INFINITY, 0.0f, 0.0f, false, false, false, 0, 0, 0, 0, 0, 0, 0);
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
 
-  public static final Metal COPPER    = addMetal("copper",    1085.00f, 3.0f,  63.55f).add();
-  public static final Metal TIN       = addMetal("tin",        231.93f, 1.5f, 118.71f).add();
-  public static final Metal IRON      = addMetal("iron",      1538.00f, 4.0f,  55.85f).add();
-  public static final Metal GOLD      = addMetal("gold",      1064.00f, 2.0f, 196.97f).add();
-  public static final Metal BRONZE    = addMetal("bronze",     950.00f, 3.5f, 182.26f).add();
-  public static final Metal MAGNESIUM = addMetal("magnesium",  650.00f, 2.5f,  24.31f).disableTools().add();
+  public static final Metal COPPER    = addMetal("copper",    1085.00f, 3.0f,  63.55f).colours(0xFFFFB88B, 0xFFFFB88B, 0xFFFF6300, 0xFFDE5600, 0xFFDB2400, 0xFF792F00, 0xFF492914).add();
+  public static final Metal TIN       = addMetal("tin",        231.93f, 1.5f, 118.71f).colours(0xFFEFEFEF, 0xFFF9F9F9, 0xFFCCCCCC, 0xFFB7B7B7, 0xFFADADAD, 0xFF8E8E8E, 0xFF777777).add();
+  public static final Metal IRON      = addMetal("iron",      1538.00f, 4.0f,  55.85f).colours(0xFFD8D8D8, 0xFFFFFFFF, 0xFF969696, 0xFF727272, 0xFF7F7F7F, 0xFF444444, 0xFF353535).add();
+  public static final Metal GOLD      = addMetal("gold",      1064.00f, 2.0f, 196.97f).colours(0xFFFFFF8B, 0xFFFFFFFF, 0xFFDEDE00, 0xFFDC7613, 0xFF868600, 0xFF505000, 0xFF3C3C00).add();
+  public static final Metal BRONZE    = addMetal("bronze",     950.00f, 3.5f, 182.26f).colours(0xFFFFE48B, 0xFFFFEAA8, 0xFFFFC400, 0xFFDEAA00, 0xFFDB7800, 0xFF795D00, 0xFF795D00).add();
+  public static final Metal MAGNESIUM = addMetal("magnesium",  650.00f, 2.5f,  24.31f).disableTools().colours(0xFFF9F9F9, 0xFFFFFFFF, 0xFFCCCCCC, 0xFFB7B7B7, 0xFF727272, 0xFF444444, 0xFF262626).add();
 
   public static final Metal GLASS = addMetal("glass", 1200.00f, 5.0f, 50.0f).disableTools().disableNuggets().disableIngots().add();
 
@@ -204,10 +204,18 @@ public final class GradientMetals {
     public final boolean canMakePlates;
     public final boolean canMakeDustWithMortar;
 
+    public final int colourDiffuse;
+    public final int colourSpecular;
+    public final int colourShadow1;
+    public final int colourShadow2;
+    public final int colourEdge1;
+    public final int colourEdge2;
+    public final int colourEdge3;
+
     private ItemStack nugget;
     Fluid fluid;
 
-    private Metal(final String name, final float meltTemp, final float hardness, final float weight, final boolean canMakeTools, final boolean canMakeNuggets, final boolean canMakeIngots) {
+    private Metal(final String name, final float meltTemp, final float hardness, final float weight, final boolean canMakeTools, final boolean canMakeNuggets, final boolean canMakeIngots, final int colourDiffuse, final int colourSpecular, final int colourShadow1, final int colourShadow2, final int colourEdge1, final int colourEdge2, final int colourEdge3) {
       this.id = currentId++;
       this.name = name;
       this.meltTime = Math.round(hardness * 7.5f);
@@ -228,6 +236,14 @@ public final class GradientMetals {
       this.canMakeIngots = canMakeIngots;
       this.canMakePlates = hardness <= 4.0f;
       this.canMakeDustWithMortar = hardness <= 2.5f;
+
+      this.colourDiffuse = colourDiffuse;
+      this.colourSpecular = colourSpecular;
+      this.colourShadow1 = colourShadow1;
+      this.colourShadow2 = colourShadow2;
+      this.colourEdge1 = colourEdge1;
+      this.colourEdge2 = colourEdge2;
+      this.colourEdge3 = colourEdge3;
     }
 
     public ItemStack getNugget() {
@@ -287,6 +303,14 @@ public final class GradientMetals {
     private boolean canMakeNuggets = true;
     private boolean canMakeIngots = true;
 
+    private int colourDiffuse = 0xFFCFCFCF;
+    private int colourSpecular = 0xFFFFFFFF;
+    private int colourShadow1 = 0xFF7F7F7F;
+    private int colourShadow2 = 0xFF5F5F5F;
+    private int colourEdge1 = 0xFF3F3F3F;
+    private int colourEdge2 = 0xFF2F2F2F;
+    private int colourEdge3 = 0xFF1F1F1F;
+
     private MetalBuilder(final String name, final float meltTemp, final float hardness, final float weight) {
       this.name = name;
       this.meltTemp = meltTemp;
@@ -309,8 +333,19 @@ public final class GradientMetals {
       return this;
     }
 
+    public MetalBuilder colours(final int colourDiffuse, final int colourSpecular, final int colourShadow1, final int colourShadow2, final int colourEdge1, final int colourEdge2, final int colourEdge3) {
+      this.colourDiffuse = colourDiffuse;
+      this.colourSpecular = colourSpecular;
+      this.colourShadow1 = colourShadow1;
+      this.colourShadow2 = colourShadow2;
+      this.colourEdge1 = colourEdge1;
+      this.colourEdge2 = colourEdge2;
+      this.colourEdge3 = colourEdge3;
+      return this;
+    }
+
     public Metal add() {
-      final Metal metal = new Metal(this.name, this.meltTemp, this.hardness, this.weight, this.canMakeTools, this.canMakeNuggets, this.canMakeIngots);
+      final Metal metal = new Metal(this.name, this.meltTemp, this.hardness, this.weight, this.canMakeTools, this.canMakeNuggets, this.canMakeIngots, this.colourDiffuse, this.colourSpecular, this.colourShadow1, this.colourShadow2, this.colourEdge1, this.colourEdge2, this.colourEdge3);
       metals.add(metal);
       return metal;
     }

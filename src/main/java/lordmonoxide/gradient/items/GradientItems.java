@@ -4,7 +4,6 @@ import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
 import lordmonoxide.gradient.items.armour.ClothPants;
 import lordmonoxide.gradient.items.armour.ClothShirt;
@@ -25,6 +24,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
@@ -131,10 +131,10 @@ public final class GradientItems {
     OreDictionary.registerOre("toolMortar", MORTAR.getWildcardItemStack());
 
     // Metals/metal tools
-    OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);
-
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);
+
+      OreDictionary.registerOre("ore" + caps, ForgeRegistries.BLOCKS.getValue(GradientMod.resource("ore_" + metal.name)));
 
       if(metal.canMakeNuggets) {
         OreDictionary.registerOre("nugget" + caps, Nugget.get(metal, 1));

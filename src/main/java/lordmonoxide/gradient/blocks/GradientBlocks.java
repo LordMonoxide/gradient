@@ -45,8 +45,6 @@ public final class GradientBlocks {
   public static final Material MATERIAL_CLAY_MACHINE   = new Material(MapColor.BROWN);
   public static final Material MATERIAL_BRONZE_MACHINE = new Material(MapColor.GOLD);
 
-  public static final BlockOreMagnesium ORE_MAGNESIUM = RegistrationHandler.register(new BlockOreMagnesium());
-
   public static final BlockPebble PEBBLE;
 
   static {
@@ -125,6 +123,10 @@ public final class GradientBlocks {
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
       GradientMod.logger.info("Registering blocks");
+
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+        register(new BlockOre(metal));
+      }
 
       // Trigger block registration
       new GradientBlocks();

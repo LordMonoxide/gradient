@@ -3,7 +3,6 @@ package lordmonoxide.gradient;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
@@ -18,10 +17,12 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@SideOnly(Side.CLIENT)
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = GradientMod.MODID)
 public final class ModelManager {
   private ModelManager() { }
@@ -51,7 +52,7 @@ public final class ModelManager {
 
     final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, "fluid"), fluid.getName());
 
-    ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> modelResourceLocation));
+    ModelLoader.setCustomModelResourceLocation(item, 0, modelResourceLocation);
 
     ModelLoader.setCustomStateMapper(fluid.getBlock(), new StateMapperBase() {
       @Override
@@ -97,8 +98,7 @@ public final class ModelManager {
     }
 
     if(!item.getHasSubtypes()) {
-      ModelBakery.registerItemVariants(item, fullModelLocation);
-      ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> fullModelLocation));
+      ModelLoader.setCustomModelResourceLocation(item, 0, fullModelLocation);
       return;
     }
 
@@ -106,30 +106,6 @@ public final class ModelManager {
     item.getSubItems(item.getCreativeTab(), stacks);
 
     stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getTranslationKey(stack).substring(5)), "inventory")));
-  }
-
-  /**
-   * A hackish adapter that allows lambdas to be used as {@link ItemMeshDefinition} implementations without breaking ForgeGradle's
-   * reobfuscation and causing {@link AbstractMethodError}s.
-   * <p>
-   * Written by diesieben07 in this thread:
-   * http://www.minecraftforge.net/forum/index.php/topic,34034.0.html
-   *
-   * @author diesieben07
-   */
-  @FunctionalInterface
-  interface MeshDefinitionFix extends ItemMeshDefinition {
-    ModelResourceLocation getLocation(final ItemStack stack);
-
-    // Helper method to easily create lambda instances of this class
-    static ItemMeshDefinition create(final MeshDefinitionFix lambda) {
-      return lambda;
-    }
-
-    @Override
-    default ModelResourceLocation getModelLocation(final ItemStack stack) {
-      return this.getLocation(stack);
-    }
   }
 
   @FunctionalInterface

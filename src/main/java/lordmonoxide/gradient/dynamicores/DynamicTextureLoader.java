@@ -34,6 +34,7 @@ public final class DynamicTextureLoader {
     final ResourceLocation dustLoc = GradientMod.resource("items/dust");
     final ResourceLocation crushedLoc = GradientMod.resource("items/crushed");
     final ResourceLocation purifiedLoc = GradientMod.resource("items/purified");
+    final ResourceLocation plateLoc = GradientMod.resource("items/plate");
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       registerDynamicTextures(map, oreLoc, metal);
@@ -46,6 +47,7 @@ public final class DynamicTextureLoader {
       registerDynamicTextures(map, dustLoc, metal);
       registerDynamicTextures(map, crushedLoc, metal);
       registerDynamicTextures(map, purifiedLoc, metal);
+      registerDynamicTextures(map, plateLoc, metal);
     }
   }
 

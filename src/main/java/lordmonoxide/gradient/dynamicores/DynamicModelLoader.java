@@ -32,6 +32,7 @@ public final class DynamicModelLoader {
     registerItem(DynamicModelLoader::acceptCrushed);
     registerItem(DynamicModelLoader::acceptPurified);
     registerItem(DynamicModelLoader::acceptPlates);
+    registerItem(DynamicModelLoader::acceptTools);
   }
 
   private static void registerBlock(final Predicate<ResourceLocation> accepts) {
@@ -84,6 +85,10 @@ public final class DynamicModelLoader {
 
   private static boolean acceptPlates(final ResourceLocation loc) {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("plate.");
+  }
+
+  private static boolean acceptTools(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("tool.");
   }
 
   private static ImmutableMap<String, String> blockTextures(final ResourceLocation loc) {

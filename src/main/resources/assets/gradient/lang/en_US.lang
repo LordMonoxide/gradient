@@ -124,7 +124,13 @@ fluid.magnesium=Molten Magnesium
 fluid.glass=Molten Glass
 
 # Blocks
-tile.ore_magnesium.name=Magnesium Ore
+tile.ore.copper.name=Copper Ore
+tile.ore.tin.name=Tin Ore
+tile.ore.iron.name=Iron Ore
+tile.ore.gold.name=Gold Ore
+tile.ore.bronze.name=Bronze Ore
+tile.ore.magnesium.name=Magnesium Ore
+tile.ore.glass.name=Glass Ore
 tile.pebble.name=Pebble
 tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel

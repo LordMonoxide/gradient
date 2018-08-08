@@ -134,7 +134,7 @@ public final class GradientItems {
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);
 
-      OreDictionary.registerOre("ore" + caps, ForgeRegistries.BLOCKS.getValue(GradientMod.resource("ore_" + metal.name)));
+      OreDictionary.registerOre("ore" + caps, ForgeRegistries.BLOCKS.getValue(GradientMod.resource("ore." + metal.name)));
 
       if(metal.canMakeNuggets) {
         OreDictionary.registerOre("nugget" + caps, Nugget.get(metal, 1));

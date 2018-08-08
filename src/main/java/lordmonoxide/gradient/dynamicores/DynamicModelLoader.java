@@ -27,6 +27,10 @@ public final class DynamicModelLoader {
     registerItem(DynamicModelLoader::acceptMattocks);
     registerItem(DynamicModelLoader::acceptPickaxes);
     registerItem(DynamicModelLoader::acceptSwords);
+    registerItem(DynamicModelLoader::acceptNuggets);
+    registerItem(DynamicModelLoader::acceptDusts);
+    registerItem(DynamicModelLoader::acceptCrushed);
+    registerItem(DynamicModelLoader::acceptPurified);
   }
 
   private static void registerBlock(final Predicate<ResourceLocation> accepts) {
@@ -59,6 +63,22 @@ public final class DynamicModelLoader {
 
   private static boolean acceptSwords(final ResourceLocation loc) {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.sword.");
+  }
+
+  private static boolean acceptNuggets(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("nugget.");
+  }
+
+  private static boolean acceptDusts(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("dust.");
+  }
+
+  private static boolean acceptCrushed(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("crushed.");
+  }
+
+  private static boolean acceptPurified(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("purified.");
   }
 
   private static ImmutableMap<String, String> blockTextures(final ResourceLocation loc) {

@@ -71,7 +71,7 @@ public final class GradientItems {
 
     // Register crushed
     GradientMetals.metals.stream().filter(metal -> metal.canMakeIngots).map(Crushed::new).forEach(RegistrationHandler::register);
-    GradientMetals.metals.stream().filter(metal -> metal.canMakeIngots).map(CrushedPurified::new).forEach(RegistrationHandler::register);
+    GradientMetals.metals.stream().filter(metal -> metal.canMakeIngots).map(Purified::new).forEach(RegistrationHandler::register);
 
     // Register dusts
     GradientMetals.metals.stream().map(Dust::new).forEach(RegistrationHandler::register);
@@ -139,7 +139,7 @@ public final class GradientItems {
       if(metal.canMakeNuggets) {
         OreDictionary.registerOre("nugget" + caps, Nugget.get(metal, 1));
         OreDictionary.registerOre("crushed" + caps, Crushed.get(metal, 1));
-        OreDictionary.registerOre("crushedPurified" + caps, CrushedPurified.get(metal, 1));
+        OreDictionary.registerOre("crushedPurified" + caps, Purified.get(metal, 1));
       }
 
       OreDictionary.registerOre("dust" + caps, Dust.getDust(metal, 1));

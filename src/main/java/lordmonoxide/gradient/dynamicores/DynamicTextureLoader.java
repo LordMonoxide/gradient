@@ -30,6 +30,10 @@ public final class DynamicTextureLoader {
     final ResourceLocation mattockLoc = GradientMod.resource("items/cast_item.mattock");
     final ResourceLocation pickaxeLoc = GradientMod.resource("items/cast_item.pickaxe");
     final ResourceLocation swordLoc = GradientMod.resource("items/cast_item.sword");
+    final ResourceLocation nuggetLoc = GradientMod.resource("items/nugget");
+    final ResourceLocation dustLoc = GradientMod.resource("items/dust");
+    final ResourceLocation crushedLoc = GradientMod.resource("items/crushed");
+    final ResourceLocation purifiedLoc = GradientMod.resource("items/purified");
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       registerDynamicTextures(map, oreLoc, metal);
@@ -38,6 +42,10 @@ public final class DynamicTextureLoader {
       registerDynamicTextures(map, mattockLoc, metal);
       registerDynamicTextures(map, pickaxeLoc, metal);
       registerDynamicTextures(map, swordLoc, metal);
+      registerDynamicTextures(map, nuggetLoc, metal);
+      registerDynamicTextures(map, dustLoc, metal);
+      registerDynamicTextures(map, crushedLoc, metal);
+      registerDynamicTextures(map, purifiedLoc, metal);
     }
   }
 

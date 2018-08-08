@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CrushedPurified extends GradientItem {
-  private static final Map<GradientMetals.Metal, CrushedPurified> items = new HashMap<>();
+public class Purified extends GradientItem {
+  private static final Map<GradientMetals.Metal, Purified> items = new HashMap<>();
 
   public static ItemStack get(final GradientMetals.Metal metal, final int amount) {
     final GradientItem item = items.get(metal);
@@ -22,8 +22,8 @@ public class CrushedPurified extends GradientItem {
 
   public final GradientMetals.Metal metal;
 
-  public CrushedPurified(final GradientMetals.Metal metal) {
-    super("crushed.purified." + metal.name, CreativeTabs.MATERIALS);
+  public Purified(final GradientMetals.Metal metal) {
+    super("purified." + metal.name, CreativeTabs.MATERIALS);
     items.put(metal, this);
     this.metal = metal;
   }

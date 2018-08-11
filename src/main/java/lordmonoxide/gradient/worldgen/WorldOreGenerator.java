@@ -66,21 +66,21 @@ public final class WorldOreGenerator extends WorldGenerator {
 
     final BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 
-    final Map<Stage, Boolean> shouldSpawn = new HashMap<>();
+    final List<Stage> stages = new ArrayList<>();
 
     for(final Stage stage : this.stages) {
-      shouldSpawn.put(stage, stage.stageSpawnChance.apply(start.getY()) >= rand.nextFloat());
+      if(stage.stageSpawnChance.apply(start.getY()) >= rand.nextFloat()) {
+        stages.add(stage);
+      }
     }
+
+    final Map<BlockPos, IBlockState> blocksToPlace = new HashMap<>();
 
     // 1/x chance for a vein to change direction by up to 45 degrees total (across all axes).
     // Each block that is generated will decrease this value, making it more likely that the
     // vein will change directions.  If it changes directions, the divisor is incremented by 30.
     int changeDirectionDivisor = 30;
     int segmentIndex = 0;
-
-    // Return false if we weren't able to place more than 1/3 of the blocks
-    int blocksPlaced = 0;
-    int blocksTotal = 0;
 
     for(int blockIndex = 0; blockIndex < length; blockIndex++, segmentIndex++) {
       // Change direction?
@@ -105,54 +105,53 @@ public final class WorldOreGenerator extends WorldGenerator {
       // More likely to change direction the longer we go without doing so
       changeDirectionDivisor--;
 
-      for(final Stage stage : this.stages) {
-        if(shouldSpawn.get(stage)) {
-          final int minRadius = stage.minRadius.apply(start.getY());
-          final int maxRadius = stage.maxRadius.apply(start.getY());
-          final float blockSpawnChance = stage.blockSpawnChance.apply(start.getY());
+      for(final Stage stage : stages) {
+        final int minRadius = stage.minRadius.apply(start.getY());
+        final int maxRadius = stage.maxRadius.apply(start.getY());
+        final int blockCount = maxRadius * maxRadius - minRadius * minRadius;
+        final float blockSpawnChance = stage.blockSpawnChance.apply(start.getY());
 
-          final int radius = rand.nextInt(maxRadius - minRadius + 1) + minRadius;
+        for(int i = 0; i < blockCount; i++) {
+          if(blockSpawnChance >= rand.nextFloat()) {
+            final int radius = rand.nextInt(maxRadius - minRadius + 1) + minRadius;
+            final float angle = rand.nextFloat() * PI * 2;
 
-          for(int i = 0; i < (radius - minRadius) * 3; i++) {
-            if(blockSpawnChance >= rand.nextFloat()) {
-              final float angle = rand.nextFloat() * PI * 2;
-              pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
-              pos.mul(rotation);
+            pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
+            pos.mul(rotation);
 
-              blockPos.setPos(root.x + pos.x, root.y + pos.y, root.z + pos.z);
+            blockPos.setPos(root.x + pos.x, root.y + pos.y, root.z + pos.z);
 
-              if(!world.isOutsideBuildHeight(blockPos)) {
-                if(this.placeBlock(world, blockPos, stage)) {
-                  blocksPlaced++;
-                }
-              }
-
-              blocksTotal++;
-            }
+            this.placeBlock(blocksToPlace, world, blockPos, stage);
           }
         }
       }
     }
 
-    return (float)blocksPlaced / blocksTotal >= 1.0f / 3.0f;
+    for(final Map.Entry<BlockPos, IBlockState> block : blocksToPlace.entrySet()) {
+      final IBlockState state = world.getBlockState(block.getKey());
+      if(state.getBlock().isReplaceableOreGen(state, world, block.getKey(), WorldOreGenerator::stonePredicate)) {
+        world.setBlockState(block.getKey(), block.getValue(), 0x2 | 0x10);
+      }
+    }
+
+    return true;
   }
 
-  private boolean placeBlock(final World world, final BlockPos pos, final Stage stage) {
+  private void placeBlock(final Map<BlockPos, IBlockState> blocksToPlace, final World world, final BlockPos pos, final Stage stage) {
+    if(world.isOutsideBuildHeight(pos)) {
+      return;
+    }
+
     final ChunkPos chunkPos = new ChunkPos(pos);
 
     if(!world.isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
       final DeferredOreStorage deferredOres = DeferredOreStorage.get(world);
-      deferredOres.get(chunkPos).put(pos, stage.ore);
+      deferredOres.get(chunkPos).put(pos.toImmutable(), stage.ore);
       deferredOres.markDirty();
-      return true;
+      return;
     }
 
-    final IBlockState state = world.getBlockState(pos);
-    if(state.getBlock().isReplaceableOreGen(state, world, pos, WorldOreGenerator::stonePredicate)) {
-      return world.setBlockState(pos, stage.ore, 0x2 | 0x10);
-    }
-
-    return false;
+    blocksToPlace.put(pos.toImmutable(), stage.ore);
   }
 
   public void generateDeferredOres(final World world, final ChunkPos chunkPos) {
@@ -171,7 +170,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     }
   }
 
-  static final class Stage {
+  private static final class Stage {
     private final IBlockState ore;
     private final Function<Integer, Integer> minRadius;
     private final Function<Integer, Integer> maxRadius;

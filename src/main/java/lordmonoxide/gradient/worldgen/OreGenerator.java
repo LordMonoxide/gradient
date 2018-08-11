@@ -1,6 +1,10 @@
 package lordmonoxide.gradient.worldgen;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.DimensionType;
@@ -8,28 +12,41 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.Random;
 import java.util.function.Function;
 
 public class OreGenerator implements IWorldGenerator {
+  @GameRegistry.ObjectHolder("gradient:ore.hematite")
+  private static final Block HEMATITE = null;
+
   private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);
     generator.maxLength(35);
 
     generator.addStage(stage -> {
       stage.ore(Blocks.COAL_ORE.getDefaultState());
-      stage.minRadius(8);
-      stage.maxRadius(18);
+      stage.minRadius(5);
+      stage.maxRadius(8);
       stage.blockSpawnChance(0.75f);
+      stage.stageSpawnChance(0.90f);
+    });
+
+    generator.addStage(stage -> {
+      stage.ore(Blocks.COAL_ORE.getDefaultState());
+      stage.minRadius(9);
+      stage.maxRadius(11);
+      stage.blockSpawnChance(0.33f);
       stage.stageSpawnChance(0.90f);
     });
 
     generator.addStage(stage -> {
       stage.ore(Blocks.GLASS.getDefaultState());
       stage.minRadius(0);
-      stage.maxRadius(12);
+      stage.maxRadius(7);
       stage.blockSpawnChance(0.75f);
       stage.stageSpawnChance(0.95f);
     });
@@ -57,22 +74,70 @@ public class OreGenerator implements IWorldGenerator {
     });
   });
 
+  private final WorldOreGenerator hematite = WorldOreGenerator.create(generator -> {
+    generator.minLength(25);
+    generator.maxLength(40);
+
+    generator.addStage(stage -> {
+      stage.ore(HEMATITE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(10);
+      stage.blockSpawnChance(1.0f);
+    });
+  });
+
+  private final WorldOreGenerator smallHematite = WorldOreGenerator.create(generator -> {
+    generator.minLength(10);
+    generator.maxLength(20);
+
+    generator.addStage(stage -> {
+      stage.ore(HEMATITE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(4);
+      stage.blockSpawnChance(1.0f);
+    });
+  });
+
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
-    final ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
-
-    this.carbon.generateDeferredOres(world, chunkPos);
-    this.coal.generateDeferredOres(world, chunkPos);
-
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
-      if(random.nextInt(64) == 0) {
-        this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 32);
+      final ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
+
+      this.carbon.generateDeferredOres(world, chunkPos);
+      this.coal.generateDeferredOres(world, chunkPos);
+      this.smallHematite.generateDeferredOres(world, chunkPos);
+      this.hematite.generateDeferredOres(world, chunkPos);
+
+      if(random.nextInt(81) == 0) {
+        this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 20);
       }
 
-      if(random.nextInt(9) == 0) {
+      if(random.nextInt(16) == 0) {
         this.runGenerator(this.coal, world, random, chunkX, chunkZ, 15, 0, 128);
       }
+
+      this.generateHematite(random, chunkPos, world, chunkGenerator, chunkProvider);
     }
+  }
+
+  private boolean generateHematite(final Random random, final ChunkPos chunkPos, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
+    if(!BiomeDictionary.hasType(world.getBiome(chunkPos.getBlock(0, 0, 0)), BiomeDictionary.Type.OCEAN)) {
+      if(random.nextInt(16) == 0) {
+        return this.runGenerator(this.smallHematite, world, random, chunkPos.x, chunkPos.z, 2, 0, 128);
+      }
+    }
+
+    if(random.nextInt(81) == 0) {
+      final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(chunkPos.getXStart() + random.nextInt(16), 64, chunkPos.getZStart() + random.nextInt(16));
+
+      for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && iblockstate.getMaterial() != Material.ROCK; iblockstate = world.getBlockState(pos)) {
+        pos.move(EnumFacing.DOWN);
+      }
+
+      //TODO: something here
+    }
+
+    return false;
   }
 
   private boolean runGenerator(final WorldGenerator generator, final World world, final Random rand, final int chunkX, final int chunkZ, final int chancesToSpawn, final int minHeight, final int maxHeight) {

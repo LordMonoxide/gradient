@@ -23,6 +23,9 @@ public class OreGenerator implements IWorldGenerator {
   @GameRegistry.ObjectHolder("gradient:ore.hematite")
   private static final Block HEMATITE = null;
 
+  @GameRegistry.ObjectHolder("gradient:ore.graphite")
+  private static final Block GRAPHITE = null;
+
   private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);
     generator.maxLength(35);
@@ -44,7 +47,7 @@ public class OreGenerator implements IWorldGenerator {
     });
 
     generator.addStage(stage -> {
-      stage.ore(Blocks.GLASS.getDefaultState());
+      stage.ore(GRAPHITE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(7);
       stage.blockSpawnChance(0.75f);

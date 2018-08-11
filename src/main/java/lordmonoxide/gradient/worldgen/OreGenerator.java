@@ -84,7 +84,7 @@ public class OreGenerator implements IWorldGenerator {
     generator.addStage(stage -> {
       stage.ore(HEMATITE.getDefaultState());
       stage.minRadius(0);
-      stage.maxRadius(10);
+      stage.maxRadius(8);
       stage.blockSpawnChance(1.0f);
     });
   });
@@ -124,10 +124,12 @@ public class OreGenerator implements IWorldGenerator {
   }
 
   private boolean generateHematite(final Random random, final ChunkPos chunkPos, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
-    if(!BiomeDictionary.hasType(world.getBiome(chunkPos.getBlock(0, 0, 0)), BiomeDictionary.Type.OCEAN)) {
+    if(!BiomeDictionary.hasType(world.getBiome(chunkPos.getBlock(0, 0, 0)), BiomeDictionary.Type.WATER)) {
       if(random.nextInt(16) == 0) {
         return this.runGenerator(this.smallHematite, world, random, chunkPos.x, chunkPos.z, 2, 0, 128);
       }
+
+      return false;
     }
 
     if(random.nextInt(81) == 0) {
@@ -137,7 +139,9 @@ public class OreGenerator implements IWorldGenerator {
         pos.move(EnumFacing.DOWN);
       }
 
-      //TODO: something here
+      pos.move(EnumFacing.UP, 4);
+
+      return this.hematite.generate(world, random, pos);
     }
 
     return false;

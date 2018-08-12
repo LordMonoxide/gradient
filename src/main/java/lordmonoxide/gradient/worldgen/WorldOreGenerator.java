@@ -29,8 +29,16 @@ public final class WorldOreGenerator extends WorldGenerator {
   }
 
   private static boolean stonePredicate(@Nullable final IBlockState state) {
-    if(state != null && state.getBlock() == Blocks.STONE) {
+    if(state == null) {
+      return false;
+    }
+
+    if(state.getBlock() == Blocks.STONE) {
       return state.getValue(BlockStone.VARIANT).isNatural();
+    }
+
+    if(state.getBlock() == Blocks.GRAVEL) {
+      return true;
     }
 
     return false;

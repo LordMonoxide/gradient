@@ -116,21 +116,18 @@ public final class WorldOreGenerator extends WorldGenerator {
       for(final Stage stage : stages) {
         final int minRadius = stage.minRadius.apply(start.getY());
         final int maxRadius = stage.maxRadius.apply(start.getY());
-        final int blockCount = maxRadius * maxRadius - minRadius * minRadius;
-        final float blockSpawnChance = stage.blockSpawnChance.apply(start.getY());
+        final int blockCount = Math.round((maxRadius * maxRadius - minRadius * minRadius) * stage.blockDensity.apply(start.getY()));
 
         for(int i = 0; i < blockCount; i++) {
-          if(blockSpawnChance >= rand.nextFloat()) {
-            final int radius = rand.nextInt(maxRadius - minRadius + 1) + minRadius;
-            final float angle = rand.nextFloat() * PI * 2;
+          final int radius = rand.nextInt(maxRadius - minRadius + 1) + minRadius;
+          final float angle = rand.nextFloat() * PI * 2;
 
-            pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
-            pos.mul(rotation);
+          pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
+          pos.mul(rotation);
 
-            blockPos.setPos(root.x + pos.x, root.y + pos.y, root.z + pos.z);
+          blockPos.setPos(root.x + pos.x, root.y + pos.y, root.z + pos.z);
 
-            this.placeBlock(blocksToPlace, world, blockPos, stage);
-          }
+          this.placeBlock(blocksToPlace, world, blockPos, stage);
         }
       }
     }
@@ -182,14 +179,14 @@ public final class WorldOreGenerator extends WorldGenerator {
     private final IBlockState ore;
     private final Function<Integer, Integer> minRadius;
     private final Function<Integer, Integer> maxRadius;
-    private final Function<Integer, Float> blockSpawnChance;
+    private final Function<Integer, Float> blockDensity;
     private final Function<Integer, Float> stageSpawnChance;
 
-    private Stage(final IBlockState ore, final Function<Integer, Integer> minRadius, final Function<Integer, Integer> maxRadius, final Function<Integer, Float> blockSpawnChance, final Function<Integer, Float> stageSpawnChance) {
+    private Stage(final IBlockState ore, final Function<Integer, Integer> minRadius, final Function<Integer, Integer> maxRadius, final Function<Integer, Float> blockDensity, final Function<Integer, Float> stageSpawnChance) {
       this.ore = ore;
       this.minRadius = minRadius;
       this.maxRadius = maxRadius;
-      this.blockSpawnChance = blockSpawnChance;
+      this.blockDensity = blockDensity;
       this.stageSpawnChance = stageSpawnChance;
     }
   }
@@ -237,7 +234,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     private IBlockState ore = Blocks.STONE.getDefaultState();
     private Function<Integer, Integer> minRadius = depth -> 0;
     private Function<Integer, Integer> maxRadius = depth -> 5;
-    private Function<Integer, Float> blockSpawnChance = depth -> 0.75f;
+    private Function<Integer, Float> blockDensity = depth -> 0.75f;
     private Function<Integer, Float> stageSpawnChance = depth -> 1.0f;
 
     private StageBuilder() { }
@@ -265,12 +262,12 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this;
     }
 
-    public StageBuilder blockSpawnChance(final float spawnChance) {
-      return this.blockSpawnChance(depth -> spawnChance);
+    public StageBuilder blockDensity(final float density) {
+      return this.blockDensity(depth -> density);
     }
 
-    public StageBuilder blockSpawnChance(final Function<Integer, Float> spawnChance) {
-      this.blockSpawnChance = spawnChance;
+    public StageBuilder blockDensity(final Function<Integer, Float> density) {
+      this.blockDensity = density;
       return this;
     }
 
@@ -284,7 +281,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     }
 
     private Stage build() {
-      return new Stage(this.ore, this.minRadius, this.maxRadius, this.blockSpawnChance, this.stageSpawnChance);
+      return new Stage(this.ore, this.minRadius, this.maxRadius, this.blockDensity, this.stageSpawnChance);
     }
   }
 }

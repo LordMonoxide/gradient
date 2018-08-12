@@ -32,25 +32,25 @@ public class OreGenerator implements IWorldGenerator {
 
     generator.addStage(stage -> {
       stage.ore(Blocks.COAL_ORE.getDefaultState());
-      stage.minRadius(5);
-      stage.maxRadius(8);
-      stage.blockSpawnChance(0.75f);
+      stage.minRadius(3);
+      stage.maxRadius(6);
+      stage.blockDensity(0.75f);
       stage.stageSpawnChance(0.90f);
     });
 
     generator.addStage(stage -> {
       stage.ore(Blocks.COAL_ORE.getDefaultState());
-      stage.minRadius(9);
-      stage.maxRadius(11);
-      stage.blockSpawnChance(0.33f);
+      stage.minRadius(7);
+      stage.maxRadius(9);
+      stage.blockDensity(0.33f);
       stage.stageSpawnChance(0.90f);
     });
 
     generator.addStage(stage -> {
       stage.ore(GRAPHITE.getDefaultState());
       stage.minRadius(0);
-      stage.maxRadius(7);
-      stage.blockSpawnChance(0.75f);
+      stage.maxRadius(4);
+      stage.blockDensity(0.75f);
       stage.stageSpawnChance(0.95f);
     });
 
@@ -58,7 +58,7 @@ public class OreGenerator implements IWorldGenerator {
       stage.ore(Blocks.DIAMOND_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(1);
-      stage.blockSpawnChance(0.75f);
+      stage.blockDensity(0.75f);
       stage.stageSpawnChance(0.8f);
     });
   });
@@ -73,7 +73,7 @@ public class OreGenerator implements IWorldGenerator {
       stage.ore(Blocks.COAL_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(depth -> (int)(scale.apply(depth) * 4));
-      stage.blockSpawnChance(1.0f);
+      stage.blockDensity(1.0f);
     });
   });
 
@@ -85,7 +85,7 @@ public class OreGenerator implements IWorldGenerator {
       stage.ore(HEMATITE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(8);
-      stage.blockSpawnChance(1.0f);
+      stage.blockDensity(1.0f);
     });
   });
 
@@ -97,7 +97,7 @@ public class OreGenerator implements IWorldGenerator {
       stage.ore(HEMATITE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(4);
-      stage.blockSpawnChance(1.0f);
+      stage.blockDensity(0.9f);
     });
   });
 

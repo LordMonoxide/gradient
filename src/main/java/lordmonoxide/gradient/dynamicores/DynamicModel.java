@@ -32,6 +32,8 @@ public class DynamicModel implements ICustomModelLoader {
   private final ResourceLocation baseModel;
   private final boolean isItem;
 
+  private boolean retexture = true;
+
   public DynamicModel(final Predicate<ResourceLocation> matcher, final Function<ResourceLocation, ImmutableMap<String, String>> textureLoader, final ResourceLocation baseModel) {
     this(matcher, textureLoader, baseModel, false);
   }
@@ -43,6 +45,10 @@ public class DynamicModel implements ICustomModelLoader {
     this.isItem = isItem;
   }
 
+  public void disableRetexture() {
+    this.retexture = false;
+  }
+
   @Override
   public boolean accepts(final ResourceLocation modelLocation) {
     return this.matcher.test(modelLocation);
@@ -50,7 +56,11 @@ public class DynamicModel implements ICustomModelLoader {
 
   @Override
   public IModel loadModel(final ResourceLocation modelLocation) throws Exception {
-    final IModel model = ModelLoaderRegistry.getModel(this.baseModel).retexture(this.textureLoader.apply(modelLocation));
+    IModel model = ModelLoaderRegistry.getModel(this.baseModel);
+
+    if(this.retexture) {
+      model = model.retexture(this.textureLoader.apply(modelLocation));
+    }
 
     if(this.isItem) {
       return new Model(model);

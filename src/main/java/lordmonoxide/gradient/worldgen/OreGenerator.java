@@ -26,6 +26,9 @@ public class OreGenerator implements IWorldGenerator {
   @GameRegistry.ObjectHolder("gradient:ore.graphite")
   private static final Block GRAPHITE = null;
 
+  @GameRegistry.ObjectHolder("gradient:ore.cassiterite")
+  private static final Block CASSITERITE = null;
+
   private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);
     generator.maxLength(35);
@@ -101,6 +104,20 @@ public class OreGenerator implements IWorldGenerator {
     });
   });
 
+  private final WorldOreGenerator cassiterite = WorldOreGenerator.create(generator -> {
+    final Function<Integer, Float> scale = depth -> 1.0f / ((depth + 64) / 64.0f);
+
+    generator.minLength(depth -> (int)(scale.apply(depth) * 5));
+    generator.maxLength(depth -> (int)(scale.apply(depth) * 20));
+
+    generator.addStage(stage -> {
+      stage.ore(CASSITERITE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(depth -> (int)(scale.apply(depth) * 4));
+      stage.blockDensity(0.5f);
+    });
+  });
+
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
@@ -110,6 +127,7 @@ public class OreGenerator implements IWorldGenerator {
       this.coal.generateDeferredOres(world, chunkPos);
       this.smallHematite.generateDeferredOres(world, chunkPos);
       this.hematite.generateDeferredOres(world, chunkPos);
+      this.cassiterite.generateDeferredOres(world, chunkPos);
 
       if(random.nextInt(81) == 0) {
         this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 20);
@@ -120,12 +138,16 @@ public class OreGenerator implements IWorldGenerator {
       }
 
       this.generateHematite(random, chunkPos, world, chunkGenerator, chunkProvider);
+
+      if(random.nextInt(64) == 0) {
+        this.runGenerator(this.cassiterite, world, random, chunkX, chunkZ, 15, 0, 128);
+      }
     }
   }
 
   private boolean generateHematite(final Random random, final ChunkPos chunkPos, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(!BiomeDictionary.hasType(world.getBiome(chunkPos.getBlock(0, 0, 0)), BiomeDictionary.Type.WATER)) {
-      if(random.nextInt(16) == 0) {
+      if(random.nextInt(64) == 0) {
         return this.runGenerator(this.smallHematite, world, random, chunkPos.x, chunkPos.z, 2, 0, 128);
       }
 

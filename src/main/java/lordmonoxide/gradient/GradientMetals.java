@@ -23,14 +23,15 @@ public final class GradientMetals {
   public static final Metal    INVALID_METAL    = new Metal("invalid", Float.POSITIVE_INFINITY, 0.0f, 0.0f, false, false, false, 0, 0, 0, 0, 0, 0, 0);
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
 
-  public static final Metal COPPER    = addMetal("copper",    1085.00f, 3.0f,  63.55f).colours(0xFFFFB88B, 0xFFFFB88B, 0xFFFF6300, 0xFFDE5600, 0xFFDB2400, 0xFF792F00, 0xFF492914).add();
-  public static final Metal TIN       = addMetal("tin",        231.93f, 1.5f, 118.71f).colours(0xFFEFEFEF, 0xFFF9F9F9, 0xFFCCCCCC, 0xFFB7B7B7, 0xFFADADAD, 0xFF8E8E8E, 0xFF777777).add();
-  public static final Metal IRON      = addMetal("iron",      1538.00f, 4.0f,  55.85f).colours(0xFFD8D8D8, 0xFFFFFFFF, 0xFF969696, 0xFF727272, 0xFF7F7F7F, 0xFF444444, 0xFF353535).add();
-  public static final Metal GOLD      = addMetal("gold",      1064.00f, 2.0f, 196.97f).colours(0xFFFFFF8B, 0xFFFFFFFF, 0xFFDEDE00, 0xFFDC7613, 0xFF868600, 0xFF505000, 0xFF3C3C00).add();
-  public static final Metal BRONZE    = addMetal("bronze",     950.00f, 3.5f, 182.26f).colours(0xFFFFE48B, 0xFFFFEAA8, 0xFFFFC400, 0xFFDEAA00, 0xFFDB7800, 0xFF795D00, 0xFF795D00).add();
-  public static final Metal MAGNESIUM = addMetal("magnesium",  650.00f, 2.5f,  24.31f).disableTools().colours(0xFFF9F9F9, 0xFFFFFFFF, 0xFFCCCCCC, 0xFFB7B7B7, 0xFF727272, 0xFF444444, 0xFF262626).add();
-  public static final Metal HEMATITE  = addMetal("hematite",  1548.00f, 4.0f,  55.85f).colours(0xFFB8B8B8, 0xFFDFDFDF, 0xFF767676, 0xFF525252, 0xFF5F5F5F, 0xFF242424, 0xFF151515).add();
-  public static final Metal GRAPHITE  = addMetal("graphite",  3730.00f, 1.5f,  12.01f).colours(0xFF807875, 0xFFBDBDBD, 0xFF383431, 0xFF222222, 0xFF4F4D50, 0xFF404050, 0xFF2F2D30).add();
+  public static final Metal COPPER      = addMetal("copper",      1085.00f, 3.0f,  63.55f).colours(0xFFFFB88B, 0xFFFFB88B, 0xFFFF6300, 0xFFDE5600, 0xFFDB2400, 0xFF792F00, 0xFF492914).add();
+  public static final Metal TIN         = addMetal("tin",          231.93f, 1.5f, 118.71f).colours(0xFFEFEFEF, 0xFFF9F9F9, 0xFFCCCCCC, 0xFFB7B7B7, 0xFFADADAD, 0xFF8E8E8E, 0xFF777777).add();
+  public static final Metal IRON        = addMetal("iron",        1538.00f, 4.0f,  55.85f).colours(0xFFD8D8D8, 0xFFFFFFFF, 0xFF969696, 0xFF727272, 0xFF7F7F7F, 0xFF444444, 0xFF353535).add();
+  public static final Metal GOLD        = addMetal("gold",        1064.00f, 2.0f, 196.97f).colours(0xFFFFFF8B, 0xFFFFFFFF, 0xFFDEDE00, 0xFFDC7613, 0xFF868600, 0xFF505000, 0xFF3C3C00).add();
+  public static final Metal BRONZE      = addMetal("bronze",       950.00f, 3.5f, 182.26f).colours(0xFFFFE48B, 0xFFFFEAA8, 0xFFFFC400, 0xFFDEAA00, 0xFFDB7800, 0xFF795D00, 0xFF795D00).add();
+  public static final Metal MAGNESIUM   = addMetal("magnesium",    650.00f, 2.5f,  24.31f).disableTools().colours(0xFFF9F9F9, 0xFFFFFFFF, 0xFFCCCCCC, 0xFFB7B7B7, 0xFF727272, 0xFF444444, 0xFF262626).add();
+  public static final Metal HEMATITE    = addMetal("hematite",    1548.00f, 4.0f,  55.85f).colours(0xFFB8B8B8, 0xFFDFDFDF, 0xFF767676, 0xFF525252, 0xFF5F5F5F, 0xFF242424, 0xFF151515).add();
+  public static final Metal GRAPHITE    = addMetal("graphite",    3730.00f, 1.5f,  12.01f).colours(0xFF807875, 0xFFBDBDBD, 0xFF383431, 0xFF222222, 0xFF4F4D50, 0xFF404050, 0xFF2F2D30).add();
+  public static final Metal CASSITERITE = addMetal("cassiterite", 1127.00f, 6.5f, 150.71f).colours(0xFF7F7F7F, 0xFFB9B9B9, 0xFF707070, 0xFF676767, 0xFF6D6D6D, 0xFF595959, 0xFF505050).add();
 
   public static final Metal GLASS = addMetal("glass", 1200.00f, 5.0f, 50.0f).disableTools().disableNuggets().disableIngots().add();
 

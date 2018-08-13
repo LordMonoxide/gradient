@@ -161,7 +161,7 @@ public final class WorldOreGenerator extends WorldGenerator {
   private void placePebble(final Map<BlockPos, IBlockState> blocksToPlace, final World world, final IBlockState pebble, final int x, final int z) {
     final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, 128, z);
 
-    for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && iblockstate.getBlock().isReplaceable(world, pos); iblockstate = world.getBlockState(pos)) {
+    for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && (iblockstate.getBlock().isReplaceable(world, pos) || iblockstate.getBlock().isWood(world, pos)); iblockstate = world.getBlockState(pos)) {
       pos.move(EnumFacing.DOWN);
     }
 

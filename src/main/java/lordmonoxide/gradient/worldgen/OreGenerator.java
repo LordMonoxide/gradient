@@ -170,6 +170,7 @@ public class OreGenerator implements IWorldGenerator {
       this.smallHematite.generateDeferredOres(world, chunkPos);
       this.hematite.generateDeferredOres(world, chunkPos);
       this.cassiterite.generateDeferredOres(world, chunkPos);
+      this.copper.generateDeferredOres(world, chunkPos);
 
       if(random.nextInt(81) == 0) {
         this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 20);

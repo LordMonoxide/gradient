@@ -119,7 +119,7 @@ public class OreGenerator implements IWorldGenerator {
     generator.addStage(stage -> {
       stage.ore(HEMATITE_ORE.getDefaultState());
       stage.minRadius(0);
-      stage.maxRadius(4);
+      stage.maxRadius(3);
       stage.blockDensity(0.9f);
     });
 
@@ -172,7 +172,7 @@ public class OreGenerator implements IWorldGenerator {
       this.cassiterite.generateDeferredOres(world, chunkPos);
       this.copper.generateDeferredOres(world, chunkPos);
 
-      if(random.nextInt(81) == 0) {
+      if(random.nextInt(121) == 0) {
         this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 20);
       }
 
@@ -194,7 +194,7 @@ public class OreGenerator implements IWorldGenerator {
 
   private boolean generateHematite(final Random random, final ChunkPos chunkPos, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(!BiomeDictionary.hasType(world.getBiome(chunkPos.getBlock(0, 0, 0)), BiomeDictionary.Type.WATER)) {
-      if(random.nextInt(64) == 0) {
+      if(random.nextInt(81) == 0) {
         return this.runGenerator(this.smallHematite, world, random, chunkPos.x, chunkPos.z, 2, 0, 128);
       }
 

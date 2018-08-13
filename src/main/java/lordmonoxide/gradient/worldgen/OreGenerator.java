@@ -35,6 +35,11 @@ public class OreGenerator implements IWorldGenerator {
   @GameRegistry.ObjectHolder("gradient:pebble.cassiterite")
   private static final Block CASSITERITE_PEBBLE = null;
 
+  @GameRegistry.ObjectHolder("gradient:ore.copper")
+  private static final Block COPPER_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.copper")
+  private static final Block COPPER_PEBBLE = null;
+
   private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);
     generator.maxLength(35);
@@ -141,6 +146,20 @@ public class OreGenerator implements IWorldGenerator {
     });
   });
 
+  private final WorldOreGenerator copper = WorldOreGenerator.create(generator -> {
+    generator.minLength(4);
+    generator.maxLength(7);
+
+    generator.addStage(stage -> {
+      stage.ore(COPPER_ORE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(1);
+      stage.blockDensity(3.0f);
+    });
+
+    generator.addPebble(pebble -> pebble.pebble(COPPER_PEBBLE.getDefaultState()));
+  });
+
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
@@ -157,13 +176,17 @@ public class OreGenerator implements IWorldGenerator {
       }
 
       if(random.nextInt(16) == 0) {
-        this.runGenerator(this.coal, world, random, chunkX, chunkZ, 15, 0, 128);
+        this.runGenerator(this.coal, world, random, chunkX, chunkZ, 30, 0, 256);
       }
 
       this.generateHematite(random, chunkPos, world, chunkGenerator, chunkProvider);
 
       if(random.nextInt(64) == 0) {
-        this.runGenerator(this.cassiterite, world, random, chunkX, chunkZ, 15, 0, 128);
+        this.runGenerator(this.cassiterite, world, random, chunkX, chunkZ, 30, 0, 256);
+      }
+
+      if(random.nextInt(81) == 0) {
+        this.runGenerator(this.copper, world, random, chunkX, chunkZ, 30, 0, 256);
       }
     }
   }

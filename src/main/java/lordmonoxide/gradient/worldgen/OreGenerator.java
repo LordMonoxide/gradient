@@ -21,13 +21,19 @@ import java.util.function.Function;
 
 public class OreGenerator implements IWorldGenerator {
   @GameRegistry.ObjectHolder("gradient:ore.hematite")
-  private static final Block HEMATITE = null;
+  private static final Block HEMATITE_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.hematite")
+  private static final Block HEMATITE_PEBBLE = null;
 
   @GameRegistry.ObjectHolder("gradient:ore.graphite")
-  private static final Block GRAPHITE = null;
+  private static final Block GRAPHITE_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.graphite")
+  private static final Block GRAPHITE_PEBBLE = null;
 
   @GameRegistry.ObjectHolder("gradient:ore.cassiterite")
-  private static final Block CASSITERITE = null;
+  private static final Block CASSITERITE_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.cassiterite")
+  private static final Block CASSITERITE_PEBBLE = null;
 
   private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);
@@ -50,7 +56,7 @@ public class OreGenerator implements IWorldGenerator {
     });
 
     generator.addStage(stage -> {
-      stage.ore(GRAPHITE.getDefaultState());
+      stage.ore(GRAPHITE_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(4);
       stage.blockDensity(0.75f);
@@ -63,6 +69,11 @@ public class OreGenerator implements IWorldGenerator {
       stage.maxRadius(1);
       stage.blockDensity(0.75f);
       stage.stageSpawnChance(0.8f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(GRAPHITE_PEBBLE.getDefaultState());
+      pebble.density(0.1f);
     });
   });
 
@@ -85,10 +96,14 @@ public class OreGenerator implements IWorldGenerator {
     generator.maxLength(40);
 
     generator.addStage(stage -> {
-      stage.ore(HEMATITE.getDefaultState());
+      stage.ore(HEMATITE_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(8);
       stage.blockDensity(1.0f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(HEMATITE_PEBBLE.getDefaultState());
     });
   });
 
@@ -97,10 +112,14 @@ public class OreGenerator implements IWorldGenerator {
     generator.maxLength(20);
 
     generator.addStage(stage -> {
-      stage.ore(HEMATITE.getDefaultState());
+      stage.ore(HEMATITE_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(4);
       stage.blockDensity(0.9f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(HEMATITE_PEBBLE.getDefaultState());
     });
   });
 
@@ -111,10 +130,14 @@ public class OreGenerator implements IWorldGenerator {
     generator.maxLength(depth -> (int)(scale.apply(depth) * 20));
 
     generator.addStage(stage -> {
-      stage.ore(CASSITERITE.getDefaultState());
+      stage.ore(CASSITERITE_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(depth -> (int)(scale.apply(depth) * 4));
       stage.blockDensity(0.5f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(CASSITERITE_PEBBLE.getDefaultState());
     });
   });
 

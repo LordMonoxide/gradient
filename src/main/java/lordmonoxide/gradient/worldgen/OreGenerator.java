@@ -40,6 +40,16 @@ public class OreGenerator implements IWorldGenerator {
   @GameRegistry.ObjectHolder("gradient:pebble.copper")
   private static final Block COPPER_PEBBLE = null;
 
+  @GameRegistry.ObjectHolder("gradient:ore.pyrite")
+  private static final Block PYRITE_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.pyrite")
+  private static final Block PYRITE_PEBBLE = null;
+
+  @GameRegistry.ObjectHolder("gradient:ore.gold")
+  private static final Block GOLD_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.gold")
+  private static final Block GOLD_PEBBLE = null;
+
   private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);
     generator.maxLength(35);
@@ -160,6 +170,37 @@ public class OreGenerator implements IWorldGenerator {
     generator.addPebble(pebble -> pebble.pebble(COPPER_PEBBLE.getDefaultState()));
   });
 
+  private final WorldOreGenerator gold = WorldOreGenerator.create(generator -> {
+    generator.minLength(7);
+    generator.maxLength(12);
+
+    generator.addStage(stage -> {
+      stage.ore(PYRITE_ORE.getDefaultState());
+      stage.minRadius(1);
+      stage.maxRadius(6);
+      stage.blockDensity(0.1f);
+      stage.stageSpawnChance(0.9f);
+    });
+
+    generator.addStage(stage -> {
+      stage.ore(GOLD_ORE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(1);
+      stage.blockDensity(1.0f);
+      stage.stageSpawnChance(0.9f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(PYRITE_PEBBLE.getDefaultState());
+      pebble.density(0.25f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(GOLD_PEBBLE.getDefaultState());
+      pebble.density(0.25f);
+    });
+  });
+
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
@@ -171,6 +212,7 @@ public class OreGenerator implements IWorldGenerator {
       this.hematite.generateDeferredOres(world, chunkPos);
       this.cassiterite.generateDeferredOres(world, chunkPos);
       this.copper.generateDeferredOres(world, chunkPos);
+      this.gold.generateDeferredOres(world, chunkPos);
 
       if(random.nextInt(256) == 0) {
         this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 20);
@@ -188,6 +230,10 @@ public class OreGenerator implements IWorldGenerator {
 
       if(random.nextInt(81) == 0) {
         this.runGenerator(this.copper, world, random, chunkX, chunkZ, 30, 0, 256);
+      }
+
+      if(random.nextInt(225) == 0) {
+        this.runGenerator(this.gold, world, random, chunkX, chunkZ, 30, 0, 32);
       }
     }
   }

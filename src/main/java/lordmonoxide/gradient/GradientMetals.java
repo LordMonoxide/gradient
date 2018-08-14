@@ -30,6 +30,7 @@ public final class GradientMetals {
   public static final Metal BRONZE      = addMetal("bronze",       950.00f, 3.5f, 182.26f).colours(0xFFFFE48B, 0xFFFFEAA8, 0xFFFFC400, 0xFFDEAA00, 0xFFDB7800, 0xFF795D00, 0xFF795D00).add();
   public static final Metal MAGNESIUM   = addMetal("magnesium",    650.00f, 2.5f,  24.31f).disableTools().colours(0xFFF9F9F9, 0xFFFFFFFF, 0xFFCCCCCC, 0xFFB7B7B7, 0xFF727272, 0xFF444444, 0xFF262626).add();
   public static final Metal HEMATITE    = addMetal("hematite",    1548.00f, 4.0f,  55.85f).colours(0xFFB8B8B8, 0xFFDFDFDF, 0xFF767676, 0xFF525252, 0xFF5F5F5F, 0xFF242424, 0xFF151515).add();
+  public static final Metal PYRITE      = addMetal("pyrite",      1188.00f, 6.0f, 119.98f).colours(0xFFAFA67F, 0xFFFFF098, 0xFF736C4F, 0xFF5F5941, 0xFF44453F, 0xFF40413C, 0xFF3D3E39).add();
   public static final Metal GRAPHITE    = addMetal("graphite",    3730.00f, 1.5f,  12.01f).colours(0xFF807875, 0xFFBDBDBD, 0xFF383431, 0xFF222222, 0xFF4F4D50, 0xFF404050, 0xFF2F2D30).add();
   public static final Metal CASSITERITE = addMetal("cassiterite", 1127.00f, 6.5f, 150.71f).colours(0xFF7F7F7F, 0xFFB9B9B9, 0xFF707070, 0xFF676767, 0xFF6D6D6D, 0xFF595959, 0xFF505050).add();
 

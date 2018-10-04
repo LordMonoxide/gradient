@@ -37,10 +37,12 @@ public final class WorldOreGenerator extends WorldGenerator {
   }
 
   private final Stage[] stages;
-  private final Function<Integer, Integer> minLength;
-  private final Function<Integer, Integer> maxLength;
+  private final StateFunction<Integer> minLength;
+  private final StateFunction<Integer> maxLength;
 
-  private WorldOreGenerator(final Stage[] stages, final Function<Integer, Integer> minLength, final Function<Integer, Integer> maxLength) {
+  private final OreGenState state = new OreGenState();
+
+  private WorldOreGenerator(final Stage[] stages, final StateFunction<Integer> minLength, final StateFunction<Integer> maxLength) {
     this.stages = stages;
     this.minLength = minLength;
     this.maxLength = maxLength;
@@ -48,8 +50,10 @@ public final class WorldOreGenerator extends WorldGenerator {
 
   @Override
   public boolean generate(final World world, final Random rand, final BlockPos start) {
-    final int minLength = this.minLength.apply(start.getY());
-    final int maxLength = this.maxLength.apply(start.getY());
+    this.state.depth = start.getY();
+
+    final int minLength = this.minLength.apply(this.state);
+    final int maxLength = this.maxLength.apply(this.state);
 
     final int length = rand.nextInt(maxLength - minLength + 1) + minLength;
 
@@ -69,7 +73,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     final List<Stage> stages = new ArrayList<>();
 
     for(final Stage stage : this.stages) {
-      if(stage.stageSpawnChance.apply(start.getY()) >= rand.nextFloat()) {
+      if(stage.stageSpawnChance.apply(this.state) >= rand.nextFloat()) {
         stages.add(stage);
       }
     }
@@ -106,10 +110,10 @@ public final class WorldOreGenerator extends WorldGenerator {
       changeDirectionDivisor--;
 
       for(final Stage stage : stages) {
-        final int minRadius = stage.minRadius.apply(start.getY());
-        final int maxRadius = stage.maxRadius.apply(start.getY());
+        final int minRadius = stage.minRadius.apply(this.state);
+        final int maxRadius = stage.maxRadius.apply(this.state);
         final int blockCount = maxRadius * maxRadius - minRadius * minRadius;
-        final float blockSpawnChance = stage.blockSpawnChance.apply(start.getY());
+        final float blockSpawnChance = stage.blockSpawnChance.apply(this.state);
 
         for(int i = 0; i < blockCount; i++) {
           if(blockSpawnChance >= rand.nextFloat()) {
@@ -172,12 +176,12 @@ public final class WorldOreGenerator extends WorldGenerator {
 
   private static final class Stage {
     private final IBlockState ore;
-    private final Function<Integer, Integer> minRadius;
-    private final Function<Integer, Integer> maxRadius;
-    private final Function<Integer, Float> blockSpawnChance;
-    private final Function<Integer, Float> stageSpawnChance;
+    private final StateFunction<Integer> minRadius;
+    private final StateFunction<Integer> maxRadius;
+    private final StateFunction<Float> blockSpawnChance;
+    private final StateFunction<Float> stageSpawnChance;
 
-    private Stage(final IBlockState ore, final Function<Integer, Integer> minRadius, final Function<Integer, Integer> maxRadius, final Function<Integer, Float> blockSpawnChance, final Function<Integer, Float> stageSpawnChance) {
+    private Stage(final IBlockState ore, final StateFunction<Integer> minRadius, final StateFunction<Integer> maxRadius, final StateFunction<Float> blockSpawnChance, final StateFunction<Float> stageSpawnChance) {
       this.ore = ore;
       this.minRadius = minRadius;
       this.maxRadius = maxRadius;
@@ -188,8 +192,8 @@ public final class WorldOreGenerator extends WorldGenerator {
 
   public static final class WorldOreGeneratorBuilder {
     private final List<Stage> stages = new ArrayList<>();
-    private Function<Integer, Integer> minLength = depth -> 3;
-    private Function<Integer, Integer> maxLength = depth -> 5;
+    private StateFunction<Integer> minLength = state -> 3;
+    private StateFunction<Integer> maxLength = state -> 5;
 
     private WorldOreGeneratorBuilder() { }
 
@@ -204,7 +208,7 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this.minLength(depth -> length);
     }
 
-    public WorldOreGeneratorBuilder minLength(final Function<Integer, Integer> length) {
+    public WorldOreGeneratorBuilder minLength(final StateFunction<Integer> length) {
       this.minLength = length;
       return this;
     }
@@ -213,7 +217,7 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this.maxLength(depth -> length);
     }
 
-    public WorldOreGeneratorBuilder maxLength(final Function<Integer, Integer> length) {
+    public WorldOreGeneratorBuilder maxLength(final StateFunction<Integer> length) {
       this.maxLength = length;
       return this;
     }
@@ -227,10 +231,10 @@ public final class WorldOreGenerator extends WorldGenerator {
 
   public static final class StageBuilder {
     private IBlockState ore = Blocks.STONE.getDefaultState();
-    private Function<Integer, Integer> minRadius = depth -> 0;
-    private Function<Integer, Integer> maxRadius = depth -> 5;
-    private Function<Integer, Float> blockSpawnChance = depth -> 0.75f;
-    private Function<Integer, Float> stageSpawnChance = depth -> 1.0f;
+    private StateFunction<Integer> minRadius = state -> 0;
+    private StateFunction<Integer> maxRadius = state -> 5;
+    private StateFunction<Float> blockSpawnChance = state -> 0.75f;
+    private StateFunction<Float> stageSpawnChance = state -> 1.0f;
 
     private StageBuilder() { }
 
@@ -243,7 +247,7 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this.minRadius(depth -> minRadius);
     }
 
-    public StageBuilder minRadius(final Function<Integer, Integer> minRadius) {
+    public StageBuilder minRadius(final StateFunction<Integer> minRadius) {
       this.minRadius = minRadius;
       return this;
     }
@@ -252,7 +256,7 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this.maxRadius(depth -> maxRadius);
     }
 
-    public StageBuilder maxRadius(final Function<Integer, Integer> maxRadius) {
+    public StageBuilder maxRadius(final StateFunction<Integer> maxRadius) {
       this.maxRadius = maxRadius;
       return this;
     }
@@ -261,7 +265,7 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this.blockSpawnChance(depth -> spawnChance);
     }
 
-    public StageBuilder blockSpawnChance(final Function<Integer, Float> spawnChance) {
+    public StageBuilder blockSpawnChance(final StateFunction<Float> spawnChance) {
       this.blockSpawnChance = spawnChance;
       return this;
     }
@@ -270,7 +274,7 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this.stageSpawnChance(depth -> spawnChance);
     }
 
-    public StageBuilder stageSpawnChance(final Function<Integer, Float> spawnChance) {
+    public StageBuilder stageSpawnChance(final StateFunction<Float> spawnChance) {
       this.stageSpawnChance = spawnChance;
       return this;
     }
@@ -278,5 +282,21 @@ public final class WorldOreGenerator extends WorldGenerator {
     private Stage build() {
       return new Stage(this.ore, this.minRadius, this.maxRadius, this.blockSpawnChance, this.stageSpawnChance);
     }
+  }
+
+  public static class OreGenState {
+    private int depth;
+
+    public int getDepth() {
+      return this.depth;
+    }
+
+    private void setDepth(final int depth) {
+      this.depth = depth;
+    }
+  }
+
+  public interface StateFunction<RETURN> extends Function<OreGenState, RETURN> {
+
   }
 }

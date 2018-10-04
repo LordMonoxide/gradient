@@ -66,13 +66,13 @@ public class OreGenerator implements IWorldGenerator {
   private final WorldOreGenerator coal = WorldOreGenerator.create(generator -> {
     final Function<Integer, Float> scale = depth -> 1.0f / ((depth + 64) / 64.0f);
 
-    generator.minLength(depth -> (int)(scale.apply(depth) * 10));
-    generator.maxLength(depth -> (int)(scale.apply(depth) * 30));
+    generator.minLength(state -> (int)(scale.apply(state.getDepth()) * 10));
+    generator.maxLength(state -> (int)(scale.apply(state.getDepth()) * 30));
 
     generator.addStage(stage -> {
       stage.ore(Blocks.COAL_ORE.getDefaultState());
       stage.minRadius(0);
-      stage.maxRadius(depth -> (int)(scale.apply(depth) * 4));
+      stage.maxRadius(state -> (int)(scale.apply(state.getDepth()) * 4));
       stage.blockSpawnChance(1.0f);
     });
   });

@@ -22,6 +22,7 @@ public final class DynamicModelLoader {
     GradientMod.logger.info("Registering dynamic models");
 
     registerBlock(DynamicModelLoader::acceptOres);
+    registerBlock(DynamicModelLoader::acceptPebbles, GradientMod.resource("block/pebble")).disableRetexture();
     registerItem(DynamicModelLoader::acceptIngots);
     registerItem(DynamicModelLoader::acceptHammers);
     registerItem(DynamicModelLoader::acceptMattocks);
@@ -35,16 +36,28 @@ public final class DynamicModelLoader {
     registerItem(DynamicModelLoader::acceptTools);
   }
 
-  private static void registerBlock(final Predicate<ResourceLocation> accepts) {
-    ModelLoaderRegistry.registerLoader(new DynamicModel(accepts, DynamicModelLoader::blockTextures, new ResourceLocation("minecraft:block/cube_all")));
+  private static DynamicModel registerBlock(final Predicate<ResourceLocation> accepts, final ResourceLocation baseModel) {
+    final DynamicModel model = new DynamicModel(accepts, DynamicModelLoader::blockTextures, baseModel);
+    ModelLoaderRegistry.registerLoader(model);
+    return model;
   }
 
-  private static void registerItem(final Predicate<ResourceLocation> accepts) {
-    ModelLoaderRegistry.registerLoader(new DynamicModel(accepts, DynamicModelLoader::itemTextures, new ResourceLocation("builtin/generated"), true));
+  private static DynamicModel registerBlock(final Predicate<ResourceLocation> accepts) {
+    return registerBlock(accepts, new ResourceLocation("minecraft:block/cube_all"));
+  }
+
+  private static DynamicModel registerItem(final Predicate<ResourceLocation> accepts) {
+    final DynamicModel model = new DynamicModel(accepts, DynamicModelLoader::itemTextures, new ResourceLocation("builtin/generated"), true);
+    ModelLoaderRegistry.registerLoader(model);
+    return model;
   }
 
   private static boolean acceptOres(final ResourceLocation loc) {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("ore.");
+  }
+
+  private static boolean acceptPebbles(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("pebble.");
   }
 
   private static boolean acceptIngots(final ResourceLocation loc) {

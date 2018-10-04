@@ -1,8 +1,11 @@
 package lordmonoxide.gradient.worldgen;
 
+import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.pebble.BlockPebble;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -29,21 +32,31 @@ public final class WorldOreGenerator extends WorldGenerator {
   }
 
   private static boolean stonePredicate(@Nullable final IBlockState state) {
-    if(state != null && state.getBlock() == Blocks.STONE) {
+    if(state == null) {
+      return false;
+    }
+
+    if(state.getBlock() == Blocks.STONE) {
       return state.getValue(BlockStone.VARIANT).isNatural();
+    }
+
+    if(state.getBlock() == Blocks.GRAVEL) {
+      return true;
     }
 
     return false;
   }
 
+  private final Pebble[] pebbles;
   private final Stage[] stages;
   private final StateFunction<Integer> minLength;
   private final StateFunction<Integer> maxLength;
 
   private final OreGenState state = new OreGenState();
 
-  private WorldOreGenerator(final Stage[] stages, final StateFunction<Integer> minLength, final StateFunction<Integer> maxLength) {
+  private WorldOreGenerator(final Stage[] stages, final Pebble[] pebbles, final StateFunction<Integer> minLength, final StateFunction<Integer> maxLength) {
     this.stages = stages;
+    this.pebbles = pebbles;
     this.minLength = minLength;
     this.maxLength = maxLength;
   }
@@ -112,26 +125,34 @@ public final class WorldOreGenerator extends WorldGenerator {
       for(final Stage stage : stages) {
         final int minRadius = stage.minRadius.apply(this.state);
         final int maxRadius = stage.maxRadius.apply(this.state);
-        final int blockCount = maxRadius * maxRadius - minRadius * minRadius;
-        final float blockSpawnChance = stage.blockSpawnChance.apply(this.state);
+        final int blockCount = Math.round((maxRadius * maxRadius - minRadius * minRadius) * stage.blockDensity.apply(this.state));
 
         for(int i = 0; i < blockCount; i++) {
-          if(blockSpawnChance >= rand.nextFloat()) {
-            final int radius = rand.nextInt(maxRadius - minRadius + 1) + minRadius;
-            final float angle = rand.nextFloat() * PI * 2;
+          final int radius = rand.nextInt(maxRadius - minRadius + 1) + minRadius;
+          final float angle = rand.nextFloat() * PI * 2;
 
-            pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
-            pos.mul(rotation);
+          pos.set(segmentIndex, (float)Math.sin(angle) * radius, (float)Math.cos(angle) * radius);
+          pos.mul(rotation);
 
-            blockPos.setPos(root.x + pos.x, root.y + pos.y, root.z + pos.z);
+          blockPos.setPos(root.x + pos.x, root.y + pos.y, root.z + pos.z);
 
-            this.placeBlock(blocksToPlace, world, blockPos, stage);
-          }
+          this.placeBlock(blocksToPlace, world, blockPos, stage.ore);
+        }
+      }
+
+      for(final Pebble pebble : this.pebbles) {
+        if(rand.nextFloat() <= pebble.density) {
+          this.placePebble(blocksToPlace, world, pebble.pebble, (int)(root.x + pos.x), (int)(root.z + pos.z));
         }
       }
     }
 
     for(final Map.Entry<BlockPos, IBlockState> block : blocksToPlace.entrySet()) {
+      if(block.getValue().getBlock() instanceof BlockPebble) {
+        world.setBlockState(block.getKey(), block.getValue());
+        continue;
+      }
+
       final IBlockState state = world.getBlockState(block.getKey());
       if(state.getBlock().isReplaceableOreGen(state, world, block.getKey(), WorldOreGenerator::stonePredicate)) {
         world.setBlockState(block.getKey(), block.getValue(), 0x2 | 0x10);
@@ -141,7 +162,21 @@ public final class WorldOreGenerator extends WorldGenerator {
     return true;
   }
 
-  private void placeBlock(final Map<BlockPos, IBlockState> blocksToPlace, final World world, final BlockPos pos, final Stage stage) {
+  private void placePebble(final Map<BlockPos, IBlockState> blocksToPlace, final World world, final IBlockState pebble, final int x, final int z) {
+    final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, 128, z);
+
+    for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && (iblockstate.getBlock().isReplaceable(world, pos) || iblockstate.getBlock().isWood(world, pos)); iblockstate = world.getBlockState(pos)) {
+      pos.move(EnumFacing.DOWN);
+    }
+
+    pos.move(EnumFacing.UP);
+
+    if(pebble.getBlock().canPlaceBlockAt(world, pos)) {
+      this.placeBlock(blocksToPlace, world, pos, pebble);
+    }
+  }
+
+  private void placeBlock(final Map<BlockPos, IBlockState> blocksToPlace, final World world, final BlockPos pos, final IBlockState ore) {
     if(world.isOutsideBuildHeight(pos)) {
       return;
     }
@@ -150,12 +185,12 @@ public final class WorldOreGenerator extends WorldGenerator {
 
     if(!world.isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
       final DeferredOreStorage deferredOres = DeferredOreStorage.get(world);
-      deferredOres.get(chunkPos).put(pos.toImmutable(), stage.ore);
+      deferredOres.get(chunkPos).put(pos.toImmutable(), ore);
       deferredOres.markDirty();
       return;
     }
 
-    blocksToPlace.put(pos.toImmutable(), stage.ore);
+    blocksToPlace.put(pos.toImmutable(), ore);
   }
 
   public void generateDeferredOres(final World world, final ChunkPos chunkPos) {
@@ -163,6 +198,13 @@ public final class WorldOreGenerator extends WorldGenerator {
 
     if(deferredOres.has(chunkPos)) {
       deferredOres.get(chunkPos).forEach((pos, ore) -> {
+        if(ore.getBlock() instanceof BlockPebble) {
+          if(ore.getBlock().canPlaceBlockAt(world, pos)) {
+            world.setBlockState(pos, ore);
+            return;
+          }
+        }
+
         final IBlockState oldState = world.getBlockState(pos);
         if(oldState.getBlock().isReplaceableOreGen(oldState, world, pos, WorldOreGenerator::stonePredicate)) {
           world.setBlockState(pos, ore, 2);
@@ -178,20 +220,31 @@ public final class WorldOreGenerator extends WorldGenerator {
     private final IBlockState ore;
     private final StateFunction<Integer> minRadius;
     private final StateFunction<Integer> maxRadius;
-    private final StateFunction<Float> blockSpawnChance;
+    private final StateFunction<Float> blockDensity;
     private final StateFunction<Float> stageSpawnChance;
 
-    private Stage(final IBlockState ore, final StateFunction<Integer> minRadius, final StateFunction<Integer> maxRadius, final StateFunction<Float> blockSpawnChance, final StateFunction<Float> stageSpawnChance) {
+    private Stage(final IBlockState ore, final StateFunction<Integer> minRadius, final StateFunction<Integer> maxRadius, final StateFunction<Float> blockDensity, final StateFunction<Float> stageSpawnChance) {
       this.ore = ore;
       this.minRadius = minRadius;
       this.maxRadius = maxRadius;
-      this.blockSpawnChance = blockSpawnChance;
+      this.blockDensity = blockDensity;
       this.stageSpawnChance = stageSpawnChance;
+    }
+  }
+
+  private static final class Pebble {
+    private final IBlockState pebble;
+    private final float density;
+
+    private Pebble(final IBlockState pebble, final float density) {
+      this.pebble = pebble;
+      this.density = density;
     }
   }
 
   public static final class WorldOreGeneratorBuilder {
     private final List<Stage> stages = new ArrayList<>();
+    private final List<Pebble> pebbles = new ArrayList<>();
     private StateFunction<Integer> minLength = state -> 3;
     private StateFunction<Integer> maxLength = state -> 5;
 
@@ -201,6 +254,13 @@ public final class WorldOreGenerator extends WorldGenerator {
       final StageBuilder builder = new StageBuilder();
       callback.accept(builder);
       this.stages.add(builder.build());
+      return this;
+    }
+
+    public WorldOreGeneratorBuilder addPebble(final Consumer<PebbleBuilder> callback) {
+      final PebbleBuilder builder = new PebbleBuilder();
+      callback.accept(builder);
+      this.pebbles.add(builder.build());
       return this;
     }
 
@@ -223,9 +283,10 @@ public final class WorldOreGenerator extends WorldGenerator {
     }
 
     private static final Stage[] ZERO_LENGTH_STAGE = new Stage[0];
+    private static final Pebble[] ZERO_LENGTH_PEBBLE = new Pebble[0];
 
     private WorldOreGenerator build() {
-      return new WorldOreGenerator(this.stages.toArray(ZERO_LENGTH_STAGE), this.minLength, this.maxLength);
+      return new WorldOreGenerator(this.stages.toArray(ZERO_LENGTH_STAGE), this.pebbles.toArray(ZERO_LENGTH_PEBBLE), this.minLength, this.maxLength);
     }
   }
 
@@ -233,7 +294,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     private IBlockState ore = Blocks.STONE.getDefaultState();
     private StateFunction<Integer> minRadius = state -> 0;
     private StateFunction<Integer> maxRadius = state -> 5;
-    private StateFunction<Float> blockSpawnChance = state -> 0.75f;
+    private StateFunction<Float> blockDensity = state -> 0.75f;
     private StateFunction<Float> stageSpawnChance = state -> 1.0f;
 
     private StageBuilder() { }
@@ -261,12 +322,12 @@ public final class WorldOreGenerator extends WorldGenerator {
       return this;
     }
 
-    public StageBuilder blockSpawnChance(final float spawnChance) {
-      return this.blockSpawnChance(depth -> spawnChance);
+    public StageBuilder blockDensity(final float density) {
+      return this.blockDensity(depth -> density);
     }
 
-    public StageBuilder blockSpawnChance(final StateFunction<Float> spawnChance) {
-      this.blockSpawnChance = spawnChance;
+    public StageBuilder blockDensity(final StateFunction<Float> density) {
+      this.blockDensity = density;
       return this;
     }
 
@@ -280,7 +341,28 @@ public final class WorldOreGenerator extends WorldGenerator {
     }
 
     private Stage build() {
-      return new Stage(this.ore, this.minRadius, this.maxRadius, this.blockSpawnChance, this.stageSpawnChance);
+      return new Stage(this.ore, this.minRadius, this.maxRadius, this.blockDensity, this.stageSpawnChance);
+    }
+  }
+
+  public static final class PebbleBuilder {
+    private IBlockState pebble = GradientBlocks.PEBBLE.getDefaultState();
+    private float density = 0.5f;
+
+    private PebbleBuilder() { }
+
+    public PebbleBuilder pebble(final IBlockState pebble) {
+      this.pebble = pebble;
+      return this;
+    }
+
+    public PebbleBuilder density(final float density) {
+      this.density = density;
+      return this;
+    }
+
+    private Pebble build() {
+      return new Pebble(this.pebble, this.density);
     }
   }
 

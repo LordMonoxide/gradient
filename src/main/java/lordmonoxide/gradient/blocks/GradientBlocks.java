@@ -128,6 +128,11 @@ public final class GradientBlocks {
         register(new BlockOre(metal));
       }
 
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+        final BlockPebble pebble = new BlockPebble(metal);
+        register(pebble, new ItemPebble(pebble));
+      }
+
       // Trigger block registration
       new GradientBlocks();
 

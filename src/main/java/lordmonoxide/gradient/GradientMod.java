@@ -3,7 +3,6 @@ package lordmonoxide.gradient;
 import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.overrides.*;
 import lordmonoxide.gradient.worldgen.DisableVanillaOre;
-import lordmonoxide.gradient.worldgen.GeneratePebbles;
 import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -66,7 +65,6 @@ public class GradientMod {
     MinecraftForge.EVENT_BUS.register(DisableBreakingBlocksWithoutTools.instance);
     MinecraftForge.EVENT_BUS.register(AddExtraDrops.instance);
 
-    GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
 
     GradientMetals.registerMeltables();

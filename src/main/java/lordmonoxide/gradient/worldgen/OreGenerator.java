@@ -21,10 +21,34 @@ import java.util.function.Function;
 
 public class OreGenerator implements IWorldGenerator {
   @GameRegistry.ObjectHolder("gradient:ore.hematite")
-  private static final Block HEMATITE = null;
+  private static final Block HEMATITE_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.hematite")
+  private static final Block HEMATITE_PEBBLE = null;
 
   @GameRegistry.ObjectHolder("gradient:ore.graphite")
-  private static final Block GRAPHITE = null;
+  private static final Block GRAPHITE_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.graphite")
+  private static final Block GRAPHITE_PEBBLE = null;
+
+  @GameRegistry.ObjectHolder("gradient:ore.cassiterite")
+  private static final Block CASSITERITE_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.cassiterite")
+  private static final Block CASSITERITE_PEBBLE = null;
+
+  @GameRegistry.ObjectHolder("gradient:ore.copper")
+  private static final Block COPPER_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.copper")
+  private static final Block COPPER_PEBBLE = null;
+
+  @GameRegistry.ObjectHolder("gradient:ore.pyrite")
+  private static final Block PYRITE_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.pyrite")
+  private static final Block PYRITE_PEBBLE = null;
+
+  @GameRegistry.ObjectHolder("gradient:ore.gold")
+  private static final Block GOLD_ORE = null;
+  @GameRegistry.ObjectHolder("gradient:pebble.gold")
+  private static final Block GOLD_PEBBLE = null;
 
   private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);
@@ -32,25 +56,25 @@ public class OreGenerator implements IWorldGenerator {
 
     generator.addStage(stage -> {
       stage.ore(Blocks.COAL_ORE.getDefaultState());
-      stage.minRadius(5);
-      stage.maxRadius(8);
-      stage.blockSpawnChance(0.75f);
+      stage.minRadius(3);
+      stage.maxRadius(6);
+      stage.blockDensity(0.75f);
       stage.stageSpawnChance(0.90f);
     });
 
     generator.addStage(stage -> {
       stage.ore(Blocks.COAL_ORE.getDefaultState());
-      stage.minRadius(9);
-      stage.maxRadius(11);
-      stage.blockSpawnChance(0.33f);
+      stage.minRadius(7);
+      stage.maxRadius(9);
+      stage.blockDensity(0.33f);
       stage.stageSpawnChance(0.90f);
     });
 
     generator.addStage(stage -> {
-      stage.ore(GRAPHITE.getDefaultState());
+      stage.ore(GRAPHITE_ORE.getDefaultState());
       stage.minRadius(0);
-      stage.maxRadius(7);
-      stage.blockSpawnChance(0.75f);
+      stage.maxRadius(4);
+      stage.blockDensity(0.75f);
       stage.stageSpawnChance(0.95f);
     });
 
@@ -58,8 +82,13 @@ public class OreGenerator implements IWorldGenerator {
       stage.ore(Blocks.DIAMOND_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(1);
-      stage.blockSpawnChance(0.75f);
+      stage.blockDensity(0.75f);
       stage.stageSpawnChance(0.8f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(GRAPHITE_PEBBLE.getDefaultState());
+      pebble.density(0.1f);
     });
   });
 
@@ -73,7 +102,7 @@ public class OreGenerator implements IWorldGenerator {
       stage.ore(Blocks.COAL_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(state -> (int)(scale.apply(state.getDepth()) * 4));
-      stage.blockSpawnChance(1.0f);
+      stage.blockDensity(1.0f);
     });
   });
 
@@ -82,10 +111,14 @@ public class OreGenerator implements IWorldGenerator {
     generator.maxLength(40);
 
     generator.addStage(stage -> {
-      stage.ore(HEMATITE.getDefaultState());
+      stage.ore(HEMATITE_ORE.getDefaultState());
       stage.minRadius(0);
       stage.maxRadius(8);
-      stage.blockSpawnChance(1.0f);
+      stage.blockDensity(1.0f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(HEMATITE_PEBBLE.getDefaultState());
     });
   });
 
@@ -94,10 +127,77 @@ public class OreGenerator implements IWorldGenerator {
     generator.maxLength(20);
 
     generator.addStage(stage -> {
-      stage.ore(HEMATITE.getDefaultState());
+      stage.ore(HEMATITE_ORE.getDefaultState());
       stage.minRadius(0);
-      stage.maxRadius(4);
-      stage.blockSpawnChance(1.0f);
+      stage.maxRadius(3);
+      stage.blockDensity(0.9f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(HEMATITE_PEBBLE.getDefaultState());
+    });
+  });
+
+  private final WorldOreGenerator cassiterite = WorldOreGenerator.create(generator -> {
+    final Function<Integer, Float> scale = depth -> 1.0f / ((depth + 64) / 64.0f);
+
+    generator.minLength(state -> (int)(scale.apply(state.getDepth()) * 5));
+    generator.maxLength(state -> (int)(scale.apply(state.getDepth()) * 20));
+
+    generator.addStage(stage -> {
+      stage.ore(CASSITERITE_ORE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(state -> (int)(scale.apply(state.getDepth()) * 4));
+      stage.blockDensity(0.5f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(CASSITERITE_PEBBLE.getDefaultState());
+    });
+  });
+
+  private final WorldOreGenerator copper = WorldOreGenerator.create(generator -> {
+    generator.minLength(4);
+    generator.maxLength(7);
+
+    generator.addStage(stage -> {
+      stage.ore(COPPER_ORE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(1);
+      stage.blockDensity(3.0f);
+    });
+
+    generator.addPebble(pebble -> pebble.pebble(COPPER_PEBBLE.getDefaultState()));
+  });
+
+  private final WorldOreGenerator gold = WorldOreGenerator.create(generator -> {
+    generator.minLength(7);
+    generator.maxLength(12);
+
+    generator.addStage(stage -> {
+      stage.ore(PYRITE_ORE.getDefaultState());
+      stage.minRadius(1);
+      stage.maxRadius(6);
+      stage.blockDensity(0.1f);
+      stage.stageSpawnChance(0.9f);
+    });
+
+    generator.addStage(stage -> {
+      stage.ore(GOLD_ORE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(1);
+      stage.blockDensity(1.0f);
+      stage.stageSpawnChance(0.9f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(PYRITE_PEBBLE.getDefaultState());
+      pebble.density(0.25f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(GOLD_PEBBLE.getDefaultState());
+      pebble.density(0.25f);
     });
   });
 
@@ -110,29 +210,44 @@ public class OreGenerator implements IWorldGenerator {
       this.coal.generateDeferredOres(world, chunkPos);
       this.smallHematite.generateDeferredOres(world, chunkPos);
       this.hematite.generateDeferredOres(world, chunkPos);
+      this.cassiterite.generateDeferredOres(world, chunkPos);
+      this.copper.generateDeferredOres(world, chunkPos);
+      this.gold.generateDeferredOres(world, chunkPos);
 
-      if(random.nextInt(81) == 0) {
+      if(random.nextInt(256) == 0) {
         this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 20);
       }
 
       if(random.nextInt(16) == 0) {
-        this.runGenerator(this.coal, world, random, chunkX, chunkZ, 15, 0, 128);
+        this.runGenerator(this.coal, world, random, chunkX, chunkZ, 30, 0, 256);
       }
 
       this.generateHematite(random, chunkPos, world, chunkGenerator, chunkProvider);
+
+      if(random.nextInt(64) == 0) {
+        this.runGenerator(this.cassiterite, world, random, chunkX, chunkZ, 30, 0, 256);
+      }
+
+      if(random.nextInt(81) == 0) {
+        this.runGenerator(this.copper, world, random, chunkX, chunkZ, 30, 0, 256);
+      }
+
+      if(random.nextInt(225) == 0) {
+        this.runGenerator(this.gold, world, random, chunkX, chunkZ, 30, 0, 32);
+      }
     }
   }
 
   private boolean generateHematite(final Random random, final ChunkPos chunkPos, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(!BiomeDictionary.hasType(world.getBiome(chunkPos.getBlock(0, 0, 0)), BiomeDictionary.Type.WATER)) {
-      if(random.nextInt(16) == 0) {
+      if(random.nextInt(100) == 0) {
         return this.runGenerator(this.smallHematite, world, random, chunkPos.x, chunkPos.z, 2, 0, 128);
       }
 
       return false;
     }
 
-    if(random.nextInt(81) == 0) {
+    if(random.nextInt(100) == 0) {
       final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(chunkPos.getXStart() + random.nextInt(16), 64, chunkPos.getZStart() + random.nextInt(16));
 
       for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && iblockstate.getMaterial() != Material.ROCK; iblockstate = world.getBlockState(pos)) {

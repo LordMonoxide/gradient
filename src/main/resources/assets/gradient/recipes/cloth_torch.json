@@ -1,12 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "minecraft:torch",
+    "item": "gradient:cloth_torch",
     "count": 2
   },
   "ingredients": [{
     "type": "forge:ore_dict",
-    "ore": "nuggetCoal"
+    "ore": "cloth"
   }, {
     "type": "forge:ore_dict",
     "ore": "string"

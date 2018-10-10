@@ -16,7 +16,8 @@ public final class GradientFuel {
 
   static {
     add("igniter",        5,  50,  500, 32.00f);
-    add("string",         5,  50,  125, 18.00f);
+    add("fibre",          5,  50,  125, 18.00f);
+    add("string",        20,  50,  125, 18.00f);
     add("stickWood",     30, 100,  350,  2.16f);
     add("treeSapling",   60, 150,  350,  1.38f);
     add("plankWood",    600, 230,  750,  1.04f);

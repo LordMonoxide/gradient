@@ -43,6 +43,7 @@ public final class GradientItems {
   public static final GradientItem DEBUG      = RegistrationHandler.register(new DebugItem());
 
   public static final GradientItem FIBRE = RegistrationHandler.register(new Fibre());
+  public static final GradientItem TWINE = RegistrationHandler.register(new Twine());
   public static final GradientItem CLOTH = RegistrationHandler.register(new Cloth());
 
   public static final GradientItemTool BONE_NEEDLE = RegistrationHandler.register(new BoneNeedle());
@@ -120,7 +121,8 @@ public final class GradientItems {
 
     OreDictionary.registerOre("coal", Items.COAL);
 
-    OreDictionary.registerOre("string", FIBRE);
+    OreDictionary.registerOre("fibre",  FIBRE);
+    OreDictionary.registerOre("string", TWINE);
     OreDictionary.registerOre("cloth",  CLOTH);
 
     // Tools

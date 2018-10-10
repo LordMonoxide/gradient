@@ -201,6 +201,23 @@ public class OreGenerator implements IWorldGenerator {
     });
   });
 
+  private final WorldOreGenerator pyrite = WorldOreGenerator.create(generator -> {
+    generator.minLength(7);
+    generator.maxLength(16);
+
+    generator.addStage(stage -> {
+      stage.ore(PYRITE_ORE.getDefaultState());
+      stage.minRadius(0);
+      stage.maxRadius(2);
+      stage.blockDensity(3.0f);
+    });
+
+    generator.addPebble(pebble -> {
+      pebble.pebble(PYRITE_PEBBLE.getDefaultState());
+      pebble.density(0.25f);
+    });
+  });
+
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
@@ -213,6 +230,7 @@ public class OreGenerator implements IWorldGenerator {
       this.cassiterite.generateDeferredOres(world, chunkPos);
       this.copper.generateDeferredOres(world, chunkPos);
       this.gold.generateDeferredOres(world, chunkPos);
+      this.pyrite.generateDeferredOres(world, chunkPos);
 
       if(random.nextInt(256) == 0) {
         this.runGenerator(this.carbon, world, random, chunkX, chunkZ, 3, 0, 20);
@@ -234,6 +252,10 @@ public class OreGenerator implements IWorldGenerator {
 
       if(random.nextInt(225) == 0) {
         this.runGenerator(this.gold, world, random, chunkX, chunkZ, 30, 0, 32);
+      }
+
+      if(random.nextInt(81) == 0) {
+        this.runGenerator(this.pyrite, world, random, chunkX, chunkZ, 30, 0, 256);
       }
     }
   }

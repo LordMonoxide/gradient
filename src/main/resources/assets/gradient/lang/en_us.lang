@@ -80,6 +80,7 @@ item.nugget.iron.name=Iron Nugget
 item.nugget.gold.name=Gold Nugget
 item.nugget.bronze.name=Bronze Nugget
 item.nugget.magnesium.name=Magnesium Nugget
+item.nugget.coal.name=Coal Nugget
 item.alloy_nugget.bronze.name=Bronze Alloy Nugget
 item.dust.copper.name=Copper Dust
 item.dust.tin.name=Tin Dust
@@ -130,6 +131,7 @@ tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
 tile.fire_pit.heat=Heat: %d °C
+tile.cloth_torch.name=Cloth Torch
 
 tile.clay_bowl.unhardened.name=Unhardened Clay Bowl
 tile.clay_bowl.hardened.name=Clay Bowl

@@ -45,6 +45,8 @@ public final class GradientItems {
   public static final GradientItem FIBRE = RegistrationHandler.register(new Fibre());
   public static final GradientItem CLOTH = RegistrationHandler.register(new Cloth());
 
+  public static final NuggetCoal NUGGET_COAL = RegistrationHandler.register(new NuggetCoal());
+
   public static final GradientItemTool BONE_NEEDLE = RegistrationHandler.register(new BoneNeedle());
 
   public static final GradientItem          FIRE_STARTER  = RegistrationHandler.register(new FireStarter());
@@ -132,6 +134,7 @@ public final class GradientItems {
 
     // Metals/metal tools
     OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);
+    OreDictionary.registerOre("nuggetCoal", NUGGET_COAL);
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);

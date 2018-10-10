@@ -55,6 +55,7 @@ public final class GradientBlocks {
   }
 
   public static final BlockFirePit FIRE_PIT = RegistrationHandler.register(new BlockFirePit());
+  public static final BlockClothTorch CLOTH_TORCH = RegistrationHandler.register(new BlockClothTorch());
 
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = RegistrationHandler.register(new BlockClayCrucibleUnhardened());
   public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED;
@@ -103,13 +104,13 @@ public final class GradientBlocks {
 
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
-    private static final Map<GradientBlock, ItemBlock> blocks = new LinkedHashMap<>();
+    private static final Map<Block, ItemBlock> blocks = new LinkedHashMap<>();
 
     public static final List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
 
     private RegistrationHandler() { }
 
-    private static <T extends GradientBlock> T register(final T block) {
+    private static <T extends Block> T register(final T block) {
       if(block instanceof ItemBlockProvider) {
         return register(block, ((ItemBlockProvider)block).getItemBlock((Block & ItemBlockProvider)block));
       }
@@ -117,7 +118,7 @@ public final class GradientBlocks {
       return register(block, new ItemBlock(block));
     }
 
-    private static <T extends GradientBlock> T register(final T block, final ItemBlock item) {
+    private static <T extends Block> T register(final T block, final ItemBlock item) {
       blocks.put(block, item);
       return block;
     }
@@ -153,7 +154,7 @@ public final class GradientBlocks {
     }
 
     private static void registerTileEntities() {
-      for(final GradientBlock block : blocks.keySet()) {
+      for(final Block block : blocks.keySet()) {
         if(block.hasTileEntity()) {
           try {
             //noinspection unchecked

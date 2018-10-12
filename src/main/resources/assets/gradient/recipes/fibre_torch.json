@@ -1,12 +1,14 @@
 {
   "type": "minecraft:crafting_shapeless",
   "result": {
-    "item": "gradient:cloth_torch",
-    "count": 2
+    "item": "gradient:fibre_torch"
   },
   "ingredients": [{
     "type": "forge:ore_dict",
-    "ore": "cloth"
+    "ore": "string"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "string"
   }, {
     "type": "forge:ore_dict",
     "ore": "string"

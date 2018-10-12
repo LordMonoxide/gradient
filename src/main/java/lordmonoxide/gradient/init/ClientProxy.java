@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.init;
 
-import lordmonoxide.gradient.KeyBindings;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.pebble.EntityPebble;
 import lordmonoxide.gradient.overrides.BurningTooltips;
@@ -21,8 +20,6 @@ public class ClientProxy implements IProxy {
     MinecraftForge.EVENT_BUS.register(BurningTooltips.instance);
     MinecraftForge.EVENT_BUS.register(CookingTooltips.instance);
     MinecraftForge.EVENT_BUS.register(MetalTooltips.instance);
-
-    MinecraftForge.EVENT_BUS.register(KeyBindings.instance);
 
     RenderingRegistry.registerEntityRenderingHandler(EntityPebble.class, manager -> new RenderSnowball<>(manager, ItemBlock.getItemFromBlock(GradientBlocks.PEBBLE), Minecraft.getMinecraft().getRenderItem()));
   }

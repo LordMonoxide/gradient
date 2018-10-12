@@ -5,8 +5,8 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.bronzeboiler.BlockBronzeBoiler;
 import lordmonoxide.gradient.blocks.bronzefurnace.BlockBronzeFurnace;
-import lordmonoxide.gradient.blocks.bronzeoven.BlockBronzeOven;
 import lordmonoxide.gradient.blocks.bronzegrinder.BlockBronzeGrinder;
+import lordmonoxide.gradient.blocks.bronzeoven.BlockBronzeOven;
 import lordmonoxide.gradient.blocks.claybowl.BlockClayBowl;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
@@ -20,6 +20,8 @@ import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import lordmonoxide.gradient.blocks.pebble.BlockPebble;
 import lordmonoxide.gradient.blocks.pebble.EntityPebble;
 import lordmonoxide.gradient.blocks.pebble.ItemPebble;
+import lordmonoxide.gradient.blocks.torch.BlockTorchLit;
+import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.MapColor;
@@ -55,7 +57,8 @@ public final class GradientBlocks {
   }
 
   public static final BlockFirePit FIRE_PIT = RegistrationHandler.register(new BlockFirePit());
-  public static final BlockFibreTorch FIBRE_TORCH = RegistrationHandler.register(new BlockFibreTorch());
+  public static final BlockTorchLit FIBRE_TORCH_LIT = RegistrationHandler.register(new BlockTorchLit("fibre_torch_lit", 0.67f));
+  public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = RegistrationHandler.register(new BlockTorchUnlit("fibre_torch_unlit"));
 
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = RegistrationHandler.register(new BlockClayCrucibleUnhardened());
   public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED;

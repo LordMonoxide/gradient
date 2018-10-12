@@ -55,7 +55,7 @@ public final class GradientBlocks {
   }
 
   public static final BlockFirePit FIRE_PIT = RegistrationHandler.register(new BlockFirePit());
-  public static final BlockClothTorch CLOTH_TORCH = RegistrationHandler.register(new BlockClothTorch());
+  public static final BlockFibreTorch FIBRE_TORCH = RegistrationHandler.register(new BlockFibreTorch());
 
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = RegistrationHandler.register(new BlockClayCrucibleUnhardened());
   public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED;

@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
+import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
 import lordmonoxide.gradient.items.FireStarter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
@@ -22,15 +23,23 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.Random;
 
 public class BlockFirePit extends HeatSinkerBlock {
+  @GameRegistry.ObjectHolder("gradient:fibre_torch_lit")
+  private static final Block FIBRE_TORCH_LIT = null;
+
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
 
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -122,6 +131,19 @@ public class BlockFirePit extends HeatSinkerBlock {
 
           if(!tile.isBurning()) {
             tile.light();
+            return true;
+          }
+        }
+
+        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() instanceof BlockTorchUnlit) {
+          final TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
+
+          if(tile == null) {
+            return false;
+          }
+
+          if(tile.isBurning()) {
+            player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)stack.getItem()).getBlock()).lit, stack.getCount()));
             return true;
           }
         }

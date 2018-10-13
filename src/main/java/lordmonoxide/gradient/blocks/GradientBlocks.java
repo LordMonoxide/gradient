@@ -41,7 +41,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class GradientBlocks {
   public static final Material MATERIAL_CLAY_MACHINE   = new Material(MapColor.BROWN);
@@ -58,7 +62,7 @@ public final class GradientBlocks {
 
   public static final BlockFirePit FIRE_PIT = RegistrationHandler.register(new BlockFirePit());
   public static final BlockTorchLit FIBRE_TORCH_LIT = RegistrationHandler.register(new BlockTorchLit("fibre_torch_lit", 0.67f));
-  public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = RegistrationHandler.register(new BlockTorchUnlit("fibre_torch_unlit"));
+  public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = RegistrationHandler.register(new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT));
 
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = RegistrationHandler.register(new BlockClayCrucibleUnhardened());
   public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED;

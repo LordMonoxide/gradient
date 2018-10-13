@@ -132,8 +132,9 @@ tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
 tile.fire_pit.heat=Heat: %d °C
-tile.fibre_torch_on.name=Fibre Torch
-tile.fibre_torch_off.name=Fibre Torch
+tile.fibre_torch_lit.name=Lit Fibre Torch
+tile.fibre_torch_unlit.name=Unlit Fibre Torch
+tile.fibre_torch_unlit.tooltip=Light on a fire pit or with another torch
 
 tile.clay_bowl.unhardened.name=Unhardened Clay Bowl
 tile.clay_bowl.hardened.name=Clay Bowl

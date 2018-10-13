@@ -1,7 +1,6 @@
 # Items
 item.fibre.name=Fibre
 item.twine.name=Twine
-item.cloth.name=Cloth
 
 # Tools
 item.bone_needle.name=Bone Needle
@@ -69,10 +68,6 @@ tile.cast_block.copper.name=Block of Copper
 tile.cast_block.tin.name=Block of Tin
 tile.cast_block.bronze.name=Block of Bronze
 tile.cast_block.magnesium.name=Block of Magnesium
-
-# Armour
-item.cloth_shirt.name=Cloth Shirt
-item.cloth_pants.name=Cloth Pants
 
 # Metals
 item.nugget.copper.name=Copper Nugget

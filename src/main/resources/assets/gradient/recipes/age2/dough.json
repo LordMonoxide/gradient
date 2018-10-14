@@ -1,5 +1,6 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "gradient:age_gated_shapeless",
+  "age": 2,
   "result": {
     "item": "gradient:dough"
   },

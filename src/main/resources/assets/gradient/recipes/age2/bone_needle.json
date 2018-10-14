@@ -1,14 +1,14 @@
 {
   "type": "gradient:age_gated_shapeless_tool",
-  "age": 1,
+  "age": 2,
   "result": {
-    "item": "gradient:flour"
+    "item": "gradient:bone_needle"
   },
   "ingredients": [{
     "type": "forge:ore_dict",
-    "ore": "cropWheat"
+    "ore": "bone"
   }, {
     "type": "gradient:ore",
-    "ore": "toolMortar"
+    "ore": "toolHammer"
   }]
 }

@@ -1,14 +1,13 @@
 {
   "type": "gradient:age_gated_shapeless_tool",
-  "age": 1,
+  "age": 3,
   "result": {
-    "item": "gradient:bone_needle"
+    "item": "gradient:dust.flint"
   },
   "ingredients": [{
-    "type": "forge:ore_dict",
-    "ore": "bone"
+    "item": "minecraft:flint"
   }, {
     "type": "gradient:ore",
-    "ore": "toolHammer"
+    "ore": "toolMortar"
   }]
 }

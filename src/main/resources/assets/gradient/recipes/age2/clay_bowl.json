@@ -1,5 +1,6 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
   "result": {
     "item": "gradient:clay_bowl",
     "data": 0

@@ -1,10 +1,11 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
   "result": {
-    "item": "gradient:clay_crucible_unhardened"
+    "item": "gradient:clay_bucket",
+    "data": 0
   },
   "pattern": [
-    "C C",
     "C C",
     "CCC"
   ],

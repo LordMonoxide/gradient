@@ -1,13 +1,13 @@
 {
   "type": "gradient:age_gated_shaped_tool",
-  "age": 1,
+  "age": 2,
   "result": {
-    "item": "minecraft:leather_chestplate"
+    "item": "minecraft:leather_helmet"
   },
   "pattern": [
+    "LLL",
     "LNL",
-    "LSL",
-    "LLL"
+    " S "
   ],
   "key": {
     "L": {

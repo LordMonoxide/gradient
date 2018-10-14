@@ -1,0 +1,14 @@
+{
+  "type": "gradient:age_gated_shapeless",
+  "age": 3,
+  "result": {
+    "item": "gradient:igniter"
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "dustFlint"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "dustMagnesium"
+  }]
+}

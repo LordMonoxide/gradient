@@ -194,6 +194,10 @@ metal.amount=Amount: %d mB
 # Hardenable tooltip
 hardenable.tooltip=Place next to a fire pit to harden (%d sec)
 
+# Commands
+commands.setage.usage=/setage <age> [<player>]
+commands.setage.set=%s age set to %s
+
 # Debug
 item.infinicoal.name=Infinicoal (debug)
 item.debug.name=Debug

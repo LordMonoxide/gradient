@@ -1,0 +1,26 @@
+{
+  "type": "gradient:age_gated_shapeless",
+  "age": 2,
+  "result": {
+    "item": "gradient:dough"
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "ingredientFlour"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "ingredientFlour"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "ingredientFlour"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "ingredientSalt"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "ingredientSugar"
+  }, {
+    "type": "gradient:fluid",
+    "fluid": "water"
+  }]
+}

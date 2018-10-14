@@ -1,0 +1,16 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 1,
+  "result": {
+    "item": "gradient:twine"
+  },
+  "pattern": [
+    "FF",
+    "FF"
+  ],
+  "key": {
+    "F": {
+      "item": "gradient:fibre"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.progress.Age;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -146,8 +147,9 @@ public final class RecipeRemover {
                 inv.setInventorySlotContents(0, stackLog);
 
                 if(recipe.matches(inv, null)) {
-                  toAdd.add(new ShapelessToolRecipe(
+                  toAdd.add(new AgeGatedShapelessToolRecipe(
                     GradientMod.MODID,
+                    Age.AGE1,
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
                     NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(stackLog), new IngredientOre("toolMattock"))
                   ).setRegistryName(GradientMod.resource(output.getTranslationKey() + ".from." + stackLog.getTranslationKey() + ".with.mattock")));
@@ -173,8 +175,9 @@ public final class RecipeRemover {
       registry.register(recipe);
     }
 
-    registry.register(new ShapelessToolRecipe(
+    registry.register(new AgeGatedShapelessToolRecipe(
       GradientMod.MODID,
+      Age.AGE1,
       new ItemStack(Items.STICK, 2),
       NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), new IngredientOre("toolMattock"))
     ).setRegistryName(GradientMod.resource("sticks.from.planks.with.mattock")));

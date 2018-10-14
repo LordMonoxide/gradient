@@ -1,7 +1,8 @@
 {
   "recipes": {
     "shaped_tool_recipe": "lordmonoxide.gradient.recipes.ShapedToolRecipeFactory",
-    "shapeless_tool_recipe": "lordmonoxide.gradient.recipes.ShapelessToolRecipeFactory"
+    "shapeless_tool_recipe": "lordmonoxide.gradient.recipes.ShapelessToolRecipeFactory",
+    "age_gated_shapeless": "lordmonoxide.gradient.recipes.AgeGatedShapelessRecipeFactory"
   },
   "ingredients": {
     "cast":      "lordmonoxide.gradient.recipes.IngredientCastFactory",

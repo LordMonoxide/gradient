@@ -2,6 +2,8 @@ package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.overrides.*;
+import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
+import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -11,6 +13,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
@@ -49,6 +52,8 @@ public class GradientMod {
     logger.info("{} is loading!", NAME);
     logger.info("------------------- PREINIT -------------------");
 
+    CapabilityPlayerProgress.register();
+
     MinecraftForge.EVENT_BUS.register(OverrideInventory.instance);
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
 
@@ -78,6 +83,13 @@ public class GradientMod {
     logger.info("------------------- POSTINIT -------------------");
 
     proxy.postInit(event);
+  }
+
+  @Mod.EventHandler
+  public void serverStarting(final FMLServerStartingEvent event) {
+    logger.info("------------------- SERVER STARTING -------------------");
+
+    event.registerServerCommand(new SetAgeCommand());
   }
 
   public static ResourceLocation resource(final String path) {

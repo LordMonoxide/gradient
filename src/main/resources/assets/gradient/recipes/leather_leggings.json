@@ -1,5 +1,6 @@
 {
-  "type": "gradient:shaped_tool_recipe",
+  "type": "gradient:age_gated_shaped_tool",
+  "age": 1,
   "result": {
     "item": "minecraft:leather_leggings"
   },

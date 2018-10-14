@@ -1,12 +1,13 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "gradient:age_gated_shaped",
+  "age": 3,
   "result": {
-    "item": "gradient:bronze_oven"
+    "item": "gradient:bronze_boiler"
   },
   "pattern": [
-    "PPP",
-    "PHP",
-    "CTC"
+    "TPT",
+    "CHC",
+    "PCP"
   ],
   "key": {
     "T": {

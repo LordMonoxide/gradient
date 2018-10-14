@@ -7,15 +7,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
-public class AgeGatedShapelessRecipe extends ShapelessRecipes {
+public class AgeGatedShapedRecipe extends ShapedRecipes {
   private final Age age;
 
-  public AgeGatedShapelessRecipe(final String group, final Age age, final ItemStack output, final NonNullList<Ingredient> ingredients) {
-    super(group, output, ingredients);
+  public AgeGatedShapedRecipe(final String group, final Age age, final int width, final int height, final NonNullList<Ingredient> ingredients, final ItemStack result) {
+    super(group, width, height, ingredients, result);
     this.age = age;
   }
 

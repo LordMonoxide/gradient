@@ -1,5 +1,6 @@
 {
-  "type": "gradient:shapeless_tool_recipe",
+  "type": "gradient:age_gated_shapeless_tool",
+  "age": 1,
   "result": {
     "item": "gradient:flour"
   },

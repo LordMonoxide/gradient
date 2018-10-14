@@ -1,22 +1,17 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "gradient:age_gated_shaped",
+  "age": 3,
   "result": {
-    "item": "gradient:bronze_grinder"
+    "item": "gradient:bronze_furnace"
   },
   "pattern": [
-    "PGP",
-    "PHP",
-    "CTC"
+    "PCP",
+    "CHC",
+    "PCP"
   ],
   "key": {
-    "T": {
-      "item": "buildcraftfactory:tank"
-    },
     "H": {
       "item": "gradient:bronze_machine_hull"
-    },
-    "G": {
-      "item": "gradient:grinding_head"
     },
     "C": {
       "type": "gradient:ic2",

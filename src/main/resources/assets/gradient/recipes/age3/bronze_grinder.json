@@ -1,12 +1,13 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "gradient:age_gated_shaped",
+  "age": 3,
   "result": {
-    "item": "gradient:bronze_boiler"
+    "item": "gradient:bronze_grinder"
   },
   "pattern": [
-    "TPT",
-    "CHC",
-    "PCP"
+    "PGP",
+    "PHP",
+    "CTC"
   ],
   "key": {
     "T": {
@@ -14,6 +15,9 @@
     },
     "H": {
       "item": "gradient:bronze_machine_hull"
+    },
+    "G": {
+      "item": "gradient:grinding_head"
     },
     "C": {
       "type": "gradient:ic2",

@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
@@ -18,10 +19,11 @@ import net.minecraftforge.common.crafting.JsonContext;
 import java.util.Map;
 import java.util.Set;
 
-public class ShapedToolRecipeFactory implements IRecipeFactory {
+public class AgeGatedShapedToolRecipeFactory implements IRecipeFactory {
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
+    final Age age = Age.get(JsonUtils.getInt(json, "age"));
 
     final Map<Character, Ingredient> ingMap = Maps.newHashMap();
     for(final Map.Entry<String, JsonElement> entry : JsonUtils.getJsonObject(json, "key").entrySet()) {
@@ -86,6 +88,6 @@ public class ShapedToolRecipeFactory implements IRecipeFactory {
     }
 
     final ItemStack result = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
-    return new ShapedToolRecipe(group, pattern[0].length(), pattern.length, input, result);
+    return new AgeGatedShapedToolRecipe(group, age, pattern[0].length(), pattern.length, input, result);
   }
 }

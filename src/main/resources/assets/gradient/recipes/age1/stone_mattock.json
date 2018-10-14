@@ -1,12 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "gradient:age_gated_shaped",
+  "age": 1,
   "result": {
-    "item": "gradient:stone_hammer"
+    "item": "gradient:stone_mattock"
   },
   "pattern": [
-    "P",
-    "F",
-    "S"
+    "PFP",
+    " S "
   ],
   "key": {
     "P": {

@@ -3,6 +3,7 @@ package lordmonoxide.gradient.recipes;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
@@ -12,10 +13,11 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 
-public class ShapelessToolRecipeFactory implements IRecipeFactory {
+public class AgeGatedShapelessToolRecipeFactory implements IRecipeFactory {
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
+    final Age age = Age.get(JsonUtils.getInt(json, "age"));
 
     final NonNullList<Ingredient> ings = NonNullList.create();
     for(final JsonElement ele : JsonUtils.getJsonArray(json, "ingredients")) {
@@ -31,6 +33,6 @@ public class ShapelessToolRecipeFactory implements IRecipeFactory {
     }
 
     final ItemStack itemstack = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
-    return new ShapelessToolRecipe(group, itemstack, ings);
+    return new AgeGatedShapelessToolRecipe(group, age, itemstack, ings);
   }
 }

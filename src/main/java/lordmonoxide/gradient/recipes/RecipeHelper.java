@@ -14,10 +14,9 @@ import java.lang.reflect.Field;
 public final class RecipeHelper {
   private RecipeHelper() { }
 
-  // TODO: SRG names for non-dev environment
-  private static final Field eventHandlerField = ReflectionHelper.findField(InventoryCrafting.class, "eventHandler");
-  private static final Field containerPlayerPlayerField = ReflectionHelper.findField(ContainerPlayer.class, "player");
-  private static final Field slotCraftingPlayerField = ReflectionHelper.findField(SlotCrafting.class, "player");
+  private static final Field eventHandlerField = ReflectionHelper.findField(InventoryCrafting.class, "eventHandler", "field_70465_c");
+  private static final Field containerPlayerPlayerField = ReflectionHelper.findField(ContainerPlayer.class, "player", "field_82862_h");
+  private static final Field slotCraftingPlayerField = ReflectionHelper.findField(SlotCrafting.class, "player", "field_75238_b");
 
   @Nullable
   public static EntityPlayer findPlayerFromInv(final InventoryCrafting inv) {

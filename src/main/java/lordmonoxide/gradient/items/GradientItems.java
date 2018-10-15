@@ -36,8 +36,10 @@ public final class GradientItems {
   public static final GradientItem TWINE = RegistrationHandler.register(new Twine());
 
   private static Item HIDE_COW;
+  private static Item HIDE_DONKEY;
   private static Item HIDE_HORSE;
   private static Item HIDE_LLAMA;
+  private static Item HIDE_MULE;
   private static Item HIDE_OCELOT;
   private static Item HIDE_PIG;
   private static Item HIDE_POLAR_BEAR;
@@ -120,8 +122,10 @@ public final class GradientItems {
     OreDictionary.registerOre("string", TWINE);
 
     OreDictionary.registerOre("hide", HIDE_COW);
+    OreDictionary.registerOre("hide", HIDE_DONKEY);
     OreDictionary.registerOre("hide", HIDE_HORSE);
     OreDictionary.registerOre("hide", HIDE_LLAMA);
+    OreDictionary.registerOre("hide", HIDE_MULE);
     OreDictionary.registerOre("hide", HIDE_OCELOT);
     OreDictionary.registerOre("hide", HIDE_PIG);
     OreDictionary.registerOre("hide", HIDE_POLAR_BEAR);
@@ -256,8 +260,10 @@ public final class GradientItems {
       GradientMod.logger.info("Registering items");
 
       HIDE_COW = RegistrationHandler.register(new Hide("hide_cow"));
+      HIDE_DONKEY = RegistrationHandler.register(new Hide("hide_donkey"));
       HIDE_HORSE = RegistrationHandler.register(new Hide("hide_horse"));
       HIDE_LLAMA = RegistrationHandler.register(new Hide("hide_llama"));
+      HIDE_MULE = RegistrationHandler.register(new Hide("hide_mule"));
       HIDE_OCELOT = RegistrationHandler.register(new Hide("hide_ocelot"));
       HIDE_PIG = RegistrationHandler.register(new Hide("hide_pig"));
       HIDE_POLAR_BEAR = RegistrationHandler.register(new Hide("hide_polar_bear"));

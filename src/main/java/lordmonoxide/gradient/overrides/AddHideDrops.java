@@ -29,8 +29,10 @@ public final class AddHideDrops {
   private AddHideDrops() { }
 
   public static final Item HIDE_COW = null;
+  public static final Item HIDE_DONKEY = null;
   public static final Item HIDE_HORSE = null;
   public static final Item HIDE_LLAMA = null;
+  public static final Item HIDE_MULE = null;
   public static final Item HIDE_OCELOT = null;
   public static final Item HIDE_PIG = null;
   public static final Item HIDE_POLAR_BEAR = null;
@@ -60,7 +62,7 @@ public final class AddHideDrops {
     }
 
     if(entity instanceof EntityDonkey) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_HORSE)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_DONKEY)));
       return;
     }
 
@@ -75,7 +77,7 @@ public final class AddHideDrops {
     }
 
     if(entity instanceof EntityMule) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_HORSE)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_MULE)));
       return;
     }
 

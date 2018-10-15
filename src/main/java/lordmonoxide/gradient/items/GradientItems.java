@@ -35,6 +35,15 @@ public final class GradientItems {
   public static final GradientItem FIBRE = RegistrationHandler.register(new Fibre());
   public static final GradientItem TWINE = RegistrationHandler.register(new Twine());
 
+  private static Item HIDE_COW;
+  private static Item HIDE_HORSE;
+  private static Item HIDE_LLAMA;
+  private static Item HIDE_OCELOT;
+  private static Item HIDE_PIG;
+  private static Item HIDE_POLAR_BEAR;
+  private static Item HIDE_SHEEP;
+  private static Item HIDE_WOLF;
+
   public static final NuggetCoal NUGGET_COAL = RegistrationHandler.register(new NuggetCoal());
 
   public static final GradientItemTool BONE_NEEDLE = RegistrationHandler.register(new BoneNeedle());
@@ -109,6 +118,15 @@ public final class GradientItems {
 
     OreDictionary.registerOre("fibre",  FIBRE);
     OreDictionary.registerOre("string", TWINE);
+
+    OreDictionary.registerOre("hide", HIDE_COW);
+    OreDictionary.registerOre("hide", HIDE_HORSE);
+    OreDictionary.registerOre("hide", HIDE_LLAMA);
+    OreDictionary.registerOre("hide", HIDE_OCELOT);
+    OreDictionary.registerOre("hide", HIDE_PIG);
+    OreDictionary.registerOre("hide", HIDE_POLAR_BEAR);
+    OreDictionary.registerOre("hide", HIDE_SHEEP);
+    OreDictionary.registerOre("hide", HIDE_WOLF);
 
     // Tools
     OreDictionary.registerOre("igniter", GradientItems.IGNITER);
@@ -236,6 +254,15 @@ public final class GradientItems {
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> event) {
       GradientMod.logger.info("Registering items");
+
+      HIDE_COW = RegistrationHandler.register(new Hide("hide_cow"));
+      HIDE_HORSE = RegistrationHandler.register(new Hide("hide_horse"));
+      HIDE_LLAMA = RegistrationHandler.register(new Hide("hide_llama"));
+      HIDE_OCELOT = RegistrationHandler.register(new Hide("hide_ocelot"));
+      HIDE_PIG = RegistrationHandler.register(new Hide("hide_pig"));
+      HIDE_POLAR_BEAR = RegistrationHandler.register(new Hide("hide_polar_bear"));
+      HIDE_SHEEP = RegistrationHandler.register(new Hide("hide_sheep"));
+      HIDE_WOLF = RegistrationHandler.register(new Hide("hide_wolf"));
 
       // Trigger item registration
       new GradientItems();

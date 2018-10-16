@@ -1,16 +1,16 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:age_gated_shapeless",
   "age": 1,
   "result": {
     "item": "gradient:twine"
   },
-  "pattern": [
-    "FF",
-    "FF"
-  ],
-  "key": {
-    "F": {
-      "item": "gradient:fibre"
-    }
-  }
+  "ingredients": [{
+    "item": "gradient:fibre"
+  }, {
+    "item": "gradient:fibre"
+  }, {
+    "item": "gradient:fibre"
+  }, {
+    "item": "gradient:fibre"
+  }]
 }

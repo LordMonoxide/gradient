@@ -13,6 +13,7 @@ import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -42,11 +43,13 @@ public final class AddHideDrops {
   @SubscribeEvent
   public static void onEntityDrops(final LivingDropsEvent event) {
     // Remove leather drops
-    for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
-      final ItemStack drop = dropIterator.next().getItem();
+    if(!(event.getEntity() instanceof EntityPlayer)) {
+      for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
+        final ItemStack drop = dropIterator.next().getItem();
 
-      if(drop.getItem() == Items.LEATHER) {
-        dropIterator.remove();
+        if(drop.getItem() == Items.LEATHER) {
+          dropIterator.remove();
+        }
       }
     }
 

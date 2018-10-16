@@ -1,6 +1,16 @@
 # Items
 item.fibre.name=Fibre
 item.twine.name=Twine
+item.hide_cow.name=Cow Hide
+item.hide_donkey.name=Donkey Hide
+item.hide_horse.name=Horse Hide
+item.hide_llama.name=Llama Hide
+item.hide_mule.name=Mule Hide
+item.hide_ocelot.name=Ocelot Hide
+item.hide_pig.name=Pig Hide
+item.hide_polar_bear.name=Polar Bear Hide
+item.hide_sheep.name=Sheep Hide
+item.hide_wolf.name=Wolf Hide
 
 # Tools
 item.bone_needle.name=Bone Needle

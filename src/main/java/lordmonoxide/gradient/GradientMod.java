@@ -66,7 +66,6 @@ public class GradientMod {
 
     MinecraftForge.EVENT_BUS.register(DisableVanillaTools.instance);
     MinecraftForge.EVENT_BUS.register(DisableBreakingBlocksWithoutTools.instance);
-    MinecraftForge.EVENT_BUS.register(AddExtraDrops.instance);
 
     GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     GameRegistry.registerWorldGenerator(new OreGenerator(), 0);

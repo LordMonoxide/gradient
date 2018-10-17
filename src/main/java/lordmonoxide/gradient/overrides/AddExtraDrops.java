@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.overrides;
 
 import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.GradientMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
@@ -11,12 +12,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.List;
 import java.util.Random;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public final class AddExtraDrops {
   public static final AddExtraDrops instance = new AddExtraDrops();
 
@@ -45,7 +48,7 @@ public final class AddExtraDrops {
   @SubscribeEvent
   public void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getBlock() instanceof BlockLeaves) {
-      if(event.getWorld().rand.nextInt(9) == 0) {
+      if(event.getWorld().rand.nextInt(9) < 1 + event.getFortuneLevel()) {
         event.getDrops().add(new ItemStack(STICK));
       }
     }
@@ -71,16 +74,10 @@ public final class AddExtraDrops {
     final IBlockState state = event.getState();
 
     if(state.getBlock() == GRAVEL) {
-      if(event.getWorld().rand.nextInt(10) == 0) {
-        event.getDrops().add(new ItemStack(PEBBLE));
-      }
-
-      if(event.getWorld().rand.nextInt(10) == 0) {
-        event.getDrops().add(new ItemStack(PEBBLE));
-      }
-
-      if(event.getWorld().rand.nextInt(10) == 0) {
-        event.getDrops().add(new ItemStack(PEBBLE));
+      for(int i = 0; i < 3 + event.getFortuneLevel(); i++) {
+        if(event.getWorld().rand.nextInt(10) == 0) {
+          event.getDrops().add(new ItemStack(PEBBLE));
+        }
       }
     }
   }
@@ -119,7 +116,7 @@ public final class AddExtraDrops {
       if(GradientMetals.hasMeltable(metalStack)) {
         final GradientMetals.Meltable meltable = GradientMetals.getMeltable(metalStack);
 
-        final int nuggetCount = rand.nextInt(meltable.amount * 4 / 1000 + 1) + 2;
+        final int nuggetCount = rand.nextInt(meltable.amount * 4 / 1000 * (event.getFortuneLevel() + 1) + 1) + 2;
 
         for(int i = 0; i < nuggetCount; i++) {
           drops.add(meltable.metal.getNugget());
@@ -127,7 +124,7 @@ public final class AddExtraDrops {
       }
 
       if(event.getState().getBlock() == COAL_ORE) {
-        final int nuggetCount = rand.nextInt(2) + 2;
+        final int nuggetCount = rand.nextInt(2 * (event.getFortuneLevel() + 1)) + 2;
 
         for(int i = 0; i < nuggetCount; i++) {
           drops.add(new ItemStack(NUGGET_COAL));

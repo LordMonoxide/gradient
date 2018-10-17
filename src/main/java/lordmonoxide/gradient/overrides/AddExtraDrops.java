@@ -5,12 +5,12 @@ import lordmonoxide.gradient.GradientMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -41,12 +41,8 @@ public final class AddExtraDrops {
   @GameRegistry.ObjectHolder("minecraft:coal_ore")
   private static final Block COAL_ORE = null;
 
-  private AddExtraDrops() {
-    MinecraftForge.addGrassSeed(new ItemStack(FIBRE), 10);
-  }
-
   @SubscribeEvent
-  public void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {
+  public static void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getBlock() instanceof BlockLeaves) {
       if(event.getWorld().rand.nextInt(9) < 1 + event.getFortuneLevel()) {
         event.getDrops().add(new ItemStack(STICK));
@@ -55,22 +51,33 @@ public final class AddExtraDrops {
   }
 
   @SubscribeEvent
-  public void wheatDropsFibre(final BlockEvent.HarvestDropsEvent event) {
+  public static void grassDropsFibre(final BlockEvent.HarvestDropsEvent event) {
+    if(event.getState().getBlock() instanceof BlockTallGrass) {
+      if(event.getWorld().rand.nextInt(10) < 1 + event.getFortuneLevel()) {
+        event.getDrops().add(new ItemStack(FIBRE));
+      }
+    }
+  }
+
+  @SubscribeEvent
+  public static void wheatDropsFibre(final BlockEvent.HarvestDropsEvent event) {
     final IBlockState state = event.getState();
 
     if(state.getBlock() == Blocks.WHEAT) {
       final BlockCrops wheat = (BlockCrops)state.getBlock();
 
       if(state.getValue(BlockCrops.AGE) == wheat.getMaxAge()) {
-        if(event.getWorld().rand.nextInt(2) == 0) {
-          event.getDrops().add(new ItemStack(FIBRE));
+        final int amount = event.getWorld().rand.nextInt(2 + event.getFortuneLevel());
+
+        if(amount != 0) {
+          event.getDrops().add(new ItemStack(FIBRE, amount));
         }
       }
     }
   }
 
   @SubscribeEvent
-  public void gravelDropsPebbles(final BlockEvent.HarvestDropsEvent event) {
+  public static void gravelDropsPebbles(final BlockEvent.HarvestDropsEvent event) {
     final IBlockState state = event.getState();
 
     if(state.getBlock() == GRAVEL) {
@@ -83,7 +90,7 @@ public final class AddExtraDrops {
   }
 
   @SubscribeEvent
-  public void stoneDropsPebbles(final BlockEvent.HarvestDropsEvent event) {
+  public static void stoneDropsPebbles(final BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getMaterial() != Material.ROCK) {
       return;
     }

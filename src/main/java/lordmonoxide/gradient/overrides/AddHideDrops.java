@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -54,58 +55,66 @@ public final class AddHideDrops {
     }
 
     final Entity entity = event.getEntity();
+    final World world = entity.world;
 
     final double x = entity.posX + 0.5d;
     final double y = entity.posY + 0.5d;
     final double z = entity.posZ + 0.5d;
 
+    int amount = 1;
+    for(int i = 0; i < event.getLootingLevel(); i++) {
+      if(world.rand.nextInt(10) < 8) {
+        amount++;
+      }
+    }
+
     if(entity instanceof EntityCow) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_COW)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_COW, amount)));
       return;
     }
 
     if(entity instanceof EntityDonkey) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_DONKEY)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_DONKEY, amount)));
       return;
     }
 
     if(entity instanceof EntityHorse) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_HORSE)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_HORSE, amount)));
       return;
     }
 
     if(entity instanceof EntityLlama) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_LLAMA)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_LLAMA, amount)));
       return;
     }
 
     if(entity instanceof EntityMule) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_MULE)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_MULE, amount)));
       return;
     }
 
     if(entity instanceof EntityOcelot) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_OCELOT)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_OCELOT, amount)));
       return;
     }
 
     if(entity instanceof EntityPig) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_PIG)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_PIG, amount)));
       return;
     }
 
     if(entity instanceof EntityPolarBear) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_POLAR_BEAR)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_POLAR_BEAR, amount)));
       return;
     }
 
     if(entity instanceof EntitySheep) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_SHEEP)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_SHEEP, amount)));
       return;
     }
 
     if(entity instanceof EntityWolf) {
-      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_WOLF)));
+      event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_WOLF, amount)));
       return;
     }
   }

@@ -5,7 +5,6 @@ import lordmonoxide.gradient.GradientMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -51,8 +50,14 @@ public final class AddExtraDrops {
   }
 
   @SubscribeEvent
-  public static void grassDropsFibre(final BlockEvent.HarvestDropsEvent event) {
-    if(event.getState().getBlock() instanceof BlockTallGrass) {
+  public static void grassAndDirtDropsFibre(final BlockEvent.HarvestDropsEvent event) {
+    final Block block = event.getState().getBlock();
+
+    if(
+      block == Blocks.TALLGRASS ||
+      block == Blocks.DIRT ||
+      block == Blocks.GRASS
+    ) {
       if(event.getWorld().rand.nextInt(10) < 1 + event.getFortuneLevel()) {
         event.getDrops().add(new ItemStack(FIBRE));
       }

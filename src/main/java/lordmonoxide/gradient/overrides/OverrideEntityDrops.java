@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityPolarBear;
+import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityDonkey;
 import net.minecraft.entity.passive.EntityHorse;
@@ -27,8 +28,8 @@ import java.util.Iterator;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 @GameRegistry.ObjectHolder("gradient")
-public final class AddHideDrops {
-  private AddHideDrops() { }
+public final class OverrideEntityDrops {
+  private OverrideEntityDrops() { }
 
   public static final Item HIDE_COW = null;
   public static final Item HIDE_DONKEY = null;
@@ -42,7 +43,7 @@ public final class AddHideDrops {
   public static final Item HIDE_WOLF = null;
 
   @SubscribeEvent
-  public static void onEntityDrops(final LivingDropsEvent event) {
+  public static void addHideDrops(final LivingDropsEvent event) {
     // Remove leather drops
     if(!(event.getEntity() instanceof EntityPlayer)) {
       for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
@@ -116,6 +117,19 @@ public final class AddHideDrops {
     if(entity instanceof EntityWolf) {
       event.getDrops().add(new EntityItem(entity.world, x, y, z, new ItemStack(HIDE_WOLF, amount)));
       return;
+    }
+  }
+
+  @SubscribeEvent
+  public static void noSpiderString(final LivingDropsEvent event) {
+    if(event.getEntity() instanceof EntitySpider) {
+      for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
+        final ItemStack drop = dropIterator.next().getItem();
+
+        if(drop.getItem() == Items.STRING) {
+          dropIterator.remove();
+        }
+      }
     }
   }
 }

@@ -3,17 +3,13 @@ package lordmonoxide.gradient.overrides;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.AbstractIllager;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityPolarBear;
 import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityDonkey;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityMule;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -25,6 +21,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.Iterator;
+import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 @GameRegistry.ObjectHolder("gradient")
@@ -41,6 +38,9 @@ public final class OverrideEntityDrops {
   public static final Item HIDE_POLAR_BEAR = null;
   public static final Item HIDE_SHEEP = null;
   public static final Item HIDE_WOLF = null;
+
+  @GameRegistry.ObjectHolder("minecraft:bone")
+  public static final Item BONE = null;
 
   @SubscribeEvent
   public static void addHideDrops(final LivingDropsEvent event) {
@@ -130,6 +130,38 @@ public final class OverrideEntityDrops {
           dropIterator.remove();
         }
       }
+    }
+  }
+
+  @SubscribeEvent
+  public static void everythingDropsBones(final LivingDropsEvent event) {
+    final Entity entity = event.getEntity();
+
+    if(
+      entity instanceof EntityZombie ||
+      entity instanceof AbstractIllager ||
+      entity instanceof EntityCreeper ||
+      entity instanceof EntityWitch ||
+      entity instanceof EntityCow ||
+      entity instanceof AbstractHorse ||
+      entity instanceof EntityOcelot ||
+      entity instanceof EntityPig ||
+      entity instanceof EntityPolarBear ||
+      entity instanceof EntitySheep ||
+      entity instanceof EntityWolf ||
+      entity instanceof EntityVillager
+    ) {
+      final World world = entity.world;
+      final Random rand = world.rand;
+
+      int amount = rand.nextInt(2);
+      for(int i = 0; i < event.getLootingLevel(); i++) {
+        if(world.rand.nextInt(10) < 5) {
+          amount++;
+        }
+      }
+
+      event.getDrops().add(new EntityItem(world, entity.posX, entity.posY, entity.posZ, new ItemStack(BONE, amount)));
     }
   }
 }

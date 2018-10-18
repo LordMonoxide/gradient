@@ -1,7 +1,10 @@
 package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.init.IProxy;
-import lordmonoxide.gradient.overrides.*;
+import lordmonoxide.gradient.overrides.DisableBreakingBlocksWithoutTools;
+import lordmonoxide.gradient.overrides.DisableVanillaTools;
+import lordmonoxide.gradient.overrides.GeneratePebbles;
+import lordmonoxide.gradient.overrides.OverrideInventory;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.worldgen.OreGenerator;
@@ -19,6 +22,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 
 @Mod(modid = GradientMod.MODID, name = GradientMod.NAME, version = GradientMod.VERSION, dependencies = "after:ic2")
 public class GradientMod {
@@ -51,6 +55,8 @@ public class GradientMod {
 
     logger.info("{} is loading!", NAME);
     logger.info("------------------- PREINIT -------------------");
+
+    syncTriumphAdvancements(event.getModConfigurationDirectory());
 
     CapabilityPlayerProgress.register();
 
@@ -93,5 +99,9 @@ public class GradientMod {
 
   public static ResourceLocation resource(final String path) {
     return new ResourceLocation(MODID, path);
+  }
+
+  private static void syncTriumphAdvancements(final File configDir) {
+
   }
 }

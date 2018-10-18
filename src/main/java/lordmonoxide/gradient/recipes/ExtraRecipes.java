@@ -7,6 +7,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
 import lordmonoxide.gradient.items.*;
+import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
@@ -55,8 +56,9 @@ public final class ExtraRecipes {
 
         GradientMod.logger.info("Adding recipe {}", recipeName);
 
-        registry.register(new ShapelessToolRecipe(
+        registry.register(new AgeGatedShapelessToolRecipe(
             GradientMod.MODID,
+            Age.AGE3,
             Dust.getDust(metal, 1),
             NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), mortar)
         ).setRegistryName(GradientMod.resource(recipeName)));
@@ -76,8 +78,9 @@ public final class ExtraRecipes {
 
       GradientMod.logger.info("Adding recipe {}", recipeName);
 
-      registry.register(new ShapelessToolRecipe(
+      registry.register(new AgeGatedShapelessToolRecipe(
           GradientMod.MODID,
+          Age.AGE3,
           Plate.getPlate(metal, 1),
           NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(hammers))
       ).setRegistryName(GradientMod.resource(recipeName)));
@@ -158,8 +161,9 @@ public final class ExtraRecipes {
 
       GradientMod.logger.info("Adding recipe {}", recipeName);
 
-      registry.register(new ShapelessToolRecipe(
+      registry.register(new AgeGatedShapelessToolRecipe(
           GradientMod.MODID,
+          Age.AGE3,
           Nugget.get(metal, 4),
           NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(pickaxes))
       ).setRegistryName(GradientMod.resource(recipeName)));

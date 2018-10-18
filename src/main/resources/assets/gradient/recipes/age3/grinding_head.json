@@ -1,0 +1,21 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 3,
+  "result": {
+    "item": "gradient:grinding_head"
+  },
+  "pattern": [
+    "PFP",
+    "FPF",
+    "PFP"
+  ],
+  "key": {
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateBronze"
+    },
+    "F": {
+      "item": "minecraft:flint"
+    }
+  }
+}

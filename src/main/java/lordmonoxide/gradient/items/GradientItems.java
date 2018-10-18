@@ -5,17 +5,11 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
-import lordmonoxide.gradient.items.armour.ClothPants;
-import lordmonoxide.gradient.items.armour.ClothShirt;
-import lordmonoxide.gradient.items.armour.GradientArmour;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -29,21 +23,30 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class GradientItems {
   private GradientItems() { }
 
-  @Nonnull
-  public static final ItemArmor.ArmorMaterial MATERIAL_CLOTH = EnumHelper.addArmorMaterial("cloth", GradientMod.MODID + ":cloth", 5, new int[] {0, 1, 2, 0}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
-
   public static final GradientItem INFINICOAL = RegistrationHandler.register(new Infinicoal());
   public static final GradientItem DEBUG      = RegistrationHandler.register(new DebugItem());
 
   public static final GradientItem FIBRE = RegistrationHandler.register(new Fibre());
-  public static final GradientItem CLOTH = RegistrationHandler.register(new Cloth());
+  public static final GradientItem TWINE = RegistrationHandler.register(new Twine());
+
+  private static Item HIDE_COW;
+  private static Item HIDE_DONKEY;
+  private static Item HIDE_HORSE;
+  private static Item HIDE_LLAMA;
+  private static Item HIDE_MULE;
+  private static Item HIDE_OCELOT;
+  private static Item HIDE_PIG;
+  private static Item HIDE_POLAR_BEAR;
+  private static Item HIDE_SHEEP;
+  private static Item HIDE_WOLF;
+
+  public static final NuggetCoal NUGGET_COAL = RegistrationHandler.register(new NuggetCoal());
 
   public static final GradientItemTool BONE_NEEDLE = RegistrationHandler.register(new BoneNeedle());
 
@@ -51,9 +54,6 @@ public final class GradientItems {
   public static final GradientItemWorldTool STONE_HAMMER  = RegistrationHandler.register(new StoneHammer());
   public static final GradientItemWorldTool STONE_MATTOCK = RegistrationHandler.register(new StoneMattock());
   public static final GradientItemWorldTool FLINT_KNIFE   = RegistrationHandler.register(new FlintKnife());
-
-  public static final GradientArmour CLOTH_SHIRT = RegistrationHandler.register(new ClothShirt());
-  public static final GradientArmour CLOTH_PANTS = RegistrationHandler.register(new ClothPants());
 
   public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
 
@@ -110,8 +110,6 @@ public final class GradientItems {
   public static final ItemClayBucket CLAY_BUCKET = RegistrationHandler.register(new ItemClayBucket());
 
   private static void initialiseItems() {
-    MATERIAL_CLOTH.setRepairItem(CLOTH.getItemStack());
-
     MinecraftForge.EVENT_BUS.register(CLAY_BUCKET);
   }
 
@@ -120,8 +118,19 @@ public final class GradientItems {
 
     OreDictionary.registerOre("coal", Items.COAL);
 
-    OreDictionary.registerOre("string", FIBRE);
-    OreDictionary.registerOre("cloth",  CLOTH);
+    OreDictionary.registerOre("fibre",  FIBRE);
+    OreDictionary.registerOre("string", TWINE);
+
+    OreDictionary.registerOre("hide", HIDE_COW);
+    OreDictionary.registerOre("hide", HIDE_DONKEY);
+    OreDictionary.registerOre("hide", HIDE_HORSE);
+    OreDictionary.registerOre("hide", HIDE_LLAMA);
+    OreDictionary.registerOre("hide", HIDE_MULE);
+    OreDictionary.registerOre("hide", HIDE_OCELOT);
+    OreDictionary.registerOre("hide", HIDE_PIG);
+    OreDictionary.registerOre("hide", HIDE_POLAR_BEAR);
+    OreDictionary.registerOre("hide", HIDE_SHEEP);
+    OreDictionary.registerOre("hide", HIDE_WOLF);
 
     // Tools
     OreDictionary.registerOre("igniter", GradientItems.IGNITER);
@@ -131,6 +140,8 @@ public final class GradientItems {
     OreDictionary.registerOre("toolMortar", MORTAR.getWildcardItemStack());
 
     // Metals/metal tools
+    OreDictionary.registerOre("nuggetCoal", NUGGET_COAL);
+
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);
 
@@ -248,6 +259,17 @@ public final class GradientItems {
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> event) {
       GradientMod.logger.info("Registering items");
+
+      HIDE_COW = RegistrationHandler.register(new Hide("hide_cow"));
+      HIDE_DONKEY = RegistrationHandler.register(new Hide("hide_donkey"));
+      HIDE_HORSE = RegistrationHandler.register(new Hide("hide_horse"));
+      HIDE_LLAMA = RegistrationHandler.register(new Hide("hide_llama"));
+      HIDE_MULE = RegistrationHandler.register(new Hide("hide_mule"));
+      HIDE_OCELOT = RegistrationHandler.register(new Hide("hide_ocelot"));
+      HIDE_PIG = RegistrationHandler.register(new Hide("hide_pig"));
+      HIDE_POLAR_BEAR = RegistrationHandler.register(new Hide("hide_polar_bear"));
+      HIDE_SHEEP = RegistrationHandler.register(new Hide("hide_sheep"));
+      HIDE_WOLF = RegistrationHandler.register(new Hide("hide_wolf"));
 
       // Trigger item registration
       new GradientItems();

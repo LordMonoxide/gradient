@@ -1,0 +1,26 @@
+{
+  "type": "gradient:age_gated_shaped_tool",
+  "age": 2,
+  "result": {
+    "item": "minecraft:leather_helmet"
+  },
+  "pattern": [
+    "LLL",
+    "LNL",
+    " S "
+  ],
+  "key": {
+    "L": {
+      "type": "forge:ore_dict",
+      "ore": "leather"
+    },
+    "N": {
+      "type": "forge:ore_dict",
+      "ore": "needle"
+    },
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    }
+  }
+}

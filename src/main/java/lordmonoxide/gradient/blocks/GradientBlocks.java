@@ -5,8 +5,8 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.bronzeboiler.BlockBronzeBoiler;
 import lordmonoxide.gradient.blocks.bronzefurnace.BlockBronzeFurnace;
-import lordmonoxide.gradient.blocks.bronzeoven.BlockBronzeOven;
 import lordmonoxide.gradient.blocks.bronzegrinder.BlockBronzeGrinder;
+import lordmonoxide.gradient.blocks.bronzeoven.BlockBronzeOven;
 import lordmonoxide.gradient.blocks.claybowl.BlockClayBowl;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
@@ -20,6 +20,8 @@ import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import lordmonoxide.gradient.blocks.pebble.BlockPebble;
 import lordmonoxide.gradient.blocks.pebble.EntityPebble;
 import lordmonoxide.gradient.blocks.pebble.ItemPebble;
+import lordmonoxide.gradient.blocks.torch.BlockTorchLit;
+import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.MapColor;
@@ -39,7 +41,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class GradientBlocks {
   public static final Material MATERIAL_CLAY_MACHINE   = new Material(MapColor.BROWN);
@@ -53,6 +59,8 @@ public final class GradientBlocks {
   }
 
   public static final BlockFirePit FIRE_PIT = RegistrationHandler.register(new BlockFirePit());
+  public static final BlockTorchLit FIBRE_TORCH_LIT = RegistrationHandler.register(new BlockTorchLit("fibre_torch_lit", 0.67f));
+  public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = RegistrationHandler.register(new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT));
 
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = RegistrationHandler.register(new BlockClayCrucibleUnhardened());
   public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED;
@@ -101,13 +109,13 @@ public final class GradientBlocks {
 
   @Mod.EventBusSubscriber(modid = GradientMod.MODID)
   public static class RegistrationHandler {
-    private static final Map<GradientBlock, ItemBlock> blocks = new LinkedHashMap<>();
+    private static final Map<Block, ItemBlock> blocks = new LinkedHashMap<>();
 
     public static final List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
 
     private RegistrationHandler() { }
 
-    private static <T extends GradientBlock> T register(final T block) {
+    private static <T extends Block> T register(final T block) {
       if(block instanceof ItemBlockProvider) {
         return register(block, ((ItemBlockProvider)block).getItemBlock((Block & ItemBlockProvider)block));
       }
@@ -115,7 +123,7 @@ public final class GradientBlocks {
       return register(block, new ItemBlock(block));
     }
 
-    private static <T extends GradientBlock> T register(final T block, final ItemBlock item) {
+    private static <T extends Block> T register(final T block, final ItemBlock item) {
       blocks.put(block, item);
       return block;
     }
@@ -160,7 +168,7 @@ public final class GradientBlocks {
     }
 
     private static void registerTileEntities() {
-      for(final GradientBlock block : blocks.keySet()) {
+      for(final Block block : blocks.keySet()) {
         if(block.hasTileEntity()) {
           try {
             //noinspection unchecked

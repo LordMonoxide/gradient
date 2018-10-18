@@ -1,0 +1,17 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
+  "result": {
+    "item": "gradient:clay_crucible_unhardened"
+  },
+  "pattern": [
+    "C C",
+    "C C",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:clay_ball"
+    }
+  }
+}

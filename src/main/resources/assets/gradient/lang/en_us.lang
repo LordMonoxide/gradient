@@ -1,6 +1,16 @@
 # Items
 item.fibre.name=Fibre
-item.cloth.name=Cloth
+item.twine.name=Twine
+item.hide_cow.name=Cow Hide
+item.hide_donkey.name=Donkey Hide
+item.hide_horse.name=Horse Hide
+item.hide_llama.name=Llama Hide
+item.hide_mule.name=Mule Hide
+item.hide_ocelot.name=Ocelot Hide
+item.hide_pig.name=Pig Hide
+item.hide_polar_bear.name=Polar Bear Hide
+item.hide_sheep.name=Sheep Hide
+item.hide_wolf.name=Wolf Hide
 
 # Tools
 item.bone_needle.name=Bone Needle
@@ -109,10 +119,6 @@ tile.cast_block.pyrite.name=Block of Pyrite
 tile.cast_block.graphite.name=Block of Graphite
 tile.cast_block.cassiterite.name=Block of Cassiterite
 
-# Armour
-item.cloth_shirt.name=Cloth Shirt
-item.cloth_pants.name=Cloth Pants
-
 # Metals
 item.nugget.copper.name=Copper Nugget
 item.nugget.tin.name=Tin Nugget
@@ -124,6 +130,7 @@ item.nugget.hematite.name=Hematite Nugget
 item.nugget.pyrite.name=Pyrite Nugget
 item.nugget.graphite.name=Graphite Nugget
 item.nugget.cassiterite.name=Cassiterite Nugget
+item.nugget.coal.name=Coal Nugget
 item.alloy_nugget.bronze.name=Bronze Alloy Nugget
 item.dust.copper.name=Copper Dust
 item.dust.tin.name=Tin Dust
@@ -204,6 +211,9 @@ tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
 tile.fire_pit.heat=Heat: %d °C
+tile.fibre_torch_lit.name=Lit Fibre Torch
+tile.fibre_torch_unlit.name=Unlit Fibre Torch
+tile.fibre_torch_unlit.tooltip=Light on a fire pit or with another torch
 
 tile.clay_bowl.unhardened.name=Unhardened Clay Bowl
 tile.clay_bowl.hardened.name=Clay Bowl
@@ -268,11 +278,9 @@ metal.amount=Amount: %d mB
 # Hardenable tooltip
 hardenable.tooltip=Place next to a fire pit to harden (%d sec)
 
-# Journal
-journal.getting_started=Getting Started
-journal.getting_started.p1=I woke up in a strange land today.  I don't know where I am or how I got here, but gods, it feels like I've been asleep for a month.  I need to find shelter and take in my surroundings.  Maybe then I'll be able to figure out what's going on.  What can I do?  If I can make some tools and start a fire, I might be in better shape.
-journal.getting_started.p2=I can gather up some sticks by breaking leaves, and there are small rocks all over the ground.  Maybe I could lash them with some of the longer strands of grass?
-journal.textiles=Textiles
+# Commands
+commands.setage.usage=/setage <age> [<player>]
+commands.setage.set=%s age set to %s
 
 # Debug
 item.infinicoal.name=Infinicoal (debug)

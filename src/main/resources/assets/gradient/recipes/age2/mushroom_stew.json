@@ -1,0 +1,19 @@
+{
+  "type": "gradient:age_gated_shapeless",
+  "age": 2,
+  "ingredients": [
+    {
+      "item": "minecraft:brown_mushroom"
+    },
+    {
+      "item": "minecraft:red_mushroom"
+    },
+    {
+      "item": "gradient:clay_bowl",
+      "data": 1
+    }
+  ],
+  "result": {
+    "item": "gradient:mushroom_stew"
+  }
+}

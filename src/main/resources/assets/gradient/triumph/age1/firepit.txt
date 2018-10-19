@@ -1,0 +1,12 @@
+setIcon(<gradient:fire_starter>)
+setTitle("Fire")
+setDescription("Craft a fire starter and use it to light a fire pit")
+addParent("gradient:age1/root")
+setPos(80,65)
+
+criteria1 = addCriteria("hasFireStarter", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:fire_starter>)
+
+criteria2 = addCriteria("lightFire", "triumph:right_click_block")
+criteria2.setItem(<gradient:fire_starter>)
+criteria2.setBlock(<gradient:fire_pit>)

@@ -19,14 +19,13 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Mod(modid = GradientMod.MODID, name = GradientMod.NAME, version = GradientMod.VERSION, dependencies = "after:ic2")
@@ -107,18 +106,9 @@ public class GradientMod {
   }
 
   private static void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
-    final Path sourceDir = Paths.get(GradientMod.class.getResource("../../assets/" + MODID + "/triumph").toURI());
-    final Path destDir = configDir.toPath().resolve("triumph/script/" + MODID);
-    copyFolder(sourceDir, destDir);
-  }
-
-  private static void copyFolder(final Path src, final Path dest) throws IOException {
-    Files.walk(src).forEach(source -> {
-      try {
-        Files.copy(source, dest.resolve(src.relativize(source)));
-      } catch(final IOException e) {
-        throw new RuntimeException(e);
-      }
-    });
+    final File sourceDir = Paths.get(GradientMod.class.getResource("../../assets/" + MODID + "/triumph").toURI()).toFile();
+    final File destDir = configDir.toPath().resolve("triumph/script/" + MODID).toFile();
+    FileUtils.deleteDirectory(destDir);
+    FileUtils.copyDirectory(sourceDir, destDir);
   }
 }

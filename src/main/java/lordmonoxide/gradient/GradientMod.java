@@ -107,9 +107,6 @@ public class GradientMod {
   }
 
   private static void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
-    System.out.println(GradientMod.class.getResource("."));
-    System.out.println(GradientMod.class.getResource("../../assets/"));
-    System.out.println(GradientMod.class.getResource("../../assets/" + MODID + "/triumph"));
     final Path sourceDir = Paths.get(GradientMod.class.getResource("../../assets/" + MODID + "/triumph").toURI());
     final Path destDir = configDir.toPath().resolve("triumph/script/" + MODID);
     copyFolder(sourceDir, destDir);

@@ -12,6 +12,11 @@ item.hide_polar_bear.name=Polar Bear Hide
 item.hide_sheep.name=Sheep Hide
 item.hide_wolf.name=Wolf Hide
 
+item.hide_boots.name=Hide Boots
+item.hide_pants.name=Hide Pants
+item.hide_shirt.name=Hide Shirt
+item.hide_headcover.name=Hide Headcover
+
 # Tools
 item.bone_needle.name=Bone Needle
 item.stone_hammer.name=Stone Hammer

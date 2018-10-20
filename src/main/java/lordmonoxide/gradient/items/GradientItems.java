@@ -6,11 +6,16 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
+import lordmonoxide.gradient.items.armour.GradientArmour;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -28,6 +33,8 @@ import java.util.List;
 
 public final class GradientItems {
   private GradientItems() { }
+
+  public static final ItemArmor.ArmorMaterial MATERIAL_HIDE = EnumHelper.addArmorMaterial("hide", GradientMod.resource("hide").toString(), 3, new int[] {1, 1, 2, 1}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 
   public static final GradientItem INFINICOAL = RegistrationHandler.register(new Infinicoal());
   public static final GradientItem DEBUG      = RegistrationHandler.register(new DebugItem());
@@ -269,6 +276,11 @@ public final class GradientItems {
       HIDE_POLAR_BEAR = RegistrationHandler.register(new Hide("hide_polar_bear"));
       HIDE_SHEEP = RegistrationHandler.register(new Hide("hide_sheep"));
       HIDE_WOLF = RegistrationHandler.register(new Hide("hide_wolf"));
+
+      RegistrationHandler.register(new GradientArmour("hide_boots", MATERIAL_HIDE, 0, EntityEquipmentSlot.FEET));
+      RegistrationHandler.register(new GradientArmour("hide_pants", MATERIAL_HIDE, 0, EntityEquipmentSlot.LEGS));
+      RegistrationHandler.register(new GradientArmour("hide_shirt", MATERIAL_HIDE, 0, EntityEquipmentSlot.CHEST));
+      RegistrationHandler.register(new GradientArmour("hide_headcover", MATERIAL_HIDE, 0, EntityEquipmentSlot.HEAD));
 
       // Trigger item registration
       new GradientItems();

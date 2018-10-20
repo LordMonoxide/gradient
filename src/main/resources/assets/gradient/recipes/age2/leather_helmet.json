@@ -6,7 +6,7 @@
   },
   "pattern": [
     "LLL",
-    "LNL",
+    "LAL",
     " S "
   ],
   "key": {
@@ -14,9 +14,9 @@
       "type": "forge:ore_dict",
       "ore": "leather"
     },
-    "N": {
+    "A": {
       "type": "forge:ore_dict",
-      "ore": "needle"
+      "ore": "awl"
     },
     "S": {
       "type": "forge:ore_dict",

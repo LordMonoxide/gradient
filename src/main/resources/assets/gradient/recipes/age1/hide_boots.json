@@ -1,0 +1,25 @@
+{
+  "type": "gradient:age_gated_shaped_tool",
+  "age": 1,
+  "result": {
+    "item": "gradient:hide_boots"
+  },
+  "pattern": [
+    "HAH",
+    "HSH"
+  ],
+  "key": {
+    "H": {
+      "type": "forge:ore_dict",
+      "ore": "hide"
+    },
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "awl"
+    },
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    }
+  }
+}

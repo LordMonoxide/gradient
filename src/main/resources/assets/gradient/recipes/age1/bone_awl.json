@@ -1,8 +1,8 @@
 {
   "type": "gradient:age_gated_shapeless_tool",
-  "age": 2,
+  "age": 1,
   "result": {
-    "item": "gradient:bone_needle"
+    "item": "gradient:bone_awl"
   },
   "ingredients": [{
     "type": "forge:ore_dict",

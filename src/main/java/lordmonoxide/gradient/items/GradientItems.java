@@ -48,7 +48,7 @@ public final class GradientItems {
 
   public static final NuggetCoal NUGGET_COAL = RegistrationHandler.register(new NuggetCoal());
 
-  public static final GradientItemTool BONE_NEEDLE = RegistrationHandler.register(new BoneNeedle());
+  public static final GradientItemTool BONE_AWL = RegistrationHandler.register(new BoneAwl());
 
   public static final GradientItem          FIRE_STARTER  = RegistrationHandler.register(new FireStarter());
   public static final GradientItemWorldTool STONE_HAMMER  = RegistrationHandler.register(new StoneHammer());
@@ -134,7 +134,7 @@ public final class GradientItems {
 
     // Tools
     OreDictionary.registerOre("igniter", GradientItems.IGNITER);
-    OreDictionary.registerOre("needle", BONE_NEEDLE.getWildcardItemStack());
+    OreDictionary.registerOre("awl", BONE_AWL.getWildcardItemStack());
     OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
     OreDictionary.registerOre("toolMattock", STONE_MATTOCK.getWildcardItemStack());
     OreDictionary.registerOre("toolMortar", MORTAR.getWildcardItemStack());

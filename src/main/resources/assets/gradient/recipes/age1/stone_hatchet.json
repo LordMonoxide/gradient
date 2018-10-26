@@ -2,11 +2,11 @@
   "type": "gradient:age_gated_shaped",
   "age": 1,
   "result": {
-    "item": "gradient:stone_mattock"
+    "item": "gradient:stone_hatchet"
   },
   "pattern": [
-    "PFP",
-    " S "
+    "PF",
+    " S"
   ],
   "key": {
     "P": {

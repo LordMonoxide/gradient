@@ -151,8 +151,8 @@ public final class RecipeRemover {
                     GradientMod.MODID,
                     Age.AGE1,
                     new ItemStack(output.getItem(), 2, output.getMetadata()),
-                    NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(stackLog), new IngredientOre("toolMattock"))
-                  ).setRegistryName(GradientMod.resource(output.getTranslationKey() + ".from." + stackLog.getTranslationKey() + ".with.mattock")));
+                    NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(stackLog), new IngredientOre("toolAxe"))
+                  ).setRegistryName(GradientMod.resource(output.getTranslationKey() + ".from." + stackLog.getTranslationKey() + ".with.axe")));
 
                   toRemove.add(recipe);
 
@@ -179,8 +179,8 @@ public final class RecipeRemover {
       GradientMod.MODID,
       Age.AGE1,
       new ItemStack(Items.STICK, 2),
-      NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), new IngredientOre("toolMattock"))
-    ).setRegistryName(GradientMod.resource("sticks.from.planks.with.mattock")));
+      NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), new IngredientOre("toolAxe"))
+    ).setRegistryName(GradientMod.resource("sticks.from.planks.with.axe")));
 
     if(removed == 0) {
       GradientMod.logger.warn("Failed to replaced plank recipes!");

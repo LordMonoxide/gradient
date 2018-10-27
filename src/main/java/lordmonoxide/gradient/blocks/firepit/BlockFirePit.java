@@ -130,6 +130,7 @@ public class BlockFirePit extends HeatSinkerBlock {
           }
 
           if(!tile.isBurning()) {
+            stack.damageItem(1, player);
             tile.light();
             return true;
           }

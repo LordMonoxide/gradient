@@ -17,6 +17,8 @@ item.hide_pants.name=Hide Pants
 item.hide_shirt.name=Hide Shirt
 item.hide_headcover.name=Hide Headcover
 
+item.hide_bedding.name=Hide Bedding
+
 # Tools
 item.bone_awl.name=Bone Awl
 item.stone_hammer.name=Stone Hammer

@@ -1,0 +1,9 @@
+setIcon(<minecraft:log>)
+setTitle("Getting Wood")
+setDescription("Use your new hatchet to gather wood")
+addParent("gradient:age1/basic_tools")
+
+criteria1 = addCriteria("hasWood", "minecraft:inventory_changed")
+criteria1.addItem(<ore:logWood>)
+
+setRequiresParents()

@@ -59,7 +59,7 @@ public final class GradientItems {
 
   public static final GradientItem          FIRE_STARTER  = RegistrationHandler.register(new FireStarter());
   public static final GradientItemWorldTool STONE_HAMMER  = RegistrationHandler.register(new StoneHammer());
-  public static final GradientItemWorldTool STONE_MATTOCK = RegistrationHandler.register(new StoneMattock());
+  public static final GradientItemWorldTool STONE_HATCHET = RegistrationHandler.register(new StoneHatchet());
   public static final GradientItemWorldTool FLINT_KNIFE   = RegistrationHandler.register(new FlintKnife());
 
   public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
@@ -143,7 +143,7 @@ public final class GradientItems {
     OreDictionary.registerOre("igniter", GradientItems.IGNITER);
     OreDictionary.registerOre("awl", BONE_AWL.getWildcardItemStack());
     OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
-    OreDictionary.registerOre("toolMattock", STONE_MATTOCK.getWildcardItemStack());
+    OreDictionary.registerOre("toolAxe", STONE_HATCHET.getWildcardItemStack());
     OreDictionary.registerOre("toolMortar", MORTAR.getWildcardItemStack());
 
     // Metals/metal tools
@@ -172,7 +172,9 @@ public final class GradientItems {
       }
 
       if(metal.canMakeTools) {
-        OreDictionary.registerOre("toolMattock", Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE));
+        final ItemStack stack = Tool.getTool(GradientTools.MATTOCK, metal, 1, OreDictionary.WILDCARD_VALUE);
+        OreDictionary.registerOre("toolAxe", stack);
+        OreDictionary.registerOre("toolHoe", stack);
       }
     }
 

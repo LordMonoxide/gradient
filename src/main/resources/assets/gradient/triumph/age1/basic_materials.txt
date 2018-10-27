@@ -1,0 +1,15 @@
+setIcon(<minecraft:stick>)
+setTitle("Basic Materials")
+setDescription("Gather sticks from leaves, fibre from grass, and pebbles from the ground")
+addParent("gradient:age1/root")
+
+criteria1 = addCriteria("hasSticks", "minecraft:inventory_changed")
+criteria1.addItem(<ore:stickWood>)
+
+criteria2 = addCriteria("hasFibre", "minecraft:inventory_changed")
+criteria2.addItem(<ore:fibre>)
+
+criteria3 = addCriteria("hasPebble", "minecraft:inventory_changed")
+criteria3.addItem(<gradient:pebble>)
+
+setRequiresParents()

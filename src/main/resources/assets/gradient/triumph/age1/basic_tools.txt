@@ -1,12 +1,12 @@
 setIcon(<gradient:stone_hammer>)
 setTitle("Basic Tools")
-setDescription("Craft a stone hammer and stone mattock")
-addParent("gradient:age1/root")
+setDescription("Craft a stone hammer and stone hatchet")
+addParent("gradient:age1/basic_materials")
 
 criteria1 = addCriteria("hasHammer", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:stone_hammer>)
 
-criteria2 = addCriteria("hasMattock", "minecraft:inventory_changed")
-criteria2.addItem(<gradient:stone_mattock>)
+criteria2 = addCriteria("hasHatchet", "minecraft:inventory_changed")
+criteria2.addItem(<gradient:stone_hatchet>)
 
 setRequiresParents()

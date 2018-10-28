@@ -1,7 +1,10 @@
 setIcon(<gradient:hide_pants>)
 setTitle("The Buttflappening")
-setDescription("Craft a full set of hide armour")
+setDescription("Craft a full set of hide armour. You'll be rewarded with a handful of torches that don't go out!")
 addParent("gradient:age1/bone_awl")
+
+setFrameType("CHALLENGE")
+setRewardItem(<minecraft:torch, ore:torch, meta:0, count:4>)
 
 criteria1 = addCriteria("hasHeadcover", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:hide_headcover>)

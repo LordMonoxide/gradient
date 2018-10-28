@@ -3,6 +3,8 @@ setTitle("Let There Be a Little Light")
 setDescription("Craft a fibre torch and light it")
 addParent("gradient:age1/firepit")
 
+setFrameType("GOAL")
+
 criteria1 = addCriteria("hasUnlit", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:fibre_torch_unlit>)
 

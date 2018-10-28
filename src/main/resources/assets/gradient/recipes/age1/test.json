@@ -1,0 +1,10 @@
+{
+  "type": "gradient:grinder",
+  "age": 1,
+  "output": {
+    "item": "gradient:twine"
+  },
+  "input": {
+    "item": "gradient:fibre"
+  }
+}

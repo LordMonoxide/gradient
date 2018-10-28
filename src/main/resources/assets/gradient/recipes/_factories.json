@@ -3,7 +3,8 @@
     "age_gated_shaped": "lordmonoxide.gradient.recipes.AgeGatedShapedRecipeFactory",
     "age_gated_shapeless": "lordmonoxide.gradient.recipes.AgeGatedShapelessRecipeFactory",
     "age_gated_shaped_tool": "lordmonoxide.gradient.recipes.AgeGatedShapedToolRecipeFactory",
-    "age_gated_shapeless_tool": "lordmonoxide.gradient.recipes.AgeGatedShapelessToolRecipeFactory"
+    "age_gated_shapeless_tool": "lordmonoxide.gradient.recipes.AgeGatedShapelessToolRecipeFactory",
+    "grinder": "lordmonoxide.gradient.recipes.GrindingRecipeFactory"
   },
   "ingredients": {
     "cast":      "lordmonoxide.gradient.recipes.IngredientCastFactory",

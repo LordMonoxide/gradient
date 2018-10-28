@@ -1,11 +1,10 @@
 package lordmonoxide.gradient.recipes;
 
+import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
+import lordmonoxide.gradient.progress.PlayerProgress;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.inventory.*;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nullable;
@@ -35,5 +34,19 @@ public final class RecipeHelper {
     } catch(final Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static boolean playerMeetsAgeRequirement(final InventoryCrafting inv, final Age age) {
+    final EntityPlayer player = RecipeHelper.findPlayerFromInv(inv);
+
+    if(player != null) {
+      final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
+
+      if(progress != null) {
+        return progress.meetsAgeRequirement(age);
+      }
+    }
+
+    return true;
   }
 }

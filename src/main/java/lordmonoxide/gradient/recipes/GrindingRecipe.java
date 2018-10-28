@@ -33,6 +33,11 @@ public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements
   }
 
   @Override
+  public String getGroup() {
+    return this.group;
+  }
+
+  @Override
   public boolean matches(final InventoryCrafting inv, final World world) {
     if(!RecipeHelper.playerMeetsAgeRequirement(inv, this.age)) {
       return false;

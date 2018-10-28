@@ -285,6 +285,7 @@ public final class GradientItems {
       RegistrationHandler.register(new GradientArmour("hide_headcover", MATERIAL_HIDE, 0, EntityEquipmentSlot.HEAD));
 
       RegistrationHandler.register(new HideBedding());
+      RegistrationHandler.register(new Waterskin());
 
       // Trigger item registration
       new GradientItems();

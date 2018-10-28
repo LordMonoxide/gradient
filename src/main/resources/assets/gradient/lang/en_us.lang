@@ -19,6 +19,8 @@ item.hide_headcover.name=Hide Headcover
 
 item.hide_bedding.name=Hide Bedding
 
+item.waterskin.name=Waterskin
+
 # Tools
 item.bone_awl.name=Bone Awl
 item.stone_hammer.name=Stone Hammer

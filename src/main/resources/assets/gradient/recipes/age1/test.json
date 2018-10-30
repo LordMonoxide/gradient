@@ -1,6 +1,7 @@
 {
-  "type": "gradient:grinder",
+  "type": "gradient:grinding",
   "age": 1,
+  "passes": 5,
   "output": {
     "item": "gradient:twine"
   },

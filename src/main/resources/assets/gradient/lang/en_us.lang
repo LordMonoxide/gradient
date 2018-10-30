@@ -178,6 +178,8 @@ tile.clay_cast.hammer.name=Clay Cast (Hammer)
 tile.clay_cast.ingot.name=Clay Cast (Ingot)
 tile.clay_cast.block.name=Clay Cast (Block)
 
+tile.manual_grinder.name=Grindstone
+
 tile.bronze_machine_hull.name=Bronze Machine Hull
 tile.bronze_furnace.name=Bronze Furnace
 tile.bronze_furnace.fuel=Fuel

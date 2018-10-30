@@ -15,10 +15,11 @@ public class GrindingRecipeFactory implements IRecipeFactory {
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
     final Age age = Age.get(JsonUtils.getInt(json, "age"));
+    final int passes = JsonUtils.getInt(json, "passes");
 
     final Ingredient input = CraftingHelper.getIngredient(json.get("input"), context);
     final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "output"), context);
 
-    return new GrindingRecipe(group, age, output, input);
+    return new GrindingRecipe(group, age, passes, output, input);
   }
 }

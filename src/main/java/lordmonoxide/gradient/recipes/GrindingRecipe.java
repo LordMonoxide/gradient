@@ -1,7 +1,9 @@
 package lordmonoxide.gradient.recipes;
 
+import lordmonoxide.gradient.blocks.manualgrinder.ContainerManualGrinder;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.client.util.RecipeItemHelper;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -41,7 +43,13 @@ public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements
 
   @Override
   public boolean matches(final InventoryCrafting inv, final World world) {
-    if(!RecipeHelper.playerMeetsAgeRequirement(inv, this.age)) {
+    final Container container = RecipeHelper.getContainer(inv);
+
+    if(!(container instanceof ContainerManualGrinder)) {
+      return false;
+    }
+
+    if(((ContainerManualGrinder)container).getPlayerAge().ordinal() < this.age.ordinal()) {
       return false;
     }
 

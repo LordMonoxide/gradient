@@ -1,8 +1,11 @@
 package lordmonoxide.gradient.blocks.manualgrinder;
 
 import buildcraft.lib.misc.CraftingUtil;
+import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
+import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -25,7 +28,8 @@ public class TileManualGrinder extends TileEntity {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
-  private final InventoryCrafting crafting = new InventoryCrafting(new ContainerManualGrinder(), 1, 1);
+  private final ContainerManualGrinder container = new ContainerManualGrinder();
+  private final InventoryCrafting crafting = new InventoryCrafting(this.container, 1, 1);
   private final ItemStackHandler inventory = new ItemStackHandler(2);
 
   @Nullable
@@ -61,9 +65,9 @@ public class TileManualGrinder extends TileEntity {
     return output;
   }
 
-  public ItemStack insertItem(final ItemStack stack) {
+  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
     if(!this.hasInput()) {
-      this.recipe = this.findRecipe(stack);
+      this.recipe = this.findRecipe(stack, RecipeHelper.getPlayerAge(player));
       this.passes = 0;
 
       if(this.recipe == null) {
@@ -98,7 +102,8 @@ public class TileManualGrinder extends TileEntity {
   }
 
   @Nullable
-  private GrindingRecipe findRecipe(final ItemStack input) {
+  private GrindingRecipe findRecipe(final ItemStack input, final Age age) {
+    this.container.setPlayerAge(age);
     this.crafting.setInventorySlotContents(0, input);
     final IRecipe recipe = CraftingUtil.findMatchingRecipe(this.crafting, this.world);
 
@@ -113,6 +118,7 @@ public class TileManualGrinder extends TileEntity {
   public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setInteger("passes", this.passes);
+    compound.setInteger("player_age", this.container.getPlayerAge().value());
 
     return super.writeToNBT(compound);
   }
@@ -123,8 +129,9 @@ public class TileManualGrinder extends TileEntity {
     inv.removeTag("Size");
     this.inventory.deserializeNBT(inv);
     this.passes = compound.getInteger("passes");
+    this.container.setPlayerAge(Age.get(compound.getInteger("player_age")));
 
-    this.recipe = this.findRecipe(this.getInput());
+    this.recipe = this.findRecipe(this.getInput(), this.container.getPlayerAge());
 
     super.readFromNBT(compound);
   }

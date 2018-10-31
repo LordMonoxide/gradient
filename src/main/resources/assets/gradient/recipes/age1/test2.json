@@ -1,0 +1,12 @@
+{
+  "type": "gradient:grinding",
+  "age": 2,
+  "passes": 5,
+  "output": {
+    "item": "minecraft:stone",
+    "data": 0
+  },
+  "input": {
+    "item": "gradient:pebble"
+  }
+}

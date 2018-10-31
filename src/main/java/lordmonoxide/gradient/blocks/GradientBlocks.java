@@ -17,6 +17,7 @@ import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucible;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
+import lordmonoxide.gradient.blocks.manualgrinder.BlockManualGrinder;
 import lordmonoxide.gradient.blocks.pebble.BlockPebble;
 import lordmonoxide.gradient.blocks.pebble.EntityPebble;
 import lordmonoxide.gradient.blocks.pebble.ItemPebble;
@@ -133,6 +134,8 @@ public final class GradientBlocks {
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
       GradientMod.logger.info("Registering blocks");
+
+      RegistrationHandler.register(new BlockManualGrinder());
 
       // Trigger block registration
       new GradientBlocks();

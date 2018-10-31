@@ -2,9 +2,6 @@ package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.items.GradientItemTool;
 import lordmonoxide.gradient.progress.Age;
-import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
-import lordmonoxide.gradient.progress.PlayerProgress;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -27,19 +24,7 @@ public class AgeGatedShapelessToolRecipe extends ShapelessRecipes {
 
   @Override
   public boolean matches(final InventoryCrafting inv, final World world) {
-    final EntityPlayer player = RecipeHelper.findPlayerFromInv(inv);
-
-    if(player != null) {
-      final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
-
-      if(progress != null) {
-        if(!progress.meetsAgeRequirement(this.age)) {
-          return false;
-        }
-      }
-    }
-
-    return super.matches(inv, world);
+    return RecipeHelper.playerMeetsAgeRequirement(inv, this.age) && super.matches(inv, world);
   }
 
   @Override

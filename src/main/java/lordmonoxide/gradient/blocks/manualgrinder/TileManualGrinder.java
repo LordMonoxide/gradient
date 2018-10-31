@@ -22,7 +22,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 
 //TODO: make passes take longer than no time at all
-//TODO: transforms
 
 public class TileManualGrinder extends TileEntity {
   @CapabilityInject(IItemHandler.class)

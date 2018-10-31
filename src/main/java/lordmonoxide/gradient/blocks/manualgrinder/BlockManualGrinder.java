@@ -8,6 +8,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -19,9 +20,16 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class BlockManualGrinder extends GradientBlock {
+  @CapabilityInject(IItemHandler.class)
+  private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
+
   private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 15.0d / 16.0d, 2.0d / 16.0d, 15.0d / 16.0d);
 
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -59,10 +67,7 @@ public class BlockManualGrinder extends GradientBlock {
       if(player.isSneaking()) {
         if(grinder.hasInput()) {
           final ItemStack stack = grinder.takeInput();
-
-          if(!player.inventory.addItemStackToInventory(stack)) {
-            ForgeHooks.onPlayerTossEvent(player, stack, false);
-          }
+          ItemHandlerHelper.giveItemToPlayer(player, stack);
         }
 
         return true;
@@ -71,10 +76,7 @@ public class BlockManualGrinder extends GradientBlock {
       // Take stuff out
       if(grinder.hasOutput()) {
         final ItemStack stack = grinder.takeOutput();
-
-        if(!player.inventory.addItemStackToInventory(stack)) {
-          ForgeHooks.onPlayerTossEvent(player, stack, false);
-        }
+        ItemHandlerHelper.giveItemToPlayer(player, stack);
 
         return true;
       }
@@ -98,6 +100,26 @@ public class BlockManualGrinder extends GradientBlock {
   @Override
   public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
     world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  }
+
+  @Override
+  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+    final TileEntity tile = world.getTileEntity(pos);
+
+    if(!(tile instanceof TileManualGrinder)) {
+      return;
+    }
+
+    final TileManualGrinder grinder = (TileManualGrinder)tile;
+    final ItemStackHandler inv = (ItemStackHandler)grinder.getCapability(ITEM_HANDLER_CAPABILITY, null);
+
+    for(int i = 0; i < inv.getSlots(); i++) {
+      if(!inv.getStackInSlot(i).isEmpty()) {
+        world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i)));
+      }
+    }
+
+    super.breakBlock(world, pos, state);
   }
 
   @Override

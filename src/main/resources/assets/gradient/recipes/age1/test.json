@@ -1,7 +1,8 @@
 {
   "type": "gradient:grinding",
   "age": 1,
-  "passes": 5,
+  "passes": 3,
+  "ticks": 100,
   "output": {
     "item": "gradient:twine"
   },

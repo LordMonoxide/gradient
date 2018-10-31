@@ -14,6 +14,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ITickable;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.IItemHandler;
@@ -21,9 +24,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
-//TODO: make passes take longer than no time at all
-
-public class TileManualGrinder extends TileEntity {
+public class TileManualGrinder extends TileEntity implements ITickable {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -34,6 +35,7 @@ public class TileManualGrinder extends TileEntity {
   @Nullable
   private GrindingRecipe recipe;
   private int passes;
+  private int ticks;
 
   public boolean hasInput() {
     return !this.inventory.getStackInSlot(0).isEmpty();
@@ -72,6 +74,8 @@ public class TileManualGrinder extends TileEntity {
       if(this.recipe == null) {
         return stack;
       }
+
+      this.ticks = this.recipe.ticks;
     }
 
     final ItemStack remaining = this.inventory.insertItem(0, stack, false);
@@ -79,14 +83,22 @@ public class TileManualGrinder extends TileEntity {
     return remaining;
   }
 
-  public void crank() {
+  @Override
+  public void update() {
+    if(this.world.isRemote) {
+      return;
+    }
+
     if(this.recipe == null) {
       return;
     }
 
-    this.passes++;
+    if(this.ticks < this.recipe.ticks) {
+      this.ticks++;
+      this.markDirty();
+    }
 
-    if(this.passes >= this.recipe.passes) {
+    if(this.ticks >= this.recipe.ticks && this.passes >= this.recipe.passes) {
       this.passes = 0;
 
       this.inventory.extractItem(0, 1, false);
@@ -95,9 +107,24 @@ public class TileManualGrinder extends TileEntity {
       if(!this.hasInput()) {
         this.recipe = null;
       }
+
+      this.sync();
+    }
+  }
+
+  public void crank() {
+    if(this.recipe == null) {
+      return;
     }
 
-    this.sync();
+    if(this.ticks >= this.recipe.ticks) {
+      ((WorldServer)this.world).spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.pos.getX() + 0.5d, this.pos.getY() + 0.5d, this.pos.getZ() + 0.5d, 10, 0.1d, 0.1d, 0.1d, 0.01d);
+
+      this.ticks = 0;
+      this.passes++;
+
+      this.markDirty();
+    }
   }
 
   @Nullable
@@ -117,6 +144,7 @@ public class TileManualGrinder extends TileEntity {
   public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setInteger("passes", this.passes);
+    compound.setInteger("ticks", this.ticks);
     compound.setInteger("player_age", this.container.getPlayerAge().value());
 
     return super.writeToNBT(compound);
@@ -128,6 +156,7 @@ public class TileManualGrinder extends TileEntity {
     inv.removeTag("Size");
     this.inventory.deserializeNBT(inv);
     this.passes = compound.getInteger("passes");
+    this.ticks = compound.getInteger("ticks");
     this.container.setPlayerAge(Age.get(compound.getInteger("player_age")));
 
     this.recipe = this.findRecipe(this.getInput(), this.container.getPlayerAge());

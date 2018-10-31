@@ -23,14 +23,16 @@ public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements
   private final String group;
   public final Age age;
   public final int passes;
+  public final int ticks;
   private final ItemStack output;
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public GrindingRecipe(final String group, final Age age, final int passes, final ItemStack output, final Ingredient input) {
+  public GrindingRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final Ingredient input) {
     this.group = group;
     this.age = age;
     this.passes = passes;
+    this.ticks = ticks;
     this.output = output;
     this.input = NonNullList.from(Ingredient.EMPTY, input);
     this.isSimple = input.isSimple();

@@ -1,0 +1,20 @@
+{
+  "type": "gradient:mixing",
+  "age": 1,
+  "passes": 3,
+  "ticks": 40,
+  "output": {
+    "item": "minecraft:stone",
+    "data": 0
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "stickWood"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "string"
+  }, {
+    "type": "forge:ore_dict",
+    "ore": "string"
+  }]
+}

@@ -1,10 +1,10 @@
-package lordmonoxide.gradient.blocks.manualgrinder;
+package lordmonoxide.gradient.blocks.mixingbasin;
 
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
-public class ContainerManualGrinder extends Container {
+public class ContainerMixingBasin extends Container {
   private Age playerAge = Age.AGE1;
 
   public void setPlayerAge(final Age age) {

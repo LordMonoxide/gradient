@@ -1,6 +1,6 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.blocks.manualgrinder.ContainerManualGrinder;
+import lordmonoxide.gradient.blocks.mixingbasin.ContainerMixingBasin;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.inventory.Container;
@@ -16,7 +16,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
@@ -28,14 +28,20 @@ public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public GrindingRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final Ingredient input) {
+  public MixingRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
     this.group = group;
     this.age = age;
     this.passes = passes;
     this.ticks = ticks;
     this.output = output;
-    this.input = NonNullList.from(Ingredient.EMPTY, input);
-    this.isSimple = input.isSimple();
+    this.input = input;
+
+    boolean isSimple = true;
+    for(final Ingredient ingredient : input) {
+      isSimple &= ingredient.isSimple();
+    }
+
+    this.isSimple = isSimple;
   }
 
   @Override
@@ -46,29 +52,46 @@ public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements
   @Override
   public boolean matches(final InventoryCrafting inv, final World world) {
     final Container container = RecipeHelper.getContainer(inv);
+    System.out.println(container);
 
-    if(!(container instanceof ContainerManualGrinder)) {
+    if(!(container instanceof ContainerMixingBasin)) {
       return false;
     }
 
-    if(((ContainerManualGrinder)container).getPlayerAge().ordinal() < this.age.ordinal()) {
+    System.out.println(((ContainerMixingBasin)container).getPlayerAge() + ", " + this.age);
+    if(((ContainerMixingBasin)container).getPlayerAge().ordinal() < this.age.ordinal()) {
       return false;
     }
 
-    final ItemStack itemstack = inv.getStackInSlot(0);
+    recipeItemHelper.clear();
+    inputStacks.clear();
 
-    if(itemstack.isEmpty()) {
+    int ingredientCount = 0;
+    for(int i = 0; i < inv.getHeight(); ++i) {
+      for(int j = 0; j < inv.getWidth(); ++j) {
+        final ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
+        System.out.println(itemstack);
+
+        if(!itemstack.isEmpty()) {
+          ++ingredientCount;
+
+          if(this.isSimple) {
+            recipeItemHelper.accountStack(itemstack, 1);
+          } else {
+            inputStacks.add(itemstack);
+          }
+        }
+      }
+    }
+
+    if(ingredientCount != this.input.size()) {
       return false;
     }
 
     if(this.isSimple) {
-      recipeItemHelper.clear();
-      recipeItemHelper.accountStack(itemstack, 1);
       return recipeItemHelper.canCraft(this, null);
     }
 
-    inputStacks.clear();
-    inputStacks.add(itemstack);
     return RecipeMatcher.findMatches(inputStacks, this.input) != null;
   }
 

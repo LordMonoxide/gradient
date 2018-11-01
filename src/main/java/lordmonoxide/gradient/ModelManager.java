@@ -3,6 +3,8 @@ package lordmonoxide.gradient;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinder;
 import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinderRenderer;
+import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasin;
+import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasinRenderer;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.ItemMeshDefinition;
@@ -66,6 +68,7 @@ public final class ModelManager {
 
   private static void registerBlockModels() {
     ClientRegistry.bindTileEntitySpecialRenderer(TileManualGrinder.class, new TileManualGrinderRenderer());
+    ClientRegistry.bindTileEntitySpecialRenderer(TileMixingBasin.class, new TileMixingBasinRenderer());
 
     GradientBlocks.RegistrationHandler.ITEM_BLOCKS.stream()
       .filter(item -> !itemsRegistered.contains(item))

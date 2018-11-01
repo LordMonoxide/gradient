@@ -4,10 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixingBasin> {
+  private final ItemStack water = new ItemStack(Items.WATER_BUCKET);
+
   @Override
   public void render(final TileMixingBasin te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
     GlStateManager.pushMatrix();
@@ -17,6 +20,17 @@ public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixin
     final double facingAngle = Math.toRadians(facing.getHorizontalAngle());
 
     for(int slot = 0; slot < TileMixingBasin.INPUT_SIZE; slot++) {
+      if(te.hasFluid()) {
+        GlStateManager.pushMatrix();
+
+        GlStateManager.translate(0.0f, -0.25f, 0.0f);
+        GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
+        GlStateManager.scale(0.5f, 0.5f, 0.5f);
+        Minecraft.getMinecraft().getRenderItem().renderItem(this.water, ItemCameraTransforms.TransformType.GROUND);
+
+        GlStateManager.popMatrix();
+      }
+
       if(te.hasInput(slot)) {
         final ItemStack input = te.getInput(slot);
 

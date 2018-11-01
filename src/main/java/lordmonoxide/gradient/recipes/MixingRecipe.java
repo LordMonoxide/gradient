@@ -11,6 +11,9 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
@@ -20,10 +23,13 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
+  private static final Fluid WATER = FluidRegistry.getFluid("water");
+
   private final String group;
   public final Age age;
   public final int passes;
   public final int ticks;
+  private final FluidStack fluid = new FluidStack(WATER, Fluid.BUCKET_VOLUME);
   private final ItemStack output;
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
@@ -52,14 +58,19 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
   @Override
   public boolean matches(final InventoryCrafting inv, final World world) {
     final Container container = RecipeHelper.getContainer(inv);
-    System.out.println(container);
 
     if(!(container instanceof ContainerMixingBasin)) {
       return false;
     }
 
-    System.out.println(((ContainerMixingBasin)container).getPlayerAge() + ", " + this.age);
-    if(((ContainerMixingBasin)container).getPlayerAge().ordinal() < this.age.ordinal()) {
+    final ContainerMixingBasin mixingContainer = (ContainerMixingBasin)container;
+
+    if(mixingContainer.getPlayerAge().ordinal() < this.age.ordinal()) {
+      return false;
+    }
+
+    final FluidStack fluid = mixingContainer.getFluid();
+    if(fluid == null || !fluid.containsFluid(this.fluid)) {
       return false;
     }
 
@@ -70,7 +81,6 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
     for(int i = 0; i < inv.getHeight(); ++i) {
       for(int j = 0; j < inv.getWidth(); ++j) {
         final ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
-        System.out.println(itemstack);
 
         if(!itemstack.isEmpty()) {
           ++ingredientCount;

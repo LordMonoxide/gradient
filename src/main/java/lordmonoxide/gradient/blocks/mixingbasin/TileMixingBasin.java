@@ -19,6 +19,12 @@ import net.minecraft.util.ITickable;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -29,6 +35,14 @@ import javax.annotation.Nullable;
 public class TileMixingBasin extends TileEntity implements ITickable {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
+
+  @CapabilityInject(IFluidHandler.class)
+  private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
+
+  private static final Fluid WATER = FluidRegistry.getFluid("water");
+
+  private final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME);
+  private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap();
 
   public static final int INPUT_SIZE = 3;
   private static final int OUTPUT_SLOT = INPUT_SIZE;
@@ -42,12 +56,25 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   private int passes;
   private int ticks;
 
+  public TileMixingBasin() {
+    this.tanks.addHandler(WATER, this.tank);
+  }
+
+  public boolean hasFluid() {
+    return this.tank.getFluid() != null;
+  }
+
   public boolean hasInput(final int slot) {
     return !this.getInput(slot).isEmpty();
   }
 
   public boolean hasOutput() {
     return !this.getOutput().isEmpty();
+  }
+
+  @Nullable
+  public FluidStack getFluid() {
+    return this.tank.getFluid();
   }
 
   public ItemStack getInput(final int slot) {
@@ -122,6 +149,8 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     if(this.ticks >= this.recipe.ticks && this.passes >= this.recipe.passes) {
       this.passes = 0;
 
+      this.tank.setFluid(null);
+
       for(int slot = 0; slot < INPUT_SIZE; slot++) {
         this.inventory.setStackInSlot(slot, ItemStack.EMPTY);
       }
@@ -155,6 +184,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   @Nullable
   private MixingRecipe findRecipe(final Age age) {
     this.container.setPlayerAge(age);
+    this.container.setFluid(this.tank.getFluid());
 
     for(int slot = 0; slot < INPUT_SIZE; slot++) {
       this.crafting.setInventorySlotContents(slot, this.getInput(slot));
@@ -172,6 +202,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   @Override
   public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
+    compound.setTag("tank", this.tank.writeToNBT(new NBTTagCompound()));
     compound.setInteger("passes", this.passes);
     compound.setInteger("ticks", this.ticks);
     compound.setInteger("player_age", this.container.getPlayerAge().value());
@@ -184,6 +215,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     final NBTTagCompound inv = compound.getCompoundTag("inventory");
     inv.removeTag("Size");
     this.inventory.deserializeNBT(inv);
+    this.tank.readFromNBT(compound.getCompoundTag("tank"));
     this.passes = compound.getInteger("passes");
     this.ticks = compound.getInteger("ticks");
     this.container.setPlayerAge(Age.get(compound.getInteger("player_age")));
@@ -197,7 +229,8 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     return
       capability == ITEM_HANDLER_CAPABILITY ||
-        super.hasCapability(capability, facing);
+      capability == FLUID_HANDLER_CAPABILITY ||
+      super.hasCapability(capability, facing);
   }
 
   @Nullable
@@ -207,10 +240,14 @@ public class TileMixingBasin extends TileEntity implements ITickable {
       return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
     }
 
+    if(capability == FLUID_HANDLER_CAPABILITY) {
+      return FLUID_HANDLER_CAPABILITY.cast(this.tanks);
+    }
+
     return super.getCapability(capability, facing);
   }
 
-  private void sync() {
+  protected void sync() {
     if(!this.getWorld().isRemote) {
       final IBlockState state = this.getWorld().getBlockState(this.getPos());
       this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);

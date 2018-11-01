@@ -22,6 +22,10 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -29,6 +33,8 @@ import net.minecraftforge.items.ItemStackHandler;
 public class BlockMixingBasin extends GradientBlock {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
+
+  private static final Fluid WATER = FluidRegistry.getFluid("water");
 
   private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 15.0d / 16.0d, 2.0d / 16.0d, 15.0d / 16.0d);
 
@@ -62,6 +68,22 @@ public class BlockMixingBasin extends GradientBlock {
       }
 
       final TileMixingBasin basin = (TileMixingBasin)tile;
+
+      // Water
+      if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
+        final FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand));
+
+        // Make sure the fluid handler is either empty, or contains 1000 mB of water
+        if(fluid != null && (fluid.getFluid() != WATER || fluid.amount < Fluid.BUCKET_VOLUME)) {
+          return true;
+        }
+
+        if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
+          basin.sync();
+        }
+
+        return true;
+      }
 
       // Remove input
       if(player.isSneaking()) {

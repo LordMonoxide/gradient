@@ -1,0 +1,9 @@
+setIcon(<gradient:stone_hatchet>)
+setTitle("Just Jackin' It")
+setDescription("Craft a stone hatchet")
+addParent("gradient:age1/basic_materials")
+
+criteria1 = addCriteria("hasHatchet", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:stone_hatchet>)
+
+setRequiresParents()

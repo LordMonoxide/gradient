@@ -3,6 +3,8 @@ setTitle("Dust to Dust")
 setDescription("Craft a grindstone")
 addParent("gradient:age1/planks")
 
+setFrameType("GOAL")
+
 criteria1 = addCriteria("hasManualGrinder", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:manual_grinder>)
 

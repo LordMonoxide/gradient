@@ -19,3 +19,4 @@ criteria4 = addCriteria("hasBoots", "minecraft:inventory_changed")
 criteria4.addItem(<gradient:hide_boots>)
 
 setRequiresParents()
+setPos(96,137)

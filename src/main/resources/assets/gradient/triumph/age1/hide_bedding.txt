@@ -9,3 +9,4 @@ criteria1 = addCriteria("hasHideBedding", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:hide_bedding>)
 
 setRequiresParents()
+setPos(64,94)

@@ -9,3 +9,4 @@ criteria1 = addCriteria("hasWaterskin", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:waterskin>)
 
 setRequiresParents()
+setPos(96,108)

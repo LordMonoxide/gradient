@@ -7,3 +7,4 @@ criteria1 = addCriteria("hasAwl", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:bone_awl>)
 
 setRequiresParents()
+setPos(64,122)

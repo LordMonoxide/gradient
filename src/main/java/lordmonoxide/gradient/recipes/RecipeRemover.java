@@ -87,6 +87,9 @@ public final class RecipeRemover {
       "minecraft:torch",
       "minecraft:string_to_wool",
 
+      "minecraft:bone_meal_from_bone",
+      "minecraft:bone_meal_from_block",
+      "minecraft:bone_block",
       "minecraft:sugar",
       "minecraft:bread",
 

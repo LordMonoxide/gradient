@@ -37,7 +37,7 @@ public class MixingRecipeFactory implements IRecipeFactory {
 
     ingredients.add(Ingredient.fromItem(MIXING_DISCRIMINATOR));
 
-    final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "output"), context);
+    final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
 
     return new MixingRecipe(group, age, passes, ticks, output, ingredients);
   }

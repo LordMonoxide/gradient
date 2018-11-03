@@ -1,0 +1,14 @@
+{
+  "type": "gradient:grinding",
+  "age": 2,
+  "passes": 5,
+  "ticks": 100,
+  "result": {
+    "item": "minecraft:dye",
+    "data": 15,
+    "count": 9
+  },
+  "ingredients": [{
+    "item": "minecraft:bone_block"
+  }]
+}

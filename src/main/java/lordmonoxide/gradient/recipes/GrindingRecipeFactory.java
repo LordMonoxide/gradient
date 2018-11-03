@@ -1,6 +1,8 @@
 package lordmonoxide.gradient.recipes;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,10 +27,17 @@ public class GrindingRecipeFactory implements IRecipeFactory {
     final int ticks = JsonUtils.getInt(json, "ticks");
 
     final NonNullList<Ingredient> ingredients = NonNullList.create();
-    ingredients.add(CraftingHelper.getIngredient(json.get("input"), context));
+    for(final JsonElement element : JsonUtils.getJsonArray(json, "ingredients")) {
+      ingredients.add(CraftingHelper.getIngredient(element, context));
+    }
+
+    if(ingredients.isEmpty()) {
+      throw new JsonParseException("No ingredients for mixing recipe");
+    }
+
     ingredients.add(Ingredient.fromItem(GRINDING_DISCRIMINATOR));
 
-    final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "output"), context);
+    final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
 
     return new GrindingRecipe(group, age, passes, ticks, output, ingredients);
   }

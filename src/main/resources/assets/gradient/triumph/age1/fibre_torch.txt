@@ -12,3 +12,4 @@ criteria2 = addCriteria("hasLit", "minecraft:inventory_changed")
 criteria2.addItem(<gradient:fibre_torch_lit>)
 
 setRequiresParents()
+setPos(127,54)

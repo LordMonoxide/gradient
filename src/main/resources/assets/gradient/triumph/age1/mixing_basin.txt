@@ -9,3 +9,4 @@ criteria1 = addCriteria("hasMixingBasin", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:mixing_basin>)
 
 setRequiresParents()
+setPos(160,13)

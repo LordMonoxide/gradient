@@ -9,3 +9,4 @@ criteria1 = addCriteria("hasManualGrinder", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:manual_grinder>)
 
 setRequiresParents()
+setPos(160,40)

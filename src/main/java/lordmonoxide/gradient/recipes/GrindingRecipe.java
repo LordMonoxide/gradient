@@ -28,14 +28,20 @@ public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public GrindingRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final Ingredient input) {
+  public GrindingRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
     this.group = group;
     this.age = age;
     this.passes = passes;
     this.ticks = ticks;
     this.output = output;
-    this.input = NonNullList.from(Ingredient.EMPTY, input);
-    this.isSimple = input.isSimple();
+    this.input = input;
+
+    boolean isSimple = true;
+    for(final Ingredient ingredient : input) {
+      isSimple &= ingredient.isSimple();
+    }
+
+    this.isSimple = isSimple;
   }
 
   @Override
@@ -55,20 +61,34 @@ public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements
       return false;
     }
 
-    final ItemStack itemstack = inv.getStackInSlot(0);
+    recipeItemHelper.clear();
+    inputStacks.clear();
 
-    if(itemstack.isEmpty()) {
+    int ingredientCount = 0;
+    for(int y = 0; y < inv.getHeight(); ++y) {
+      for(int x = 0; x < inv.getWidth(); ++x) {
+        final ItemStack itemstack = inv.getStackInRowAndColumn(x, y);
+
+        if(!itemstack.isEmpty()) {
+          ++ingredientCount;
+
+          if(this.isSimple) {
+            recipeItemHelper.accountStack(itemstack, 1);
+          } else {
+            inputStacks.add(itemstack);
+          }
+        }
+      }
+    }
+
+    if(ingredientCount != this.input.size()) {
       return false;
     }
 
     if(this.isSimple) {
-      recipeItemHelper.clear();
-      recipeItemHelper.accountStack(itemstack, 1);
       return recipeItemHelper.canCraft(this, null);
     }
 
-    inputStacks.clear();
-    inputStacks.add(itemstack);
     return RecipeMatcher.findMatches(inputStacks, this.input) != null;
   }
 

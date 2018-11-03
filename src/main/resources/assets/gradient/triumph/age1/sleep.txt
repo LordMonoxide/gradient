@@ -12,5 +12,4 @@ setFrameType("CHALLENGE")
 criteria1 = addCriteria("hasSlept", "minecraft:slept_in_bed")
 
 setRequiresParents()
-
 setPos(193,81)

@@ -8,3 +8,4 @@ criteria1 = addCriteria("hasWood", "minecraft:inventory_changed")
 criteria1.addItem(<ore:logWood>)
 
 setRequiresParents()
+setPos(96,27)

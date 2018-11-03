@@ -11,3 +11,4 @@ criteria2.setItem(<gradient:fire_starter>)
 criteria2.setBlock(<gradient:fire_pit>)
 
 setRequiresParents()
+setPos(96,54)

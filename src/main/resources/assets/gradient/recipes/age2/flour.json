@@ -1,14 +1,13 @@
 {
-  "type": "gradient:age_gated_shapeless_tool",
+  "type": "gradient:grinding",
   "age": 2,
+  "passes": 3,
+  "ticks": 20,
   "result": {
     "item": "gradient:flour"
   },
   "ingredients": [{
     "type": "forge:ore_dict",
     "ore": "cropWheat"
-  }, {
-    "type": "gradient:ore",
-    "ore": "toolMortar"
   }]
 }

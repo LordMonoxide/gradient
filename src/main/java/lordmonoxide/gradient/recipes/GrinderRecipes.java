@@ -25,8 +25,6 @@ public class GrinderRecipes {
   public static void register(final RegistryEvent.Register<IRecipe> event) {
     add(Items.FLINT, "dustFlint");
     add("coal", "dustCoal");
-    add("sugarcane", OreDictHelper.getFirst("ingredientSugar", 2));
-    add("cropWheat", "ingredientFlour");
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String name = StringUtils.capitalize(metal.name);

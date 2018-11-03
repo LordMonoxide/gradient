@@ -1,0 +1,9 @@
+setIcon(<gradient:stone_hammer>)
+setTitle("Hammer Time!")
+setDescription("Craft a stone hammer")
+addParent("gradient:age1/basic_materials")
+
+criteria1 = addCriteria("hasHammer", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:stone_hammer>)
+
+setRequiresParents()

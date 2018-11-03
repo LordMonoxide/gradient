@@ -1,0 +1,11 @@
+setIcon(<gradient:mixing_basin>)
+setTitle("Mix It Up")
+setDescription("Craft a mixing basin")
+addParent("gradient:age1/planks")
+
+setFrameType("GOAL")
+
+criteria1 = addCriteria("hasMixingBasin", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:mixing_basin>)
+
+setRequiresParents()

@@ -8,15 +8,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -122,5 +120,15 @@ public class Waterskin extends ItemFluidContainer {
         }
       }
     };
+  }
+
+  @Override
+  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
+    if(!this.isInCreativeTab(tab)) {
+      return;
+    }
+
+    subItems.add(new ItemStack(this, 1, 0));
+    subItems.add(new ItemStack(this, 1, 1));
   }
 }

@@ -2,15 +2,21 @@ package lordmonoxide.gradient.recipes;
 
 import com.google.gson.JsonObject;
 import lordmonoxide.gradient.progress.Age;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JsonUtils;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class GrindingRecipeFactory implements IRecipeFactory {
+  @GameRegistry.ObjectHolder("gradient:grinding_discriminator")
+  private static final Item GRINDING_DISCRIMINATOR = null;
+
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
@@ -18,9 +24,12 @@ public class GrindingRecipeFactory implements IRecipeFactory {
     final int passes = JsonUtils.getInt(json, "passes");
     final int ticks = JsonUtils.getInt(json, "ticks");
 
-    final Ingredient input = CraftingHelper.getIngredient(json.get("input"), context);
+    final NonNullList<Ingredient> ingredients = NonNullList.create();
+    ingredients.add(CraftingHelper.getIngredient(json.get("input"), context));
+    ingredients.add(Ingredient.fromItem(GRINDING_DISCRIMINATOR));
+
     final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "output"), context);
 
-    return new GrindingRecipe(group, age, passes, ticks, output, input);
+    return new GrindingRecipe(group, age, passes, ticks, output, ingredients);
   }
 }

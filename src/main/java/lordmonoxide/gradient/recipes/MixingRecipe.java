@@ -78,9 +78,9 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
     inputStacks.clear();
 
     int ingredientCount = 0;
-    for(int i = 0; i < inv.getHeight(); ++i) {
-      for(int j = 0; j < inv.getWidth(); ++j) {
-        final ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
+    for(int y = 0; y < inv.getHeight(); ++y) {
+      for(int x = 0; x < inv.getWidth(); ++x) {
+        final ItemStack itemstack = inv.getStackInRowAndColumn(x, y);
 
         if(!itemstack.isEmpty()) {
           ++ingredientCount;

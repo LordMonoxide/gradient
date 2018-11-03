@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.HashSet;
@@ -33,13 +34,24 @@ public final class ModelManager {
 
   private static final Set<Item> itemsRegistered = new HashSet<>();
 
+  @GameRegistry.ObjectHolder("gradient:grinding_discriminator")
+  private static final Item GRINDING_DISCRIMINATOR = null;
+
+  @GameRegistry.ObjectHolder("gradient:mixing_discriminator")
+  private static final Item MIXING_DISCRIMINATOR = null;
+
   @SubscribeEvent
   public static void registerModels(final ModelRegistryEvent event) {
     GradientMod.logger.info("Registering models");
 
+    registerItemModel(GRINDING_DISCRIMINATOR, "minecraft:nether_star");
+    registerItemModel(MIXING_DISCRIMINATOR, "minecraft:nether_star");
+
     registerFluidModels();
     registerBlockModels();
     registerItemModels();
+
+    itemsRegistered.clear();
   }
 
   private static void registerFluidModels() {

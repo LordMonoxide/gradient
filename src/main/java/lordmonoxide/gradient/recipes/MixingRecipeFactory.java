@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import lordmonoxide.gradient.progress.Age;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
@@ -12,8 +13,12 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class MixingRecipeFactory implements IRecipeFactory {
+  @GameRegistry.ObjectHolder("gradient:mixing_discriminator")
+  private static final Item MIXING_DISCRIMINATOR = null;
+
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
@@ -29,6 +34,8 @@ public class MixingRecipeFactory implements IRecipeFactory {
     if(ingredients.isEmpty()) {
       throw new JsonParseException("No ingredients for mixing recipe");
     }
+
+    ingredients.add(Ingredient.fromItem(MIXING_DISCRIMINATOR));
 
     final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "output"), context);
 

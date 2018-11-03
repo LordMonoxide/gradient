@@ -3,10 +3,15 @@ package lordmonoxide.gradient.overrides;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.*;
+import net.minecraft.entity.monster.AbstractIllager;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityPolarBear;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -23,19 +28,37 @@ import java.util.Random;
 public final class OverrideEntityDrops {
   private OverrideEntityDrops() { }
 
-  public static final Item HIDE_COW = null;
-  public static final Item HIDE_DONKEY = null;
-  public static final Item HIDE_HORSE = null;
-  public static final Item HIDE_LLAMA = null;
-  public static final Item HIDE_MULE = null;
-  public static final Item HIDE_OCELOT = null;
-  public static final Item HIDE_PIG = null;
-  public static final Item HIDE_POLAR_BEAR = null;
-  public static final Item HIDE_SHEEP = null;
-  public static final Item HIDE_WOLF = null;
+  private static final Item HIDE_COW = null;
+  private static final Item HIDE_DONKEY = null;
+  private static final Item HIDE_HORSE = null;
+  private static final Item HIDE_LLAMA = null;
+  private static final Item HIDE_MULE = null;
+  private static final Item HIDE_OCELOT = null;
+  private static final Item HIDE_PIG = null;
+  private static final Item HIDE_POLAR_BEAR = null;
+  private static final Item HIDE_SHEEP = null;
+  private static final Item HIDE_WOLF = null;
 
   @GameRegistry.ObjectHolder("minecraft:bone")
-  public static final Item BONE = null;
+  private static final Item BONE = null;
+
+  @GameRegistry.ObjectHolder("minecraft:string")
+  private static final Item STRING = null;
+
+  @GameRegistry.ObjectHolder("minecraft:leather")
+  private static final Item LEATHER = null;
+
+  @GameRegistry.ObjectHolder("minecraft:bow")
+  private static final Item BOW = null;
+
+  @GameRegistry.ObjectHolder("minecraft:arrow")
+  private static final Item ARROW = null;
+
+  @GameRegistry.ObjectHolder("minecraft:iron_ingot")
+  private static final Item IRON_INGOT = null;
+
+  @GameRegistry.ObjectHolder("quark:tallow")
+  private static final Item TALLOW = null;
 
   @SubscribeEvent
   public static void addHideDrops(final LivingDropsEvent event) {
@@ -44,7 +67,7 @@ public final class OverrideEntityDrops {
       for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
         final ItemStack drop = dropIterator.next().getItem();
 
-        if(drop.getItem() == Items.LEATHER) {
+        if(drop.getItem() == LEATHER) {
           dropIterator.remove();
         }
       }
@@ -121,7 +144,7 @@ public final class OverrideEntityDrops {
       for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
         final ItemStack drop = dropIterator.next().getItem();
 
-        if(drop.getItem() == Items.STRING) {
+        if(drop.getItem() == STRING) {
           dropIterator.remove();
         }
       }
@@ -134,7 +157,7 @@ public final class OverrideEntityDrops {
       for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
         final ItemStack drop = dropIterator.next().getItem();
 
-        if(drop.getItem() == Items.IRON_INGOT) {
+        if(drop.getItem() == IRON_INGOT) {
           dropIterator.remove();
         }
       }
@@ -144,14 +167,25 @@ public final class OverrideEntityDrops {
   @SubscribeEvent
   public static void skeletonsOnlyDropArrowsIfTheyHaveBows(final LivingDropsEvent event) {
     if(event.getEntity() instanceof EntitySkeleton) {
-      if(event.getEntityLiving().getHeldItemMainhand().getItem() != Items.BOW) {
+      if(event.getEntityLiving().getHeldItemMainhand().getItem() != BOW) {
         for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
           final ItemStack drop = dropIterator.next().getItem();
 
-          if(drop.getItem() == Items.ARROW) {
+          if(drop.getItem() == ARROW) {
             dropIterator.remove();
           }
         }
+      }
+    }
+  }
+
+  @SubscribeEvent
+  public static void noTallow(final LivingDropsEvent event) {
+    for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
+      final ItemStack drop = dropIterator.next().getItem();
+
+      if(drop.getItem() == TALLOW) {
+        dropIterator.remove();
       }
     }
   }

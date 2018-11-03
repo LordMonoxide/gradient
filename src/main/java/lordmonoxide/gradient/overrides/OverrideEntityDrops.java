@@ -129,6 +129,19 @@ public final class OverrideEntityDrops {
   }
 
   @SubscribeEvent
+  public static void noZombieIngots(final LivingDropsEvent event) {
+    if(event.getEntity() instanceof EntityZombie) {
+      for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
+        final ItemStack drop = dropIterator.next().getItem();
+
+        if(drop.getItem() == Items.IRON_INGOT) {
+          dropIterator.remove();
+        }
+      }
+    }
+  }
+
+  @SubscribeEvent
   public static void skeletonsOnlyDropArrowsIfTheyHaveBows(final LivingDropsEvent event) {
     if(event.getEntity() instanceof EntitySkeleton) {
       if(event.getEntityLiving().getHeldItemMainhand().getItem() != Items.BOW) {

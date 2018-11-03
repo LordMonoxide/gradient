@@ -3,12 +3,7 @@ package lordmonoxide.gradient.overrides;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.AbstractIllager;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityPolarBear;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -128,6 +123,21 @@ public final class OverrideEntityDrops {
 
         if(drop.getItem() == Items.STRING) {
           dropIterator.remove();
+        }
+      }
+    }
+  }
+
+  @SubscribeEvent
+  public static void skeletonsOnlyDropArrowsIfTheyHaveBows(final LivingDropsEvent event) {
+    if(event.getEntity() instanceof EntitySkeleton) {
+      if(event.getEntityLiving().getHeldItemMainhand().getItem() != Items.BOW) {
+        for(final Iterator<EntityItem> dropIterator = event.getDrops().iterator(); dropIterator.hasNext(); ) {
+          final ItemStack drop = dropIterator.next().getItem();
+
+          if(drop.getItem() == Items.ARROW) {
+            dropIterator.remove();
+          }
         }
       }
     }

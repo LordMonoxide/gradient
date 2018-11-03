@@ -136,6 +136,8 @@ public final class GradientBlocks {
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
       GradientMod.logger.info("Registering blocks");
 
+      RegistrationHandler.register(new BlockSalt());
+
       RegistrationHandler.register(new BlockManualGrinder());
       RegistrationHandler.register(new BlockMixingBasin());
 

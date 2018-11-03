@@ -141,6 +141,7 @@ fluid.glass=Molten Glass
 
 # Blocks
 tile.ore_magnesium.name=Magnesium Ore
+tile.salt_block.name=Salt Block
 tile.pebble.name=Pebble
 tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel

@@ -7,7 +7,9 @@ import lordmonoxide.gradient.overrides.GeneratePebbles;
 import lordmonoxide.gradient.overrides.OverrideInventory;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
+import lordmonoxide.gradient.recipes.RecipeRemover;
 import lordmonoxide.gradient.worldgen.OreGenerator;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -18,7 +20,9 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistryModifiable;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 
@@ -92,6 +96,8 @@ public class GradientMod {
     logger.info("------------------- POSTINIT -------------------");
 
     proxy.postInit(event);
+
+    RecipeRemover.replacePlankRecipes((IForgeRegistryModifiable<IRecipe>)ForgeRegistries.RECIPES);
   }
 
   @Mod.EventHandler

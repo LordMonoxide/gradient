@@ -45,7 +45,31 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   private static final Fluid WATER = FluidRegistry.getFluid("water");
 
   private final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME);
-  private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap();
+  private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
+    @Override
+    public int fill(final FluidStack resource, final boolean doFill) {
+      final int filled = super.fill(resource, doFill);
+      TileMixingBasin.this.updateRecipe(TileMixingBasin.this.container.getPlayerAge());
+      TileMixingBasin.this.sync();
+      return filled;
+    }
+
+    @Override
+    public FluidStack drain(final FluidStack resource, final boolean doDrain) {
+      final FluidStack drained = super.drain(resource, doDrain);
+      TileMixingBasin.this.updateRecipe(TileMixingBasin.this.container.getPlayerAge());
+      TileMixingBasin.this.sync();
+      return drained;
+    }
+
+    @Override
+    public FluidStack drain(final int maxDrain, final boolean doDrain) {
+      final FluidStack drained = super.drain(maxDrain, doDrain);
+      TileMixingBasin.this.updateRecipe(TileMixingBasin.this.container.getPlayerAge());
+      TileMixingBasin.this.sync();
+      return drained;
+    }
+  };
 
   public static final int INPUT_SIZE = 3;
   private static final int OUTPUT_SLOT = INPUT_SIZE;

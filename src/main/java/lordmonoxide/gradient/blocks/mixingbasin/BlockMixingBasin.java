@@ -78,9 +78,7 @@ public class BlockMixingBasin extends GradientBlock {
           return true;
         }
 
-        if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
-          basin.sync();
-        }
+        FluidUtil.interactWithFluidHandler(player, hand, world, pos, side);
 
         return true;
       }

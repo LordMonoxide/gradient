@@ -15,15 +15,14 @@ import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class GrindingRecipeFactory implements IRecipeFactory {
-  @GameRegistry.ObjectHolder("gradient:grinding_discriminator")
-  private static final Item GRINDING_DISCRIMINATOR = null;
+public class FirepitRecipeFactory implements IRecipeFactory {
+  @GameRegistry.ObjectHolder("gradient:firepit_discriminator")
+  private static final Item FIREPIT_DISCRIMINATOR = null;
 
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
     final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
-    final int passes = JsonUtils.getInt(json, "passes");
     final int ticks = JsonUtils.getInt(json, "ticks");
 
     final NonNullList<Ingredient> ingredients = NonNullList.create();
@@ -35,10 +34,10 @@ public class GrindingRecipeFactory implements IRecipeFactory {
       throw new JsonParseException("No ingredients for mixing recipe");
     }
 
-    ingredients.add(Ingredient.fromItem(GRINDING_DISCRIMINATOR));
+    ingredients.add(Ingredient.fromItem(FIREPIT_DISCRIMINATOR));
 
     final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
 
-    return new GrindingRecipe(group, age, passes, ticks, output, ingredients);
+    return new FirepitRecipe(group, age, ticks, output, ingredients);
   }
 }

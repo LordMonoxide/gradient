@@ -7,6 +7,7 @@ import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -34,6 +36,9 @@ import java.util.stream.Collectors;
 public class TileFirePit extends HeatProducer {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
+
+  @GameRegistry.ObjectHolder("gradient:firepit_discriminator")
+  private static final Item FIREPIT_DISCRIMINATOR = null;
 
   public static final int FUEL_SLOTS_COUNT = 3;
   public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + 2;

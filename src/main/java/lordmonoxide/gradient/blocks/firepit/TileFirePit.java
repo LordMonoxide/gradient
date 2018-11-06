@@ -77,6 +77,83 @@ public class TileFirePit extends HeatProducer {
     return this.fuels[slot];
   }
 
+  public boolean hasFuel(final int slot) {
+    return !this.getFuel(slot).isEmpty();
+  }
+
+  public ItemStack getFuel(final int slot) {
+    return this.inventory.getStackInSlot(FIRST_FUEL_SLOT + slot);
+  }
+
+  private void setFuel(final int slot, final ItemStack stack) {
+    this.inventory.setStackInSlot(slot, stack);
+    this.sync();
+  }
+
+  public ItemStack takeFuel(final int slot) {
+    final ItemStack fuel = this.inventory.extractItem(FIRST_FUEL_SLOT + slot, this.inventory.getSlotLimit(FIRST_FUEL_SLOT + slot), false);
+    this.sync();
+    return fuel;
+  }
+
+  public boolean hasInput() {
+    return !this.getInput().isEmpty();
+  }
+
+  public ItemStack getInput() {
+    return this.inventory.getStackInSlot(FIRST_INPUT_SLOT);
+  }
+
+  private void setInput(final ItemStack stack) {
+    this.inventory.setStackInSlot(FIRST_INPUT_SLOT, stack);
+    this.sync();
+  }
+
+  public ItemStack takeInput() {
+    final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, this.inventory.getSlotLimit(FIRST_INPUT_SLOT), false);
+    this.food = null;
+    this.sync();
+    return input;
+  }
+
+  public boolean hasOutput() {
+    return !this.getOutput().isEmpty();
+  }
+
+  public ItemStack getOutput() {
+    return this.inventory.getStackInSlot(FIRST_OUTPUT_SLOT);
+  }
+
+  public ItemStack takeOutput() {
+    final ItemStack output = this.inventory.extractItem(FIRST_OUTPUT_SLOT, this.inventory.getSlotLimit(FIRST_OUTPUT_SLOT), false);
+    this.sync();
+    return output;
+  }
+
+  public ItemStack insertItem(final ItemStack stack) {
+    if(GradientFuel.has(stack)) {
+      for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
+        if(!this.hasFuel(slot)) {
+          final ItemStack input = stack.splitStack(1);
+          this.setFuel(slot, input);
+          return stack;
+        }
+      }
+    }
+
+    if(GradientFood.has(stack)) {
+      if(!this.hasInput()) {
+        final ItemStack input = stack.splitStack(1);
+        this.setInput(input);
+        return stack;
+      }
+    }
+
+    this.sync();
+
+    return stack;
+  }
+
   public boolean isCooking() {
     return this.food != null;
   }

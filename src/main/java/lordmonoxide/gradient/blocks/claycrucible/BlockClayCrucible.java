@@ -25,6 +25,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class BlockClayCrucible extends HeatSinkerBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
@@ -114,7 +115,7 @@ public class BlockClayCrucible extends HeatSinkerBlock {
             te.consumeMetal(amount);
           }
 
-          player.inventory.addItemStackToInventory(CastItem.getCastItem(cast, metal, 1));
+          ItemHandlerHelper.giveItemToPlayer(player,CastItem.getCastItem(cast, metal, 1));
           return true;
         }
 

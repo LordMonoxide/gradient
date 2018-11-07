@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.blocks.manualgrinder.ContainerManualGrinder;
-import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.blocks.firepit.ContainerFirePit;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
@@ -16,21 +15,21 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirepitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
   private final String group;
-  public final Age age;
   public final int ticks;
+  public final float temperature;
   private final ItemStack output;
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public FirepitRecipe(final String group, final Age age, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
+  public FirePitRecipe(final String group, final int ticks, final float temperature, final ItemStack output, final NonNullList<Ingredient> input) {
     this.group = group;
-    this.age = age;
     this.ticks = ticks;
+    this.temperature = temperature;
     this.output = output;
     this.input = input;
 
@@ -51,11 +50,7 @@ public class FirepitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
   public boolean matches(final InventoryCrafting inv, final World world) {
     final Container container = RecipeHelper.getContainer(inv);
 
-    if(!(container instanceof ContainerManualGrinder)) {
-      return false;
-    }
-
-    if(((ContainerManualGrinder)container).getPlayerAge().ordinal() < this.age.ordinal()) {
+    if(!(container instanceof ContainerFirePit)) {
       return false;
     }
 

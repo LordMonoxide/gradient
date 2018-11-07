@@ -85,8 +85,12 @@ public class BlockManualGrinder extends GradientBlock {
 
       // Put stuff in
       if(!held.isEmpty()) {
-        final ItemStack remaining = grinder.insertItem(held, player);
-        player.setHeldItem(hand, remaining);
+        final ItemStack remaining = grinder.insertItem(held.copy(), player);
+
+        if(!player.isCreative()) {
+          player.setHeldItem(hand, remaining);
+        }
+
         return true;
       }
 

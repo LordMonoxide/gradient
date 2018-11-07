@@ -128,7 +128,10 @@ public class BlockFirePit extends HeatSinkerBlock {
       if(!player.isSneaking()) {
         if(held.getItem() instanceof FireStarter) {
           if(!firepit.isBurning()) {
-            held.damageItem(1, player);
+            if(!player.isCreative()) {
+              held.damageItem(1, player);
+            }
+
             firepit.light();
             return true;
           }
@@ -194,8 +197,12 @@ public class BlockFirePit extends HeatSinkerBlock {
 
       // Put stuff in
       if(!held.isEmpty()) {
-        final ItemStack remaining = firepit.insertItem(held);
-        player.setHeldItem(hand, remaining);
+        final ItemStack remaining = firepit.insertItem(held.copy());
+
+        if(!player.isCreative()) {
+          player.setHeldItem(hand, remaining);
+        }
+
         return true;
       }
     }

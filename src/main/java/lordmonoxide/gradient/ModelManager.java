@@ -36,6 +36,9 @@ public final class ModelManager {
 
   private static final Set<Item> itemsRegistered = new HashSet<>();
 
+  @GameRegistry.ObjectHolder("gradient:firepit_discriminator")
+  private static final Item FIREPIT_DISCRIMINATOR = null;
+
   @GameRegistry.ObjectHolder("gradient:grinding_discriminator")
   private static final Item GRINDING_DISCRIMINATOR = null;
 
@@ -46,6 +49,7 @@ public final class ModelManager {
   public static void registerModels(final ModelRegistryEvent event) {
     GradientMod.logger.info("Registering models");
 
+    registerItemModel(FIREPIT_DISCRIMINATOR, "minecraft:nether_star");
     registerItemModel(GRINDING_DISCRIMINATOR, "minecraft:nether_star");
     registerItemModel(MIXING_DISCRIMINATOR, "minecraft:nether_star");
 

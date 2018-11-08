@@ -1,13 +1,21 @@
 package lordmonoxide.gradient.blocks.firepit;
 
-import lordmonoxide.gradient.GradientFood;
+import buildcraft.lib.misc.CraftingUtil;
 import lordmonoxide.gradient.GradientFuel;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
+import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.recipes.FirePitRecipe;
+import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
@@ -17,6 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -35,6 +44,9 @@ public class TileFirePit extends HeatProducer {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
+  @GameRegistry.ObjectHolder("gradient:firepit_discriminator")
+  private static final Item FIREPIT_DISCRIMINATOR = null;
+
   public static final int FUEL_SLOTS_COUNT = 3;
   public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + 2;
 
@@ -42,18 +54,25 @@ public class TileFirePit extends HeatProducer {
   public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
   public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + 1;
 
+  private final ContainerFirePit container = new ContainerFirePit();
+  private final InventoryCrafting crafting = new InventoryCrafting(this.container, 2, 1);
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
 
-  private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
-
   @Nullable
-  private GradientFood.CookingFood food;
+  private FirePitRecipe recipe;
+  private int ticks;
+
+  private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
 
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
 
   private boolean firstTick = true;
 
   private int lastLight;
+
+  public TileFirePit() {
+    this.crafting.setInventorySlotContents(1, new ItemStack(FIREPIT_DISCRIMINATOR));
+  }
 
   public boolean hasFurnace(final IBlockState state) {
     return state.getValue(BlockFirePit.HAS_FURNACE);
@@ -85,11 +104,6 @@ public class TileFirePit extends HeatProducer {
     return this.inventory.getStackInSlot(FIRST_FUEL_SLOT + slot);
   }
 
-  private void setFuel(final int slot, final ItemStack stack) {
-    this.inventory.setStackInSlot(slot, stack);
-    this.sync();
-  }
-
   public ItemStack takeFuel(final int slot) {
     final ItemStack fuel = this.inventory.extractItem(FIRST_FUEL_SLOT + slot, this.inventory.getSlotLimit(FIRST_FUEL_SLOT + slot), false);
     this.sync();
@@ -104,14 +118,10 @@ public class TileFirePit extends HeatProducer {
     return this.inventory.getStackInSlot(FIRST_INPUT_SLOT);
   }
 
-  private void setInput(final ItemStack stack) {
-    this.inventory.setStackInSlot(FIRST_INPUT_SLOT, stack);
-    this.sync();
-  }
-
   public ItemStack takeInput() {
     final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, this.inventory.getSlotLimit(FIRST_INPUT_SLOT), false);
-    this.food = null;
+    this.recipe = null;
+    this.ticks = 0;
     this.sync();
     return input;
   }
@@ -130,37 +140,34 @@ public class TileFirePit extends HeatProducer {
     return output;
   }
 
-  public ItemStack insertItem(final ItemStack stack) {
+  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
     if(GradientFuel.has(stack)) {
       for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
         if(!this.hasFuel(slot)) {
           final ItemStack input = stack.splitStack(1);
-          this.setFuel(slot, input);
+          this.setFuelSlot(slot, input);
+          this.sync();
           return stack;
         }
       }
     }
 
-    if(GradientFood.has(stack)) {
-      if(!this.hasInput()) {
-        final ItemStack input = stack.splitStack(1);
-        this.setInput(input);
+    if(!this.hasInput()) {
+      this.recipe = this.findRecipe(stack, RecipeHelper.getPlayerAge(player));
+
+      if(this.recipe == null) {
         return stack;
       }
+
+      this.ticks = 0;
+
+      final ItemStack input = stack.splitStack(1);
+      this.inventory.setStackInSlot(FIRST_INPUT_SLOT, input);
+      this.sync();
+      return stack;
     }
 
-    this.sync();
-
     return stack;
-  }
-
-  public boolean isCooking() {
-    return this.food != null;
-  }
-
-  @Nullable
-  public GradientFood.CookingFood getCookingFood() {
-    return this.food;
   }
 
   public int getLightLevel(final IBlockState state) {
@@ -256,29 +263,22 @@ public class TileFirePit extends HeatProducer {
   }
 
   private void cook() {
-    if(!this.isCooking() && !this.getFoodSlot().isEmpty()) {
-      final GradientFood.Food food = GradientFood.get(this.getFoodSlot());
+    if(this.recipe == null) {
+      return;
+    }
 
-      if(food != GradientFood.INVALID_FOOD && this.canCook(food)) {
-        this.food = new GradientFood.CookingFood(food);
+    if(this.ticks < this.recipe.ticks) {
+      if(this.getHeat() >= this.recipe.temperature) {
+        this.ticks++;
+        this.markDirty();
       }
     }
 
-    if(this.food != null) {
-      this.food.tick();
-
-      if(this.food.isCooked()) {
-        final ItemStack output = this.food.food.cooked.copy();
-        this.food = null;
-
-        final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
-
-        if(input.getItem().hasContainerItem(input)) {
-          this.inventory.insertItem(FIRST_INPUT_SLOT, input.getItem().getContainerItem(input), false);
-        }
-
-        this.inventory.insertItem(FIRST_OUTPUT_SLOT, output, false);
-      }
+    if(this.ticks >= this.recipe.ticks) {
+      this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
+      this.inventory.insertItem(FIRST_OUTPUT_SLOT, this.recipe.getCraftingResult(this.crafting), false);
+      this.recipe = null;
+      this.sync();
     }
   }
 
@@ -385,16 +385,17 @@ public class TileFirePit extends HeatProducer {
     return this.getHeat() >= fuel.ignitionTemp;
   }
 
-  private ItemStack getFoodSlot() {
-    return this.inventory.getStackInSlot(FIRST_INPUT_SLOT);
-  }
+  @Nullable
+  private FirePitRecipe findRecipe(final ItemStack input, final Age age) {
+    this.container.setPlayerAge(age);
+    this.crafting.setInventorySlotContents(0, input);
+    final IRecipe recipe = CraftingUtil.findMatchingRecipe(this.crafting, this.world);
 
-  private boolean canCook(final GradientFood.Food food) {
-    return this.getHeat() >= food.cookTemp;
-  }
+    if(!(recipe instanceof FirePitRecipe)) {
+      return null;
+    }
 
-  public boolean canOutputItem(final ItemStack stack) {
-    return this.inventory.insertItem(FIRST_OUTPUT_SLOT, stack, true).isEmpty();
+    return (FirePitRecipe)recipe;
   }
 
   @Override
@@ -416,11 +417,8 @@ public class TileFirePit extends HeatProducer {
 
     compound.setTag("fuel", fuels);
 
-    final GradientFood.CookingFood food = this.getCookingFood();
-
-    if(food != null) {
-      compound.setTag("food", food.writeToNbt(new NBTTagCompound()));
-    }
+    compound.setInteger("player_age", this.container.getPlayerAge().value());
+    compound.setInteger("ticks", this.ticks);
 
     return super.writeToNBT(compound);
   }
@@ -447,11 +445,16 @@ public class TileFirePit extends HeatProducer {
       }
     }
 
-    if(compound.hasKey("food")) {
-      this.food = GradientFood.CookingFood.fromNbt(GradientFood.get(this.getFoodSlot()), compound.getCompoundTag("food"));
-    } else {
-      this.food = null;
+    final int age = compound.getInteger("player_age");
+
+    try {
+      this.container.setPlayerAge(Age.get(age));
+    } catch(final IndexOutOfBoundsException e) {
+      GradientMod.logger.warn("Invalid age in %s: %d", this, age);
     }
+
+    this.ticks = compound.getInteger("ticks");
+    this.recipe = this.findRecipe(this.getInput(), this.container.getPlayerAge());
 
     super.readFromNBT(compound);
   }

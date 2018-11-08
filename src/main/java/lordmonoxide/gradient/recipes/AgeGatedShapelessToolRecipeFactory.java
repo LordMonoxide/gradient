@@ -17,7 +17,7 @@ public class AgeGatedShapelessToolRecipeFactory implements IRecipeFactory {
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
-    final Age age = Age.get(JsonUtils.getInt(json, "age"));
+    final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
 
     final NonNullList<Ingredient> ings = NonNullList.create();
     for(final JsonElement ele : JsonUtils.getJsonArray(json, "ingredients")) {

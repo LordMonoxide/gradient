@@ -288,6 +288,7 @@ public final class GradientItems {
       RegistrationHandler.register(new HideBedding());
       RegistrationHandler.register(new Waterskin());
 
+      RegistrationHandler.register(new GradientItem("firepit_discriminator", CreativeTabs.MISC));
       RegistrationHandler.register(new GradientItem("grinding_discriminator", CreativeTabs.MISC));
       RegistrationHandler.register(new GradientItem("mixing_discriminator", CreativeTabs.MISC));
 

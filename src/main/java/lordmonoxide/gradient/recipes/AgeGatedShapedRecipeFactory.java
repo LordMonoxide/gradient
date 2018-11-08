@@ -23,7 +23,7 @@ public class AgeGatedShapedRecipeFactory implements IRecipeFactory {
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
-    final Age age = Age.get(JsonUtils.getInt(json, "age"));
+    final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
 
     final Map<Character, Ingredient> ingMap = Maps.newHashMap();
     for(final Map.Entry<String, JsonElement> entry : JsonUtils.getJsonObject(json, "key").entrySet()) {

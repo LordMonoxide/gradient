@@ -107,8 +107,12 @@ public class BlockMixingBasin extends GradientBlock {
 
       // Put stuff in
       if(!held.isEmpty()) {
-        final ItemStack remaining = basin.insertItem(held, player);
-        player.setHeldItem(hand, remaining);
+        final ItemStack remaining = basin.insertItem(held.copy(), player);
+
+        if(!player.isCreative()) {
+          player.setHeldItem(hand, remaining);
+        }
+
         return true;
       }
 

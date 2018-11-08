@@ -6,9 +6,13 @@ import net.minecraft.item.ItemStack;
 
 public class GradientItem extends Item {
   public GradientItem(final String name, final CreativeTabs creativeTab) {
+    this(name);
+    this.setCreativeTab(creativeTab);
+  }
+
+  public GradientItem(final String name) {
     this.setTranslationKey(name);
     this.setRegistryName(name);
-    this.setCreativeTab(creativeTab);
     this.setNoRepair();
   }
 

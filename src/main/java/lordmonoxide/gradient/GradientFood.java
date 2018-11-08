@@ -5,9 +5,7 @@ import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -28,17 +26,6 @@ public final class GradientFood {
   private static final Map<ItemStack, Food> foods = new HashMap<>();
 
   static {
-    FurnaceRecipes.instance().getSmeltingList().entrySet().stream()
-      .filter(e -> e.getKey().getItem() instanceof ItemFood)
-      .forEach(e -> add(e.getKey(), e.getValue(), 120, 200));
-
-    add(Items.PORKCHOP, Items.COOKED_PORKCHOP, 120, 200);
-    add(Items.BEEF,     Items.COOKED_BEEF,     120, 200);
-    add(Items.CHICKEN,  Items.COOKED_CHICKEN,  120, 200);
-    add(Items.RABBIT,   Items.COOKED_RABBIT,   120, 200);
-    add(Items.MUTTON,   Items.COOKED_MUTTON,   120, 200);
-    add(Items.POTATO,   Items.BAKED_POTATO,    120, 200);
-
     add(IC2Items.getItem("misc_resource", "resin"), IC2Items.getItem("crafting", "rubber"), 30, 200);
     add(GradientItems.SUGARCANE_PASTE, new ItemStack(Items.SUGAR, 2), 30, 200);
     add(FluidUtil.getFilledBucket(new FluidStack(WATER, Fluid.BUCKET_VOLUME)), GradientItems.SALT.getItemStack(), 30, 200);

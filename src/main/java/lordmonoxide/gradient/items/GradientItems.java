@@ -7,6 +7,7 @@ import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
 import lordmonoxide.gradient.items.armour.GradientArmour;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -287,9 +288,9 @@ public final class GradientItems {
       RegistrationHandler.register(new HideBedding());
       RegistrationHandler.register(new Waterskin());
 
-      RegistrationHandler.register(new GradientItem("firepit_discriminator"));
-      RegistrationHandler.register(new GradientItem("grinding_discriminator"));
-      RegistrationHandler.register(new GradientItem("mixing_discriminator"));
+      RegistrationHandler.register(new GradientItem("firepit_discriminator", CreativeTabs.MISC));
+      RegistrationHandler.register(new GradientItem("grinding_discriminator", CreativeTabs.MISC));
+      RegistrationHandler.register(new GradientItem("mixing_discriminator", CreativeTabs.MISC));
 
       // Trigger item registration
       new GradientItems();

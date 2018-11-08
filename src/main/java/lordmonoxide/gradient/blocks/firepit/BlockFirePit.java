@@ -106,7 +106,7 @@ public class BlockFirePit extends HeatSinkerBlock {
       return ((TileFirePit)te).getLightLevel(state);
     }
 
-    return state.getLightValue(world, pos);
+    return super.getLightValue(state, world, pos);
   }
 
   @Override
@@ -197,7 +197,7 @@ public class BlockFirePit extends HeatSinkerBlock {
 
       // Put stuff in
       if(!held.isEmpty()) {
-        final ItemStack remaining = firepit.insertItem(held.copy());
+        final ItemStack remaining = firepit.insertItem(held.copy(), player);
 
         if(!player.isCreative()) {
           player.setHeldItem(hand, remaining);

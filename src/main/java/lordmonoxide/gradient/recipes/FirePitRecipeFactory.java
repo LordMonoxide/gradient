@@ -3,6 +3,7 @@ package lordmonoxide.gradient.recipes;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -21,6 +22,7 @@ public class FirePitRecipeFactory implements IRecipeFactory {
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
     final String group = JsonUtils.getString(json, "group", "");
+    final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
     final int ticks = JsonUtils.getInt(json, "ticks");
     final float temperature = JsonUtils.getInt(json, "temperature");
 
@@ -37,6 +39,6 @@ public class FirePitRecipeFactory implements IRecipeFactory {
 
     final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
 
-    return new FirePitRecipe(group, ticks, temperature, output, ingredients);
+    return new FirePitRecipe(group, age, ticks, temperature, output, ingredients);
   }
 }

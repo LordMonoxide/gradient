@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.blocks.firepit.ContainerFirePit;
+import lordmonoxide.gradient.progress.Age;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
@@ -20,14 +21,16 @@ public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
   private final String group;
+  public final Age age;
   public final int ticks;
   public final float temperature;
   private final ItemStack output;
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public FirePitRecipe(final String group, final int ticks, final float temperature, final ItemStack output, final NonNullList<Ingredient> input) {
+  public FirePitRecipe(final String group, final Age age, final int ticks, final float temperature, final ItemStack output, final NonNullList<Ingredient> input) {
     this.group = group;
+    this.age = age;
     this.ticks = ticks;
     this.temperature = temperature;
     this.output = output;
@@ -51,6 +54,10 @@ public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
     final Container container = RecipeHelper.getContainer(inv);
 
     if(!(container instanceof ContainerFirePit)) {
+      return false;
+    }
+
+    if(((ContainerFirePit)container).getPlayerAge().ordinal() < this.age.ordinal()) {
       return false;
     }
 

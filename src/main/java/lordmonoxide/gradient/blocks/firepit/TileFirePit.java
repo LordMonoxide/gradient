@@ -2,11 +2,15 @@ package lordmonoxide.gradient.blocks.firepit;
 
 import buildcraft.lib.misc.CraftingUtil;
 import lordmonoxide.gradient.GradientFuel;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
+import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
+import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -117,6 +121,7 @@ public class TileFirePit extends HeatProducer {
   public ItemStack takeInput() {
     final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, this.inventory.getSlotLimit(FIRST_INPUT_SLOT), false);
     this.recipe = null;
+    this.ticks = 0;
     this.sync();
     return input;
   }
@@ -135,7 +140,7 @@ public class TileFirePit extends HeatProducer {
     return output;
   }
 
-  public ItemStack insertItem(final ItemStack stack) {
+  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
     if(GradientFuel.has(stack)) {
       for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
         if(!this.hasFuel(slot)) {
@@ -148,7 +153,7 @@ public class TileFirePit extends HeatProducer {
     }
 
     if(!this.hasInput()) {
-      this.recipe = this.findRecipe(stack);
+      this.recipe = this.findRecipe(stack, RecipeHelper.getPlayerAge(player));
 
       if(this.recipe == null) {
         return stack;
@@ -381,7 +386,8 @@ public class TileFirePit extends HeatProducer {
   }
 
   @Nullable
-  private FirePitRecipe findRecipe(final ItemStack input) {
+  private FirePitRecipe findRecipe(final ItemStack input, final Age age) {
+    this.container.setPlayerAge(age);
     this.crafting.setInventorySlotContents(0, input);
     final IRecipe recipe = CraftingUtil.findMatchingRecipe(this.crafting, this.world);
 
@@ -411,6 +417,7 @@ public class TileFirePit extends HeatProducer {
 
     compound.setTag("fuel", fuels);
 
+    compound.setInteger("player_age", this.container.getPlayerAge().value());
     compound.setInteger("ticks", this.ticks);
 
     return super.writeToNBT(compound);
@@ -438,8 +445,16 @@ public class TileFirePit extends HeatProducer {
       }
     }
 
+    final int age = compound.getInteger("player_age");
+
+    try {
+      this.container.setPlayerAge(Age.get(age));
+    } catch(final IndexOutOfBoundsException e) {
+      GradientMod.logger.warn("Invalid age in %s: %d", this, age);
+    }
+
     this.ticks = compound.getInteger("ticks");
-    this.recipe = this.findRecipe(this.getInput());
+    this.recipe = this.findRecipe(this.getInput(), this.container.getPlayerAge());
 
     super.readFromNBT(compound);
   }

@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 // With a single furnace, a crucible will heat up to 1038 degrees
@@ -308,24 +309,31 @@ public class TileFirePit extends HeatProducer {
 
   private void generateParticles() {
     if(this.hasHeat()) {
-      if(this.isBurning()) { // Fire
-        final double radius = this.getWorld().rand.nextDouble() * 0.25d;
-        final double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
+      final Random rand = this.getWorld().rand;
+
+      // Fire
+      if(this.isBurning()) {
+        if(this.getHeat() >= 200 || rand.nextInt(600) >= 400 - this.getHeat() * 2) {
+          final double radius = rand.nextDouble() * 0.25d;
+          final double angle  = rand.nextDouble() * Math.PI * 2;
+
+          final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
+          final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
+
+          this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        }
+      }
+
+      // Smoke
+      if(this.getHeat() >= 200 || !this.isBurning()) {
+        final double radius = rand.nextDouble() * 0.35d;
+        final double angle  = rand.nextDouble() * Math.PI * 2;
 
         final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
         final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-        this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
-
-      // Smoke
-      final double radius = this.getWorld().rand.nextDouble() * 0.35d;
-      final double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
-
-      final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
-      final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
-
-      this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
     }
   }
 

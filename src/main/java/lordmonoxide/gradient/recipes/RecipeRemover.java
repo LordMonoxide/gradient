@@ -191,7 +191,7 @@ public final class RecipeRemover {
     ).setRegistryName(GradientMod.resource("sticks.from.planks.with.axe")));
 
     if(toRemove.isEmpty()) {
-      GradientMod.logger.warn("Failed to replaced plank recipes!");
+      GradientMod.logger.warn("Failed to replace plank recipes!");
     } else {
       GradientMod.logger.info("Replaced {} plank recipes!", toRemove.size());
     }

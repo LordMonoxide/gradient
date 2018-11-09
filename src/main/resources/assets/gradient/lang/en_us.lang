@@ -225,6 +225,9 @@ jei.age.2=Agriculture (Age 2)
 jei.age.3=Bronze (Age 3)
 jei.age.4=Industry (Age 4)
 
+jei.firepit.temperature=%f °C
+jei.firepit.ticks=%d ticks
+
 jei.mixer.passes=%d stirs
 jei.mixer.ticks=%d ticks
 

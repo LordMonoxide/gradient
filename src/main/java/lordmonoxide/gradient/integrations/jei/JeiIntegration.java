@@ -1,9 +1,12 @@
 package lordmonoxide.gradient.integrations.jei;
 
+import lordmonoxide.gradient.integrations.jei.firepit.FirePitRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.firepit.FirePitRecipeWrapper;
 import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeWrapper;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeWrapper;
+import lordmonoxide.gradient.recipes.FirePitRecipe;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.recipes.MixingRecipe;
 import mezz.jei.api.IGuiHelper;
@@ -24,6 +27,9 @@ import java.util.List;
 
 @JEIPlugin
 public class JeiIntegration implements IModPlugin {
+  @GameRegistry.ObjectHolder("gradient:fire_pit")
+  private static final Block FIRE_PIT = null;
+
   @GameRegistry.ObjectHolder("gradient:mixing_basin")
   private static final Block MIXING_BASIN = null;
 
@@ -33,6 +39,7 @@ public class JeiIntegration implements IModPlugin {
   @Override
   public void registerCategories(final IRecipeCategoryRegistration registry) {
     final IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
+    registry.addRecipeCategories(new FirePitRecipeCategory(guiHelper));
     registry.addRecipeCategories(new MixingRecipeCategory(guiHelper));
     registry.addRecipeCategories(new GrindingRecipeCategory(guiHelper));
   }
@@ -41,10 +48,13 @@ public class JeiIntegration implements IModPlugin {
   public void register(final IModRegistry registry) {
     final IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
 
+    registry.handleRecipes(FirePitRecipe.class, recipe -> new FirePitRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.FIREPIT);
     registry.handleRecipes(MixingRecipe.class, recipe -> new MixingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.MIXING);
     registry.handleRecipes(GrindingRecipe.class, recipe -> new GrindingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.GRINDING);
+    registry.addRecipes(filterRecipes(FirePitRecipe.class), GradientRecipeCategoryUid.FIREPIT);
     registry.addRecipes(filterRecipes(MixingRecipe.class), GradientRecipeCategoryUid.MIXING);
     registry.addRecipes(filterRecipes(GrindingRecipe.class), GradientRecipeCategoryUid.GRINDING);
+    registry.addRecipeCatalyst(new ItemStack(FIRE_PIT), GradientRecipeCategoryUid.FIREPIT);
     registry.addRecipeCatalyst(new ItemStack(MIXING_BASIN), GradientRecipeCategoryUid.MIXING);
     registry.addRecipeCatalyst(new ItemStack(MANUAL_GRINDER), GradientRecipeCategoryUid.GRINDING);
   }

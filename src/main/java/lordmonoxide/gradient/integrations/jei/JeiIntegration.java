@@ -6,6 +6,12 @@ import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeWrapper;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeWrapper;
+import lordmonoxide.gradient.integrations.jei.shaped.ShapedRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.shaped.ShapedRecipeWrapper;
+import lordmonoxide.gradient.integrations.jei.shapeless.ShapelessRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.shapeless.ShapelessRecipeWrapper;
+import lordmonoxide.gradient.recipes.AgeGatedShapedToolRecipe;
+import lordmonoxide.gradient.recipes.AgeGatedShapelessToolRecipe;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.recipes.MixingRecipe;
@@ -39,6 +45,8 @@ public class JeiIntegration implements IModPlugin {
   @Override
   public void registerCategories(final IRecipeCategoryRegistration registry) {
     final IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
+    registry.addRecipeCategories(new ShapedRecipeCategory(guiHelper));
+    registry.addRecipeCategories(new ShapelessRecipeCategory(guiHelper));
     registry.addRecipeCategories(new FirePitRecipeCategory(guiHelper));
     registry.addRecipeCategories(new MixingRecipeCategory(guiHelper));
     registry.addRecipeCategories(new GrindingRecipeCategory(guiHelper));
@@ -48,9 +56,13 @@ public class JeiIntegration implements IModPlugin {
   public void register(final IModRegistry registry) {
     final IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
 
+    registry.handleRecipes(AgeGatedShapedToolRecipe.class, recipe -> new ShapedRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.SHAPED);
+    registry.handleRecipes(AgeGatedShapelessToolRecipe.class, recipe -> new ShapelessRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.SHAPELESS);
     registry.handleRecipes(FirePitRecipe.class, recipe -> new FirePitRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.FIREPIT);
     registry.handleRecipes(MixingRecipe.class, recipe -> new MixingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.MIXING);
     registry.handleRecipes(GrindingRecipe.class, recipe -> new GrindingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.GRINDING);
+    registry.addRecipes(filterRecipes(AgeGatedShapedToolRecipe.class), GradientRecipeCategoryUid.SHAPED);
+    registry.addRecipes(filterRecipes(AgeGatedShapelessToolRecipe.class), GradientRecipeCategoryUid.SHAPELESS);
     registry.addRecipes(filterRecipes(FirePitRecipe.class), GradientRecipeCategoryUid.FIREPIT);
     registry.addRecipes(filterRecipes(MixingRecipe.class), GradientRecipeCategoryUid.MIXING);
     registry.addRecipes(filterRecipes(GrindingRecipe.class), GradientRecipeCategoryUid.GRINDING);

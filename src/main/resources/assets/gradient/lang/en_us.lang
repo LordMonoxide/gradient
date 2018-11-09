@@ -217,6 +217,23 @@ metal.amount=Amount: %d mB
 # Hardenable tooltip
 hardenable.tooltip=Place next to a fire pit to harden (%d sec)
 
+# JEI integration
+jei.requirement.age=Requires %s
+
+jei.age.1=Nomadic (Age 1)
+jei.age.2=Agriculture (Age 2)
+jei.age.3=Bronze (Age 3)
+jei.age.4=Industry (Age 4)
+
+jei.firepit.temperature=%f °C
+jei.firepit.ticks=%d ticks
+
+jei.mixer.passes=%d stirs
+jei.mixer.ticks=%d ticks
+
+jei.grinder.passes=%d grinds
+jei.grinder.ticks=%d ticks
+
 # Commands
 commands.setage.usage=/setage <age> [<player>]
 commands.setage.set=%s age set to %s

@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shapeless_tool",
+  "type": "gradient:age_gated_shapeless",
   "age": 1,
   "result": {
     "item": "gradient:bone_awl"

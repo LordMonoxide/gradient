@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shapeless_tool",
+  "type": "gradient:age_gated_shapeless",
   "age": 3,
   "result": {
     "item": "gradient:dust.flint"

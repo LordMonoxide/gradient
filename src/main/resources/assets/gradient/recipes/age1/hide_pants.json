@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shaped_tool",
+  "type": "gradient:age_gated_shaped",
   "age": 1,
   "result": {
     "item": "gradient:hide_pants"

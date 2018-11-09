@@ -52,12 +52,23 @@ repositories {
     name = "BuildCraft"
     url = "http://www.mod-buildcraft.com/maven"
   }
+
+  maven {
+    // JEI
+    name = "Progwml6 maven"
+    url = "http://dvs1.progwml6.com/files/maven"
+  }
 }
 
 dependencies {
   deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.101-ex112'
 
   deobfCompile 'com.mod-buildcraft:buildcraft:7.99.18'
+
+  // compile against the JEI API but do not include it at runtime
+  deobfProvided 'mezz.jei:jei_1.12.2:4.13.1.220:api'
+  // at runtime, use the full JEI jar
+  runtime 'mezz.jei:jei_1.12.2:4.13.1.220'
 
   // you may put jars on which you depend on in ./libs
   // or you may define them like so..

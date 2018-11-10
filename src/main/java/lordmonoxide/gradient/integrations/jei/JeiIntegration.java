@@ -19,9 +19,11 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.ingredients.IIngredientBlacklist;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.IStackHelper;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -42,6 +44,15 @@ public class JeiIntegration implements IModPlugin {
   @GameRegistry.ObjectHolder("gradient:manual_grinder")
   private static final Block MANUAL_GRINDER = null;
 
+  @GameRegistry.ObjectHolder("gradient:firepit_discriminator")
+  private static final Item FIREPIT_DISCRIMINATOR = null;
+
+  @GameRegistry.ObjectHolder("gradient:mixing_discriminator")
+  private static final Item MIXING_DISCRIMINATOR = null;
+
+  @GameRegistry.ObjectHolder("gradient:grinding_discriminator")
+  private static final Item GRINDING_DISCRIMINATOR = null;
+
   @Override
   public void registerCategories(final IRecipeCategoryRegistration registry) {
     final IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
@@ -54,6 +65,11 @@ public class JeiIntegration implements IModPlugin {
 
   @Override
   public void register(final IModRegistry registry) {
+    final IIngredientBlacklist blacklist = registry.getJeiHelpers().getIngredientBlacklist();
+    blacklist.addIngredientToBlacklist(new ItemStack(FIREPIT_DISCRIMINATOR));
+    blacklist.addIngredientToBlacklist(new ItemStack(MIXING_DISCRIMINATOR));
+    blacklist.addIngredientToBlacklist(new ItemStack(GRINDING_DISCRIMINATOR));
+
     final IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
 
     registry.handleRecipes(AgeGatedShapedToolRecipe.class, recipe -> new ShapedRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.SHAPED);

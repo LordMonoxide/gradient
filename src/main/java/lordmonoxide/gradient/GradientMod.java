@@ -24,13 +24,20 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.URISyntaxException;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.jar.JarFile;
 
 @Mod(modid = GradientMod.MODID, name = GradientMod.NAME, version = GradientMod.VERSION, dependencies = "after:ic2")
 public class GradientMod {
@@ -64,7 +71,7 @@ public class GradientMod {
     logger.info("{} is loading!", NAME);
     logger.info("------------------- PREINIT -------------------");
 
-    syncTriumphAdvancements(event.getModConfigurationDirectory());
+    this.syncTriumphAdvancements(event.getModConfigurationDirectory());
 
     CapabilityPlayerProgress.register();
 
@@ -111,13 +118,32 @@ public class GradientMod {
     return new ResourceLocation(MODID, path);
   }
 
-  private static void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
-    final File sourceDir = Paths.get(GradientMod.class.getResource("../../assets/" + MODID + "/triumph").toURI()).toFile();
-    final File destDir = configDir.toPath().resolve("triumph/script/" + MODID).toFile();
+  private void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
+    final Path destDir = configDir.toPath().resolve("triumph/script/" + MODID);
 
-    logger.info("Copying triumphs from " + sourceDir + " to " + destDir);
+    logger.info("Copying triumphs to " + destDir);
 
-    FileUtils.deleteDirectory(destDir);
-    FileUtils.copyDirectory(sourceDir, destDir);
+    FileUtils.deleteDirectory(destDir.toFile());
+
+    final URLConnection connection = this.getClass().getResource("").openConnection();
+
+    if(connection instanceof JarURLConnection) {
+      final JarFile jar = ((JarURLConnection)connection).getJarFile();
+
+      jar.stream().forEach(entry -> {
+        if(!entry.isDirectory() && entry.getName().startsWith("assets/gradient/triumph/")) {
+          try(final InputStream stream = jar.getInputStream(jar.getEntry(entry.getName()))) {
+            final Path path = destDir.resolve(entry.getName().substring(24));
+            Files.createDirectories(path.getParent());
+            IOUtils.copy(stream, Files.newOutputStream(path));
+          } catch(final IOException e) {
+            GradientMod.logger.error("Error copying triumph", e);
+          }
+        }
+      });
+    } else {
+      final File sourceDir = Paths.get(this.getClass().getResource("../../assets/" + MODID + "/triumph").toURI()).toFile();
+      FileUtils.copyDirectory(sourceDir, destDir.toFile());
+    }
   }
 }

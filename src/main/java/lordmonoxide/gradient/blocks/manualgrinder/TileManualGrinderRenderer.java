@@ -6,7 +6,10 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class TileManualGrinderRenderer extends TileEntitySpecialRenderer<TileManualGrinder> {
   @Override
   public void render(final TileManualGrinder te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {

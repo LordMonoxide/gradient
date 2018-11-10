@@ -7,7 +7,10 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixingBasin> {
   private final ItemStack water = new ItemStack(Items.WATER_BUCKET);
 

@@ -44,7 +44,7 @@ public class GradientMod {
   public static GradientMod instance;
 
   @SuppressWarnings({"StaticNonFinalField", "NullableProblems"})
-  @SidedProxy(serverSide = "lordmonoxide.gradient.ServerProxy", clientSide = "lordmonoxide.gradient.init.ClientProxy")
+  @SidedProxy(serverSide = "lordmonoxide.gradient.init.ServerProxy", clientSide = "lordmonoxide.gradient.init.ClientProxy")
   @Nonnull
   public static IProxy proxy;
 

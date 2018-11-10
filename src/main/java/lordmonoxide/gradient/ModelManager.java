@@ -24,34 +24,27 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@SideOnly(Side.CLIENT)
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = GradientMod.MODID)
 public final class ModelManager {
   private ModelManager() { }
 
   private static final Set<Item> itemsRegistered = new HashSet<>();
 
-  @GameRegistry.ObjectHolder("gradient:firepit_discriminator")
-  private static final Item FIREPIT_DISCRIMINATOR = null;
-
-  @GameRegistry.ObjectHolder("gradient:grinding_discriminator")
-  private static final Item GRINDING_DISCRIMINATOR = null;
-
-  @GameRegistry.ObjectHolder("gradient:mixing_discriminator")
-  private static final Item MIXING_DISCRIMINATOR = null;
-
   @SubscribeEvent
   public static void registerModels(final ModelRegistryEvent event) {
     GradientMod.logger.info("Registering models");
 
-    registerItemModel(FIREPIT_DISCRIMINATOR, "minecraft:nether_star");
-    registerItemModel(GRINDING_DISCRIMINATOR, "minecraft:nether_star");
-    registerItemModel(MIXING_DISCRIMINATOR, "minecraft:nether_star");
+    registerItemModel(ForgeRegistries.ITEMS.getValue(GradientMod.resource("firepit_discriminator")), "minecraft:nether_star");
+    registerItemModel(ForgeRegistries.ITEMS.getValue(GradientMod.resource("grinding_discriminator")), "minecraft:nether_star");
+    registerItemModel(ForgeRegistries.ITEMS.getValue(GradientMod.resource("mixing_discriminator")), "minecraft:nether_star");
 
     registerFluidModels();
     registerBlockModels();

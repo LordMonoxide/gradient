@@ -43,16 +43,16 @@ public final class GradientItems {
   public static final GradientItem FIBRE = RegistrationHandler.register(new Fibre());
   public static final GradientItem TWINE = RegistrationHandler.register(new Twine());
 
-  private static Item HIDE_COW;
-  private static Item HIDE_DONKEY;
-  private static Item HIDE_HORSE;
-  private static Item HIDE_LLAMA;
-  private static Item HIDE_MULE;
-  private static Item HIDE_OCELOT;
-  private static Item HIDE_PIG;
-  private static Item HIDE_POLAR_BEAR;
-  private static Item HIDE_SHEEP;
-  private static Item HIDE_WOLF;
+  public static Item HIDE_COW;
+  public static Item HIDE_DONKEY;
+  public static Item HIDE_HORSE;
+  public static Item HIDE_LLAMA;
+  public static Item HIDE_MULE;
+  public static Item HIDE_OCELOT;
+  public static Item HIDE_PIG;
+  public static Item HIDE_POLAR_BEAR;
+  public static Item HIDE_SHEEP;
+  public static Item HIDE_WOLF;
 
   public static final NuggetCoal NUGGET_COAL = RegistrationHandler.register(new NuggetCoal());
 

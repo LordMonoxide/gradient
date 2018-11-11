@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package lordmonoxide.gradient.integrations.jei.shaped;
+package lordmonoxide.gradient.integrations.jei.crafting;
 
 import mcp.MethodsReturnNonnullByDefault;
 

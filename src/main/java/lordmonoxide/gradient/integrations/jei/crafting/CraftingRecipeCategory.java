@@ -1,4 +1,4 @@
-package lordmonoxide.gradient.integrations.jei.shapeless;
+package lordmonoxide.gradient.integrations.jei.crafting;
 
 import lordmonoxide.gradient.integrations.jei.GradientRecipeCategoryUid;
 import lordmonoxide.gradient.integrations.jei.JeiRecipeCategory;
@@ -8,20 +8,21 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
+import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 
-public class ShapelessRecipeCategory extends JeiRecipeCategory<ShapelessRecipeWrapper> {
+public class CraftingRecipeCategory extends JeiRecipeCategory<RecipeWrapper> {
   private static final int craftOutputSlot = 0;
   private static final int craftInputSlot1 = 1;
 
   private final ICraftingGridHelper craftingGridHelper;
 
-  public ShapelessRecipeCategory(final IGuiHelper guiHelper) {
-    super(GradientRecipeCategoryUid.SHAPELESS, guiHelper.createDrawable(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 0, 60, 116, 54));
+  public CraftingRecipeCategory(final IGuiHelper guiHelper) {
+    super(GradientRecipeCategoryUid.CRAFTING, guiHelper.createDrawable(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 0, 60, 116, 54));
     this.craftingGridHelper = guiHelper.createCraftingGridHelper(craftInputSlot1, craftOutputSlot);
   }
 
@@ -31,7 +32,7 @@ public class ShapelessRecipeCategory extends JeiRecipeCategory<ShapelessRecipeWr
   }
 
   @Override
-  public void setRecipe(final IRecipeLayout recipeLayout, final ShapelessRecipeWrapper recipe, final IIngredients ingredients) {
+  public void setRecipe(final IRecipeLayout recipeLayout, final RecipeWrapper recipe, final IIngredients ingredients) {
     final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
     guiItemStacks.init(craftOutputSlot, false, 94, 18);
@@ -46,8 +47,14 @@ public class ShapelessRecipeCategory extends JeiRecipeCategory<ShapelessRecipeWr
     final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
     final List<List<ItemStack>> outputs = ingredients.getOutputs(VanillaTypes.ITEM);
 
-    this.craftingGridHelper.setInputs(guiItemStacks, inputs);
-    recipeLayout.setShapeless();
+    if(recipe instanceof IShapedCraftingRecipeWrapper) {
+      final IShapedCraftingRecipeWrapper shaped = (IShapedCraftingRecipeWrapper)recipe;
+      this.craftingGridHelper.setInputs(guiItemStacks, inputs, shaped.getWidth(), shaped.getHeight());
+    } else {
+      this.craftingGridHelper.setInputs(guiItemStacks, inputs);
+      recipeLayout.setShapeless();
+    }
+
     guiItemStacks.set(craftOutputSlot, outputs.get(0));
   }
 }

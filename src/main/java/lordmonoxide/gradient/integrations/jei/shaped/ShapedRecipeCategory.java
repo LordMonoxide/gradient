@@ -46,7 +46,6 @@ public class ShapedRecipeCategory extends JeiRecipeCategory<ShapedRecipeWrapper>
     final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
     final List<List<ItemStack>> outputs = ingredients.getOutputs(VanillaTypes.ITEM);
 
-    this.craftingGridHelper.setInputs(guiItemStacks, inputs);
     this.craftingGridHelper.setInputs(guiItemStacks, inputs, recipe.getWidth(), recipe.getHeight());
     guiItemStacks.set(craftOutputSlot, outputs.get(0));
   }

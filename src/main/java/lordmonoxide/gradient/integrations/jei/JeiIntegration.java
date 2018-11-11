@@ -23,7 +23,9 @@ import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.IStackHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -70,8 +72,10 @@ public class JeiIntegration implements IModPlugin {
     blacklist.addIngredientToBlacklist(new ItemStack(GRINDING_DISCRIMINATOR));
 
     for(final Item item : ForgeRegistries.ITEMS.getValuesCollection()) {
-      if(item instanceof ItemTool && "minecraft".equals(item.getRegistryName().getNamespace())) {
-        blacklist.addIngredientToBlacklist(new ItemStack(item));
+      if(item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemSword) {
+        if("minecraft".equals(item.getRegistryName().getNamespace())) {
+          blacklist.addIngredientToBlacklist(new ItemStack(item));
+        }
       }
     }
 

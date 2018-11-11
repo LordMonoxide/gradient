@@ -40,6 +40,12 @@ public final class AddExtraDrops {
   @GameRegistry.ObjectHolder("minecraft:coal_ore")
   private static final Block COAL_ORE = null;
 
+  @GameRegistry.ObjectHolder("biomesoplenty:grass")
+  private static final Block BOP_GRASS = null;
+
+  @GameRegistry.ObjectHolder("biomesoplenty:dirt")
+  private static final Block BOP_DIRT = null;
+
   @SubscribeEvent
   public static void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getBlock() instanceof BlockLeaves) {
@@ -56,7 +62,9 @@ public final class AddExtraDrops {
     if(
       block == Blocks.TALLGRASS ||
       block == Blocks.DIRT ||
-      block == Blocks.GRASS
+      block == Blocks.GRASS ||
+      block == BOP_GRASS ||
+      block == BOP_DIRT
     ) {
       if(event.getWorld().rand.nextInt(10) < 1 + event.getFortuneLevel()) {
         event.getDrops().add(new ItemStack(FIBRE));

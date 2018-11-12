@@ -129,6 +129,11 @@ public class Waterskin extends ItemFluidContainer {
     }
 
     subItems.add(new ItemStack(this, 1, 0));
-    subItems.add(new ItemStack(this, 1, 1));
+
+    final NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setTag("Fluid", new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
+    final ItemStack filled = new ItemStack(this, 1, 1);
+    filled.setTagCompound(nbt);
+    subItems.add(filled);
   }
 }

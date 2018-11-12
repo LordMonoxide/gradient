@@ -5,16 +5,28 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.ItemBlockProvider;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
+import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
+import lordmonoxide.gradient.blocks.claycast.ItemClayCastUnhardened;
+import lordmonoxide.gradient.blocks.pebble.EntityPebble;
+import lordmonoxide.gradient.blocks.pebble.ItemPebble;
 import lordmonoxide.gradient.items.armour.GradientArmour;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.dispenser.BehaviorProjectileDispense;
+import net.minecraft.dispenser.IPosition;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
@@ -25,6 +37,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
@@ -119,6 +132,13 @@ public final class GradientItems {
 
   private static void initialiseItems() {
     MinecraftForge.EVENT_BUS.register(CLAY_BUCKET);
+
+    BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ItemBlock.getItemFromBlock(GradientBlocks.PEBBLE), new BehaviorProjectileDispense() {
+      @Override
+      protected IProjectile getProjectileEntity(final World world, final IPosition position, final ItemStack stack) {
+        return new EntityPebble(world, position.getX(), position.getY(), position.getZ());
+      }
+    });
   }
 
   private static void initialiseOreDict() {
@@ -268,6 +288,31 @@ public final class GradientItems {
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> event) {
       GradientMod.logger.info("Registering items");
+
+      final List<Block> registered = new ArrayList<>();
+      registered.add(GradientBlocks.PEBBLE);
+      registered.add(GradientBlocks.CLAY_CAST_UNHARDENED);
+      registered.add(GradientBlocks.CLAY_CAST);
+
+      RegistrationHandler.register(new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName()));
+      RegistrationHandler.register(new ItemClayCastUnhardened(GradientBlocks.CLAY_CAST_UNHARDENED).setRegistryName(GradientBlocks.CLAY_CAST_UNHARDENED.getRegistryName()));
+      RegistrationHandler.register(new ItemClayCast(GradientBlocks.CLAY_CAST).setRegistryName(GradientBlocks.CLAY_CAST.getRegistryName()));
+
+      for(final Block block : ForgeRegistries.BLOCKS.getValuesCollection()) {
+        if(registered.contains(block) || !block.getRegistryName().getNamespace().equals(GradientMod.MODID)) {
+          continue;
+        }
+
+        final Item item;
+
+        if(block instanceof ItemBlockProvider) {
+          item = ((ItemBlockProvider)block).getItemBlock((Block & ItemBlockProvider)block);
+        } else {
+          item = new ItemBlock(block);
+        }
+
+        RegistrationHandler.register(item.setRegistryName(block.getRegistryName()));
+      }
 
       HIDE_COW = RegistrationHandler.register(new Hide("hide_cow"));
       HIDE_DONKEY = RegistrationHandler.register(new Hide("hide_donkey"));

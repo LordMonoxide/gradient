@@ -1,6 +1,5 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePitRenderer;
 import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinder;
@@ -81,10 +80,6 @@ public final class ModelManager {
     ClientRegistry.bindTileEntitySpecialRenderer(TileFirePit.class, new TileFirePitRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileManualGrinder.class, new TileManualGrinderRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileMixingBasin.class, new TileMixingBasinRenderer());
-
-    GradientBlocks.RegistrationHandler.ITEM_BLOCKS.stream()
-      .filter(item -> !itemsRegistered.contains(item))
-      .forEach(ModelManager::registerItemModel);
   }
 
   private static void registerItemModels() {

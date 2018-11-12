@@ -92,6 +92,7 @@ public final class RecipeRemover {
       "minecraft:bone_block",
       "minecraft:sugar",
       "minecraft:bread",
+      "minecraft:leather",
 
       "natura:common/barley_flour",
       "natura:common/wheat_flour",

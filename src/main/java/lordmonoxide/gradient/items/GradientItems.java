@@ -51,22 +51,22 @@ public final class GradientItems {
 
   public static final ItemArmor.ArmorMaterial MATERIAL_HIDE = EnumHelper.addArmorMaterial("hide", GradientMod.resource("hide").toString(), 3, new int[] {1, 1, 2, 1}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 
-  public static final GradientItem INFINICOAL = RegistrationHandler.register(new Infinicoal());
-  public static final GradientItem DEBUG      = RegistrationHandler.register(new DebugItem());
+  public static final Infinicoal INFINICOAL = RegistrationHandler.register(new Infinicoal());
+  public static final DebugItem  DEBUG      = RegistrationHandler.register(new DebugItem());
 
-  public static final GradientItem FIBRE = RegistrationHandler.register(new Fibre());
-  public static final GradientItem TWINE = RegistrationHandler.register(new Twine());
+  public static final Fibre FIBRE = new Fibre();
+  public static final Twine TWINE = new Twine();
 
-  public static Item HIDE_COW;
-  public static Item HIDE_DONKEY;
-  public static Item HIDE_HORSE;
-  public static Item HIDE_LLAMA;
-  public static Item HIDE_MULE;
-  public static Item HIDE_OCELOT;
-  public static Item HIDE_PIG;
-  public static Item HIDE_POLAR_BEAR;
-  public static Item HIDE_SHEEP;
-  public static Item HIDE_WOLF;
+  public static final Hide HIDE_COW        = new Hide("hide_cow");
+  public static final Hide HIDE_DONKEY     = new Hide("hide_donkey");
+  public static final Hide HIDE_HORSE      = new Hide("hide_horse");
+  public static final Hide HIDE_LLAMA      = new Hide("hide_llama");
+  public static final Hide HIDE_MULE       = new Hide("hide_mule");
+  public static final Hide HIDE_OCELOT     = new Hide("hide_ocelot");
+  public static final Hide HIDE_PIG        = new Hide("hide_pig");
+  public static final Hide HIDE_POLAR_BEAR = new Hide("hide_polar_bear");
+  public static final Hide HIDE_SHEEP      = new Hide("hide_sheep");
+  public static final Hide HIDE_WOLF       = new Hide("hide_wolf");
 
   public static final NuggetCoal NUGGET_COAL = RegistrationHandler.register(new NuggetCoal());
 
@@ -290,6 +290,9 @@ public final class GradientItems {
     public static void registerItems(final RegistryEvent.Register<Item> event) {
       GradientMod.logger.info("Registering items");
 
+      // Trigger item registration
+      new GradientItems();
+
       final List<Block> registered = new ArrayList<>();
       registered.add(GradientBlocks.PEBBLE);
       registered.add(GradientBlocks.CLAY_CAST_UNHARDENED);
@@ -315,16 +318,19 @@ public final class GradientItems {
         RegistrationHandler.register(item.setRegistryName(block.getRegistryName()));
       }
 
-      HIDE_COW = RegistrationHandler.register(new Hide("hide_cow"));
-      HIDE_DONKEY = RegistrationHandler.register(new Hide("hide_donkey"));
-      HIDE_HORSE = RegistrationHandler.register(new Hide("hide_horse"));
-      HIDE_LLAMA = RegistrationHandler.register(new Hide("hide_llama"));
-      HIDE_MULE = RegistrationHandler.register(new Hide("hide_mule"));
-      HIDE_OCELOT = RegistrationHandler.register(new Hide("hide_ocelot"));
-      HIDE_PIG = RegistrationHandler.register(new Hide("hide_pig"));
-      HIDE_POLAR_BEAR = RegistrationHandler.register(new Hide("hide_polar_bear"));
-      HIDE_SHEEP = RegistrationHandler.register(new Hide("hide_sheep"));
-      HIDE_WOLF = RegistrationHandler.register(new Hide("hide_wolf"));
+      RegistrationHandler.register(FIBRE);
+      RegistrationHandler.register(TWINE);
+
+      RegistrationHandler.register(HIDE_COW);
+      RegistrationHandler.register(HIDE_DONKEY);
+      RegistrationHandler.register(HIDE_HORSE);
+      RegistrationHandler.register(HIDE_LLAMA);
+      RegistrationHandler.register(HIDE_MULE);
+      RegistrationHandler.register(HIDE_OCELOT);
+      RegistrationHandler.register(HIDE_PIG);
+      RegistrationHandler.register(HIDE_POLAR_BEAR);
+      RegistrationHandler.register(HIDE_SHEEP);
+      RegistrationHandler.register(HIDE_WOLF);
 
       RegistrationHandler.register(new GradientArmour("hide_boots", MATERIAL_HIDE, 0, EntityEquipmentSlot.FEET));
       RegistrationHandler.register(new GradientArmour("hide_pants", MATERIAL_HIDE, 0, EntityEquipmentSlot.LEGS));
@@ -337,9 +343,6 @@ public final class GradientItems {
       RegistrationHandler.register(new GradientItem("firepit_discriminator", CreativeTabs.MISC));
       RegistrationHandler.register(new GradientItem("grinding_discriminator", CreativeTabs.MISC));
       RegistrationHandler.register(new GradientItem("mixing_discriminator", CreativeTabs.MISC));
-
-      // Trigger item registration
-      new GradientItems();
 
       final IForgeRegistry<Item> registry = event.getRegistry();
 

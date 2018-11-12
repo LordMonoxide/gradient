@@ -1,0 +1,2 @@
+setage 2 @p
+give @p minecraft:cake

@@ -119,7 +119,7 @@ public class GradientMod {
   }
 
   private void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
-    final Path destDir = configDir.toPath().resolve("triumph/script/" + MODID);
+    final Path destDir = configDir.toPath().resolve("triumph");
 
     logger.info("Copying triumphs to " + destDir);
 
@@ -131,7 +131,7 @@ public class GradientMod {
       final JarFile jar = ((JarURLConnection)connection).getJarFile();
 
       jar.stream().forEach(entry -> {
-        if(!entry.isDirectory() && entry.getName().startsWith("assets/gradient/triumph/")) {
+        if(!entry.isDirectory() && entry.getName().startsWith("assets/" + MODID + "/triumph/")) {
           try(final InputStream stream = jar.getInputStream(jar.getEntry(entry.getName()))) {
             final Path path = destDir.resolve(entry.getName().substring(24));
             Files.createDirectories(path.getParent());

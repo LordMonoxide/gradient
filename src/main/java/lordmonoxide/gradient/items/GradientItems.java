@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
+import lordmonoxide.gradient.blocks.BlockMetalFluid;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.ItemBlockProvider;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
@@ -299,7 +300,7 @@ public final class GradientItems {
       RegistrationHandler.register(new ItemClayCast(GradientBlocks.CLAY_CAST).setRegistryName(GradientBlocks.CLAY_CAST.getRegistryName()));
 
       for(final Block block : ForgeRegistries.BLOCKS.getValuesCollection()) {
-        if(registered.contains(block) || !block.getRegistryName().getNamespace().equals(GradientMod.MODID)) {
+        if(registered.contains(block) || block instanceof BlockMetalFluid || !block.getRegistryName().getNamespace().equals(GradientMod.MODID)) {
           continue;
         }
 

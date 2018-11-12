@@ -221,9 +221,9 @@ hardenable.tooltip=Place next to a fire pit to harden (%d sec)
 jei.requirement.age=Requires %s
 
 jei.age.1=Nomadic (Age 1)
-jei.age.2=Agriculture (Age 2)
+jei.age.2=Agricultural (Age 2)
 jei.age.3=Bronze (Age 3)
-jei.age.4=Industry (Age 4)
+jei.age.4=Industrial (Age 4)
 
 jei.firepit.temperature=%f °C
 jei.firepit.ticks=%d ticks
@@ -236,7 +236,8 @@ jei.grinder.ticks=%d ticks
 
 # Commands
 commands.setage.usage=/setage <age> [<player>]
-commands.setage.set=%s age set to %s
+commands.setage.set=Your age is now %s
+commands.setage.set_other=%s's age is now %s
 
 # Debug
 item.infinicoal.name=Infinicoal (debug)

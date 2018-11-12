@@ -47,10 +47,10 @@ public class SetAgeCommand extends CommandBase {
 
     progress.setAge(age);
 
-    sender.sendMessage(new TextComponentTranslation("commands.setage.set", target.getDisplayName(), age));
+    target.sendMessage(new TextComponentTranslation("commands.setage.set", age.getDisplayName()));
 
     if(sender != target) {
-      sender.sendMessage(new TextComponentTranslation("commands.setage.set", age));
+      sender.sendMessage(new TextComponentTranslation("commands.setage.set_other", target.getDisplayName(), age.getDisplayName()));
     }
   }
 }

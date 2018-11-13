@@ -5,6 +5,7 @@ import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
+import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
 import lordmonoxide.gradient.recipes.RecipeHelper;
@@ -13,7 +14,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -44,9 +43,6 @@ import java.util.stream.Collectors;
 public class TileFirePit extends HeatProducer {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
-
-  @GameRegistry.ObjectHolder("gradient:firepit_discriminator")
-  private static final Item FIREPIT_DISCRIMINATOR = null;
 
   public static final int FUEL_SLOTS_COUNT = 3;
   public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + 2;
@@ -72,7 +68,7 @@ public class TileFirePit extends HeatProducer {
   private int lastLight;
 
   public TileFirePit() {
-    this.crafting.setInventorySlotContents(1, new ItemStack(FIREPIT_DISCRIMINATOR));
+    this.crafting.setInventorySlotContents(1, new ItemStack(GradientItems.FIREPIT_DISCRIMINATOR));
   }
 
   public boolean hasFurnace(final IBlockState state) {

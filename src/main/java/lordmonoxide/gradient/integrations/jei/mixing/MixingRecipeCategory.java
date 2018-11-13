@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.integrations.jei.mixing;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasin;
 import lordmonoxide.gradient.integrations.jei.GradientRecipeCategoryUid;
 import lordmonoxide.gradient.integrations.jei.JeiRecipeCategory;
@@ -9,23 +10,18 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.List;
 
 public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipeWrapper> {
-  @GameRegistry.ObjectHolder("gradient:mixing_basin")
-  private static final Block MIXING_BASIN = null;
-
   public MixingRecipeCategory(final IGuiHelper guiHelper) {
     super(GradientRecipeCategoryUid.MIXING, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_mixing.png"), 0, 0, 166, 68));
   }
 
   @Override
   public String getTitle() {
-    return MIXING_BASIN.getLocalizedName();
+    return GradientBlocks.MIXING_BASIN.getLocalizedName();
   }
 
   @Override

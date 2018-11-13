@@ -1,13 +1,13 @@
 package lordmonoxide.gradient.blocks.manualgrinder;
 
 import buildcraft.lib.misc.CraftingUtil;
+import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +20,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -29,9 +28,6 @@ import javax.annotation.Nullable;
 public class TileManualGrinder extends TileEntity implements ITickable {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
-
-  @GameRegistry.ObjectHolder("gradient:grinding_discriminator")
-  private static final Item GRINDING_DISCRIMINATOR = null;
 
   private final ContainerManualGrinder container = new ContainerManualGrinder();
   private final InventoryCrafting crafting = new InventoryCrafting(this.container, 2, 1);
@@ -43,7 +39,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   private int ticks;
 
   public TileManualGrinder() {
-    this.crafting.setInventorySlotContents(1, new ItemStack(GRINDING_DISCRIMINATOR));
+    this.crafting.setInventorySlotContents(1, new ItemStack(GradientItems.GRINDING_DISCRIMINATOR));
   }
 
   public boolean hasInput() {

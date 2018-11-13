@@ -1,20 +1,34 @@
 package lordmonoxide.gradient.items;
 
+import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
+import lordmonoxide.gradient.blocks.BlockMetalFluid;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.ItemBlockProvider;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
+import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
+import lordmonoxide.gradient.blocks.claycast.ItemClayCastUnhardened;
+import lordmonoxide.gradient.blocks.pebble.EntityPebble;
+import lordmonoxide.gradient.blocks.pebble.ItemPebble;
 import lordmonoxide.gradient.items.armour.GradientArmour;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.dispenser.BehaviorProjectileDispense;
+import net.minecraft.dispenser.IPosition;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
@@ -25,6 +39,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
@@ -32,96 +47,258 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public final class GradientItems {
   private GradientItems() { }
 
+  public static final List<Item> ITEMS = new ArrayList<>();
+
   public static final ItemArmor.ArmorMaterial MATERIAL_HIDE = EnumHelper.addArmorMaterial("hide", GradientMod.resource("hide").toString(), 3, new int[] {1, 1, 2, 1}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 
-  public static final GradientItem INFINICOAL = RegistrationHandler.register(new Infinicoal());
-  public static final GradientItem DEBUG      = RegistrationHandler.register(new DebugItem());
+  public static final Infinicoal INFINICOAL = new Infinicoal();
+  public static final DebugItem  DEBUG      = new DebugItem();
 
-  public static final GradientItem FIBRE = RegistrationHandler.register(new Fibre());
-  public static final GradientItem TWINE = RegistrationHandler.register(new Twine());
+  public static final Fibre FIBRE = new Fibre();
+  public static final Twine TWINE = new Twine();
 
-  public static Item HIDE_COW;
-  public static Item HIDE_DONKEY;
-  public static Item HIDE_HORSE;
-  public static Item HIDE_LLAMA;
-  public static Item HIDE_MULE;
-  public static Item HIDE_OCELOT;
-  public static Item HIDE_PIG;
-  public static Item HIDE_POLAR_BEAR;
-  public static Item HIDE_SHEEP;
-  public static Item HIDE_WOLF;
+  public static final Hide HIDE_COW        = new Hide("hide_cow");
+  public static final Hide HIDE_DONKEY     = new Hide("hide_donkey");
+  public static final Hide HIDE_HORSE      = new Hide("hide_horse");
+  public static final Hide HIDE_LLAMA      = new Hide("hide_llama");
+  public static final Hide HIDE_MULE       = new Hide("hide_mule");
+  public static final Hide HIDE_OCELOT     = new Hide("hide_ocelot");
+  public static final Hide HIDE_PIG        = new Hide("hide_pig");
+  public static final Hide HIDE_POLAR_BEAR = new Hide("hide_polar_bear");
+  public static final Hide HIDE_SHEEP      = new Hide("hide_sheep");
+  public static final Hide HIDE_WOLF       = new Hide("hide_wolf");
 
-  public static final NuggetCoal NUGGET_COAL = RegistrationHandler.register(new NuggetCoal());
+  public static final GradientArmour HIDE_BOOTS     = new GradientArmour("hide_boots", MATERIAL_HIDE, 0, EntityEquipmentSlot.FEET);
+  public static final GradientArmour HIDE_PANTS     = new GradientArmour("hide_pants", MATERIAL_HIDE, 0, EntityEquipmentSlot.LEGS);
+  public static final GradientArmour HIDE_SHIRT     = new GradientArmour("hide_shirt", MATERIAL_HIDE, 0, EntityEquipmentSlot.CHEST);
+  public static final GradientArmour HIDE_HEADCOVER = new GradientArmour("hide_headcover", MATERIAL_HIDE, 0, EntityEquipmentSlot.HEAD);
 
-  public static final GradientItemTool BONE_AWL = RegistrationHandler.register(new BoneAwl());
+  public static final HideBedding HIDE_BEDDING = new HideBedding();
+  public static final Waterskin   WATERSKIN    = new Waterskin();
 
-  public static final GradientItem          FIRE_STARTER  = RegistrationHandler.register(new FireStarter());
-  public static final GradientItemWorldTool STONE_HAMMER  = RegistrationHandler.register(new StoneHammer());
-  public static final GradientItemWorldTool STONE_HATCHET = RegistrationHandler.register(new StoneHatchet());
-  public static final GradientItemWorldTool FLINT_KNIFE   = RegistrationHandler.register(new FlintKnife());
+  public static final FireStarter  FIRE_STARTER  = new FireStarter();
+  public static final StoneHammer  STONE_HAMMER  = new StoneHammer();
+  public static final StoneHatchet STONE_HATCHET = new StoneHatchet();
+  public static final FlintKnife   FLINT_KNIFE   = new FlintKnife();
+  public static final BoneAwl      BONE_AWL      = new BoneAwl();
 
-  public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
+  public static final NuggetCoal NUGGET_COAL = new NuggetCoal();
+  public static final DustFlint  DUST_FLINT  = new DustFlint();
 
-  public static final GradientItemTool MORTAR = RegistrationHandler.register(new Mortar());
+  public static final Mortar MORTAR = new Mortar();
+  public static final ItemClayBucket CLAY_BUCKET = new ItemClayBucket();
 
-  public static final MushroomStew MUSHROOM_STEW = RegistrationHandler.register(new MushroomStew());
-  public static final SugarcanePaste SUGARCANE_PASTE = RegistrationHandler.register(new SugarcanePaste());
-  public static final Salt SALT = RegistrationHandler.register(new Salt());
-  public static final Flour FLOUR = RegistrationHandler.register(new Flour());
-  public static final Dough DOUGH = RegistrationHandler.register(new Dough());
+  public static final MushroomStew MUSHROOM_STEW = new MushroomStew();
+  public static final SugarcanePaste SUGARCANE_PASTE = new SugarcanePaste();
+  public static final Salt SALT = new Salt();
+  public static final Flour FLOUR = new Flour();
+  public static final Dough DOUGH = new Dough();
+
+  public static final GradientItem FIREPIT_DISCRIMINATOR  = new GradientItem("firepit_discriminator", CreativeTabs.MISC);
+  public static final GradientItem GRINDING_DISCRIMINATOR = new GradientItem("grinding_discriminator", CreativeTabs.MISC);
+  public static final GradientItem MIXING_DISCRIMINATOR   = new GradientItem("mixing_discriminator", CreativeTabs.MISC);
+
+  public static final ImmutableMap<GradientMetals.Metal, Nugget> NUGGET;
+  public static final ImmutableMap<GradientMetals.Metal, Crushed> CRUSHED;
+  public static final ImmutableMap<GradientMetals.Metal, CrushedPurified> CRUSHED_PURIFIED;
+  public static final ImmutableMap<GradientMetals.Metal, Dust> DUST;
+  public static final ImmutableMap<GradientMetals.Metal, Plate> PLATE;
+  public static final ImmutableMap<GradientCasts.Cast, ImmutableMap<GradientMetals.Metal, CastItem>> CAST_ITEM;
+  public static final ImmutableMap<GradientTools.Type, ImmutableMap<GradientMetals.Metal, Tool>> TOOL;
+  public static final ImmutableMap<GradientMetals.Alloy, AlloyNugget> ALLOY_NUGGET;
 
   static {
-    // Register nuggets
-    GradientMetals.metals.stream().filter(metal -> metal.canMakeNuggets).map(Nugget::new).forEach(RegistrationHandler::register);
+    final ImmutableMap.Builder<GradientMetals.Metal, Nugget> nugget = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientMetals.Metal, Crushed> crushed = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientMetals.Metal, CrushedPurified> crushedPurified = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientMetals.Metal, Dust> dust = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientMetals.Metal, Plate> plate = ImmutableMap.builder();
 
-    // Register crushed
-    GradientMetals.metals.stream().filter(metal -> metal.canMakeIngots).map(Crushed::new).forEach(RegistrationHandler::register);
-    GradientMetals.metals.stream().filter(metal -> metal.canMakeIngots).map(CrushedPurified::new).forEach(RegistrationHandler::register);
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      if(metal.canMakeNuggets) {
+        nugget.put(metal, new Nugget(metal));
+      }
 
-    // Register dusts
-    GradientMetals.metals.stream().map(Dust::new).forEach(RegistrationHandler::register);
+      if(metal.canMakeIngots) {
+        crushed.put(metal, new Crushed(metal));
+        crushedPurified.put(metal, new CrushedPurified(metal));
+      }
 
-    // Register cast items
+      dust.put(metal, new Dust(metal));
+
+      if(metal.canMakePlates) {
+        plate.put(metal, new Plate(metal));
+      }
+    }
+
+    NUGGET = nugget.build();
+    CRUSHED = crushed.build();
+    CRUSHED_PURIFIED = crushedPurified.build();
+    DUST = dust.build();
+    PLATE = plate.build();
+
+    final ImmutableMap.Builder<GradientCasts.Cast, ImmutableMap<GradientMetals.Metal, CastItem>> castItems = ImmutableMap.builder();
+
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
+      final ImmutableMap.Builder<GradientMetals.Metal, CastItem> castItem = ImmutableMap.builder();
+
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(cast.isValidForMetal(metal) && cast.itemForMetal(metal) == null) {
-          RegistrationHandler.register(new CastItem(cast, metal));
+          castItem.put(metal, new CastItem(cast, metal));
         }
+      }
+
+      final ImmutableMap<GradientMetals.Metal, CastItem> built = castItem.build();
+
+      if(!built.isEmpty()) {
+        castItems.put(cast, built);
       }
     }
 
-    // Register plates
-    GradientMetals.metals.stream().filter(metal -> metal.canMakePlates).map(Plate::new).forEach(RegistrationHandler::register);
+    CAST_ITEM = castItems.build();
 
-    // Register tools
+    final ImmutableMap.Builder<GradientTools.Type, ImmutableMap<GradientMetals.Metal, Tool>> tools = ImmutableMap.builder();
+
     for(final GradientTools.Type type : GradientTools.types()) {
+      final ImmutableMap.Builder<GradientMetals.Metal, Tool> tool = ImmutableMap.builder();
+
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         if(metal.canMakeTools) {
-          RegistrationHandler.register(new Tool(type, metal));
+          tool.put(metal, new Tool(type, metal));
         }
+      }
+
+      final ImmutableMap<GradientMetals.Metal, Tool> built = tool.build();
+
+      if(!built.isEmpty()) {
+        tools.put(type, built);
       }
     }
 
-    // Register alloy nuggets
+    TOOL = tools.build();
+
+    final ImmutableMap.Builder<GradientMetals.Alloy, AlloyNugget> alloyNugget = new ImmutableMap.Builder<>();
+
     for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
-      RegistrationHandler.register(new AlloyNugget(alloy.output.metal));
+      alloyNugget.put(alloy, new AlloyNugget(alloy.output.metal));
     }
+
+    ALLOY_NUGGET = alloyNugget.build();
   }
 
-  public static final GradientItem IGNITER = RegistrationHandler.register(new Igniter());
+  public static final GradientItem IGNITER = new Igniter();
 
-  public static final GrindingHead GRINDING_HEAD = RegistrationHandler.register(new GrindingHead());
+  public static final GrindingHead GRINDING_HEAD = new GrindingHead();
 
-  public static final ItemClayBucket CLAY_BUCKET = RegistrationHandler.register(new ItemClayBucket());
+  @SubscribeEvent
+  public static void registerItems(final RegistryEvent.Register<Item> event) {
+    GradientMod.logger.info("Registering items");
 
-  private static void initialiseItems() {
+    final List<Block> registered = new ArrayList<>();
+    registered.add(GradientBlocks.PEBBLE);
+    registered.add(GradientBlocks.CLAY_CAST_UNHARDENED);
+    registered.add(GradientBlocks.CLAY_CAST);
+
+    final RegistrationHelper registry = new RegistrationHelper(event.getRegistry());
+
+    registry.register(new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName()));
+    registry.register(new ItemClayCastUnhardened(GradientBlocks.CLAY_CAST_UNHARDENED).setRegistryName(GradientBlocks.CLAY_CAST_UNHARDENED.getRegistryName()));
+    registry.register(new ItemClayCast(GradientBlocks.CLAY_CAST).setRegistryName(GradientBlocks.CLAY_CAST.getRegistryName()));
+
+    for(final Block block : ForgeRegistries.BLOCKS.getValuesCollection()) {
+      if(registered.contains(block) || block instanceof BlockMetalFluid || !block.getRegistryName().getNamespace().equals(GradientMod.MODID)) {
+        continue;
+      }
+
+      final Item item;
+
+      if(block instanceof ItemBlockProvider) {
+        item = ((ItemBlockProvider)block).getItemBlock((Block & ItemBlockProvider)block);
+      } else {
+        item = new ItemBlock(block);
+      }
+
+      registry.register(item.setRegistryName(block.getRegistryName()));
+    }
+
+    registry.register(INFINICOAL);
+    registry.register(DEBUG);
+
+    registry.register(FIBRE);
+    registry.register(TWINE);
+
+    registry.register(HIDE_COW);
+    registry.register(HIDE_DONKEY);
+    registry.register(HIDE_HORSE);
+    registry.register(HIDE_LLAMA);
+    registry.register(HIDE_MULE);
+    registry.register(HIDE_OCELOT);
+    registry.register(HIDE_PIG);
+    registry.register(HIDE_POLAR_BEAR);
+    registry.register(HIDE_SHEEP);
+    registry.register(HIDE_WOLF);
+
+    registry.register(HIDE_BOOTS);
+    registry.register(HIDE_PANTS);
+    registry.register(HIDE_SHIRT);
+    registry.register(HIDE_HEADCOVER);
+
+    registry.register(HIDE_BEDDING);
+    registry.register(WATERSKIN);
+
+    registry.register(FIRE_STARTER);
+    registry.register(STONE_HAMMER);
+    registry.register(STONE_HATCHET);
+    registry.register(FLINT_KNIFE);
+    registry.register(BONE_AWL);
+
+    registry.register(NUGGET_COAL);
+    registry.register(DUST_FLINT);
+
+    registry.register(MORTAR);
+    registry.register(CLAY_BUCKET);
+
+    registry.register(MUSHROOM_STEW);
+    registry.register(SUGARCANE_PASTE);
+    registry.register(SALT);
+    registry.register(FLOUR);
+    registry.register(DOUGH);
+
+    registry.register(FIREPIT_DISCRIMINATOR);
+    registry.register(GRINDING_DISCRIMINATOR);
+    registry.register(MIXING_DISCRIMINATOR);
+
+    registry.register(IGNITER);
+
+    registry.register(GRINDING_HEAD);
+
+    NUGGET.values().forEach(registry::register);
+    CRUSHED.values().forEach(registry::register);
+    CRUSHED_PURIFIED.values().forEach(registry::register);
+    DUST.values().forEach(registry::register);
+    PLATE.values().forEach(registry::register);
+    CAST_ITEM.values().forEach(map -> map.values().forEach(registry::register));
+    TOOL.values().forEach(map -> map.values().forEach(registry::register));
+    ALLOY_NUGGET.values().forEach(registry::register);
+
     MinecraftForge.EVENT_BUS.register(CLAY_BUCKET);
+
+    BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ItemBlock.getItemFromBlock(GradientBlocks.PEBBLE), new BehaviorProjectileDispense() {
+      @Override
+      protected IProjectile getProjectileEntity(final World world, final IPosition position, final ItemStack stack) {
+        return new EntityPebble(world, position.getX(), position.getY(), position.getZ());
+      }
+    });
   }
 
-  private static void initialiseOreDict() {
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public static void initOreDict(final RegistryEvent.Register<Item> event) {
+    GradientMod.logger.info("Registering ore dict entries");
+
     OreDictionary.registerOre("infinicoal", INFINICOAL);
 
     OreDictionary.registerOre("coal", Items.COAL);
@@ -254,61 +431,17 @@ public final class GradientItems {
     Blocks.COBBLESTONE_WALL.setHarvestLevel("pickaxe", 0);
   }
 
-  @Mod.EventBusSubscriber(modid = GradientMod.MODID)
-  public static class RegistrationHandler {
-    public static final List<Item> ITEMS = new ArrayList<>();
+  private static final class RegistrationHelper {
+    private final IForgeRegistry<Item> registry;
 
-    private RegistrationHandler() { }
+    public RegistrationHelper(final IForgeRegistry<Item> registry) {
+      ITEMS.clear();
+      this.registry = registry;
+    }
 
-    private static <T extends Item> T register(final T item) {
+    public void register(final Item item) {
       ITEMS.add(item);
-      return item;
-    }
-
-    @SubscribeEvent
-    public static void registerItems(final RegistryEvent.Register<Item> event) {
-      GradientMod.logger.info("Registering items");
-
-      HIDE_COW = RegistrationHandler.register(new Hide("hide_cow"));
-      HIDE_DONKEY = RegistrationHandler.register(new Hide("hide_donkey"));
-      HIDE_HORSE = RegistrationHandler.register(new Hide("hide_horse"));
-      HIDE_LLAMA = RegistrationHandler.register(new Hide("hide_llama"));
-      HIDE_MULE = RegistrationHandler.register(new Hide("hide_mule"));
-      HIDE_OCELOT = RegistrationHandler.register(new Hide("hide_ocelot"));
-      HIDE_PIG = RegistrationHandler.register(new Hide("hide_pig"));
-      HIDE_POLAR_BEAR = RegistrationHandler.register(new Hide("hide_polar_bear"));
-      HIDE_SHEEP = RegistrationHandler.register(new Hide("hide_sheep"));
-      HIDE_WOLF = RegistrationHandler.register(new Hide("hide_wolf"));
-
-      RegistrationHandler.register(new GradientArmour("hide_boots", MATERIAL_HIDE, 0, EntityEquipmentSlot.FEET));
-      RegistrationHandler.register(new GradientArmour("hide_pants", MATERIAL_HIDE, 0, EntityEquipmentSlot.LEGS));
-      RegistrationHandler.register(new GradientArmour("hide_shirt", MATERIAL_HIDE, 0, EntityEquipmentSlot.CHEST));
-      RegistrationHandler.register(new GradientArmour("hide_headcover", MATERIAL_HIDE, 0, EntityEquipmentSlot.HEAD));
-
-      RegistrationHandler.register(new HideBedding());
-      RegistrationHandler.register(new Waterskin());
-
-      RegistrationHandler.register(new GradientItem("firepit_discriminator", CreativeTabs.MISC));
-      RegistrationHandler.register(new GradientItem("grinding_discriminator", CreativeTabs.MISC));
-      RegistrationHandler.register(new GradientItem("mixing_discriminator", CreativeTabs.MISC));
-
-      // Trigger item registration
-      new GradientItems();
-
-      final IForgeRegistry<Item> registry = event.getRegistry();
-
-      for(final Item item : ITEMS) {
-        registry.register(item);
-      }
-
-      initialiseItems();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void initOreDict(final RegistryEvent.Register<Item> event) {
-      GradientMod.logger.info("Registering ore dict entries");
-
-      initialiseOreDict();
+      this.registry.register(item);
     }
   }
 }

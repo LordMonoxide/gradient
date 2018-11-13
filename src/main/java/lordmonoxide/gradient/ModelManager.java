@@ -23,7 +23,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,9 +40,9 @@ public final class ModelManager {
   public static void registerModels(final ModelRegistryEvent event) {
     GradientMod.logger.info("Registering models");
 
-    registerItemModel(ForgeRegistries.ITEMS.getValue(GradientMod.resource("firepit_discriminator")), "minecraft:nether_star");
-    registerItemModel(ForgeRegistries.ITEMS.getValue(GradientMod.resource("grinding_discriminator")), "minecraft:nether_star");
-    registerItemModel(ForgeRegistries.ITEMS.getValue(GradientMod.resource("mixing_discriminator")), "minecraft:nether_star");
+    registerItemModel(GradientItems.FIREPIT_DISCRIMINATOR, "minecraft:nether_star");
+    registerItemModel(GradientItems.GRINDING_DISCRIMINATOR, "minecraft:nether_star");
+    registerItemModel(GradientItems.MIXING_DISCRIMINATOR, "minecraft:nether_star");
 
     registerFluidModels();
     registerBlockModels();
@@ -89,7 +88,7 @@ public final class ModelManager {
     //registerVariantItemModels(ModItems.VARIANTS_ITEM, "variant", ItemVariants.EnumType.values());
 
     // Then register items with default model names
-    GradientItems.RegistrationHandler.ITEMS.stream()
+    GradientItems.ITEMS.stream()
       .filter(item -> !itemsRegistered.contains(item))
       .forEach(ModelManager::registerItemModel);
   }

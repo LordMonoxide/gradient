@@ -9,19 +9,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public final class GradientFluids {
   private GradientFluids() { }
 
-  @Mod.EventBusSubscriber(modid = GradientMod.MODID)
-  public static class RegistrationHandler {
-    private RegistrationHandler() { }
+  @SubscribeEvent
+  public static void registerBlocks(final RegistryEvent.Register<Block> event) {
+    GradientMod.logger.info("Registering fluids");
 
-    @SubscribeEvent
-    public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-      GradientMod.logger.info("Registering fluids");
-
-      GradientMetals.metals.forEach(metal -> registerFluidForMetal(event.getRegistry(), metal));
-    }
+    GradientMetals.metals.forEach(metal -> registerFluidForMetal(event.getRegistry(), metal));
   }
 
   private static void registerFluidForMetal(final IForgeRegistry<Block> registry, final GradientMetals.Metal metal) {
@@ -31,10 +27,10 @@ public final class GradientFluids {
       fluid = FluidRegistry.getFluid(metal.name);
     } else {
       fluid = new Fluid(metal.name, GradientMod.resource("blocks/fluid_" + metal.name), GradientMod.resource("blocks/fluid_" + metal.name + "_flowing"))
-          .setDensity(3000)
-          .setLuminosity(9)
-          .setViscosity(5000)
-          .setTemperature((int)(metal.meltTemp + 273.15));
+        .setDensity(3000)
+        .setLuminosity(9)
+        .setViscosity(5000)
+        .setTemperature((int)(metal.meltTemp + 273.15));
 
       FluidRegistry.registerFluid(fluid);
     }

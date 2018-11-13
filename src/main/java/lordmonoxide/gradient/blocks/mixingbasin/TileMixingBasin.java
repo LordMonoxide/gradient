@@ -1,13 +1,13 @@
 package lordmonoxide.gradient.blocks.mixingbasin;
 
 import buildcraft.lib.misc.CraftingUtil;
+import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.MixingRecipe;
 import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,7 +26,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -38,9 +37,6 @@ public class TileMixingBasin extends TileEntity implements ITickable {
 
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
-
-  @GameRegistry.ObjectHolder("gradient:mixing_discriminator")
-  private static final Item MIXING_DISCRIMINATOR = null;
 
   private static final Fluid WATER = FluidRegistry.getFluid("water");
 
@@ -85,7 +81,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
 
   public TileMixingBasin() {
     this.tanks.addHandler(WATER, this.tank);
-    this.crafting.setInventorySlotContents(INPUT_SIZE, new ItemStack(MIXING_DISCRIMINATOR));
+    this.crafting.setInventorySlotContents(INPUT_SIZE, new ItemStack(GradientItems.MIXING_DISCRIMINATOR));
   }
 
   public boolean hasFluid() {

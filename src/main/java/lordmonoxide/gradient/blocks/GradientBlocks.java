@@ -46,7 +46,7 @@ public final class GradientBlocks {
   public static final Material MATERIAL_BRONZE_MACHINE = new Material(MapColor.GOLD);
 
   public static final BlockPebble PEBBLE = new BlockPebble();
-  public static final BlockSalt   SALT   = new BlockSalt();
+  public static final BlockSalt SALT_BLOCK = new BlockSalt();
 
   public static final BlockOreMagnesium ORE_MAGNESIUM = new BlockOreMagnesium();
 
@@ -97,7 +97,7 @@ public final class GradientBlocks {
     final IForgeRegistry<Block> registry = event.getRegistry();
 
     registry.register(PEBBLE);
-    registry.register(SALT);
+    registry.register(SALT_BLOCK);
 
     registry.register(ORE_MAGNESIUM);
 

@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.items;
 
+import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
@@ -51,8 +52,8 @@ public final class GradientItems {
 
   public static final ItemArmor.ArmorMaterial MATERIAL_HIDE = EnumHelper.addArmorMaterial("hide", GradientMod.resource("hide").toString(), 3, new int[] {1, 1, 2, 1}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 
-  public static final Infinicoal INFINICOAL = RegistrationHandler.register(new Infinicoal());
-  public static final DebugItem  DEBUG      = RegistrationHandler.register(new DebugItem());
+  public static final Infinicoal INFINICOAL = new Infinicoal();
+  public static final DebugItem  DEBUG      = new DebugItem();
 
   public static final Fibre FIBRE = new Fibre();
   public static final Twine TWINE = new Twine();
@@ -68,35 +69,73 @@ public final class GradientItems {
   public static final Hide HIDE_SHEEP      = new Hide("hide_sheep");
   public static final Hide HIDE_WOLF       = new Hide("hide_wolf");
 
-  public static final NuggetCoal NUGGET_COAL = RegistrationHandler.register(new NuggetCoal());
+  public static final GradientArmour HIDE_BOOTS     = new GradientArmour("hide_boots", MATERIAL_HIDE, 0, EntityEquipmentSlot.FEET);
+  public static final GradientArmour HIDE_PANTS     = new GradientArmour("hide_pants", MATERIAL_HIDE, 0, EntityEquipmentSlot.LEGS);
+  public static final GradientArmour HIDE_SHIRT     = new GradientArmour("hide_shirt", MATERIAL_HIDE, 0, EntityEquipmentSlot.CHEST);
+  public static final GradientArmour HIDE_HEADCOVER = new GradientArmour("hide_headcover", MATERIAL_HIDE, 0, EntityEquipmentSlot.HEAD);
 
-  public static final GradientItemTool BONE_AWL = RegistrationHandler.register(new BoneAwl());
+  public static final HideBedding HIDE_BEDDING = new HideBedding();
+  public static final Waterskin   WATERSKIN    = new Waterskin();
 
-  public static final GradientItem          FIRE_STARTER  = RegistrationHandler.register(new FireStarter());
-  public static final GradientItemWorldTool STONE_HAMMER  = RegistrationHandler.register(new StoneHammer());
-  public static final GradientItemWorldTool STONE_HATCHET = RegistrationHandler.register(new StoneHatchet());
-  public static final GradientItemWorldTool FLINT_KNIFE   = RegistrationHandler.register(new FlintKnife());
+  public static final FireStarter  FIRE_STARTER  = new FireStarter();
+  public static final StoneHammer  STONE_HAMMER  = new StoneHammer();
+  public static final StoneHatchet STONE_HATCHET = new StoneHatchet();
+  public static final FlintKnife   FLINT_KNIFE   = new FlintKnife();
+  public static final BoneAwl      BONE_AWL      = new BoneAwl();
 
-  public static final GradientItem DUST_FLINT = RegistrationHandler.register(new DustFlint());
+  public static final NuggetCoal NUGGET_COAL = new NuggetCoal();
+  public static final DustFlint  DUST_FLINT  = new DustFlint();
 
-  public static final GradientItemTool MORTAR = RegistrationHandler.register(new Mortar());
+  public static final Mortar MORTAR = new Mortar();
 
-  public static final MushroomStew MUSHROOM_STEW = RegistrationHandler.register(new MushroomStew());
-  public static final SugarcanePaste SUGARCANE_PASTE = RegistrationHandler.register(new SugarcanePaste());
-  public static final Salt SALT = RegistrationHandler.register(new Salt());
-  public static final Flour FLOUR = RegistrationHandler.register(new Flour());
-  public static final Dough DOUGH = RegistrationHandler.register(new Dough());
+  public static final MushroomStew MUSHROOM_STEW = new MushroomStew();
+  public static final SugarcanePaste SUGARCANE_PASTE = new SugarcanePaste();
+  public static final Salt SALT = new Salt();
+  public static final Flour FLOUR = new Flour();
+  public static final Dough DOUGH = new Dough();
+
+  public static final GradientItem FIREPIT_DISCRIMINATOR  = new GradientItem("firepit_discriminator", CreativeTabs.MISC);
+  public static final GradientItem GRINDING_DISCRIMINATOR = new GradientItem("grinding_discriminator", CreativeTabs.MISC);
+  public static final GradientItem MIXING_DISCRIMINATOR   = new GradientItem("mixing_discriminator", CreativeTabs.MISC);
+
+  public static final ImmutableMap<GradientMetals.Metal, Nugget> NUGGET;
+  public static final ImmutableMap<GradientMetals.Metal, Crushed> CRUSHED;
+  public static final ImmutableMap<GradientMetals.Metal, CrushedPurified> CRUSHED_PURIFIED;
+  public static final ImmutableMap<GradientMetals.Metal, Dust> DUST;
+  public static final ImmutableMap<GradientMetals.Metal, Plate> PLATE;
+  public static final ImmutableMap<GradientMetals.Metal, CastItem> CAST_ITEM;
+  public static final ImmutableMap<GradientMetals.Metal, Tool> TOOL;
+  public static final ImmutableMap<GradientMetals.Metal, AlloyNugget> ALLOY_NUGGET;
 
   static {
-    // Register nuggets
-    GradientMetals.metals.stream().filter(metal -> metal.canMakeNuggets).map(Nugget::new).forEach(RegistrationHandler::register);
+    final ImmutableMap.Builder<GradientMetals.Metal, Nugget> nugget = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientMetals.Metal, Crushed> crushed = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientMetals.Metal, CrushedPurified> crushedPurified = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientMetals.Metal, Dust> dust = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientMetals.Metal, Plate> plate = ImmutableMap.builder();
 
-    // Register crushed
-    GradientMetals.metals.stream().filter(metal -> metal.canMakeIngots).map(Crushed::new).forEach(RegistrationHandler::register);
-    GradientMetals.metals.stream().filter(metal -> metal.canMakeIngots).map(CrushedPurified::new).forEach(RegistrationHandler::register);
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      if(metal.canMakeNuggets) {
+        nugget.put(metal, new Nugget(metal));
+      }
 
-    // Register dusts
-    GradientMetals.metals.stream().map(Dust::new).forEach(RegistrationHandler::register);
+      if(metal.canMakeIngots) {
+        crushed.put(metal, new Crushed(metal));
+        crushedPurified.put(metal, new CrushedPurified(metal));
+      }
+
+      dust.put(metal, new Dust(metal));
+
+      if(metal.canMakePlates) {
+        plate.put(metal, new Plate(metal));
+      }
+    }
+
+    NUGGET = nugget.build();
+    CRUSHED = crushed.build();
+    CRUSHED_PURIFIED = crushedPurified.build();
+    DUST = dust.build();
+    PLATE = plate.build();
 
     // Register cast items
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
@@ -106,9 +145,6 @@ public final class GradientItems {
         }
       }
     }
-
-    // Register plates
-    GradientMetals.metals.stream().filter(metal -> metal.canMakePlates).map(Plate::new).forEach(RegistrationHandler::register);
 
     // Register tools
     for(final GradientTools.Type type : GradientTools.types()) {
@@ -125,11 +161,11 @@ public final class GradientItems {
     }
   }
 
-  public static final GradientItem IGNITER = RegistrationHandler.register(new Igniter());
+  public static final GradientItem IGNITER = new Igniter();
 
-  public static final GrindingHead GRINDING_HEAD = RegistrationHandler.register(new GrindingHead());
+  public static final GrindingHead GRINDING_HEAD = new GrindingHead();
 
-  public static final ItemClayBucket CLAY_BUCKET = RegistrationHandler.register(new ItemClayBucket());
+  public static final ItemClayBucket CLAY_BUCKET = new ItemClayBucket();
 
   private static void initialiseItems() {
     MinecraftForge.EVENT_BUS.register(CLAY_BUCKET);
@@ -318,6 +354,9 @@ public final class GradientItems {
         RegistrationHandler.register(item.setRegistryName(block.getRegistryName()));
       }
 
+      RegistrationHandler.register(INFINICOAL);
+      RegistrationHandler.register(DEBUG);
+
       RegistrationHandler.register(FIBRE);
       RegistrationHandler.register(TWINE);
 
@@ -332,17 +371,40 @@ public final class GradientItems {
       RegistrationHandler.register(HIDE_SHEEP);
       RegistrationHandler.register(HIDE_WOLF);
 
-      RegistrationHandler.register(new GradientArmour("hide_boots", MATERIAL_HIDE, 0, EntityEquipmentSlot.FEET));
-      RegistrationHandler.register(new GradientArmour("hide_pants", MATERIAL_HIDE, 0, EntityEquipmentSlot.LEGS));
-      RegistrationHandler.register(new GradientArmour("hide_shirt", MATERIAL_HIDE, 0, EntityEquipmentSlot.CHEST));
-      RegistrationHandler.register(new GradientArmour("hide_headcover", MATERIAL_HIDE, 0, EntityEquipmentSlot.HEAD));
+      RegistrationHandler.register(HIDE_BOOTS);
+      RegistrationHandler.register(HIDE_PANTS);
+      RegistrationHandler.register(HIDE_SHIRT);
+      RegistrationHandler.register(HIDE_HEADCOVER);
 
-      RegistrationHandler.register(new HideBedding());
-      RegistrationHandler.register(new Waterskin());
+      RegistrationHandler.register(HIDE_BEDDING);
+      RegistrationHandler.register(WATERSKIN);
 
-      RegistrationHandler.register(new GradientItem("firepit_discriminator", CreativeTabs.MISC));
-      RegistrationHandler.register(new GradientItem("grinding_discriminator", CreativeTabs.MISC));
-      RegistrationHandler.register(new GradientItem("mixing_discriminator", CreativeTabs.MISC));
+      RegistrationHandler.register(FIRE_STARTER);
+      RegistrationHandler.register(STONE_HAMMER);
+      RegistrationHandler.register(STONE_HATCHET);
+      RegistrationHandler.register(FLINT_KNIFE);
+      RegistrationHandler.register(BONE_AWL);
+
+      RegistrationHandler.register(NUGGET_COAL);
+      RegistrationHandler.register(DUST_FLINT);
+
+      RegistrationHandler.register(MORTAR);
+
+      RegistrationHandler.register(MUSHROOM_STEW);
+      RegistrationHandler.register(SUGARCANE_PASTE);
+      RegistrationHandler.register(SALT);
+      RegistrationHandler.register(FLOUR);
+      RegistrationHandler.register(DOUGH);
+
+      RegistrationHandler.register(FIREPIT_DISCRIMINATOR);
+      RegistrationHandler.register(GRINDING_DISCRIMINATOR);
+      RegistrationHandler.register(MIXING_DISCRIMINATOR);
+
+      RegistrationHandler.register(IGNITER);
+
+      RegistrationHandler.register(GRINDING_HEAD);
+
+      RegistrationHandler.register(CLAY_BUCKET);
 
       final IForgeRegistry<Item> registry = event.getRegistry();
 

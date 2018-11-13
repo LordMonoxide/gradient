@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.worldgen;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.DimensionType;
@@ -12,16 +11,12 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenSand;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.Random;
 
 public class OreGenerator implements IWorldGenerator {
-  @GameRegistry.ObjectHolder("gradient:salt_block")
-  private static final Block SALT_BLOCK = null;
-
   private final WorldGenerator magnesium = new WorldGenMinable(GradientBlocks.ORE_MAGNESIUM.getDefaultState(), 4);
-  private final WorldGenerator salt = new WorldGenSand(SALT_BLOCK, 4);
+  private final WorldGenerator salt = new WorldGenSand(GradientBlocks.SALT_BLOCK, 4);
 
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {

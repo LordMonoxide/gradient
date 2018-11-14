@@ -67,7 +67,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     }
   };
 
-  public static final int INPUT_SIZE = 3;
+  public static final int INPUT_SIZE = 5;
   private static final int OUTPUT_SLOT = INPUT_SIZE;
 
   private final ContainerMixingBasin container = new ContainerMixingBasin();

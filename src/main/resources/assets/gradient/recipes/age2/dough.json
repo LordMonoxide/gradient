@@ -1,6 +1,8 @@
 {
-  "type": "gradient:age_gated_shapeless",
+  "type": "gradient:mixing",
   "age": 2,
+  "passes": 3,
+  "ticks": 60,
   "result": {
     "item": "gradient:dough"
   },
@@ -19,8 +21,5 @@
   }, {
     "type": "forge:ore_dict",
     "ore": "ingredientSugar"
-  }, {
-    "type": "gradient:fluid",
-    "fluid": "water"
   }]
 }

@@ -1,0 +1,11 @@
+{
+  "type": "gradient:firepit",
+  "ticks": 1800,
+  "temperature": 200,
+  "result": {
+    "item": "minecraft:bread"
+  },
+  "ingredients": [{
+    "item": "gradient:dough"
+  }]
+}

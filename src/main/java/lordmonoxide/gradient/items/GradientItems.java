@@ -89,10 +89,8 @@ public final class GradientItems {
   public static final NuggetCoal NUGGET_COAL = new NuggetCoal();
   public static final DustFlint  DUST_FLINT  = new DustFlint();
 
-  public static final Mortar MORTAR = new Mortar();
   public static final ItemClayBucket CLAY_BUCKET = new ItemClayBucket();
 
-  public static final MushroomStew MUSHROOM_STEW = new MushroomStew();
   public static final SugarcanePaste SUGARCANE_PASTE = new SugarcanePaste();
   public static final Salt SALT = new Salt();
   public static final Flour FLOUR = new Flour();
@@ -259,10 +257,8 @@ public final class GradientItems {
     registry.register(NUGGET_COAL);
     registry.register(DUST_FLINT);
 
-    registry.register(MORTAR);
     registry.register(CLAY_BUCKET);
 
-    registry.register(MUSHROOM_STEW);
     registry.register(SUGARCANE_PASTE);
     registry.register(SALT);
     registry.register(FLOUR);
@@ -322,7 +318,6 @@ public final class GradientItems {
     OreDictionary.registerOre("awl", BONE_AWL.getWildcardItemStack());
     OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
     OreDictionary.registerOre("toolAxe", STONE_HATCHET.getWildcardItemStack());
-    OreDictionary.registerOre("toolMortar", MORTAR.getWildcardItemStack());
 
     // Metals/metal tools
     OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);

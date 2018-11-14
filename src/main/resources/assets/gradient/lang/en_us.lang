@@ -124,8 +124,6 @@ item.plate.gold.name=Gold Plate
 item.plate.bronze.name=Bronze Plate
 item.plate.magnesium.name=Magnesium Plate
 
-item.mortar.name=Mortar and Pestle
-
 # Machine parts
 item.igniter.name=Ignition Powder
 item.grinding_head.name=Grinding Head
@@ -151,8 +149,6 @@ tile.fibre_torch_lit.name=Lit Fibre Torch
 tile.fibre_torch_unlit.name=Unlit Fibre Torch
 tile.fibre_torch_unlit.tooltip=Light on a fire pit or with another torch
 
-tile.clay_bowl.unhardened.name=Unhardened Clay Bowl
-tile.clay_bowl.hardened.name=Clay Bowl
 tile.clay_bucket.unhardened.name=Unhardened Clay Bucket
 tile.clay_bucket.hardened.name=Clay Bucket
 item.clay_bucket_item.name=Clay Bucket of %s

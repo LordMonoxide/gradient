@@ -48,19 +48,19 @@ public final class ExtraRecipes {
   }
 
   private static void registerDusts(final IForgeRegistry<IRecipe> registry) {
-    final Ingredient mortar = Ingredient.fromStacks(new ItemStack(GradientItems.MORTAR, 1, OreDictionary.WILDCARD_VALUE));
-
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       if(metal.canMakeDustWithMortar) {
         final String recipeName = "recipe.dust." + metal.name;
 
         GradientMod.logger.info("Adding recipe {}", recipeName);
 
-        registry.register(new AgeGatedShapelessToolRecipe(
+        registry.register(new GrindingRecipe(
             GradientMod.MODID,
             Age.AGE3,
+            3,
+            60,
             Dust.getDust(metal, 1),
-            NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), mortar)
+            NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)))
         ).setRegistryName(GradientMod.resource(recipeName)));
       }
     }

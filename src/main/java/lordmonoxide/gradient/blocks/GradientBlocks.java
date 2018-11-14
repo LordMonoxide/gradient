@@ -11,7 +11,6 @@ import lordmonoxide.gradient.blocks.bronzegrinder.BlockBronzeGrinder;
 import lordmonoxide.gradient.blocks.bronzegrinder.TileBronzeGrinder;
 import lordmonoxide.gradient.blocks.bronzeoven.BlockBronzeOven;
 import lordmonoxide.gradient.blocks.bronzeoven.TileBronzeOven;
-import lordmonoxide.gradient.blocks.claybowl.BlockClayBowl;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCastUnhardened;
@@ -63,7 +62,6 @@ public final class GradientBlocks {
   public static final BlockClayFurnace            CLAY_FURNACE             = new BlockClayFurnace();
   public static final BlockClayCrucible           CLAY_CRUCIBLE            = new BlockClayCrucible();
   public static final BlockClayCast               CLAY_CAST                = new BlockClayCast();
-  public static final BlockClayBowl               CLAY_BOWL                = new BlockClayBowl();
 
   public static final BlockBronzeMachineHull BRONZE_MACHINE_HULL = new BlockBronzeMachineHull();
   public static final BlockBronzeFurnace     BRONZE_FURNACE      = new BlockBronzeFurnace();
@@ -114,7 +112,6 @@ public final class GradientBlocks {
     registry.register(CLAY_FURNACE);
     registry.register(CLAY_CRUCIBLE);
     registry.register(CLAY_CAST);
-    registry.register(CLAY_BOWL);
 
     registry.register(BRONZE_MACHINE_HULL);
     registry.register(BRONZE_FURNACE);

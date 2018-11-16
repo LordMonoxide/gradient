@@ -1,9 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.blocks.mixingbasin.ContainerMixingBasin;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.client.util.RecipeItemHelper;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -14,8 +12,10 @@ import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,20 +56,16 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
   }
 
   @Override
+  @Deprecated
   public boolean matches(final InventoryCrafting inv, final World world) {
-    final Container container = RecipeHelper.getContainer(inv);
+    return false;
+  }
 
-    if(!(container instanceof ContainerMixingBasin)) {
+  public boolean matches(final IItemHandler inv, final Age age, @Nullable final FluidStack fluid, final int firstSlot, final int lastSlot) {
+    if(age.ordinal() < this.age.ordinal()) {
       return false;
     }
 
-    final ContainerMixingBasin mixingContainer = (ContainerMixingBasin)container;
-
-    if(mixingContainer.getPlayerAge().ordinal() < this.age.ordinal()) {
-      return false;
-    }
-
-    final FluidStack fluid = mixingContainer.getFluid();
     if(fluid == null || !fluid.containsFluid(this.fluid)) {
       return false;
     }
@@ -78,18 +74,16 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
     inputStacks.clear();
 
     int ingredientCount = 0;
-    for(int y = 0; y < inv.getHeight(); ++y) {
-      for(int x = 0; x < inv.getWidth(); ++x) {
-        final ItemStack itemstack = inv.getStackInRowAndColumn(x, y);
+    for(int slot = firstSlot; slot <= lastSlot; ++slot) {
+      final ItemStack itemstack = inv.getStackInSlot(slot);
 
-        if(!itemstack.isEmpty()) {
-          ++ingredientCount;
+      if(!itemstack.isEmpty()) {
+        ++ingredientCount;
 
-          if(this.isSimple) {
-            recipeItemHelper.accountStack(itemstack, 1);
-          } else {
-            inputStacks.add(itemstack);
-          }
+        if(this.isSimple) {
+          recipeItemHelper.accountStack(itemstack, 1);
+        } else {
+          inputStacks.add(itemstack);
         }
       }
     }

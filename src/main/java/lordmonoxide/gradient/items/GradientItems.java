@@ -16,7 +16,6 @@ import lordmonoxide.gradient.blocks.pebble.ItemPebble;
 import lordmonoxide.gradient.items.armour.GradientArmour;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
@@ -96,10 +95,6 @@ public final class GradientItems {
   public static final Salt SALT = new Salt();
   public static final Flour FLOUR = new Flour();
   public static final Dough DOUGH = new Dough();
-
-  public static final GradientItem FIREPIT_DISCRIMINATOR  = new GradientItem("firepit_discriminator", CreativeTabs.MISC);
-  public static final GradientItem GRINDING_DISCRIMINATOR = new GradientItem("grinding_discriminator", CreativeTabs.MISC);
-  public static final GradientItem MIXING_DISCRIMINATOR   = new GradientItem("mixing_discriminator", CreativeTabs.MISC);
 
   public static final ImmutableMap<GradientMetals.Metal, Nugget> NUGGET;
   public static final ImmutableMap<GradientMetals.Metal, Crushed> CRUSHED;
@@ -265,10 +260,6 @@ public final class GradientItems {
     registry.register(SALT);
     registry.register(FLOUR);
     registry.register(DOUGH);
-
-    registry.register(FIREPIT_DISCRIMINATOR);
-    registry.register(GRINDING_DISCRIMINATOR);
-    registry.register(MIXING_DISCRIMINATOR);
 
     registry.register(IGNITER);
 

@@ -1,5 +1,6 @@
 {
   "type": "gradient:firepit",
+  "age": 2,
   "ticks": 1800,
   "temperature": 200,
   "result": {

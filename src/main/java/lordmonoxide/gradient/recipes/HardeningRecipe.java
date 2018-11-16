@@ -15,7 +15,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+public class HardeningRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
@@ -27,7 +27,7 @@ public class GrindingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public GrindingRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
+  public HardeningRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
     this.group = group;
     this.age = age;
     this.passes = passes;

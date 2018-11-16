@@ -1,15 +1,11 @@
 package lordmonoxide.gradient.blocks.mixingbasin;
 
-import buildcraft.lib.misc.CraftingUtil;
-import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.MixingRecipe;
 import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -45,7 +41,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     @Override
     public int fill(final FluidStack resource, final boolean doFill) {
       final int filled = super.fill(resource, doFill);
-      TileMixingBasin.this.updateRecipe(TileMixingBasin.this.container.getPlayerAge());
+      TileMixingBasin.this.updateRecipe();
       TileMixingBasin.this.sync();
       return filled;
     }
@@ -53,7 +49,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     @Override
     public FluidStack drain(final FluidStack resource, final boolean doDrain) {
       final FluidStack drained = super.drain(resource, doDrain);
-      TileMixingBasin.this.updateRecipe(TileMixingBasin.this.container.getPlayerAge());
+      TileMixingBasin.this.updateRecipe();
       TileMixingBasin.this.sync();
       return drained;
     }
@@ -61,7 +57,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     @Override
     public FluidStack drain(final int maxDrain, final boolean doDrain) {
       final FluidStack drained = super.drain(maxDrain, doDrain);
-      TileMixingBasin.this.updateRecipe(TileMixingBasin.this.container.getPlayerAge());
+      TileMixingBasin.this.updateRecipe();
       TileMixingBasin.this.sync();
       return drained;
     }
@@ -70,18 +66,16 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   public static final int INPUT_SIZE = 5;
   private static final int OUTPUT_SLOT = INPUT_SIZE;
 
-  private final ContainerMixingBasin container = new ContainerMixingBasin();
-  private final InventoryCrafting crafting = new InventoryCrafting(this.container, INPUT_SIZE + 1, 1);
   private final ItemStackHandler inventory = new ItemStackHandler(INPUT_SIZE + 1);
 
   @Nullable
   private MixingRecipe recipe;
+  private Age age = Age.AGE1;
   private int passes;
   private int ticks;
 
   public TileMixingBasin() {
     this.tanks.addHandler(WATER, this.tank);
-    this.crafting.setInventorySlotContents(INPUT_SIZE, new ItemStack(GradientItems.MIXING_DISCRIMINATOR));
   }
 
   public boolean hasFluid() {
@@ -110,8 +104,9 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   }
 
   public ItemStack takeInput(final int slot, final EntityPlayer player) {
+    this.age = RecipeHelper.getPlayerAge(player);
     final ItemStack input = this.inventory.extractItem(slot, this.inventory.getSlotLimit(slot), false);
-    this.updateRecipe(RecipeHelper.getPlayerAge(player));
+    this.updateRecipe();
     this.sync();
     return input;
   }
@@ -140,10 +135,12 @@ public class TileMixingBasin extends TileEntity implements ITickable {
       return stack;
     }
 
+    this.age = RecipeHelper.getPlayerAge(player);
+
     final ItemStack input = stack.splitStack(1);
     this.inventory.setStackInSlot(slot, input);
 
-    this.updateRecipe(RecipeHelper.getPlayerAge(player));
+    this.updateRecipe();
     this.passes = 0;
 
     if(this.recipe != null) {
@@ -179,7 +176,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
         this.inventory.setStackInSlot(slot, ItemStack.EMPTY);
       }
 
-      this.inventory.setStackInSlot(INPUT_SIZE, this.recipe.getCraftingResult(this.crafting));
+      this.inventory.setStackInSlot(INPUT_SIZE, this.recipe.getRecipeOutput().copy());
       this.recipe = null;
 
       this.sync();
@@ -201,26 +198,8 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     }
   }
 
-  private void updateRecipe(final Age age) {
-    this.recipe = this.findRecipe(age);
-  }
-
-  @Nullable
-  private MixingRecipe findRecipe(final Age age) {
-    this.container.setPlayerAge(age);
-    this.container.setFluid(this.tank.getFluid());
-
-    for(int slot = 0; slot < INPUT_SIZE; slot++) {
-      this.crafting.setInventorySlotContents(slot, this.getInput(slot));
-    }
-
-    final IRecipe recipe = CraftingUtil.findMatchingRecipe(this.crafting, this.world);
-
-    if(!(recipe instanceof MixingRecipe)) {
-      return null;
-    }
-
-    return (MixingRecipe)recipe;
+  private void updateRecipe() {
+    this.recipe = RecipeHelper.findRecipe(MixingRecipe.class, recipe -> recipe.matches(this.inventory, this.age, this.tank.getFluid(), 0, INPUT_SIZE - 1));
   }
 
   @Override
@@ -229,7 +208,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     compound.setTag("tank", this.tank.writeToNBT(new NBTTagCompound()));
     compound.setInteger("passes", this.passes);
     compound.setInteger("ticks", this.ticks);
-    compound.setInteger("player_age", this.container.getPlayerAge().value());
+    compound.setInteger("player_age", this.age.value());
 
     return super.writeToNBT(compound);
   }
@@ -242,9 +221,9 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     this.tank.readFromNBT(compound.getCompoundTag("tank"));
     this.passes = compound.getInteger("passes");
     this.ticks = compound.getInteger("ticks");
-    this.container.setPlayerAge(Age.get(compound.getInteger("player_age")));
+    this.age = Age.get(compound.getInteger("player_age"));
 
-    this.updateRecipe(this.container.getPlayerAge());
+    this.updateRecipe();
 
     super.readFromNBT(compound);
   }

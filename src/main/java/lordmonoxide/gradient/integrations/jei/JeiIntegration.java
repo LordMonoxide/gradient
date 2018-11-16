@@ -10,7 +10,6 @@ import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeWrapper;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeWrapper;
-import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.recipes.AgeGatedShapedToolRecipe;
 import lordmonoxide.gradient.recipes.AgeGatedShapelessToolRecipe;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
@@ -49,9 +48,6 @@ public class JeiIntegration implements IModPlugin {
   @Override
   public void register(final IModRegistry registry) {
     final IIngredientBlacklist blacklist = registry.getJeiHelpers().getIngredientBlacklist();
-    blacklist.addIngredientToBlacklist(new ItemStack(GradientItems.FIREPIT_DISCRIMINATOR));
-    blacklist.addIngredientToBlacklist(new ItemStack(GradientItems.MIXING_DISCRIMINATOR));
-    blacklist.addIngredientToBlacklist(new ItemStack(GradientItems.GRINDING_DISCRIMINATOR));
 
     for(final Item item : ForgeRegistries.ITEMS.getValuesCollection()) {
       if(item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemSword) {

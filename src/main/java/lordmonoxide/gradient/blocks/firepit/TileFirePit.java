@@ -6,6 +6,7 @@ import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
+import lordmonoxide.gradient.recipes.HardeningRecipe;
 import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -187,7 +188,13 @@ public class TileFirePit extends HeatProducer {
       return;
     }
 
-    final Block block = this.getWorld().getBlockState(pos).getBlock();
+    final IBlockState state = this.getWorld().getBlockState(pos);
+
+    final HardeningRecipe recipe = RecipeHelper.findRecipe(HardeningRecipe.class, r -> r.matches(state, this.age));
+
+    //TODO: Do something with the recipe
+
+    final Block block = state.getBlock();
 
     if(!(block instanceof Hardenable)) {
       this.hardenables.remove(pos);

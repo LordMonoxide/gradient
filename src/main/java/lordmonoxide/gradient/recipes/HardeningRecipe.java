@@ -1,6 +1,8 @@
 package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.progress.Age;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -9,7 +11,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
@@ -21,16 +22,14 @@ public class HardeningRecipe extends IForgeRegistryEntry.Impl<IRecipe> implement
 
   private final String group;
   public final Age age;
-  public final int passes;
   public final int ticks;
   private final ItemStack output;
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public HardeningRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
+  public HardeningRecipe(final String group, final Age age, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
     this.group = group;
     this.age = age;
-    this.passes = passes;
     this.ticks = ticks;
     this.output = output;
     this.input = input;
@@ -54,37 +53,24 @@ public class HardeningRecipe extends IForgeRegistryEntry.Impl<IRecipe> implement
     return false;
   }
 
-  public boolean matches(final IItemHandler inv, final Age age, final int firstSlot, final int lastSlot) {
+  public boolean matches(final IBlockState state, final Age age) {
     if(age.ordinal() < this.age.ordinal()) {
       return false;
     }
 
+    final Block block = state.getBlock();
+    final ItemStack stack = new ItemStack(block, 1, block.damageDropped(state));
+    System.out.println(stack);
+
     recipeItemHelper.clear();
     inputStacks.clear();
 
-    int ingredientCount = 0;
-    for(int slot = firstSlot; slot <= lastSlot; ++slot) {
-      final ItemStack itemstack = inv.getStackInSlot(slot);
-
-      if(!itemstack.isEmpty()) {
-        ++ingredientCount;
-
-        if(this.isSimple) {
-          recipeItemHelper.accountStack(itemstack, 1);
-        } else {
-          inputStacks.add(itemstack);
-        }
-      }
-    }
-
-    if(ingredientCount != this.input.size()) {
-      return false;
-    }
-
     if(this.isSimple) {
+      recipeItemHelper.accountStack(stack, 1);
       return recipeItemHelper.canCraft(this, null);
     }
 
+    inputStacks.add(stack);
     return RecipeMatcher.findMatches(inputStacks, this.input) != null;
   }
 

@@ -1,0 +1,11 @@
+{
+  "type": "gradient:hardening",
+  "age": 2,
+  "ticks": 1800,
+  "result": {
+    "item": "gradient:clay_crucible"
+  },
+  "ingredients": [{
+    "item": "gradient:clay_crucible_unhardened"
+  }]
+}

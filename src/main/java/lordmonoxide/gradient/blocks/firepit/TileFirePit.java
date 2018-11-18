@@ -11,15 +11,19 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -56,8 +60,6 @@ public class TileFirePit extends HeatProducer {
   private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
 
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
-
-  private boolean firstTick = true;
 
   private int lastLight;
 
@@ -181,35 +183,35 @@ public class TileFirePit extends HeatProducer {
     this.sync();
   }
 
-  public void updateHardenable(final BlockPos pos) {
+  public void updateHardenable(final BlockPos pos, final Age age) {
     if(this.world.isRemote) {
       return;
     }
 
     final IBlockState state = this.getWorld().getBlockState(pos);
 
-    final HardeningRecipe recipe = RecipeHelper.findRecipe(HardeningRecipe.class, r -> r.matches(state, this.age));
+    final HardeningRecipe recipe = RecipeHelper.findRecipe(HardeningRecipe.class, r -> r.matches(state, age));
 
     if(recipe == null) {
       this.hardenables.remove(pos);
       return;
     }
 
-    this.hardenables.put(pos, new Hardening(recipe));
+    this.hardenables.put(pos, new Hardening(recipe, age));
   }
 
-  private void findSurroundingHardenables() {
+  public void updateSurroundingHardenables(final Age age) {
     final BlockPos north = this.pos.north();
     final BlockPos south = this.pos.south();
 
-    this.updateHardenable(north.east());
-    this.updateHardenable(north);
-    this.updateHardenable(north.west());
-    this.updateHardenable(this.pos.east());
-    this.updateHardenable(this.pos.west());
-    this.updateHardenable(south.east());
-    this.updateHardenable(south);
-    this.updateHardenable(south.west());
+    this.updateHardenable(north.east(), age);
+    this.updateHardenable(north, age);
+    this.updateHardenable(north.west(), age);
+    this.updateHardenable(this.pos.east(), age);
+    this.updateHardenable(this.pos.west(), age);
+    this.updateHardenable(south.east(), age);
+    this.updateHardenable(south, age);
+    this.updateHardenable(south.west(), age);
   }
 
   @Override
@@ -228,11 +230,6 @@ public class TileFirePit extends HeatProducer {
       this.generateParticles();
       this.playSounds();
     } else {
-      if(this.firstTick) {
-        this.findSurroundingHardenables();
-        this.firstTick = false;
-      }
-
       this.hardenHardenables();
     }
   }
@@ -270,6 +267,10 @@ public class TileFirePit extends HeatProducer {
   }
 
   private void hardenHardenables() {
+    if(this.hardenables.isEmpty()) {
+      return;
+    }
+
     final Iterator<Map.Entry<BlockPos, Hardening>> it = this.hardenables.entrySet().iterator();
 
     final Map<BlockPos, IBlockState> toAdd = new HashMap<>();
@@ -280,7 +281,7 @@ public class TileFirePit extends HeatProducer {
       final Hardening hardening = entry.getValue();
       final IBlockState current = this.getWorld().getBlockState(pos);
 
-      if(!hardening.recipe.matches(current, this.age)) {
+      if(!hardening.recipe.matches(current, hardening.age)) {
         it.remove();
         continue;
       }
@@ -292,6 +293,8 @@ public class TileFirePit extends HeatProducer {
         it.remove();
       }
     }
+
+    this.markDirty();
 
     for(final Map.Entry<BlockPos, IBlockState> entry : toAdd.entrySet()) {
       this.getWorld().setBlockState(entry.getKey(), entry.getValue());
@@ -421,6 +424,19 @@ public class TileFirePit extends HeatProducer {
     compound.setInteger("player_age", this.age.value());
     compound.setInteger("ticks", this.ticks);
 
+    final NBTTagList hardenings = new NBTTagList();
+    for(final Map.Entry<BlockPos, Hardening> entry : this.hardenables.entrySet()) {
+      final NBTTagCompound hardening = new NBTTagCompound();
+      hardening.setTag("pos", NBTUtil.createPosTag(entry.getKey()));
+      hardening.setString("recipe", entry.getValue().recipe.getRegistryName().toString());
+      hardening.setInteger("age", entry.getValue().age.value());
+      hardening.setInteger("ticks", entry.getValue().hardenTicks);
+
+      hardenings.appendTag(hardening);
+    }
+
+    compound.setTag("hardening", hardenings);
+
     return super.writeToNBT(compound);
   }
 
@@ -456,6 +472,22 @@ public class TileFirePit extends HeatProducer {
 
     this.ticks = compound.getInteger("ticks");
 
+    this.hardenables.clear();
+
+    for(final NBTBase tag : compound.getTagList("hardening", Constants.NBT.TAG_COMPOUND)) {
+      final NBTTagCompound hardeningNbt = (NBTTagCompound)tag;
+
+      final BlockPos pos = NBTUtil.getPosFromTag(hardeningNbt.getCompoundTag("pos"));
+      final HardeningRecipe recipe = (HardeningRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(hardeningNbt.getString("recipe")));
+      final Age age1 = Age.get(hardeningNbt.getInteger("age"));
+      final int ticks = hardeningNbt.getInteger("ticks");
+
+      final Hardening hardening = new Hardening(recipe, age1);
+      hardening.hardenTicks = ticks;
+
+      this.hardenables.put(pos, hardening);
+    }
+
     this.updateRecipe();
 
     super.readFromNBT(compound);
@@ -480,15 +512,16 @@ public class TileFirePit extends HeatProducer {
 
   public static final class Hardening {
     public final HardeningRecipe recipe;
+    public final Age age;
     private int hardenTicks;
 
-    private Hardening(final HardeningRecipe recipe) {
+    private Hardening(final HardeningRecipe recipe, final Age age) {
       this.recipe = recipe;
+      this.age = age;
     }
 
-    public Hardening tick() {
+    private void tick() {
       this.hardenTicks++;
-      return this;
     }
 
     public boolean isHardened() {

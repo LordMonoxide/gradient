@@ -1,9 +1,12 @@
 package lordmonoxide.gradient.blocks.firepit;
 
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
 import lordmonoxide.gradient.items.FireStarter;
+import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
@@ -29,10 +32,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Random;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class BlockFirePit extends HeatSinkerBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
 
@@ -204,22 +211,43 @@ public class BlockFirePit extends HeatSinkerBlock {
     return true;
   }
 
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
-    super.neighborChanged(state, world, pos, block, neighbor);
+  private static final BlockPos.MutableBlockPos blockPlacedPos = new BlockPos.MutableBlockPos();
 
-    final TileEntity te = world.getTileEntity(pos);
+  @SubscribeEvent
+  public static void blockPlacedHandler(final BlockEvent.PlaceEvent event) {
+    final World world = event.getWorld();
+    final BlockPos pos = event.getPos();
+
+    final Age age = RecipeHelper.getPlayerAge(event.getPlayer());
+
+    blockPlacedPos.setPos(pos);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.EAST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.SOUTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.SOUTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.WEST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.WEST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
+  }
+
+  private static void updateFirePit(final World world, final BlockPos firePitPos, final BlockPos placedPos, final Age age) {
+    final TileEntity te = world.getTileEntity(firePitPos);
 
     if(te instanceof TileFirePit) {
-      ((TileFirePit)te).updateHardenable(neighbor);
+      ((TileFirePit)te).updateHardenable(placedPos, age);
     }
   }
 
   @Override
   public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
     world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+
+    final TileEntity te = world.getTileEntity(pos);
+
+    if(te instanceof TileFirePit) {
+      ((TileFirePit)te).updateSurroundingHardenables(RecipeHelper.getPlayerAge(placer));
+    }
   }
 
   @Override

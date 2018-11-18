@@ -71,8 +71,7 @@ public class BlockBronzeFurnace extends HeatSinkerBlock {
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    final EnumFacing facing = EnumFacing.byHorizontalIndex(meta & 0b11);
-    return this.getDefaultState().withProperty(FACING, facing);
+    return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
   }
 
   @Override

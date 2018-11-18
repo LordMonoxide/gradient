@@ -1,5 +1,5 @@
 {
-  "parent": "gradient:block/clay_crucible",
+  "parent": "gradient:block/clay_crucible.unhardened",
   "display": {
     "thirdperson": {
       "rotation": [ -90, 0, 0 ],

@@ -27,11 +27,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class BlockClayCrucible extends HeatSinkerBlock {
+public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
 
-  public BlockClayCrucible() {
-    super("clay_crucible", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
+  public BlockClayCrucibleHardened() {
+    super("clay_crucible.hardened", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }

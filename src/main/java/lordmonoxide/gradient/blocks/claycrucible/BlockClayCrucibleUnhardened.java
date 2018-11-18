@@ -13,7 +13,7 @@ public class BlockClayCrucibleUnhardened extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
 
   public BlockClayCrucibleUnhardened() {
-    super("clay_crucible_unhardened", CreativeTabs.TOOLS, Material.CLAY, MapColor.CLAY);
+    super("clay_crucible.unhardened", CreativeTabs.TOOLS, Material.CLAY, MapColor.CLAY);
     this.setResistance(2.0f);
     this.setHardness(1.0f);
   }

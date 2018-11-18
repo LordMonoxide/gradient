@@ -13,7 +13,7 @@ import lordmonoxide.gradient.blocks.bronzeoven.BlockBronzeOven;
 import lordmonoxide.gradient.blocks.bronzeoven.TileBronzeOven;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
-import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucible;
+import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleHardened;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.claycrucible.TileClayCrucible;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
@@ -59,7 +59,7 @@ public final class GradientBlocks {
   public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = new BlockClayCrucibleUnhardened();
-  public static final BlockClayCrucible           CLAY_CRUCIBLE_HARDENED   = new BlockClayCrucible();
+  public static final BlockClayCrucibleHardened   CLAY_CRUCIBLE_HARDENED   = new BlockClayCrucibleHardened();
   public static final BlockClayCast               CLAY_CAST_UNHARDENED     = BlockClayCast.unhardened();
   public static final BlockClayCast               CLAY_CAST_HARDENED       = BlockClayCast.hardened();
   public static final BlockClayBucket             CLAY_BUCKET_UNHARDENED   = BlockClayBucket.unhardened();

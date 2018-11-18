@@ -122,6 +122,14 @@ public class Waterskin extends ItemFluidContainer {
     };
   }
 
+  public ItemStack getFilled(final Fluid fluid) {
+    final NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setTag("Fluid", new FluidStack(fluid, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
+    final ItemStack filled = new ItemStack(this, 1, 1);
+    filled.setTagCompound(nbt);
+    return filled;
+  }
+
   @Override
   public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
     if(!this.isInCreativeTab(tab)) {
@@ -129,11 +137,6 @@ public class Waterskin extends ItemFluidContainer {
     }
 
     subItems.add(new ItemStack(this, 1, 0));
-
-    final NBTTagCompound nbt = new NBTTagCompound();
-    nbt.setTag("Fluid", new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
-    final ItemStack filled = new ItemStack(this, 1, 1);
-    filled.setTagCompound(nbt);
-    subItems.add(filled);
+    subItems.add(this.getFilled(FluidRegistry.WATER));
   }
 }

@@ -366,8 +366,13 @@ public final class GradientItems {
       OreDictionary.registerOre("ingredientFlour", new ItemStack(naturaMaterials, 1, 2)); // Wheat flour
     }
 
+    final ItemStack clayBucketWater = ItemClayBucket.getFilledBucket(FluidRegistry.WATER);
+
+    OreDictionary.registerOre("listAllwater", WATERSKIN.getFilled(FluidRegistry.WATER));
+    OreDictionary.registerOre("listAllwater", clayBucketWater);
+
     // Buckets
-    OreDictionary.registerOre("bucketWater", ItemClayBucket.getFilledBucket(FluidRegistry.WATER));
+    OreDictionary.registerOre("bucketWater", clayBucketWater);
     OreDictionary.registerOre("bucketLava",  ItemClayBucket.getFilledBucket(FluidRegistry.LAVA));
     OreDictionary.registerOre("bucketWater", FluidUtil.getFilledBucket(new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME)));
     OreDictionary.registerOre("bucketLava",  FluidUtil.getFilledBucket(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME)));

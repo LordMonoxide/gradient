@@ -23,23 +23,19 @@ public class HardeningRecipe extends IForgeRegistryEntry.Impl<IRecipe> implement
   private final String group;
   public final Age age;
   public final int ticks;
+  public final boolean copyMeta;
   private final ItemStack output;
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public HardeningRecipe(final String group, final Age age, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
+  public HardeningRecipe(final String group, final Age age, final int ticks, final boolean copyMeta, final ItemStack output, final Ingredient input) {
     this.group = group;
     this.age = age;
     this.ticks = ticks;
+    this.copyMeta = copyMeta;
     this.output = output;
-    this.input = input;
-
-    boolean isSimple = true;
-    for(final Ingredient ingredient : input) {
-      isSimple &= ingredient.isSimple();
-    }
-
-    this.isSimple = isSimple;
+    this.input = NonNullList.from(Ingredient.EMPTY, input);
+    this.isSimple = input.isSimple();
   }
 
   @Override
@@ -60,7 +56,6 @@ public class HardeningRecipe extends IForgeRegistryEntry.Impl<IRecipe> implement
 
     final Block block = state.getBlock();
     final ItemStack stack = new ItemStack(block, 1, block.damageDropped(state));
-    System.out.println(stack);
 
     recipeItemHelper.clear();
     inputStacks.clear();
@@ -75,8 +70,14 @@ public class HardeningRecipe extends IForgeRegistryEntry.Impl<IRecipe> implement
   }
 
   @Override
+  @Deprecated
   public ItemStack getCraftingResult(final InventoryCrafting inv) {
     return this.output.copy();
+  }
+
+  public IBlockState getCraftingResult(final IBlockState current) {
+    final int meta = this.copyMeta ? current.getBlock().getMetaFromState(current) : this.output.getMetadata();
+    return Block.getBlockFromItem(this.output.getItem()).getStateFromMeta(meta);
   }
 
   @Override

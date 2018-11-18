@@ -195,13 +195,13 @@ public final class GradientItems {
     final List<Block> registered = new ArrayList<>();
     registered.add(GradientBlocks.PEBBLE);
     registered.add(GradientBlocks.CLAY_CAST_UNHARDENED);
-    registered.add(GradientBlocks.CLAY_CAST);
+    registered.add(GradientBlocks.CLAY_CAST_HARDENED);
 
     final RegistrationHelper registry = new RegistrationHelper(event.getRegistry());
 
     registry.register(new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName()));
     registry.register(new ItemClayCastUnhardened(GradientBlocks.CLAY_CAST_UNHARDENED).setRegistryName(GradientBlocks.CLAY_CAST_UNHARDENED.getRegistryName()));
-    registry.register(new ItemClayCast(GradientBlocks.CLAY_CAST).setRegistryName(GradientBlocks.CLAY_CAST.getRegistryName()));
+    registry.register(new ItemClayCast(GradientBlocks.CLAY_CAST_HARDENED).setRegistryName(GradientBlocks.CLAY_CAST_HARDENED.getRegistryName()));
 
     for(final Block block : ForgeRegistries.BLOCKS.getValuesCollection()) {
       if(registered.contains(block) || block instanceof BlockMetalFluid || !block.getRegistryName().getNamespace().equals(GradientMod.MODID)) {

@@ -17,7 +17,7 @@ public class ItemClayCast extends ItemBlock {
   }
 
   public static ItemStack getCast(final GradientCasts.Cast cast, final int amount) {
-    return new ItemStack(Item.getItemFromBlock(GradientBlocks.CLAY_CAST), amount, cast.id);
+    return new ItemStack(Item.getItemFromBlock(GradientBlocks.CLAY_CAST_HARDENED), amount, cast.id);
   }
 
   public static ItemStack getCast(final GradientCasts.Cast cast) {

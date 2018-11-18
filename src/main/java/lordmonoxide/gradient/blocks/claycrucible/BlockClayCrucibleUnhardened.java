@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.blocks.claycrucible;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.heat.Hardenable;
+import lordmonoxide.gradient.blocks.GradientBlock;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -10,7 +9,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-public class BlockClayCrucibleUnhardened extends Hardenable {
+public class BlockClayCrucibleUnhardened extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
 
   public BlockClayCrucibleUnhardened() {
@@ -35,15 +34,5 @@ public class BlockClayCrucibleUnhardened extends Hardenable {
   @Deprecated
   public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
     return AABB;
-  }
-
-  @Override
-  public IBlockState getHardened(final IBlockState current) {
-    return GradientBlocks.CLAY_CRUCIBLE.getDefaultState();
-  }
-
-  @Override
-  public int getHardeningTime(final IBlockState current) {
-    return 180;
   }
 }

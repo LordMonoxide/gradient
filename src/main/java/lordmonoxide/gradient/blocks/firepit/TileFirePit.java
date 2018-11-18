@@ -2,13 +2,11 @@ package lordmonoxide.gradient.blocks.firepit;
 
 import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.heat.Hardenable;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
 import lordmonoxide.gradient.recipes.HardeningRecipe;
 import lordmonoxide.gradient.recipes.RecipeHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -28,9 +26,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 // With a single furnace, a crucible will heat up to 1038 degrees
 // Two furnaces, 1152
@@ -192,16 +190,12 @@ public class TileFirePit extends HeatProducer {
 
     final HardeningRecipe recipe = RecipeHelper.findRecipe(HardeningRecipe.class, r -> r.matches(state, this.age));
 
-    //TODO: Do something with the recipe
-
-    final Block block = state.getBlock();
-
-    if(!(block instanceof Hardenable)) {
+    if(recipe == null) {
       this.hardenables.remove(pos);
       return;
     }
 
-    this.hardenables.put(pos, new Hardening((Hardenable)block, pos));
+    this.hardenables.put(pos, new Hardening(recipe));
   }
 
   private void findSurroundingHardenables() {
@@ -276,16 +270,32 @@ public class TileFirePit extends HeatProducer {
   }
 
   private void hardenHardenables() {
-    if(this.hardenables.isEmpty()) {
-      return;
+    final Iterator<Map.Entry<BlockPos, Hardening>> it = this.hardenables.entrySet().iterator();
+
+    final Map<BlockPos, IBlockState> toAdd = new HashMap<>();
+
+    while(it.hasNext()) {
+      final Map.Entry<BlockPos, Hardening> entry = it.next();
+      final BlockPos pos = entry.getKey();
+      final Hardening hardening = entry.getValue();
+      final IBlockState current = this.getWorld().getBlockState(pos);
+
+      if(!hardening.recipe.matches(current, this.age)) {
+        it.remove();
+        continue;
+      }
+
+      hardening.tick();
+
+      if(hardening.isHardened()) {
+        toAdd.put(pos, hardening.recipe.getCraftingResult(current));
+        it.remove();
+      }
     }
 
-    this.hardenables.keySet().removeIf(pos -> !(this.getWorld().getBlockState(pos).getBlock() instanceof Hardenable) || ((Hardenable)this.getWorld().getBlockState(pos).getBlock()).isHardened(this.getWorld().getBlockState(pos)));
-    this.hardenables.values().stream()
-      .map(Hardening::tick)
-      .filter(Hardening::isHardened)
-      .collect(Collectors.toList()) // Gotta decouple here to avoid concurrent modification exceptions
-      .forEach(hardenable -> this.getWorld().setBlockState(hardenable.pos, hardenable.block.getHardened(this.getWorld().getBlockState(hardenable.pos))));
+    for(final Map.Entry<BlockPos, IBlockState> entry : toAdd.entrySet()) {
+      this.getWorld().setBlockState(entry.getKey(), entry.getValue());
+    }
   }
 
   private void updateLight() {
@@ -468,20 +478,12 @@ public class TileFirePit extends HeatProducer {
     return super.getCapability(capability, facing);
   }
 
-  public final class Hardening {
-    public final Hardenable block;
-    public final BlockPos pos;
-    private final int hardenTicksTotal;
+  public static final class Hardening {
+    public final HardeningRecipe recipe;
     private int hardenTicks;
 
-    private Hardening(final Hardenable block, final BlockPos pos) {
-      this(block, pos, block.getHardeningTime(TileFirePit.this.world.getBlockState(pos)) * 20);
-    }
-
-    private Hardening(final Hardenable block, final BlockPos pos, final int hardenTicksTotal) {
-      this.block = block;
-      this.pos = pos;
-      this.hardenTicksTotal = hardenTicksTotal;
+    private Hardening(final HardeningRecipe recipe) {
+      this.recipe = recipe;
     }
 
     public Hardening tick() {
@@ -490,7 +492,7 @@ public class TileFirePit extends HeatProducer {
     }
 
     public boolean isHardened() {
-      return this.hardenTicks >= this.hardenTicksTotal;
+      return this.hardenTicks >= this.recipe.ticks;
     }
   }
 }

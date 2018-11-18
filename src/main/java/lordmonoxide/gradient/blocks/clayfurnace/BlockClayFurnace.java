@@ -28,14 +28,11 @@ public class BlockClayFurnace extends GradientBlock implements ItemBlockProvider
     return new BlockClayFurnace(false);
   }
 
-  private final boolean hardened;
-
   protected BlockClayFurnace(final boolean hardened) {
     super("clay_furnace" + '.' + (hardened ? "hardened" : "unhardened"), CreativeTabs.TOOLS, hardened ? GradientBlocks.MATERIAL_CLAY_MACHINE : Material.CLAY);
-    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.SOUTH));
+    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     this.setResistance(hardened ? 5.0f : 2.0f);
     this.setHardness(1.0f);
-    this.hardened = hardened;
   }
 
   @Override
@@ -75,10 +72,5 @@ public class BlockClayFurnace extends GradientBlock implements ItemBlockProvider
   @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer(this, FACING);
-  }
-
-  @Override
-  public int damageDropped(final IBlockState state) {
-    return this.getMetaFromState(state.withProperty(FACING, EnumFacing.SOUTH));
   }
 }

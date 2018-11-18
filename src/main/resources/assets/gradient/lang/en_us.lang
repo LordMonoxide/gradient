@@ -228,6 +228,10 @@ jei.mixer.ticks=%d ticks
 jei.grinder.passes=%d grinds
 jei.grinder.ticks=%d ticks
 
+jei.hardening.name=Hardening
+jei.hardening.ticks=%d ticks
+jei.hardening.instructions=Place next to a firepit
+
 # Commands
 commands.setage.usage=/setage <age> [<player>]
 commands.setage.set=Your age is now %s

@@ -53,7 +53,7 @@ public class BlockClayCast extends GradientBlock {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         final String metalName = I18n.format("fluid." + metal.name);
         final int metalAmount = this.getStateFromMeta(stack.getMetadata()).getValue(CAST).amountForMetal(metal);
-        tooltip.add(I18n.format("tile.clay_cast.metal_amount", metalName, metalAmount));
+        tooltip.add(I18n.format("tile.clay_cast.hardened.metal_amount", metalName, metalAmount));
       }
     }
   }

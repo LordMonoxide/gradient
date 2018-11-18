@@ -114,8 +114,8 @@ public final class GradientBlocks {
     registry.register(CLAY_CRUCIBLE_HARDENED);
     registry.register(CLAY_CAST_UNHARDENED);
     registry.register(CLAY_CAST_HARDENED);
-    registry.register(CLAY_BUCKET_HARDENED);
     registry.register(CLAY_BUCKET_UNHARDENED);
+    registry.register(CLAY_BUCKET_HARDENED);
 
     registry.register(BRONZE_MACHINE_HULL);
     registry.register(BRONZE_FURNACE);

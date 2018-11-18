@@ -3,6 +3,7 @@ package lordmonoxide.gradient.recipes;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.PlayerProgress;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
@@ -54,7 +55,7 @@ public final class RecipeHelper {
     }
   }
 
-  public static Age getPlayerAge(final EntityPlayer player) {
+  public static Age getPlayerAge(final EntityLivingBase player) {
     final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
 
     if(progress != null) {
@@ -64,7 +65,7 @@ public final class RecipeHelper {
     return Age.highest();
   }
 
-  public static boolean playerMeetsAgeRequirement(final EntityPlayer player, final Age age) {
+  public static boolean playerMeetsAgeRequirement(final EntityLivingBase player, final Age age) {
     final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
 
     if(progress != null) {

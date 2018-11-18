@@ -24,10 +24,10 @@ public class MixingRecipeWrapper implements IRecipeWrapper {
 
     final String age = I18n.format("jei.age." + this.recipe.age.value());
     final String requirement = I18n.format("jei.requirement.age", age);
-    font.drawString(requirement, 9, 8, 0x404040);
+    font.drawString(requirement, 4, 8, 0x404040);
 
-    font.drawString(I18n.format("jei.mixer.passes", this.recipe.passes), 9, 46, 0x404040);
-    font.drawString(I18n.format("jei.mixer.ticks", this.recipe.ticks), 9, 60, 0x404040);
+    font.drawString(I18n.format("jei.mixer.passes", this.recipe.passes), 4, 46, 0x404040);
+    font.drawString(I18n.format("jei.mixer.ticks", this.recipe.ticks), 4, 60, 0x404040);
   }
 
   @Override

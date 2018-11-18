@@ -30,11 +30,11 @@ public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipeWrapper>
     final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
 
     for(int slot = 0; slot < TileMixingBasin.INPUT_SIZE; slot++) {
-      guiItemStacks.init(slot, true, 8 + slot * 20, 25);
+      guiItemStacks.init(slot, true, 3 + slot * 20, 25);
       guiItemStacks.set(slot, inputs.get(slot));
     }
 
-    guiItemStacks.init(TileMixingBasin.INPUT_SIZE + 1, true, 86, 25);
+    guiItemStacks.init(TileMixingBasin.INPUT_SIZE + 1, true, 121, 25);
     guiItemStacks.set(TileMixingBasin.INPUT_SIZE + 1, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
   }
 }

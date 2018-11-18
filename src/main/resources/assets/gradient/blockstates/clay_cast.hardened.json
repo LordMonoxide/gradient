@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cast=pickaxe": { "model": "gradient:clay_cast.hardened.pickaxe" },
+    "cast=mattock": { "model": "gradient:clay_cast.hardened.mattock" },
+    "cast=sword":   { "model": "gradient:clay_cast.hardened.sword" },
+    "cast=hammer":  { "model": "gradient:clay_cast.hardened.hammer" },
+    "cast=ingot":   { "model": "gradient:clay_cast.hardened.ingot" },
+    "cast=block":   { "model": "gradient:clay_cast.hardened.block" }
+  }
+}

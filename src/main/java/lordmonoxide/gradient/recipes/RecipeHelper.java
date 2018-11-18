@@ -9,10 +9,13 @@ import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.function.Predicate;
 
 public final class RecipeHelper {
   private RecipeHelper() { }
@@ -21,9 +24,11 @@ public final class RecipeHelper {
   private static final Field containerPlayerPlayerField = ReflectionHelper.findField(ContainerPlayer.class, "player", "field_82862_h");
   private static final Field slotCraftingPlayerField = ReflectionHelper.findField(SlotCrafting.class, "player", "field_75238_b");
 
-  public static Container getContainer(final InventoryCrafting inv) {
+  @Nullable
+  public static <T extends Container> T getContainer(final InventoryCrafting inv, final Class<T> containerClass) {
     try {
-      return (Container)eventHandlerField.get(inv);
+      final Object container = eventHandlerField.get(inv);
+      return containerClass.isInstance(container) ? containerClass.cast(eventHandlerField.get(inv)) : null;
     } catch(final IllegalAccessException e) {
       throw new RuntimeException(e);
     }
@@ -32,7 +37,8 @@ public final class RecipeHelper {
   @Nullable
   public static EntityPlayer findPlayerFromInv(final InventoryCrafting inv) {
     try {
-      final Container container = getContainer(inv);
+      final Container container = getContainer(inv, Container.class);
+
       if(container instanceof ContainerPlayer) {
         return (EntityPlayer)containerPlayerPlayerField.get(container);
       }
@@ -76,5 +82,20 @@ public final class RecipeHelper {
     }
 
     return true;
+  }
+
+  @Nullable
+  public static <T extends IRecipe> T findRecipe(final Class<T> recipeClass, final Predicate<T> match) {
+    for(final IRecipe recipe : ForgeRegistries.RECIPES.getValuesCollection()) {
+      if(recipeClass.isInstance(recipe)) {
+        final T cast = recipeClass.cast(recipe);
+
+        if(match.test(cast)) {
+          return recipeClass.cast(recipe);
+        }
+      }
+    }
+
+    return null;
   }
 }

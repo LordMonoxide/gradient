@@ -1,9 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.blocks.firepit.ContainerFirePit;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.client.util.RecipeItemHelper;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -11,6 +9,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
@@ -50,14 +49,13 @@ public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
   }
 
   @Override
+  @Deprecated
   public boolean matches(final InventoryCrafting inv, final World world) {
-    final Container container = RecipeHelper.getContainer(inv);
+    return false;
+  }
 
-    if(!(container instanceof ContainerFirePit)) {
-      return false;
-    }
-
-    if(((ContainerFirePit)container).getPlayerAge().ordinal() < this.age.ordinal()) {
+  public boolean matches(final IItemHandler inv, final Age age, final int firstSlot, final int lastSlot) {
+    if(age.ordinal() < this.age.ordinal()) {
       return false;
     }
 
@@ -65,18 +63,16 @@ public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
     inputStacks.clear();
 
     int ingredientCount = 0;
-    for(int y = 0; y < inv.getHeight(); ++y) {
-      for(int x = 0; x < inv.getWidth(); ++x) {
-        final ItemStack itemstack = inv.getStackInRowAndColumn(x, y);
+    for(int slot = firstSlot; slot <= lastSlot; ++slot) {
+      final ItemStack itemstack = inv.getStackInSlot(slot);
 
-        if(!itemstack.isEmpty()) {
-          ++ingredientCount;
+      if(!itemstack.isEmpty()) {
+        ++ingredientCount;
 
-          if(this.isSimple) {
-            recipeItemHelper.accountStack(itemstack, 1);
-          } else {
-            inputStacks.add(itemstack);
-          }
+        if(this.isSimple) {
+          recipeItemHelper.accountStack(itemstack, 1);
+        } else {
+          inputStacks.add(itemstack);
         }
       }
     }

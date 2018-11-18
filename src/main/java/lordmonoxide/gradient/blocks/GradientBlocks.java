@@ -13,9 +13,9 @@ import lordmonoxide.gradient.blocks.bronzeoven.BlockBronzeOven;
 import lordmonoxide.gradient.blocks.bronzeoven.TileBronzeOven;
 import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
-import lordmonoxide.gradient.blocks.claycast.BlockClayCastUnhardened;
-import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucible;
+import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleHardened;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
+import lordmonoxide.gradient.blocks.claycrucible.TileClayCrucible;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
@@ -56,12 +56,14 @@ public final class GradientBlocks {
   public static final BlockManualGrinder MANUAL_GRINDER = new BlockManualGrinder();
   public static final BlockMixingBasin   MIXING_BASIN   = new BlockMixingBasin();
 
+  public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
+  public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = new BlockClayCrucibleUnhardened();
-  public static final BlockClayCastUnhardened     CLAY_CAST_UNHARDENED     = new BlockClayCastUnhardened();
-  public static final BlockClayBucket             CLAY_BUCKET              = new BlockClayBucket();
-  public static final BlockClayFurnace            CLAY_FURNACE             = new BlockClayFurnace();
-  public static final BlockClayCrucible           CLAY_CRUCIBLE            = new BlockClayCrucible();
-  public static final BlockClayCast               CLAY_CAST                = new BlockClayCast();
+  public static final BlockClayCrucibleHardened   CLAY_CRUCIBLE_HARDENED   = new BlockClayCrucibleHardened();
+  public static final BlockClayCast               CLAY_CAST_UNHARDENED     = BlockClayCast.unhardened();
+  public static final BlockClayCast               CLAY_CAST_HARDENED       = BlockClayCast.hardened();
+  public static final BlockClayBucket             CLAY_BUCKET_UNHARDENED   = BlockClayBucket.unhardened();
+  public static final BlockClayBucket             CLAY_BUCKET_HARDENED     = BlockClayBucket.hardened();
 
   public static final BlockBronzeMachineHull BRONZE_MACHINE_HULL = new BlockBronzeMachineHull();
   public static final BlockBronzeFurnace     BRONZE_FURNACE      = new BlockBronzeFurnace();
@@ -106,12 +108,14 @@ public final class GradientBlocks {
     registry.register(MANUAL_GRINDER);
     registry.register(MIXING_BASIN);
 
+    registry.register(CLAY_FURNACE_UNHARDENED);
+    registry.register(CLAY_FURNACE_HARDENED);
     registry.register(CLAY_CRUCIBLE_UNHARDENED);
+    registry.register(CLAY_CRUCIBLE_HARDENED);
     registry.register(CLAY_CAST_UNHARDENED);
-    registry.register(CLAY_BUCKET);
-    registry.register(CLAY_FURNACE);
-    registry.register(CLAY_CRUCIBLE);
-    registry.register(CLAY_CAST);
+    registry.register(CLAY_CAST_HARDENED);
+    registry.register(CLAY_BUCKET_UNHARDENED);
+    registry.register(CLAY_BUCKET_HARDENED);
 
     registry.register(BRONZE_MACHINE_HULL);
     registry.register(BRONZE_FURNACE);
@@ -128,6 +132,8 @@ public final class GradientBlocks {
     GameRegistry.registerTileEntity(TileFirePit.class,       FIRE_PIT.getRegistryName());
     GameRegistry.registerTileEntity(TileManualGrinder.class, MANUAL_GRINDER.getRegistryName());
     GameRegistry.registerTileEntity(TileMixingBasin.class,   MIXING_BASIN.getRegistryName());
+
+    GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
 
     GameRegistry.registerTileEntity(TileBronzeFurnace.class, BRONZE_FURNACE.getRegistryName());
     GameRegistry.registerTileEntity(TileBronzeBoiler.class,  BRONZE_BOILER.getRegistryName());

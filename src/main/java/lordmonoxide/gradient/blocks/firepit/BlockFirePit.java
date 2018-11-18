@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.blocks.firepit;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
 import lordmonoxide.gradient.items.FireStarter;
@@ -63,8 +62,7 @@ public class BlockFirePit extends HeatSinkerBlock {
     super.getDrops(drops, world, pos, state, fortune);
 
     if(state.getValue(HAS_FURNACE)) {
-      final Block furnace = GradientBlocks.CLAY_FURNACE;
-      drops.add(new ItemStack(furnace, 1, furnace.getMetaFromState(furnace.getDefaultState().withProperty(BlockClayFurnace.HARDENED, true))));
+      drops.add(new ItemStack(GradientBlocks.CLAY_FURNACE_HARDENED));
     }
   }
 
@@ -137,19 +135,15 @@ public class BlockFirePit extends HeatSinkerBlock {
           }
         }
 
-        if(held.getItem() instanceof ItemBlock && ((ItemBlock)held.getItem()).getBlock() instanceof BlockTorchUnlit) {
+        if(Block.getBlockFromItem(held.getItem()) instanceof BlockTorchUnlit) {
           if(firepit.isBurning()) {
             player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)held.getItem()).getBlock()).lit, held.getCount()));
             return true;
           }
         }
 
-        if(held.getItem() instanceof ItemBlock && ((ItemBlock)held.getItem()).getBlock() instanceof BlockClayFurnace) {
+        if(Block.getBlockFromItem(held.getItem()) == GradientBlocks.CLAY_FURNACE_HARDENED) {
           if(!state.getValue(HAS_FURNACE)) {
-            if(!GradientBlocks.CLAY_FURNACE.getStateFromMeta(held.getMetadata()).getValue(BlockClayFurnace.HARDENED)) {
-              return false;
-            }
-
             world.setBlockState(pos, state.withProperty(HAS_FURNACE, true));
 
             // Changing the blockstate replaces the tile entity... swap it

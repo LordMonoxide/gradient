@@ -3,7 +3,6 @@ package lordmonoxide.gradient.recipes;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -30,8 +29,6 @@ public class MixingRecipeFactory implements IRecipeFactory {
     if(ingredients.isEmpty()) {
       throw new JsonParseException("No ingredients for mixing recipe");
     }
-
-    ingredients.add(Ingredient.fromItem(GradientItems.MIXING_DISCRIMINATOR));
 
     final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
 

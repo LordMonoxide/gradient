@@ -40,10 +40,6 @@ public final class ModelManager {
   public static void registerModels(final ModelRegistryEvent event) {
     GradientMod.logger.info("Registering models");
 
-    registerItemModel(GradientItems.FIREPIT_DISCRIMINATOR, "minecraft:nether_star");
-    registerItemModel(GradientItems.GRINDING_DISCRIMINATOR, "minecraft:nether_star");
-    registerItemModel(GradientItems.MIXING_DISCRIMINATOR, "minecraft:nether_star");
-
     registerFluidModels();
     registerBlockModels();
     registerItemModels();

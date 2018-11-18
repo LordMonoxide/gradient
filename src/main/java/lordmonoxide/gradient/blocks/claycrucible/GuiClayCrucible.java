@@ -49,7 +49,7 @@ public class GuiClayCrucible extends GradientGuiContainer {
       }
     }
 
-    final String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE.getTranslationKey() + ".name");
+    final String name = I18n.format(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getTranslationKey() + ".name");
     final String heat = I18n.format(GradientBlocks.FIRE_PIT.getTranslationKey() + ".heat", (int)this.te.getHeat());
 
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);

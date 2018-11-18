@@ -61,7 +61,7 @@ public final class RecipeHelper {
       return progress.getAge();
     }
 
-    return Age.highest();
+    return Age.AGE1;
   }
 
   public static boolean playerMeetsAgeRequirement(final EntityPlayer player, final Age age) {

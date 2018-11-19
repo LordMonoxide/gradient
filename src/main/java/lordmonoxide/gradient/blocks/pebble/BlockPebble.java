@@ -1,10 +1,12 @@
 package lordmonoxide.gradient.blocks.pebble;
 
 import lordmonoxide.gradient.blocks.GradientBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -86,9 +88,17 @@ public class BlockPebble extends GradientBlock {
         down.getMaterial() == Material.PACKED_ICE ||
         down.getMaterial() == Material.ROCK ||
         down.getMaterial() == Material.SAND
-      ) && (
-        down.isFullBlock()
-      )
+      ) && down.isFullBlock()
     ;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos fromPos) {
+    if(world.isAirBlock(pos.down())) {
+      this.dropBlockAsItem(world, pos, state, 0);
+      world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+    }
   }
 }

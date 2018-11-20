@@ -17,8 +17,7 @@
       "ore": "string"
     },
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "item": "gradient:hardened_stick"
     }
   }
 }

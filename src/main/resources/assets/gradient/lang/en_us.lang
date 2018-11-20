@@ -150,6 +150,10 @@ tile.fibre_torch_lit.name=Lit Fibre Torch
 tile.fibre_torch_unlit.name=Unlit Fibre Torch
 tile.fibre_torch_unlit.tooltip=Light on a fire pit or with another torch
 
+tile.hardened_log.name=Hardened Log
+tile.hardened_planks.name=Hardened Planks
+item.hardened_stick.name=Hardened Stick
+
 tile.clay_bucket.unhardened.name=Unhardened Clay Bucket
 tile.clay_bucket.hardened.name=Clay Bucket
 item.clay_bucket_item.name=Clay Bucket of %s

@@ -56,6 +56,9 @@ public final class GradientBlocks {
   public static final BlockManualGrinder MANUAL_GRINDER = new BlockManualGrinder();
   public static final BlockMixingBasin   MIXING_BASIN   = new BlockMixingBasin();
 
+  public static final BlockHardenedLog HARDENED_LOG = new BlockHardenedLog();
+  public static final BlockHardenedPlanks HARDENED_PLANKS = new BlockHardenedPlanks();
+
   public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = new BlockClayCrucibleUnhardened();
@@ -107,6 +110,9 @@ public final class GradientBlocks {
 
     registry.register(MANUAL_GRINDER);
     registry.register(MIXING_BASIN);
+
+    registry.register(HARDENED_LOG);
+    registry.register(HARDENED_PLANKS);
 
     registry.register(CLAY_FURNACE_UNHARDENED);
     registry.register(CLAY_FURNACE_HARDENED);

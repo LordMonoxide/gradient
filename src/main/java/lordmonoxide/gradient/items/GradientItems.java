@@ -16,6 +16,7 @@ import lordmonoxide.gradient.blocks.pebble.ItemPebble;
 import lordmonoxide.gradient.items.armour.GradientArmour;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
@@ -88,6 +89,8 @@ public final class GradientItems {
 
   public static final NuggetCoal NUGGET_COAL = new NuggetCoal();
   public static final DustFlint  DUST_FLINT  = new DustFlint();
+
+  public static final GradientItem HARDENED_STICK = new GradientItem("hardened_stick", CreativeTabs.MATERIALS);
 
   public static final ItemClayBucket CLAY_BUCKET = new ItemClayBucket();
 
@@ -254,6 +257,8 @@ public final class GradientItems {
     registry.register(NUGGET_COAL);
     registry.register(DUST_FLINT);
 
+    registry.register(HARDENED_STICK);
+
     registry.register(CLAY_BUCKET);
 
     registry.register(SUGARCANE_PASTE);
@@ -355,8 +360,8 @@ public final class GradientItems {
     OreDictionary.registerOre("dustFlint", DUST_FLINT);
 
     // Crops/food
-    OreDictionary.registerOre("ingredientFlour", GradientItems.FLOUR);
-    OreDictionary.registerOre("ingredientSalt", GradientItems.SALT);
+    OreDictionary.registerOre("ingredientFlour", FLOUR);
+    OreDictionary.registerOre("ingredientSalt", SALT);
     OreDictionary.registerOre("ingredientSugar", Items.SUGAR);
 
     final Item naturaMaterials = Item.getByNameOrId("natura:materials");
@@ -382,6 +387,10 @@ public final class GradientItems {
       OreDictionary.registerOre(name, ItemClayBucket.getFilledBucket(fluid));
       OreDictionary.registerOre(name, FluidUtil.getFilledBucket(new FluidStack(fluid, Fluid.BUCKET_VOLUME)));
     }
+
+    OreDictionary.registerOre("logWood", GradientBlocks.HARDENED_LOG);
+    OreDictionary.registerOre("plankWood", GradientBlocks.HARDENED_PLANKS);
+    OreDictionary.registerOre("stickWood", HARDENED_STICK);
 
     Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);
     Blocks.SPRUCE_STAIRS.setHarvestLevel("axe", 0);

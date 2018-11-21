@@ -13,6 +13,8 @@ public class BlockHardenedLog extends BlockRotatedPillar {
     this.setTranslationKey("hardened_log");
     this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, EnumFacing.Axis.Y));
+    this.setHarvestLevel("axe", 0);
+    this.setHardness(2.0f);
   }
 
   @Override

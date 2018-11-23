@@ -61,12 +61,12 @@ public final class GradientItems {
   public static final Fibre FIBRE = new Fibre();
   public static final Twine TWINE = new Twine();
 
-  public static final GradientItem BARK_OAK      = new GradientItem("bark_oak");
-  public static final GradientItem BARK_SPRUCE   = new GradientItem("bark_spruce");
-  public static final GradientItem BARK_BIRCH    = new GradientItem("bark_birch");
-  public static final GradientItem BARK_JUNGLE   = new GradientItem("bark_jungle");
-  public static final GradientItem BARK_ACACIA   = new GradientItem("bark_acacia");
-  public static final GradientItem BARK_DARK_OAK = new GradientItem("bark_dark_oak");
+  public static final GradientItem BARK_OAK      = new GradientItem("bark_oak", CreativeTabs.MATERIALS);
+  public static final GradientItem BARK_SPRUCE   = new GradientItem("bark_spruce", CreativeTabs.MATERIALS);
+  public static final GradientItem BARK_BIRCH    = new GradientItem("bark_birch", CreativeTabs.MATERIALS);
+  public static final GradientItem BARK_JUNGLE   = new GradientItem("bark_jungle", CreativeTabs.MATERIALS);
+  public static final GradientItem BARK_ACACIA   = new GradientItem("bark_acacia", CreativeTabs.MATERIALS);
+  public static final GradientItem BARK_DARK_OAK = new GradientItem("bark_dark_oak", CreativeTabs.MATERIALS);
 
   public static final Mulch MULCH = new Mulch();
 
@@ -80,6 +80,11 @@ public final class GradientItems {
   public static final Hide HIDE_POLAR_BEAR = new Hide("hide_polar_bear");
   public static final Hide HIDE_SHEEP      = new Hide("hide_sheep");
   public static final Hide HIDE_WOLF       = new Hide("hide_wolf");
+
+  public static final GradientItem HIDE_RAW       = new GradientItem("hide_raw", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_SALTED    = new GradientItem("hide_salted", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_PRESERVED = new GradientItem("hide_preserved", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_TANNED    = new GradientItem("hide_tanned", CreativeTabs.MATERIALS);
 
   public static final GradientArmour HIDE_BOOTS     = new GradientArmour("hide_boots", MATERIAL_HIDE, 0, EntityEquipmentSlot.FEET);
   public static final GradientArmour HIDE_PANTS     = new GradientArmour("hide_pants", MATERIAL_HIDE, 0, EntityEquipmentSlot.LEGS);
@@ -264,6 +269,11 @@ public final class GradientItems {
     registry.register(HIDE_SHEEP);
     registry.register(HIDE_WOLF);
 
+    registry.register(HIDE_RAW);
+    registry.register(HIDE_SALTED);
+    registry.register(HIDE_PRESERVED);
+    registry.register(HIDE_TANNED);
+
     registry.register(HIDE_BOOTS);
     registry.register(HIDE_PANTS);
     registry.register(HIDE_SHIRT);
@@ -350,6 +360,7 @@ public final class GradientItems {
     OreDictionary.registerOre("toolAxe", STONE_HATCHET.getWildcardItemStack());
     OreDictionary.registerOre("toolAxe", STONE_MATTOCK.getWildcardItemStack());
     OreDictionary.registerOre("toolHoe", STONE_MATTOCK.getWildcardItemStack());
+    OreDictionary.registerOre("toolKnife", FLINT_KNIFE.getWildcardItemStack());
 
     // Metals/metal tools
     OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);

@@ -17,6 +17,8 @@ import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleHardened;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.claycrucible.TileClayCrucible;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
+import lordmonoxide.gradient.blocks.dryingrack.BlockDryingRack;
+import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
 import lordmonoxide.gradient.blocks.manualgrinder.BlockManualGrinder;
@@ -63,6 +65,8 @@ public final class GradientBlocks {
 
   public static final BlockManualGrinder MANUAL_GRINDER = new BlockManualGrinder();
   public static final BlockMixingBasin   MIXING_BASIN   = new BlockMixingBasin();
+
+  public static final BlockDryingRack DRYING_RACK = new BlockDryingRack();
 
   public static final BlockLog            HARDENED_LOG    = new BlockLog("hardened_log");
   public static final BlockHardenedPlanks HARDENED_PLANKS = new BlockHardenedPlanks();
@@ -126,6 +130,8 @@ public final class GradientBlocks {
     registry.register(MANUAL_GRINDER);
     registry.register(MIXING_BASIN);
 
+    registry.register(DRYING_RACK);
+
     registry.register(HARDENED_LOG);
     registry.register(HARDENED_PLANKS);
 
@@ -153,6 +159,8 @@ public final class GradientBlocks {
     GameRegistry.registerTileEntity(TileFirePit.class,       FIRE_PIT.getRegistryName());
     GameRegistry.registerTileEntity(TileManualGrinder.class, MANUAL_GRINDER.getRegistryName());
     GameRegistry.registerTileEntity(TileMixingBasin.class,   MIXING_BASIN.getRegistryName());
+
+    GameRegistry.registerTileEntity(TileDryingRack.class, DRYING_RACK.getRegistryName());
 
     GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
 

@@ -1,0 +1,14 @@
+{
+  "type": "gradient:age_gated_shapeless",
+  "age": 2,
+  "result": {
+    "item": "gradient:hide_raw"
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "hide"
+  }, {
+    "type": "gradient:ore",
+    "ore": "toolKnife"
+  }]
+}

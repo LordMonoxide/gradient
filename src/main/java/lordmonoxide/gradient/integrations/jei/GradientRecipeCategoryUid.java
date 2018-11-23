@@ -8,4 +8,5 @@ public final class GradientRecipeCategoryUid {
   public static final String MIXING = "gradient.mixing";
   public static final String GRINDING = "gradient.grinding";
   public static final String HARDENING = "gradient.hardening";
+  public static final String DRYING = "gradient.drying";
 }

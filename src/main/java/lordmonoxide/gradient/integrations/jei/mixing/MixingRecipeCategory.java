@@ -29,7 +29,7 @@ public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipeWrapper>
     final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
     final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
 
-    for(int slot = 0; slot < TileMixingBasin.INPUT_SIZE; slot++) {
+    for(int slot = 0; slot < Math.min(TileMixingBasin.INPUT_SIZE, inputs.size()); slot++) {
       guiItemStacks.init(slot, true, 3 + slot * 20, 25);
       guiItemStacks.set(slot, inputs.get(slot));
     }

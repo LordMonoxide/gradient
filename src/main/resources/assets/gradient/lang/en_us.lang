@@ -19,6 +19,11 @@ item.hide_polar_bear.name=Polar Bear Hide
 item.hide_sheep.name=Sheep Hide
 item.hide_wolf.name=Wolf Hide
 
+item.hide_raw.name=Raw Hide
+item.hide_salted.name=Salted Hide
+item.hide_preserved.name=Preserved Hide
+item.hide_tanned.name=Tanned Hide
+
 item.hide_boots.name=Hide Boots
 item.hide_pants.name=Hide Pants
 item.hide_shirt.name=Hide Shirt
@@ -189,6 +194,7 @@ tile.clay_cast.hardened.block.name=Clay Cast (Block)
 
 tile.manual_grinder.name=Grindstone
 tile.mixing_basin.name=Mixing Basin
+tile.drying_rack.name=Drying Rack
 
 tile.bronze_machine_hull.name=Bronze Machine Hull
 tile.bronze_furnace.name=Bronze Furnace

@@ -1,0 +1,15 @@
+{
+  "type": "gradient:age_gated_shapeless",
+  "age": 2,
+  "result": {
+    "item": "minecraft:planks",
+    "data": 2,
+    "count": 2
+  },
+  "ingredients": [{
+    "item": "minecraft:stripped_birch_wood"
+  }, {
+    "type": "gradient:ore",
+    "ore": "toolAxe"
+  }]
+}

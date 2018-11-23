@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "inventory": { "model": "stripped_spruce" },
+    "axis=y":    { "model": "stripped_spruce" },
+    "axis=z":    { "model": "stripped_spruce", "x": 90 },
+    "axis=x":    { "model": "stripped_spruce", "x": 90, "y": 90 },
+    "axis=none": { "model": "stripped_spruce" }
+  }
+}

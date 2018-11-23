@@ -1,0 +1,13 @@
+{
+  "type": "gradient:grinding",
+  "age": 2,
+  "passes": 5,
+  "ticks": 20,
+  "result": {
+    "item": "gradient:mulch"
+  },
+  "ingredients": [{
+    "type": "forge:ore_dict",
+    "ore": "barkWood"
+  }]
+}

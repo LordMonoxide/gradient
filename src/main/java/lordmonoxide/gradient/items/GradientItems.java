@@ -61,12 +61,14 @@ public final class GradientItems {
   public static final Fibre FIBRE = new Fibre();
   public static final Twine TWINE = new Twine();
 
-  public static final Item BARK_OAK      = new GradientItem("bark_oak");
-  public static final Item BARK_SPRUCE   = new GradientItem("bark_spruce");
-  public static final Item BARK_BIRCH    = new GradientItem("bark_birch");
-  public static final Item BARK_JUNGLE   = new GradientItem("bark_jungle");
-  public static final Item BARK_ACACIA   = new GradientItem("bark_acacia");
-  public static final Item BARK_DARK_OAK = new GradientItem("bark_dark_oak");
+  public static final GradientItem BARK_OAK      = new GradientItem("bark_oak");
+  public static final GradientItem BARK_SPRUCE   = new GradientItem("bark_spruce");
+  public static final GradientItem BARK_BIRCH    = new GradientItem("bark_birch");
+  public static final GradientItem BARK_JUNGLE   = new GradientItem("bark_jungle");
+  public static final GradientItem BARK_ACACIA   = new GradientItem("bark_acacia");
+  public static final GradientItem BARK_DARK_OAK = new GradientItem("bark_dark_oak");
+
+  public static final Mulch MULCH = new Mulch();
 
   public static final Hide HIDE_COW        = new Hide("hide_cow");
   public static final Hide HIDE_DONKEY     = new Hide("hide_donkey");
@@ -248,6 +250,8 @@ public final class GradientItems {
     registry.register(BARK_JUNGLE);
     registry.register(BARK_ACACIA);
     registry.register(BARK_DARK_OAK);
+
+    registry.register(MULCH);
 
     registry.register(HIDE_COW);
     registry.register(HIDE_DONKEY);

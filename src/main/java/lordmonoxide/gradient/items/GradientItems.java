@@ -360,6 +360,7 @@ public final class GradientItems {
     OreDictionary.registerOre("toolAxe", STONE_HATCHET.getWildcardItemStack());
     OreDictionary.registerOre("toolAxe", STONE_MATTOCK.getWildcardItemStack());
     OreDictionary.registerOre("toolHoe", STONE_MATTOCK.getWildcardItemStack());
+    OreDictionary.registerOre("toolKnife", FLINT_KNIFE.getWildcardItemStack());
 
     // Metals/metal tools
     OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);

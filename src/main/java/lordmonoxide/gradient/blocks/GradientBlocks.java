@@ -30,6 +30,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -47,6 +48,13 @@ public final class GradientBlocks {
   public static final BlockPebble PEBBLE = new BlockPebble();
   public static final BlockSalt SALT_BLOCK = new BlockSalt();
 
+  public static final Block STRIPPED_OAK_WOOD      = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_oak_wood")).setTranslationKey("stripped_oak_wood");
+  public static final Block STRIPPED_SPRUCE_WOOD   = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_spruce_wood")).setTranslationKey("stripped_spruce_wood");
+  public static final Block STRIPPED_BIRCH_WOOD    = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_birch_wood")).setTranslationKey("stripped_birch_wood");
+  public static final Block STRIPPED_JUNGLE_WOOD   = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_jungle_wood")).setTranslationKey("stripped_jungle_wood");
+  public static final Block STRIPPED_ACACIA_WOOD   = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_acacia_wood")).setTranslationKey("stripped_acacia_wood");
+  public static final Block STRIPPED_DARK_OAK_WOOD = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_dark_oak_wood")).setTranslationKey("stripped_dark_oak_wood");
+
   public static final BlockOreMagnesium ORE_MAGNESIUM = new BlockOreMagnesium();
 
   public static final BlockFirePit    FIRE_PIT          = new BlockFirePit();
@@ -56,7 +64,7 @@ public final class GradientBlocks {
   public static final BlockManualGrinder MANUAL_GRINDER = new BlockManualGrinder();
   public static final BlockMixingBasin   MIXING_BASIN   = new BlockMixingBasin();
 
-  public static final BlockHardenedLog HARDENED_LOG = new BlockHardenedLog();
+  public static final BlockLog            HARDENED_LOG    = new BlockLog("hardened_log");
   public static final BlockHardenedPlanks HARDENED_PLANKS = new BlockHardenedPlanks();
 
   public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
@@ -101,6 +109,13 @@ public final class GradientBlocks {
 
     registry.register(PEBBLE);
     registry.register(SALT_BLOCK);
+
+    registry.register(STRIPPED_OAK_WOOD);
+    registry.register(STRIPPED_SPRUCE_WOOD);
+    registry.register(STRIPPED_BIRCH_WOOD);
+    registry.register(STRIPPED_JUNGLE_WOOD);
+    registry.register(STRIPPED_ACACIA_WOOD);
+    registry.register(STRIPPED_DARK_OAK_WOOD);
 
     registry.register(ORE_MAGNESIUM);
 

@@ -61,6 +61,13 @@ public final class GradientItems {
   public static final Fibre FIBRE = new Fibre();
   public static final Twine TWINE = new Twine();
 
+  public static final Item BARK_OAK      = new GradientItem("bark_oak");
+  public static final Item BARK_SPRUCE   = new GradientItem("bark_spruce");
+  public static final Item BARK_BIRCH    = new GradientItem("bark_birch");
+  public static final Item BARK_JUNGLE   = new GradientItem("bark_jungle");
+  public static final Item BARK_ACACIA   = new GradientItem("bark_acacia");
+  public static final Item BARK_DARK_OAK = new GradientItem("bark_dark_oak");
+
   public static final Hide HIDE_COW        = new Hide("hide_cow");
   public static final Hide HIDE_DONKEY     = new Hide("hide_donkey");
   public static final Hide HIDE_HORSE      = new Hide("hide_horse");
@@ -202,6 +209,13 @@ public final class GradientItems {
 
     final RegistrationHelper registry = new RegistrationHelper(event.getRegistry());
 
+    registry.register(new ItemBlock(GradientBlocks.STRIPPED_OAK_WOOD).setRegistryName(GradientBlocks.STRIPPED_OAK_WOOD.getRegistryName()));
+    registry.register(new ItemBlock(GradientBlocks.STRIPPED_SPRUCE_WOOD).setRegistryName(GradientBlocks.STRIPPED_SPRUCE_WOOD.getRegistryName()));
+    registry.register(new ItemBlock(GradientBlocks.STRIPPED_BIRCH_WOOD).setRegistryName(GradientBlocks.STRIPPED_BIRCH_WOOD.getRegistryName()));
+    registry.register(new ItemBlock(GradientBlocks.STRIPPED_JUNGLE_WOOD).setRegistryName(GradientBlocks.STRIPPED_JUNGLE_WOOD.getRegistryName()));
+    registry.register(new ItemBlock(GradientBlocks.STRIPPED_ACACIA_WOOD).setRegistryName(GradientBlocks.STRIPPED_ACACIA_WOOD.getRegistryName()));
+    registry.register(new ItemBlock(GradientBlocks.STRIPPED_DARK_OAK_WOOD).setRegistryName(GradientBlocks.STRIPPED_DARK_OAK_WOOD.getRegistryName()));
+
     registry.register(new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName()));
     registry.register(new ItemClayCastUnhardened(GradientBlocks.CLAY_CAST_UNHARDENED).setRegistryName(GradientBlocks.CLAY_CAST_UNHARDENED.getRegistryName()));
     registry.register(new ItemClayCast(GradientBlocks.CLAY_CAST_HARDENED).setRegistryName(GradientBlocks.CLAY_CAST_HARDENED.getRegistryName()));
@@ -227,6 +241,13 @@ public final class GradientItems {
 
     registry.register(FIBRE);
     registry.register(TWINE);
+
+    registry.register(BARK_OAK);
+    registry.register(BARK_SPRUCE);
+    registry.register(BARK_BIRCH);
+    registry.register(BARK_JUNGLE);
+    registry.register(BARK_ACACIA);
+    registry.register(BARK_DARK_OAK);
 
     registry.register(HIDE_COW);
     registry.register(HIDE_DONKEY);
@@ -299,6 +320,13 @@ public final class GradientItems {
 
     OreDictionary.registerOre("fibre",  FIBRE);
     OreDictionary.registerOre("string", TWINE);
+
+    OreDictionary.registerOre("barkWood", BARK_OAK);
+    OreDictionary.registerOre("barkWood", BARK_SPRUCE);
+    OreDictionary.registerOre("barkWood", BARK_BIRCH);
+    OreDictionary.registerOre("barkWood", BARK_JUNGLE);
+    OreDictionary.registerOre("barkWood", BARK_ACACIA);
+    OreDictionary.registerOre("barkWood", BARK_DARK_OAK);
 
     OreDictionary.registerOre("hide", HIDE_COW);
     OreDictionary.registerOre("hide", HIDE_DONKEY);
@@ -391,6 +419,13 @@ public final class GradientItems {
     OreDictionary.registerOre("logWood", GradientBlocks.HARDENED_LOG);
     OreDictionary.registerOre("plankWood", GradientBlocks.HARDENED_PLANKS);
     OreDictionary.registerOre("stickWood", HARDENED_STICK);
+
+    OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_OAK_WOOD);
+    OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_SPRUCE_WOOD);
+    OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_BIRCH_WOOD);
+    OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_JUNGLE_WOOD);
+    OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_ACACIA_WOOD);
+    OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_DARK_OAK_WOOD);
 
     Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);
     Blocks.SPRUCE_STAIRS.setHarvestLevel("axe", 0);

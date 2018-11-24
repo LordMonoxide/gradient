@@ -61,7 +61,7 @@ public final class GradientBlocks {
   public static final BlockOreMagnesium ORE_MAGNESIUM = new BlockOreMagnesium();
 
   public static final BlockFirePit    FIRE_PIT          = new BlockFirePit();
-  public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f);
+  public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f, 0.9375f);
   public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT);
 
   public static final BlockManualGrinder MANUAL_GRINDER = new BlockManualGrinder();

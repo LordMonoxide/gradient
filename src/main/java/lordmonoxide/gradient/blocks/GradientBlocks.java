@@ -26,6 +26,7 @@ import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinder;
 import lordmonoxide.gradient.blocks.mixingbasin.BlockMixingBasin;
 import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasin;
 import lordmonoxide.gradient.blocks.pebble.BlockPebble;
+import lordmonoxide.gradient.blocks.standingtorch.BlockStandingTorch;
 import lordmonoxide.gradient.blocks.torch.BlockTorchLit;
 import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
 import net.minecraft.block.Block;
@@ -67,6 +68,8 @@ public final class GradientBlocks {
   public static final BlockMixingBasin   MIXING_BASIN   = new BlockMixingBasin();
 
   public static final BlockDryingRack DRYING_RACK = new BlockDryingRack();
+
+  public static final BlockStandingTorch STANDING_TORCH = new BlockStandingTorch();
 
   public static final BlockLog            HARDENED_LOG    = new BlockLog("hardened_log");
   public static final BlockHardenedPlanks HARDENED_PLANKS = new BlockHardenedPlanks();
@@ -131,6 +134,8 @@ public final class GradientBlocks {
     registry.register(MIXING_BASIN);
 
     registry.register(DRYING_RACK);
+
+    registry.register(STANDING_TORCH);
 
     registry.register(HARDENED_LOG);
     registry.register(HARDENED_PLANKS);

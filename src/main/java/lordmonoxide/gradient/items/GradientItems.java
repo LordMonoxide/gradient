@@ -445,27 +445,6 @@ public final class GradientItems {
     Blocks.ACACIA_STAIRS.setHarvestLevel("axe", 0);
     Blocks.DARK_OAK_STAIRS.setHarvestLevel("axe", 0);
 
-    Blocks.OAK_DOOR.setHarvestLevel("axe", 0);
-    Blocks.SPRUCE_DOOR.setHarvestLevel("axe", 0);
-    Blocks.BIRCH_DOOR.setHarvestLevel("axe", 0);
-    Blocks.JUNGLE_DOOR.setHarvestLevel("axe", 0);
-    Blocks.ACACIA_DOOR.setHarvestLevel("axe", 0);
-    Blocks.DARK_OAK_DOOR.setHarvestLevel("axe", 0);
-
-    Blocks.OAK_FENCE.setHarvestLevel("axe", 0);
-    Blocks.SPRUCE_FENCE.setHarvestLevel("axe", 0);
-    Blocks.BIRCH_FENCE.setHarvestLevel("axe", 0);
-    Blocks.JUNGLE_FENCE.setHarvestLevel("axe", 0);
-    Blocks.ACACIA_FENCE.setHarvestLevel("axe", 0);
-    Blocks.DARK_OAK_FENCE.setHarvestLevel("axe", 0);
-
-    Blocks.OAK_FENCE_GATE.setHarvestLevel("axe", 0);
-    Blocks.SPRUCE_FENCE_GATE.setHarvestLevel("axe", 0);
-    Blocks.BIRCH_FENCE_GATE.setHarvestLevel("axe", 0);
-    Blocks.JUNGLE_FENCE_GATE.setHarvestLevel("axe", 0);
-    Blocks.ACACIA_FENCE_GATE.setHarvestLevel("axe", 0);
-    Blocks.DARK_OAK_FENCE_GATE.setHarvestLevel("axe", 0);
-
     Blocks.STONE_STAIRS.setHarvestLevel("pickaxe", 0);
     Blocks.BRICK_STAIRS.setHarvestLevel("pickaxe", 0);
     Blocks.STONE_BRICK_STAIRS.setHarvestLevel("pickaxe", 0);

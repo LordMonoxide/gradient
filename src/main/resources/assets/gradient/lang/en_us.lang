@@ -166,6 +166,8 @@ tile.hardened_log.name=Hardened Log
 tile.hardened_planks.name=Hardened Planks
 item.hardened_stick.name=Hardened Stick
 
+tile.standing_torch.name=Torch Stand
+
 tile.clay_bucket.unhardened.name=Unhardened Clay Bucket
 tile.clay_bucket.hardened.name=Clay Bucket
 item.clay_bucket_item.name=Clay Bucket of %s

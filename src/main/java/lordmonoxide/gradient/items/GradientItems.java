@@ -28,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
@@ -209,11 +210,6 @@ public final class GradientItems {
   public static void registerItems(final RegistryEvent.Register<Item> event) {
     GradientMod.logger.info("Registering items");
 
-    final List<Block> registered = new ArrayList<>();
-    registered.add(GradientBlocks.PEBBLE);
-    registered.add(GradientBlocks.CLAY_CAST_UNHARDENED);
-    registered.add(GradientBlocks.CLAY_CAST_HARDENED);
-
     final RegistrationHelper registry = new RegistrationHelper(event.getRegistry());
 
     registry.register(new ItemBlock(GradientBlocks.STRIPPED_OAK_WOOD).setRegistryName(GradientBlocks.STRIPPED_OAK_WOOD.getRegistryName()));
@@ -228,7 +224,7 @@ public final class GradientItems {
     registry.register(new ItemClayCast(GradientBlocks.CLAY_CAST_HARDENED).setRegistryName(GradientBlocks.CLAY_CAST_HARDENED.getRegistryName()));
 
     for(final Block block : ForgeRegistries.BLOCKS.getValuesCollection()) {
-      if(registered.contains(block) || block instanceof BlockMetalFluid || !block.getRegistryName().getNamespace().equals(GradientMod.MODID)) {
+      if(block instanceof BlockMetalFluid || !block.getRegistryName().getNamespace().equals(GradientMod.MODID) || registry.has(block.getRegistryName())) {
         continue;
       }
 
@@ -496,6 +492,10 @@ public final class GradientItems {
     public void register(final Item item) {
       ITEMS.add(item);
       this.registry.register(item);
+    }
+
+    public boolean has(final ResourceLocation loc) {
+      return this.registry.getValue(loc) != null;
     }
   }
 }

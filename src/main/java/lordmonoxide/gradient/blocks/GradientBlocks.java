@@ -26,6 +26,7 @@ import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinder;
 import lordmonoxide.gradient.blocks.mixingbasin.BlockMixingBasin;
 import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasin;
 import lordmonoxide.gradient.blocks.pebble.BlockPebble;
+import lordmonoxide.gradient.blocks.standingtorch.BlockStandingTorch;
 import lordmonoxide.gradient.blocks.torch.BlockTorchLit;
 import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
 import net.minecraft.block.Block;
@@ -60,13 +61,15 @@ public final class GradientBlocks {
   public static final BlockOreMagnesium ORE_MAGNESIUM = new BlockOreMagnesium();
 
   public static final BlockFirePit    FIRE_PIT          = new BlockFirePit();
-  public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f);
+  public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f, 0.9375f);
   public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT);
 
   public static final BlockManualGrinder MANUAL_GRINDER = new BlockManualGrinder();
   public static final BlockMixingBasin   MIXING_BASIN   = new BlockMixingBasin();
 
   public static final BlockDryingRack DRYING_RACK = new BlockDryingRack();
+
+  public static final BlockStandingTorch STANDING_TORCH = new BlockStandingTorch();
 
   public static final BlockLog            HARDENED_LOG    = new BlockLog("hardened_log");
   public static final BlockHardenedPlanks HARDENED_PLANKS = new BlockHardenedPlanks();
@@ -131,6 +134,8 @@ public final class GradientBlocks {
     registry.register(MIXING_BASIN);
 
     registry.register(DRYING_RACK);
+
+    registry.register(STANDING_TORCH);
 
     registry.register(HARDENED_LOG);
     registry.register(HARDENED_PLANKS);

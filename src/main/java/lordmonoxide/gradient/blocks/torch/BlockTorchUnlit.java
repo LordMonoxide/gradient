@@ -24,7 +24,6 @@ public class BlockTorchUnlit extends BlockTorch {
   public final Block lit;
 
   public BlockTorchUnlit(final String name, final Block lit) {
-    super();
     this.setRegistryName(name);
     this.setTranslationKey(name);
     this.setHardness(0.0f);
@@ -49,7 +48,7 @@ public class BlockTorchUnlit extends BlockTorch {
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote || !player.isSneaking()) {
       if(this.isLitTorch(player.getHeldItemMainhand()) || this.isLitTorch(player.getHeldItemOffhand())) {
-        world.setBlockState(pos, this.lit.getDefaultState().withProperty(FACING, state.getValue(FACING)));
+        world.setBlockState(pos, this.lit.getStateForPlacement(world, pos, state.getValue(FACING), 0.0f, 0.0f, 0.0f, 0, player, hand));
         return true;
       }
     }

@@ -56,11 +56,11 @@ public final class GradientItems {
 
   public static final ItemArmor.ArmorMaterial MATERIAL_HIDE = EnumHelper.addArmorMaterial("hide", GradientMod.resource("hide").toString(), 3, new int[] {1, 1, 2, 1}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 
-  public static final Infinicoal INFINICOAL = new Infinicoal();
-  public static final DebugItem  DEBUG      = new DebugItem();
+  public static final GradientItem INFINICOAL = new GradientItem("infinicoal", CreativeTabs.MATERIALS);
+  public static final DebugItem    DEBUG      = new DebugItem();
 
-  public static final Fibre FIBRE = new Fibre();
-  public static final Twine TWINE = new Twine();
+  public static final GradientItem FIBRE = new GradientItem("fibre", CreativeTabs.MATERIALS);
+  public static final GradientItem TWINE = new GradientItem("twine", CreativeTabs.MATERIALS);
 
   public static final GradientItem BARK_OAK      = new GradientItem("bark_oak", CreativeTabs.MATERIALS);
   public static final GradientItem BARK_SPRUCE   = new GradientItem("bark_spruce", CreativeTabs.MATERIALS);
@@ -71,16 +71,16 @@ public final class GradientItems {
 
   public static final Mulch MULCH = new Mulch();
 
-  public static final Hide HIDE_COW        = new Hide("hide_cow");
-  public static final Hide HIDE_DONKEY     = new Hide("hide_donkey");
-  public static final Hide HIDE_HORSE      = new Hide("hide_horse");
-  public static final Hide HIDE_LLAMA      = new Hide("hide_llama");
-  public static final Hide HIDE_MULE       = new Hide("hide_mule");
-  public static final Hide HIDE_OCELOT     = new Hide("hide_ocelot");
-  public static final Hide HIDE_PIG        = new Hide("hide_pig");
-  public static final Hide HIDE_POLAR_BEAR = new Hide("hide_polar_bear");
-  public static final Hide HIDE_SHEEP      = new Hide("hide_sheep");
-  public static final Hide HIDE_WOLF       = new Hide("hide_wolf");
+  public static final GradientItem HIDE_COW        = new GradientItem("hide_cow", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_DONKEY     = new GradientItem("hide_donkey", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_HORSE      = new GradientItem("hide_horse", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_LLAMA      = new GradientItem("hide_llama", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_MULE       = new GradientItem("hide_mule", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_OCELOT     = new GradientItem("hide_ocelot", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_PIG        = new GradientItem("hide_pig", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_POLAR_BEAR = new GradientItem("hide_polar_bear", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_SHEEP      = new GradientItem("hide_sheep", CreativeTabs.MATERIALS);
+  public static final GradientItem HIDE_WOLF       = new GradientItem("hide_wolf", CreativeTabs.MATERIALS);
 
   public static final GradientItem HIDE_RAW       = new GradientItem("hide_raw", CreativeTabs.MATERIALS);
   public static final GradientItem HIDE_SALTED    = new GradientItem("hide_salted", CreativeTabs.MATERIALS);
@@ -102,17 +102,17 @@ public final class GradientItems {
   public static final FlintKnife   FLINT_KNIFE   = new FlintKnife();
   public static final BoneAwl      BONE_AWL      = new BoneAwl();
 
-  public static final NuggetCoal NUGGET_COAL = new NuggetCoal();
-  public static final DustFlint  DUST_FLINT  = new DustFlint();
+  public static final GradientItem NUGGET_COAL = new GradientItem("nugget.coal", CreativeTabs.MATERIALS);
+  public static final GradientItem DUST_FLINT  = new GradientItem("dust.flint", CreativeTabs.MATERIALS);
 
   public static final GradientItem HARDENED_STICK = new GradientItem("hardened_stick", CreativeTabs.MATERIALS);
 
   public static final ItemClayBucket CLAY_BUCKET = new ItemClayBucket();
 
-  public static final SugarcanePaste SUGARCANE_PASTE = new SugarcanePaste();
-  public static final Salt SALT = new Salt();
-  public static final Flour FLOUR = new Flour();
-  public static final Dough DOUGH = new Dough();
+  public static final GradientItem SUGARCANE_PASTE = new GradientItem("sugarcane_paste", CreativeTabs.FOOD);
+  public static final GradientItem SALT = new GradientItem("salt", CreativeTabs.FOOD);
+  public static final GradientItem FLOUR = new GradientItem("flour", CreativeTabs.FOOD);
+  public static final GradientItem DOUGH = new GradientItem("dough", CreativeTabs.FOOD);
 
   public static final ImmutableMap<GradientMetals.Metal, Nugget> NUGGET;
   public static final ImmutableMap<GradientMetals.Metal, Crushed> CRUSHED;
@@ -202,9 +202,9 @@ public final class GradientItems {
     ALLOY_NUGGET = alloyNugget.build();
   }
 
-  public static final GradientItem IGNITER = new Igniter();
+  public static final GradientItem IGNITER = new GradientItem("igniter", CreativeTabs.MATERIALS);
 
-  public static final GrindingHead GRINDING_HEAD = new GrindingHead();
+  public static final GradientItem GRINDING_HEAD = new GradientItem("grinding_head", CreativeTabs.MATERIALS);
 
   @SubscribeEvent
   public static void registerItems(final RegistryEvent.Register<Item> event) {

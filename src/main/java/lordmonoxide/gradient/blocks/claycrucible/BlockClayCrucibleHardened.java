@@ -7,7 +7,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
-import lordmonoxide.gradient.items.CastItem;
+import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -115,7 +115,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
             te.consumeMetal(amount);
           }
 
-          ItemHandlerHelper.giveItemToPlayer(player,CastItem.getCastItem(cast, metal, 1));
+          ItemHandlerHelper.giveItemToPlayer(player, GradientItems.castItem(cast, metal, 1));
           return true;
         }
 

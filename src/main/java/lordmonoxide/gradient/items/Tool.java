@@ -13,25 +13,11 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class Tool extends GradientItemWorldTool {
-  private static final Set<Tool> tools = new HashSet<>();
-
-  public static ItemStack getTool(final GradientTools.Type type, final GradientMetals.Metal metal, final int amount, final int damage) {
-    for(final Tool tool : tools) {
-      if(tool.type == type && tool.metal == metal) {
-        return new ItemStack(tool, amount, damage);
-      }
-    }
-
-    return ItemStack.EMPTY;
-  }
-
   public final GradientTools.Type type;
   public final GradientMetals.Metal metal;
 
   public Tool(final GradientTools.Type type, final GradientMetals.Metal metal) {
     super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, metal.durability);
-    tools.add(this);
-
     this.type = type;
     this.metal = metal;
   }

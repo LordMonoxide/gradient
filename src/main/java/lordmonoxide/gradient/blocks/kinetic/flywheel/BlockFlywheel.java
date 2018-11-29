@@ -10,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
+import net.minecraft.world.World;
 
 public class BlockFlywheel extends GradientBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -47,5 +48,15 @@ public class BlockFlywheel extends GradientBlock {
   @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer(this, FACING);
+  }
+
+  @Override
+  public TileFlywheel createTileEntity(final World world, final IBlockState state) {
+    return new TileFlywheel();
+  }
+
+  @Override
+  public boolean hasTileEntity(final IBlockState state) {
+    return true;
   }
 }

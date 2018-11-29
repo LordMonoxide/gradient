@@ -22,7 +22,6 @@ import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
 import lordmonoxide.gradient.blocks.kinetic.flywheel.BlockFlywheel;
-import lordmonoxide.gradient.blocks.kinetic.flywheel.BlockFlywheelStructure;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.BlockHandCrank;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.TileHandCrank;
 import lordmonoxide.gradient.blocks.manualgrinder.BlockManualGrinder;
@@ -78,9 +77,8 @@ public final class GradientBlocks {
   public static final BlockLog            HARDENED_LOG    = new BlockLog("hardened_log");
   public static final BlockHardenedPlanks HARDENED_PLANKS = new BlockHardenedPlanks();
 
-  public static final BlockHandCrank         HAND_CRANK = new BlockHandCrank();
-  public static final BlockFlywheel          FLYWHEEL   = new BlockFlywheel();
-  public static final BlockFlywheelStructure FLYWHEEL_STRUCTURE = new BlockFlywheelStructure();
+  public static final BlockHandCrank HAND_CRANK = new BlockHandCrank();
+  public static final BlockFlywheel  FLYWHEEL   = new BlockFlywheel();
 
   public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
@@ -150,7 +148,6 @@ public final class GradientBlocks {
 
     registry.register(HAND_CRANK);
     registry.register(FLYWHEEL);
-    registry.register(FLYWHEEL_STRUCTURE);
 
     registry.register(CLAY_FURNACE_UNHARDENED);
     registry.register(CLAY_FURNACE_HARDENED);

@@ -7,24 +7,15 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class BlockFlywheel extends GradientBlock {
-  private static final PropertyDirection FACING = BlockHorizontal.FACING;
+  public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
   public BlockFlywheel() {
     super("flywheel", CreativeTabs.TOOLS, Material.CIRCUITS);
-  }
-
-  @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().rotateY()), 2);
   }
 
   @SuppressWarnings("deprecation")

@@ -10,6 +10,7 @@ import lordmonoxide.gradient.blocks.ItemBlockProvider;
 import lordmonoxide.gradient.blocks.claybucket.ItemClayBucket;
 import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
 import lordmonoxide.gradient.blocks.claycast.ItemClayCastUnhardened;
+import lordmonoxide.gradient.blocks.kinetic.flywheel.ItemFlywheel;
 import lordmonoxide.gradient.blocks.pebble.EntityPebble;
 import lordmonoxide.gradient.blocks.pebble.ItemPebble;
 import lordmonoxide.gradient.items.armour.GradientArmour;
@@ -230,6 +231,8 @@ public final class GradientItems {
     registry.register(new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName()));
     registry.register(new ItemClayCastUnhardened(GradientBlocks.CLAY_CAST_UNHARDENED).setRegistryName(GradientBlocks.CLAY_CAST_UNHARDENED.getRegistryName()));
     registry.register(new ItemClayCast(GradientBlocks.CLAY_CAST_HARDENED).setRegistryName(GradientBlocks.CLAY_CAST_HARDENED.getRegistryName()));
+
+    registry.register(new ItemFlywheel(GradientBlocks.FLYWHEEL).setRegistryName(GradientBlocks.FLYWHEEL.getRegistryName()));
 
     for(final Block block : ForgeRegistries.BLOCKS.getValuesCollection()) {
       if(block instanceof BlockMetalFluid || !block.getRegistryName().getNamespace().equals(GradientMod.MODID) || registry.has(block.getRegistryName())) {

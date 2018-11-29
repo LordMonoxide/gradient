@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up":    { "model": "gradient:invisible" },
+    "facing=down":  { "model": "gradient:invisible" },
+    "facing=north": { "model": "gradient:invisible" },
+    "facing=east":  { "model": "gradient:invisible" },
+    "facing=south": { "model": "gradient:invisible" },
+    "facing=west":  { "model": "gradient:invisible" }
+  }
+}

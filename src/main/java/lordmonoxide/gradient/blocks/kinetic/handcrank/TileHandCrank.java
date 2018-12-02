@@ -45,6 +45,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
     final float output = 5.0f / this.neighbours.size();
 
     for(final IKineticEnergyStorage storage : this.neighbours.values()) {
+      System.out.println("Outputting " + output);
       storage.receiveEnergy(output, false);
     }
   }

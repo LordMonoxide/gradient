@@ -22,6 +22,7 @@ import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
 import lordmonoxide.gradient.blocks.kinetic.flywheel.BlockFlywheel;
+import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheel;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.BlockHandCrank;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.TileHandCrank;
 import lordmonoxide.gradient.blocks.manualgrinder.BlockManualGrinder;
@@ -177,6 +178,7 @@ public final class GradientBlocks {
     GameRegistry.registerTileEntity(TileDryingRack.class, DRYING_RACK.getRegistryName());
 
     GameRegistry.registerTileEntity(TileHandCrank.class, HAND_CRANK.getRegistryName());
+    GameRegistry.registerTileEntity(TileFlywheel.class,  FLYWHEEL.getRegistryName());
 
     GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
 

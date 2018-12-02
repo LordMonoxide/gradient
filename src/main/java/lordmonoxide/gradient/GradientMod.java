@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import lordmonoxide.gradient.energy.kinetic.CapabilityKineticEnergy;
 import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.overrides.GeneratePebbles;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
@@ -70,6 +71,7 @@ public class GradientMod {
     this.syncTriumphAdvancements(event.getModConfigurationDirectory());
 
     CapabilityPlayerProgress.register();
+    CapabilityKineticEnergy.register();
 
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
 

@@ -14,7 +14,7 @@ public final class CapabilityEnergyStorage {
     CapabilityManager.INSTANCE.register(IEnergyStorage.class, new Capability.IStorage<IEnergyStorage>() {
       @Override
       public NBTBase writeNBT(final Capability<IEnergyStorage> capability, final IEnergyStorage instance, final EnumFacing side) {
-        return new NBTTagFloat(instance.getEnergyStored());
+        return new NBTTagFloat(instance.getEnergy());
       }
 
       @Override

@@ -104,4 +104,93 @@ class EnergyNetworkTest {
 
     Assertions.assertFalse(net.connect(BlockPos.ORIGIN, new TransferNode()), "Duplicate connection didn't return false");
   }
+
+  @Test
+  void testStorageNodesCantConnectToOtherStorageNodesOnlyNode() {
+    final EnergyNetwork net = new EnergyNetwork();
+
+    net.connect(BlockPos.ORIGIN, new StorageNode());
+
+    Assertions.assertFalse(net.connect(BlockPos.ORIGIN.north(), new StorageNode()), "Transfer nodes should not be able to connect to each other");
+  }
+
+  @Test
+  void testStorageNodesSplitNetwork() {
+    final EnergyNetwork net = new EnergyNetwork();
+
+    net.connect(BlockPos.ORIGIN, new StorageNode());
+
+    Assertions.assertTrue(net.connect(BlockPos.ORIGIN.north(), new TransferNode()), "First transfer node should connect to storage node");
+    Assertions.assertTrue(net.connect(BlockPos.ORIGIN.north().north(), new TransferNode()), "Second transfer node should connect to first transfer node");
+    Assertions.assertFalse(net.connect(BlockPos.ORIGIN.south(), new TransferNode()), "Third transfer node should not connect to storage node");
+  }
+
+  @Test
+  void testConnectionsRestrictedBySides() {
+    final EnergyNetwork net = new EnergyNetwork();
+
+    net.connect(BlockPos.ORIGIN, new TransferNode(EnumFacing.NORTH, EnumFacing.SOUTH));
+
+    Assertions.assertTrue(net.connect(BlockPos.ORIGIN.north(), new TransferNode(EnumFacing.SOUTH)), "Failed to add north transfer node");
+    Assertions.assertFalse(net.connect(BlockPos.ORIGIN.north().north(), new TransferNode()), "North transfer node 2 should not have been added");
+    Assertions.assertFalse(net.connect(BlockPos.ORIGIN.east(), new TransferNode()), "East transfer node should not have been added");
+    Assertions.assertFalse(net.connect(BlockPos.ORIGIN.south(), new TransferNode(EnumFacing.SOUTH)), "South transfer node should not have been added");
+  }
+
+  @Test
+  void testEnergyContained() {
+    final EnergyNetwork net = new EnergyNetwork();
+
+    net.connect(BlockPos.ORIGIN, new TransferNode());
+    net.connect(BlockPos.ORIGIN.north(), new StorageNode(1000.0f, 10.0f, 10.0f, 1000.0f));
+    net.connect(BlockPos.ORIGIN.south(), new StorageNode(1000.0f, 10.0f, 50.0f, 25.0f));
+    net.connect(BlockPos.ORIGIN.east(), new StorageNode(1000.0f, 10.0f, 15.0f, 20.0f));
+    net.connect(BlockPos.ORIGIN.west(), new StorageNode(1000.0f, 10.0f, 100.0f, 100.0f));
+
+    Assertions.assertEquals(150.0f, net.getAvailableEnergy(), "Available energy did not match");
+  }
+
+  @Test
+  void testExtractEnergyBalanced() {
+    final EnergyNetwork net = new EnergyNetwork();
+
+    final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  10.0f, 1000.0f);
+    final StorageNode s2 = new StorageNode(1000.0f, 10.0f,  50.0f,   25.0f);
+    final StorageNode s3 = new StorageNode(1000.0f, 10.0f,  15.0f,   20.0f);
+    final StorageNode s4 = new StorageNode(1000.0f, 10.0f, 100.0f,  100.0f);
+
+    net.connect(BlockPos.ORIGIN, new TransferNode());
+    net.connect(BlockPos.ORIGIN.north(), s1);
+    net.connect(BlockPos.ORIGIN.south(), s2);
+    net.connect(BlockPos.ORIGIN.east(), s3);
+    net.connect(BlockPos.ORIGIN.west(), s4);
+
+    Assertions.assertEquals(20.0f, net.extractEnergy(20.0f), 0.001f, "Extracted energy did not match");
+    Assertions.assertEquals(995.0f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
+    Assertions.assertEquals( 20.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
+    Assertions.assertEquals( 15.0f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
+    Assertions.assertEquals( 95.0f, s4.getEnergy(), 0.001f, "s4 remaining energy did not match");
+  }
+
+  @Test
+  void testExtractEnergyImbalanced() {
+    final EnergyNetwork net = new EnergyNetwork();
+
+    final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  10.0f, 1000.0f);
+    final StorageNode s2 = new StorageNode(1000.0f, 10.0f,  50.0f,   25.0f);
+    final StorageNode s3 = new StorageNode(1000.0f, 10.0f,  15.0f,   20.0f);
+    final StorageNode s4 = new StorageNode(1000.0f, 10.0f, 100.0f,  100.0f);
+
+    net.connect(BlockPos.ORIGIN, new TransferNode());
+    net.connect(BlockPos.ORIGIN.north(), s1);
+    net.connect(BlockPos.ORIGIN.south(), s2);
+    net.connect(BlockPos.ORIGIN.east(), s3);
+    net.connect(BlockPos.ORIGIN.west(), s4);
+
+    Assertions.assertEquals(050.0000f, net.extractEnergy(50.0f), 0.001f, "Extracted energy did not match");
+    Assertions.assertEquals(990.0000f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
+    Assertions.assertEquals( 11.6667f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
+    Assertions.assertEquals(  6.6667f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
+    Assertions.assertEquals( 86.6667f, s4.getEnergy(), 0.001f, "s4 remaining energy did not match");
+  }
 }

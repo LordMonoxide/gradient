@@ -4,7 +4,12 @@ import net.minecraft.util.EnumFacing;
 
 public class EnergyTransfer implements IEnergyTransfer {
   @Override
-  public boolean canConnect(final EnumFacing side) {
+  public boolean canSink(final EnumFacing side) {
+    return true;
+  }
+
+  @Override
+  public boolean canSource(final EnumFacing side) {
     return true;
   }
 

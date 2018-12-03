@@ -17,8 +17,13 @@ public class TransferNode implements IEnergyTransfer {
   }
 
   @Override
-  public boolean canConnect(final EnumFacing side) {
-    return true;
+  public boolean canSink(final EnumFacing side) {
+    return this.canConnect.test(side);
+  }
+
+  @Override
+  public boolean canSource(final EnumFacing side) {
+    return this.canConnect.test(side);
   }
 
   @Override

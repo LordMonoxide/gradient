@@ -4,9 +4,12 @@ import net.minecraft.util.EnumFacing;
 
 public interface IEnergyNode {
   /**
-   * Can this node be connected to on this side?
-   *
-   * @param side The side the other node is attempting to connect to
+   * Can this node sink power on this side?
    */
-  boolean canConnect(final EnumFacing side);
+  boolean canSink(final EnumFacing side);
+
+  /**
+   * Can this node source power on this side?
+   */
+  boolean canSource(final EnumFacing side);
 }

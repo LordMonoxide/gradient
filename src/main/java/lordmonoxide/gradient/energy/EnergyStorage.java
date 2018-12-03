@@ -29,10 +29,6 @@ public class EnergyStorage implements IEnergyStorage {
 
   @Override
   public float receiveEnergy(final float maxReceive, final boolean simulate) {
-    if(!this.canReceive()) {
-      return 0;
-    }
-
     final float energyReceived = Math.min(this.capacity - this.energy, Math.min(this.maxReceive, maxReceive));
 
     if(!simulate) {
@@ -44,10 +40,6 @@ public class EnergyStorage implements IEnergyStorage {
 
   @Override
   public float extractEnergy(final float maxExtract, final boolean simulate) {
-    if(!this.canExtract()) {
-      return 0;
-    }
-
     final float energyExtracted = Math.min(this.energy, Math.min(this.maxExtract, maxExtract));
 
     if(!simulate) {
@@ -58,27 +50,22 @@ public class EnergyStorage implements IEnergyStorage {
   }
 
   @Override
-  public float getEnergyStored() {
+  public float getEnergy() {
     return this.energy;
   }
 
   @Override
-  public float getMaxEnergyStored() {
+  public float getCapacity() {
     return this.capacity;
   }
 
   @Override
-  public boolean canExtract() {
+  public boolean canSink(final EnumFacing side) {
     return this.maxExtract > 0;
   }
 
   @Override
-  public boolean canReceive() {
+  public boolean canSource(final EnumFacing side) {
     return this.maxReceive > 0;
-  }
-
-  @Override
-  public boolean canConnect(final EnumFacing side) {
-    return true;
   }
 }

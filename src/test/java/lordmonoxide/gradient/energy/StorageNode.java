@@ -1,48 +1,30 @@
 package lordmonoxide.gradient.energy;
 
-import net.minecraft.util.EnumFacing;
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.function.Predicate;
-
 public class StorageNode implements IEnergyStorage {
-  private final Predicate<EnumFacing> sinkSides;
-  private final Predicate<EnumFacing> sourceSides;
-
   private final float capacity;
   private final float maxReceive;
   private final float maxExtract;
   private float energy;
 
   public StorageNode() {
-    this(0.0f, 0.0f, 0.0f, 0.0f);
+    this(0.0f, 1.0f, 1.0f, 0.0f);
   }
 
   public StorageNode(final float capacity, final float maxReceive, final float maxExtract, final float energy) {
-    this(capacity, maxReceive, maxExtract, energy, facing -> true, facing -> true);
-  }
-
-  public StorageNode(final float capacity, final float maxReceive, final float maxExtract, final float energy, final EnumFacing[] sinkSides, final EnumFacing[] sourceSides) {
-    this(capacity, maxReceive, maxExtract, energy, facing -> ArrayUtils.contains(sinkSides, facing), facing -> ArrayUtils.contains(sourceSides, facing));
-  }
-
-  public StorageNode(final float capacity, final float maxReceive, final float maxExtract, final float energy, final Predicate<EnumFacing> sinkSides, final Predicate<EnumFacing> sourceSides) {
     this.capacity = capacity;
     this.maxReceive = maxReceive;
     this.maxExtract = maxExtract;
     this.energy = energy;
-    this.sinkSides   = sinkSides;
-    this.sourceSides = sourceSides;
   }
 
   @Override
   public boolean canSink() {
-    return true;
+    return this.maxReceive != 0.0f;
   }
 
   @Override
   public boolean canSource() {
-    return true;
+    return this.maxExtract != 0.0f;
   }
 
   @Override

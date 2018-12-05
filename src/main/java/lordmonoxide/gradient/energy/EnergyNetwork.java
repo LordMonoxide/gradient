@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.energy;
 
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.utils.BlockPosUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -8,6 +9,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,7 +30,14 @@ public class EnergyNetwork {
   }
 
   public boolean connect(final BlockPos newNodePos, final TileEntity te) {
+    return this.connect(newNodePos, te, false);
+  }
+
+  private boolean connect(final BlockPos newNodePos, final TileEntity te, boolean force) {
+    GradientMod.logger.info("Adding node {} to enet {} @ {}", te, this, newNodePos);
+
     if(this.nodes.isEmpty()) {
+      GradientMod.logger.info("First node, adding");
       this.nodes.put(newNodePos, new EnergyNode(newNodePos, te));
       return true;
     }
@@ -46,18 +55,22 @@ public class EnergyNetwork {
       if(BlockPosUtils.areBlocksAdjacent(newNodePos, nodePos)) {
         final EnumFacing facing = BlockPosUtils.getBlockFacing(newNodePos, nodePos);
 
+        GradientMod.logger.info("New node is adjacent to {} on facing {}", node, facing);
+
         final IEnergyNode teNode;
 
         if(te.hasCapability(STORAGE, facing)) {
           // Storage nodes can't connect to other storage nodes
-          if(node.te.hasCapability(STORAGE, facing.getOpposite())) {
+          if(!force && node.te.hasCapability(STORAGE, facing.getOpposite())) {
+            GradientMod.logger.info("Adjacent node is storage - moving on");
             continue;
           }
 
           teNode = te.getCapability(STORAGE, facing);
         } else if(te.hasCapability(TRANSFER, facing)) {
           // Networks are split by storage nodes (a transfer node can connect to a storage node if it is the only node)
-          if(node.te.hasCapability(STORAGE, facing.getOpposite()) && this.nodes.size() > 1) {
+          if(!force && node.te.hasCapability(STORAGE, facing.getOpposite()) && this.nodes.size() > 1) {
+            GradientMod.logger.info("Adjacent node is storage - moving on");
             continue;
           }
 
@@ -66,17 +79,29 @@ public class EnergyNetwork {
           continue;
         }
 
-        if(!this.canConnect(teNode, node, facing.getOpposite())) {
+        final boolean canConnect = this.canConnect(teNode, node, facing.getOpposite());
+
+        if(!force && !canConnect) {
+          GradientMod.logger.info("Adjacent node is not connectable");
           continue;
         }
+
+        GradientMod.logger.info("Connecting!");
 
         if(newNode == null) {
           newNode = new EnergyNode(newNodePos, te);
         }
 
-        newNode.connections.put(facing, node);
-        node.connections.put(facing.getOpposite(), newNode);
+        if(canConnect) {
+          newNode.connections.put(facing, node);
+          node.connections.put(facing.getOpposite(), newNode);
+        }
       }
+    }
+
+    if(force && newNode == null) {
+      GradientMod.logger.info("No connections possible but force is true, connecting anyway");
+      newNode = new EnergyNode(newNodePos, te);
     }
 
     if(newNode != null) {
@@ -87,18 +112,18 @@ public class EnergyNetwork {
     return false;
   }
 
-  private boolean canConnect(final IEnergyNode node1, final EnergyNode node2, final EnumFacing facing) {
-    final IEnergyNode n;
+  private boolean canConnect(final IEnergyNode newNode, final EnergyNode existingNode, final EnumFacing facing) {
+    final IEnergyNode existing;
 
-    if(node2.te.hasCapability(STORAGE, facing)) {
-      n = node2.te.getCapability(STORAGE, facing);
-    } else if(node2.te.hasCapability(TRANSFER, facing)) {
-      n = node2.te.getCapability(TRANSFER, facing);
+    if(existingNode.te.hasCapability(STORAGE, facing)) {
+      existing = existingNode.te.getCapability(STORAGE, facing);
+    } else if(existingNode.te.hasCapability(TRANSFER, facing)) {
+      existing = existingNode.te.getCapability(TRANSFER, facing);
     } else {
       return false;
     }
 
-    return node1.canSink() && n.canSource() || node1.canSource() && n.canSink();
+    return newNode.canSink() && existing.canSource() || newNode.canSource() && existing.canSink();
   }
 
   public EnergyNode getNode(final BlockPos pos) {
@@ -122,6 +147,11 @@ public class EnergyNetwork {
     }
 
     return available;
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + " (" + this.nodes.size() + " nodes)";
   }
 
   private final List<IEnergyStorage> requestEnergySources = new ArrayList<>();
@@ -190,5 +220,24 @@ public class EnergyNetwork {
     public EnergyNode connection(final EnumFacing side) {
       return this.connections.get(side);
     }
+
+    @Override
+    public String toString() {
+      return "Node holder {" + this.te + "} @ " + this.pos + " connections {" + String.join(", ", this.connections.keySet().stream().map(EnumFacing::toString).toArray(String[]::new)) + '}';
+    }
+  }
+
+  static EnergyNetwork merge(final EnergyNetwork... networks) {
+    GradientMod.logger.info("Merging networks {}", Arrays.toString(networks));
+
+    final EnergyNetwork newNet = new EnergyNetwork();
+
+    for(final EnergyNetwork net : networks) {
+      for(final Map.Entry<BlockPos, EnergyNode> node : net.nodes.entrySet()) {
+        newNet.connect(node.getKey(), node.getValue().te, true);
+      }
+    }
+
+    return newNet;
   }
 }

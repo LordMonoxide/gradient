@@ -10,6 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TileEntityWithCapabilities extends TileEntity {
+  public static TileEntityWithCapabilities sink() {
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, new StorageNode(1000.0f, 32.0f, 0.0f, 0.0f));
+  }
+
+  public static TileEntityWithCapabilities source() {
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, new StorageNode(1000.0f, 0.0f, 32.0f, 10000000.0f));
+  }
+
   public static TileEntityWithCapabilities storage() {
     return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, new StorageNode());
   }

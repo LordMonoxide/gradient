@@ -1,7 +1,5 @@
 package lordmonoxide.gradient.energy;
 
-import net.minecraft.util.EnumFacing;
-
 public class EnergyStorage implements IEnergyStorage {
   private final float capacity;
   private final float maxReceive;
@@ -60,12 +58,12 @@ public class EnergyStorage implements IEnergyStorage {
   }
 
   @Override
-  public boolean canSink(final EnumFacing side) {
+  public boolean canSink() {
     return this.maxExtract > 0;
   }
 
   @Override
-  public boolean canSource(final EnumFacing side) {
+  public boolean canSource() {
     return this.maxReceive > 0;
   }
 }

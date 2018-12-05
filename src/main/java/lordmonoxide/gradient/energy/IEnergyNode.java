@@ -1,15 +1,13 @@
 package lordmonoxide.gradient.energy;
 
-import net.minecraft.util.EnumFacing;
-
 public interface IEnergyNode {
   /**
-   * Can this node sink power on this side?
+   * Can this node sink power?
    */
-  boolean canSink(final EnumFacing side);
+  boolean canSink();
 
   /**
-   * Can this node source power on this side?
+   * Can this node source power?
    */
-  boolean canSource(final EnumFacing side);
+  boolean canSource();
 }

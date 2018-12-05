@@ -36,13 +36,13 @@ public class StorageNode implements IEnergyStorage {
   }
 
   @Override
-  public boolean canSink(final EnumFacing side) {
-    return this.sinkSides.test(side);
+  public boolean canSink() {
+    return true;
   }
 
   @Override
-  public boolean canSource(final EnumFacing side) {
-    return this.sourceSides.test(side);
+  public boolean canSource() {
+    return true;
   }
 
   @Override

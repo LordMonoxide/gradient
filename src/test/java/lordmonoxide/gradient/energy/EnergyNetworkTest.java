@@ -27,9 +27,13 @@ class EnergyNetworkTest {
   static void setUpFirst() {
     EnergyNetwork.STORAGE = STORAGE;
     EnergyNetwork.TRANSFER = TRANSFER;
+    EnergyNetworkManager.STORAGE = STORAGE;
+    EnergyNetworkManager.TRANSFER = TRANSFER;
 
     GradientMod.logger = LogManager.getLogger(GradientMod.MODID);
   }
+
+  //TODO: test TE with multiple storages on one network
 
   @BeforeEach
   void setUp() {
@@ -72,36 +76,36 @@ class EnergyNetworkTest {
 
     Assertions.assertTrue(this.net.connect(pos1, TileEntityWithCapabilities.transfer()), "Failed to connect pos1");
     final EnergyNetwork.EnergyNode energyNode1 = this.net.getNode(pos1);
-    Assertions.assertTrue(this.checkNode(energyNode1, pos1, null, null, null, null, null, null), "Node 1 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode1, pos1, null, null, null, null, null, null), "Node 1 did not match expected");
 
     Assertions.assertTrue(this.net.connect(pos2, TileEntityWithCapabilities.transfer()), "Failed to connect pos2");
     final EnergyNetwork.EnergyNode energyNode2 = this.net.getNode(pos2);
-    Assertions.assertTrue(this.checkNode(energyNode2, pos2, null, null, null, energyNode1, null, null), "Node 2 did not match expected");
-    Assertions.assertTrue(this.checkNode(energyNode1, pos1, null, null, energyNode2, null, null, null), "Node 1 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode2, pos2, null, null, null, energyNode1, null, null), "Node 2 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode1, pos1, null, null, energyNode2, null, null, null), "Node 1 did not match expected");
 
     Assertions.assertTrue(this.net.connect(pos3, TileEntityWithCapabilities.transfer()), "Failed to connect pos3");
     final EnergyNetwork.EnergyNode energyNode3 = this.net.getNode(pos3);
-    Assertions.assertTrue(this.checkNode(energyNode3, pos3, energyNode2, null, null, null, null, null), "Node 3 did not match expected");
-    Assertions.assertTrue(this.checkNode(energyNode2, pos2, null, energyNode3, null, energyNode1, null, null), "Node 2 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode3, pos3, energyNode2, null, null, null, null, null), "Node 3 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode2, pos2, null, energyNode3, null, energyNode1, null, null), "Node 2 did not match expected");
 
     Assertions.assertTrue(this.net.connect(pos4, TileEntityWithCapabilities.transfer()), "Failed to connect pos4");
     final EnergyNetwork.EnergyNode energyNode4 = this.net.getNode(pos4);
-    Assertions.assertTrue(this.checkNode(energyNode4, pos4, energyNode1, null, energyNode3, null, null, null), "Node 4 did not match expected");
-    Assertions.assertTrue(this.checkNode(energyNode3, pos3, energyNode2, null, null, energyNode4, null, null), "Node 3 did not match expected");
-    Assertions.assertTrue(this.checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, null, null), "Node 1 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode4, pos4, energyNode1, null, energyNode3, null, null, null), "Node 4 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode3, pos3, energyNode2, null, null, energyNode4, null, null), "Node 3 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, null, null), "Node 1 did not match expected");
 
     Assertions.assertTrue(this.net.connect(pos5, TileEntityWithCapabilities.transfer()), "Failed to connect pos5");
     final EnergyNetwork.EnergyNode energyNode5 = this.net.getNode(pos5);
-    Assertions.assertTrue(this.checkNode(energyNode5, pos5, null, null, null, null, null, energyNode1), "Node 5 did not match expected");
-    Assertions.assertTrue(this.checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, energyNode5, null), "Node 1 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode5, pos5, null, null, null, null, null, energyNode1), "Node 5 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, energyNode5, null), "Node 1 did not match expected");
 
     Assertions.assertTrue(this.net.connect(pos6, TileEntityWithCapabilities.transfer()), "Failed to connect pos6");
     final EnergyNetwork.EnergyNode energyNode6 = this.net.getNode(pos6);
-    Assertions.assertTrue(this.checkNode(energyNode6, pos6, null, null, null, null, energyNode1, null), "Node 6 did not match expected");
-    Assertions.assertTrue(this.checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, energyNode5, energyNode6), "Node 1 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode6, pos6, null, null, null, null, energyNode1, null), "Node 6 did not match expected");
+    Assertions.assertTrue(checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, energyNode5, energyNode6), "Node 1 did not match expected");
   }
 
-  private boolean checkNode(@Nullable final EnergyNetwork.EnergyNode node, final BlockPos pos, @Nullable final EnergyNetwork.EnergyNode north, @Nullable final EnergyNetwork.EnergyNode south, @Nullable final EnergyNetwork.EnergyNode east, @Nullable final EnergyNetwork.EnergyNode west, @Nullable final EnergyNetwork.EnergyNode up, @Nullable final EnergyNetwork.EnergyNode down) {
+  static boolean checkNode(@Nullable final EnergyNetwork.EnergyNode node, final BlockPos pos, @Nullable final EnergyNetwork.EnergyNode north, @Nullable final EnergyNetwork.EnergyNode south, @Nullable final EnergyNetwork.EnergyNode east, @Nullable final EnergyNetwork.EnergyNode west, @Nullable final EnergyNetwork.EnergyNode up, @Nullable final EnergyNetwork.EnergyNode down) {
     return node != null && node.pos.equals(pos) && node.connection(EnumFacing.NORTH) == north && node.connection(EnumFacing.SOUTH) == south && node.connection(EnumFacing.EAST) == east && node.connection(EnumFacing.WEST) == west && node.connection(EnumFacing.UP) == up && node.connection(EnumFacing.DOWN) == down;
   }
 
@@ -120,10 +124,11 @@ class EnergyNetworkTest {
   }
 
   @Test
-  void testStorageNodesCantConnectToOtherStorageNodesOnlyNode() {
+  void testStorageNodesCantConnectToOtherStorageNodesUnlessOnlyNode() {
     this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
 
-    Assertions.assertFalse(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage()), "Transfer nodes should not be able to connect to each other");
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage()));
+    Assertions.assertFalse(this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage()));
   }
 
   @Test
@@ -251,23 +256,23 @@ class EnergyNetworkTest {
     final EnergyNetwork.EnergyNode west2Node = newNet.getNode(BlockPos.ORIGIN.up().west());
     final EnergyNetwork.EnergyNode source2Node = newNet.getNode(BlockPos.ORIGIN.up().up());
 
-    Assertions.assertTrue(this.checkNode(originNode, BlockPos.ORIGIN, northNode, southNode, eastNode, westNode, origin2Node, source1Node), () -> "origin1 did not match: " + originNode);
-    Assertions.assertTrue(this.checkNode(northNode, BlockPos.ORIGIN.north(), null, originNode, null, null, null, null), () -> "north1 did not match: " + northNode);
-    Assertions.assertTrue(this.checkNode(southNode, BlockPos.ORIGIN.south(), originNode, null, null, null, null, null), () -> "south1 did not match: " + southNode);
-    Assertions.assertTrue(this.checkNode(eastNode, BlockPos.ORIGIN.east(), null, null, null, originNode, null, null), () -> "east1 did not match: " + eastNode);
-    Assertions.assertTrue(this.checkNode(westNode, BlockPos.ORIGIN.west(), null, null, originNode, null, null, null), () -> "west1 did not match: " + westNode);
-    Assertions.assertTrue(this.checkNode(source1Node, BlockPos.ORIGIN.down(), null, null, null, null, originNode, null), () -> "source1 did not match: " + source1Node);
-    Assertions.assertTrue(this.checkNode(origin2Node, BlockPos.ORIGIN.up(), north2Node, south2Node, east2Node, west2Node, source2Node, originNode), () -> "origin2 did not match: " + origin2Node);
-    Assertions.assertTrue(this.checkNode(north2Node, BlockPos.ORIGIN.up().north(), null, origin2Node, null, null, null, null), () -> "north2 did not match: " + north2Node);
-    Assertions.assertTrue(this.checkNode(south2Node, BlockPos.ORIGIN.up().south(), origin2Node, null, null, null, null, null), () -> "south2 did not match: " + south2Node);
-    Assertions.assertTrue(this.checkNode(east2Node, BlockPos.ORIGIN.up().east(), null, null, null, origin2Node, null, null), () -> "east2 did not match: " + east2Node);
-    Assertions.assertTrue(this.checkNode(west2Node, BlockPos.ORIGIN.up().west(), null, null, origin2Node, null, null, null), () -> "west2 did not match: " + west2Node);
-    Assertions.assertTrue(this.checkNode(source2Node, BlockPos.ORIGIN.up().up(), null, null, null, null, null, origin2Node), () -> "source2 did not match: " + source2Node);
+    Assertions.assertTrue(checkNode(originNode, BlockPos.ORIGIN, northNode, southNode, eastNode, westNode, origin2Node, source1Node), () -> "origin1 did not match: " + originNode);
+    Assertions.assertTrue(checkNode(northNode, BlockPos.ORIGIN.north(), null, originNode, null, null, null, null), () -> "north1 did not match: " + northNode);
+    Assertions.assertTrue(checkNode(southNode, BlockPos.ORIGIN.south(), originNode, null, null, null, null, null), () -> "south1 did not match: " + southNode);
+    Assertions.assertTrue(checkNode(eastNode, BlockPos.ORIGIN.east(), null, null, null, originNode, null, null), () -> "east1 did not match: " + eastNode);
+    Assertions.assertTrue(checkNode(westNode, BlockPos.ORIGIN.west(), null, null, originNode, null, null, null), () -> "west1 did not match: " + westNode);
+    Assertions.assertTrue(checkNode(source1Node, BlockPos.ORIGIN.down(), null, null, null, null, originNode, null), () -> "source1 did not match: " + source1Node);
+    Assertions.assertTrue(checkNode(origin2Node, BlockPos.ORIGIN.up(), north2Node, south2Node, east2Node, west2Node, source2Node, originNode), () -> "origin2 did not match: " + origin2Node);
+    Assertions.assertTrue(checkNode(north2Node, BlockPos.ORIGIN.up().north(), null, origin2Node, null, null, null, null), () -> "north2 did not match: " + north2Node);
+    Assertions.assertTrue(checkNode(south2Node, BlockPos.ORIGIN.up().south(), origin2Node, null, null, null, null, null), () -> "south2 did not match: " + south2Node);
+    Assertions.assertTrue(checkNode(east2Node, BlockPos.ORIGIN.up().east(), null, null, null, origin2Node, null, null), () -> "east2 did not match: " + east2Node);
+    Assertions.assertTrue(checkNode(west2Node, BlockPos.ORIGIN.up().west(), null, null, origin2Node, null, null, null), () -> "west2 did not match: " + west2Node);
+    Assertions.assertTrue(checkNode(source2Node, BlockPos.ORIGIN.up().up(), null, null, null, null, null, origin2Node), () -> "source2 did not match: " + source2Node);
 
     Assertions.assertEquals(64.0f, newNet.getAvailableEnergy(), 0.0001f, "Available energy did not match");
   }
 
-  private static <T> Capability<T> newCap(final String name) throws RuntimeException {
+  static <T> Capability<T> newCap(final String name) throws RuntimeException {
     try {
       final Constructor<Capability> constructor = Capability.class.getDeclaredConstructor(String.class, Capability.IStorage.class, Callable.class);
       constructor.setAccessible(true);

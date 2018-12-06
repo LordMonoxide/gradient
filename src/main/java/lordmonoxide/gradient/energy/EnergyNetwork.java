@@ -33,60 +33,23 @@ public class EnergyNetwork {
     return this.nodes.containsKey(pos);
   }
 
-  public List<EnumFacing> canConnect(final BlockPos newNodePos, final TileEntity te) {
-    final List<EnumFacing> facings = new ArrayList<>();
-
-    for(final Map.Entry<BlockPos, EnergyNode> entry : this.nodes.entrySet()) {
-      final BlockPos nodePos = entry.getKey();
-      final EnergyNode node = entry.getValue();
-
-      final EnumFacing facing = BlockPosUtils.areBlocksAdjacent(newNodePos, nodePos);
-
-      if(facing != null) {
-        final IEnergyNode teNode;
-
-        if(te.hasCapability(STORAGE, facing)) {
-          // Storage nodes can't connect to other storage nodes
-          if(node.te.hasCapability(STORAGE, facing.getOpposite())) {
-            continue;
-          }
-
-          teNode = te.getCapability(STORAGE, facing);
-        } else if(te.hasCapability(TRANSFER, facing)) {
-          // Networks are split by storage nodes (a transfer node can connect to a storage node if it is the only node)
-          if(node.te.hasCapability(STORAGE, facing.getOpposite()) && this.nodes.size() > 1) {
-            continue;
-          }
-
-          teNode = te.getCapability(TRANSFER, facing);
-        } else {
-          continue;
-        }
-
-        if(this.canConnect(teNode, node, facing.getOpposite())) {
-          facings.add(facing);
-        }
-      }
-    }
-
-    return facings;
-  }
-
   public boolean connect(final BlockPos newNodePos, final TileEntity te) {
     return this.connect(newNodePos, te, false);
   }
 
-  private boolean connect(final BlockPos newNodePos, final TileEntity te, boolean force) {
+  private boolean connect(final BlockPos newNodePos, final TileEntity te, final boolean force) {
     GradientMod.logger.info("Adding node {} to enet {} @ {}", te, this, newNodePos);
 
+    // First node is always accepted
     if(this.nodes.isEmpty()) {
       GradientMod.logger.info("First node, adding");
       this.nodes.put(newNodePos, new EnergyNode(newNodePos, te));
       return true;
     }
 
+    // If we have a node here already, check to see if it's the same one
     if(this.contains(newNodePos)) {
-      return false;
+      return this.getNode(newNodePos).te == te;
     }
 
     EnergyNode newNode = null;

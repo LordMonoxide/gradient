@@ -16,6 +16,7 @@ public class World implements IBlockAccess {
   private final Map<BlockPos, TileEntity> tes = new HashMap<>();
 
   public TileEntity addTileEntity(final BlockPos pos, final TileEntity te) {
+    te.setPos(pos);
     this.tes.put(pos, te);
     return te;
   }

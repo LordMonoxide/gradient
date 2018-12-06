@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.energy;
 
-import com.google.common.collect.Sets;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -10,10 +9,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class EnergyNetworkManager {
@@ -137,49 +134,5 @@ public class EnergyNetworkManager {
       this.networks.add(network);
       added.add(network);
     }
-  }
-
-  public Set<EnergyNetwork> connect2(final BlockPos newNodePos, final TileEntity te) {
-    final Map<EnergyNetwork, List<EnumFacing>> add = new HashMap<>();
-
-    for(final EnergyNetwork net : this.networks) {
-      final List<EnumFacing> facing = net.canConnect(newNodePos, te);
-
-      if(!facing.isEmpty()) {
-        add.put(net, facing);
-      }
-    }
-
-    if(add.isEmpty()) {
-      // Can't connect to any network
-      final EnergyNetwork net = new EnergyNetwork();
-      net.connect(newNodePos, te);
-      this.networks.add(net);
-      return Sets.newHashSet(net);
-    }
-
-    if(add.size() == 1) {
-      // Can connect to one network
-      for(final EnergyNetwork net : add.keySet()) {
-        net.connect(newNodePos, te);
-      }
-
-      return add.keySet();
-    }
-
-    // There are multiple networks to connect to
-
-
-    for(final Map.Entry<EnergyNetwork, List<EnumFacing>> entry : add.entrySet()) {
-      for(final EnumFacing facing : entry.getValue()) {
-
-      }
-    }
-
-    return add.keySet();
-  }
-
-  private EnergyNetwork attemptToCreateNetwork(final BlockPos newNodePos, final TileEntity te) {
-    return null;
   }
 }

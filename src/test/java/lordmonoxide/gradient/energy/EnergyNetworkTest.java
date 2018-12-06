@@ -33,8 +33,6 @@ class EnergyNetworkTest {
     GradientMod.logger = LogManager.getLogger(GradientMod.MODID);
   }
 
-  //TODO: test TE with multiple storages on one network
-
   @BeforeEach
   void setUp() {
     this.net = new EnergyNetwork();
@@ -162,6 +160,19 @@ class EnergyNetworkTest {
   }
 
   @Test
+  void testTileEntityWithMultipleStorages() {
+    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(STORAGE, new EnergyStorage(10000.0f, 32.0f, 32.0f, 10000.0f), EnumFacing.NORTH, EnumFacing.SOUTH).addCapability(STORAGE, new EnergyStorage(10000.0f, 16.0f, 16.0f, 10000.0f), EnumFacing.EAST, EnumFacing.WEST));
+
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer()), "Failed to add north transfer node");
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer()), "Failed to add north east transfer node");
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer()), "Failed to add east transfer node");
+
+    Assertions.assertTrue(checkNode(this.net.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, this.net.getNode(BlockPos.ORIGIN.north()), null, this.net.getNode(BlockPos.ORIGIN.east()), null, null, null), () -> "Storage node did not match expected: " + this.net.getNode(BlockPos.ORIGIN));
+
+    Assertions.assertEquals(48.0f, this.net.getAvailableEnergy(), 0.0001f, "Available energy did not match");
+  }
+
+  @Test
   void testExtractEnergyBalanced() {
     final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  10.0f, 1000.0f);
     final StorageNode s2 = new StorageNode(1000.0f, 10.0f,  50.0f,   25.0f);
@@ -179,6 +190,22 @@ class EnergyNetworkTest {
     Assertions.assertEquals( 20.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
     Assertions.assertEquals( 15.0f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
     Assertions.assertEquals( 95.0f, s4.getEnergy(), 0.001f, "s4 remaining energy did not match");
+  }
+
+  @Test
+  void testExtractFromTileEntityWithMultipleStorages() {
+    final StorageNode s1 = new StorageNode(10000.0f, 32.0f, 32.0f, 10000.0f);
+    final StorageNode s2 = new StorageNode(10000.0f, 16.0f, 16.0f, 10000.0f);
+
+    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(STORAGE, s1, EnumFacing.NORTH, EnumFacing.SOUTH).addCapability(STORAGE, s2, EnumFacing.EAST, EnumFacing.WEST));
+
+    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+
+    Assertions.assertEquals(40.0f, this.net.extractEnergy(40.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(9976.0f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
+    Assertions.assertEquals(9984.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
   }
 
   @Test

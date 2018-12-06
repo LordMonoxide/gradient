@@ -8,13 +8,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EnergyNetwork {
   @CapabilityInject(IEnergyStorage.class)
@@ -54,6 +54,8 @@ public class EnergyNetwork {
 
     EnergyNode newNode = null;
 
+    Map<EnumFacing, EnergyNode> conditionalConnections = null;
+
     for(final Map.Entry<BlockPos, EnergyNode> entry : this.nodes.entrySet()) {
       final BlockPos nodePos = entry.getKey();
       final EnergyNode node = entry.getValue();
@@ -75,8 +77,15 @@ public class EnergyNetwork {
           teNode = te.getCapability(STORAGE, facing);
         } else if(te.hasCapability(TRANSFER, facing)) {
           // Networks are split by storage nodes (a transfer node can connect to a storage node if it is the only node)
+          // Transfer nodes can also connect to storage nodes if the transfer node will be connecting to another transfer node
           if(!force && node.te.hasCapability(STORAGE, facing.getOpposite()) && this.nodes.size() > 1) {
-            GradientMod.logger.info("Adjacent node is storage - moving on");
+            GradientMod.logger.info("Adjacent node is storage - deferring");
+
+            if(conditionalConnections == null) {
+              conditionalConnections = new EnumMap<>(EnumFacing.class);
+            }
+
+            conditionalConnections.put(facing, node);
             continue;
           }
 
@@ -102,6 +111,26 @@ public class EnergyNetwork {
           newNode.connections.put(facing, node);
           node.connections.put(facing.getOpposite(), newNode);
         }
+      }
+    }
+
+    // If we made a connection, attempt to link up any deferred storages
+    if(newNode != null && conditionalConnections != null) {
+      for(final Map.Entry<EnumFacing, EnergyNode> entry : conditionalConnections.entrySet()) {
+        final EnumFacing facing = entry.getKey();
+        final EnergyNode node = entry.getValue();
+
+        GradientMod.logger.info("Checking deferred connection {}", facing);
+
+        if(!this.canConnect(te.getCapability(TRANSFER, facing), node, facing.getOpposite())) {
+          GradientMod.logger.info("Adjacent node is not connectable");
+          continue;
+        }
+
+        GradientMod.logger.info("Connecting!");
+
+        newNode.connections.put(facing, node);
+        node.connections.put(facing.getOpposite(), newNode);
       }
     }
 
@@ -136,6 +165,8 @@ public class EnergyNetwork {
     return this.nodes.get(pos);
   }
 
+  private final Set<IEnergyStorage> availableEnergySources = new HashSet<>();
+
   public float getAvailableEnergy() {
     float available = 0.0f;
 
@@ -144,27 +175,22 @@ public class EnergyNetwork {
         if(node.te.hasCapability(STORAGE, connection.getKey())) {
           final IEnergyStorage storage = node.te.getCapability(STORAGE, connection.getKey());
 
-          if(storage.canSource() && connection.getValue() != null) {
+          if(storage.canSource() && connection.getValue() != null && !this.availableEnergySources.contains(storage)) {
+            this.availableEnergySources.add(storage);
             available += storage.extractEnergy(storage.getEnergy(), true);
-            break;
           }
         }
       }
     }
 
+    this.availableEnergySources.clear();
+
     return available;
   }
 
-  @Override
-  public String toString() {
-    return super.toString() + " (" + this.nodes.size() + " nodes)";
-  }
-
-  private final List<IEnergyStorage> requestEnergySources = new ArrayList<>();
+  private final Set<IEnergyStorage> extractEnergySources = new HashSet<>();
 
   public float extractEnergy(final float amount) {
-    this.requestEnergySources.clear();
-
     // Find all of the energy sources
     // NOTE: the break prevents sources from getting added twice
     for(final EnergyNode node : this.nodes.values()) {
@@ -172,24 +198,23 @@ public class EnergyNetwork {
         if(node.te.hasCapability(STORAGE, connection.getKey())) {
           final IEnergyStorage storage = node.te.getCapability(STORAGE, connection.getKey());
 
-          if(storage.canSource() && connection.getValue() != null) {
-            this.requestEnergySources.add(storage);
-            break;
+          if(storage.canSource() && connection.getValue() != null && !this.extractEnergySources.contains(storage)) {
+            this.extractEnergySources.add(storage);
           }
         }
       }
     }
 
-    if(this.requestEnergySources.isEmpty()) {
+    if(this.extractEnergySources.isEmpty()) {
       return 0.0f;
     }
 
-    float share = amount / this.requestEnergySources.size();
+    float share = amount / this.extractEnergySources.size();
     float deficit = 0.0f;
     float total = 0.0f;
 
     while(total < amount) {
-      for(final Iterator<IEnergyStorage> it = this.requestEnergySources.iterator(); it.hasNext(); ) {
+      for(final Iterator<IEnergyStorage> it = this.extractEnergySources.iterator(); it.hasNext(); ) {
         final IEnergyStorage source = it.next();
 
         final float sourced = source.extractEnergy(share, false);
@@ -202,15 +227,22 @@ public class EnergyNetwork {
         total += sourced;
       }
 
-      if(deficit == 0.0f || this.requestEnergySources.isEmpty()) {
+      if(deficit == 0.0f || this.extractEnergySources.isEmpty()) {
         break;
       }
 
-      share = deficit / this.requestEnergySources.size();
+      share = deficit / this.extractEnergySources.size();
       deficit = 0.0f;
     }
 
+    this.extractEnergySources.clear();
+
     return total;
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + " (" + this.nodes.size() + " nodes)";
   }
 
   public static final class EnergyNode {

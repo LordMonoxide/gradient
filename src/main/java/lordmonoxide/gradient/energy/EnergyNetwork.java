@@ -25,6 +25,10 @@ public class EnergyNetwork {
 
   private final Map<BlockPos, EnergyNode> nodes = new HashMap<>();
 
+  public int size() {
+    return this.nodes.size();
+  }
+
   public boolean contains(final BlockPos pos) {
     return this.nodes.containsKey(pos);
   }

@@ -233,7 +233,8 @@ class EnergyNetworkTest {
     final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  0.0f, 1000.0f);
 
     this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(STORAGE, s1));
-    Assertions.assertEquals( 0.0f, this.net.extractEnergy(50.0f), 0.001f, "Extracted energy did not match");
+    Assertions.assertEquals(0.0f, this.net.extractEnergy(50.0f), 0.001f, "Extracted energy did not match");
+    Assertions.assertEquals(1000.0f, s1.getEnergy(), 0.0001f, "Sink energy does not match");
   }
 
   @Test

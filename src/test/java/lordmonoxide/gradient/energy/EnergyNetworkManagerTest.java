@@ -435,4 +435,109 @@ public class EnergyNetworkManagerTest {
 
     Assertions.assertTrue(EnergyNetworkTest.checkNode(network.getNode(storage.getPos()), storage.getPos(), network.getNode(origin.getPos()), null, network.getNode(southEast.getPos()), network.getNode(southWest.getPos()), null, null));
   }
+
+  @Test
+  void testExtractingEnergySingleNetwork() {
+    final IEnergyStorage sourceStorage = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceTile = this.world.addTileEntity(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorage));
+    this.manager.connect(sourceTile.getPos(), sourceTile);
+
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    this.manager.connect(transfer.getPos(), transfer);
+
+    final IEnergyStorage sinkStorage = new StorageNode(10000.0f, 32.0f, 0.0f, 100.0f);
+    final TileEntity sinkTile = this.world.addTileEntity(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sinkStorage));
+    this.manager.connect(sinkTile.getPos(), sinkTile);
+
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    Assertions.assertEquals(32.0f, this.manager.extractEnergy(sinkTile.getPos(), 100.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(968.0f, sourceStorage.getEnergy(), 0.0001f, "Source energy does not match");
+  }
+
+  @Test
+  void testExtractingEnergyMultipleNetworksBalanced() {
+    final IEnergyStorage sourceStorageNorth = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceNorth = this.world.addTileEntity(BlockPos.ORIGIN.north().north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorageNorth));
+    this.manager.connect(sourceNorth.getPos(), sourceNorth);
+
+    final TileEntity transferNorth = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferNorth.getPos(), transferNorth);
+
+    final IEnergyStorage sourceStorageSouth = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceSouth = this.world.addTileEntity(BlockPos.ORIGIN.south().south(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorageSouth));
+    this.manager.connect(sourceSouth.getPos(), sourceSouth);
+
+    final TileEntity transferSouth = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferSouth.getPos(), transferSouth);
+
+    final IEnergyStorage sourceStorageEast = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceEast = this.world.addTileEntity(BlockPos.ORIGIN.east().east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorageEast));
+    this.manager.connect(sourceEast.getPos(), sourceEast);
+
+    final TileEntity transferEast = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferEast.getPos(), transferEast);
+
+    final IEnergyStorage sourceStorageWest = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceWest = this.world.addTileEntity(BlockPos.ORIGIN.west().west(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorageWest));
+    this.manager.connect(sourceWest.getPos(), sourceWest);
+
+    final TileEntity transferWest = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferWest.getPos(), transferWest);
+
+    final IEnergyStorage sinkStorage = new StorageNode(10000.0f, 32.0f, 0.0f, 100.0f);
+    final TileEntity sink = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sinkStorage));
+    this.manager.connect(sink.getPos(), sink);
+
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have one network");
+
+    Assertions.assertEquals(128.0f, this.manager.extractEnergy(sink.getPos(), 1000.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(968.0f, sourceStorageNorth.getEnergy(), 0.0001f, "Source north energy does not match");
+    Assertions.assertEquals(968.0f, sourceStorageSouth.getEnergy(), 0.0001f, "Source south energy does not match");
+    Assertions.assertEquals(968.0f, sourceStorageEast.getEnergy(), 0.0001f, "Source east energy does not match");
+    Assertions.assertEquals(968.0f, sourceStorageWest.getEnergy(), 0.0001f, "Source west energy does not match");
+  }
+
+  @Test
+  void testExtractingEnergyMultipleNetworksImbalanced() {
+    final IEnergyStorage sourceStorageNorth = new StorageNode(10000.0f, 0.0f, 20.0f, 1000.0f);
+    final TileEntity sourceNorth = this.world.addTileEntity(BlockPos.ORIGIN.north().north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorageNorth));
+    this.manager.connect(sourceNorth.getPos(), sourceNorth);
+
+    final TileEntity transferNorth = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferNorth.getPos(), transferNorth);
+
+    final IEnergyStorage sourceStorageSouth = new StorageNode(10000.0f, 0.0f, 64.0f, 1000.0f);
+    final TileEntity sourceSouth = this.world.addTileEntity(BlockPos.ORIGIN.south().south(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorageSouth));
+    this.manager.connect(sourceSouth.getPos(), sourceSouth);
+
+    final TileEntity transferSouth = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferSouth.getPos(), transferSouth);
+
+    final IEnergyStorage sourceStorageEast = new StorageNode(10000.0f, 0.0f, 64.0f, 1000.0f);
+    final TileEntity sourceEast = this.world.addTileEntity(BlockPos.ORIGIN.east().east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorageEast));
+    this.manager.connect(sourceEast.getPos(), sourceEast);
+
+    final TileEntity transferEast = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferEast.getPos(), transferEast);
+
+    final IEnergyStorage sourceStorageWest = new StorageNode(10000.0f, 0.0f, 64.0f, 1000.0f);
+    final TileEntity sourceWest = this.world.addTileEntity(BlockPos.ORIGIN.west().west(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sourceStorageWest));
+    this.manager.connect(sourceWest.getPos(), sourceWest);
+
+    final TileEntity transferWest = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferWest.getPos(), transferWest);
+
+    final IEnergyStorage sinkStorage = new StorageNode(10000.0f, 32.0f, 0.0f, 100.0f);
+    final TileEntity sink = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sinkStorage));
+    this.manager.connect(sink.getPos(), sink);
+
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    Assertions.assertEquals(128.0f, this.manager.extractEnergy(sink.getPos(), 128.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(980.0f, sourceStorageNorth.getEnergy(), 0.0001f, "Source north energy does not match");
+    Assertions.assertEquals(964.0f, sourceStorageSouth.getEnergy(), 0.0001f, "Source south energy does not match");
+    Assertions.assertEquals(964.0f, sourceStorageEast.getEnergy(), 0.0001f, "Source east energy does not match");
+    Assertions.assertEquals(964.0f, sourceStorageWest.getEnergy(), 0.0001f, "Source west energy does not match");
+  }
 }

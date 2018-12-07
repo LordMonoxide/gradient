@@ -10,6 +10,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -134,5 +135,69 @@ public class EnergyNetworkManager {
       this.networks.add(network);
       added.add(network);
     }
+  }
+
+  private final Set<EnergyNetwork> extractNetworks = new HashSet<>();
+
+  public float extractEnergy(final BlockPos pos, final float amount) {
+    for(final EnergyNetwork network : this.networks) {
+      if(network.contains(pos)) {
+        final EnergyNetwork.EnergyNode node = network.getNode(pos);
+
+        for(final EnumFacing side : EnumFacing.VALUES) {
+          final EnergyNetwork.EnergyNode connection = node.connection(side);
+
+          if(connection != null) {
+            final EnumFacing opposite = side.getOpposite();
+
+            if(connection.te.hasCapability(STORAGE, opposite)) {
+              if(connection.te.getCapability(STORAGE, opposite).canSource()) {
+                this.extractNetworks.add(network);
+                break;
+              }
+            } else if(connection.te.hasCapability(TRANSFER, opposite)) {
+              if(connection.te.getCapability(TRANSFER, opposite).canSource()) {
+                this.extractNetworks.add(network);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if(this.extractNetworks.isEmpty()) {
+      return 0.0f;
+    }
+
+    float share = amount / this.extractNetworks.size();
+    float deficit = 0.0f;
+    float total = 0.0f;
+
+    while(total < amount) {
+      for(final Iterator<EnergyNetwork> it = this.extractNetworks.iterator(); it.hasNext(); ) {
+        final EnergyNetwork network = it.next();
+
+        final float sourced = network.extractEnergy(share);
+
+        if(sourced < share) {
+          deficit += share - sourced;
+          it.remove();
+        }
+
+        total += sourced;
+      }
+
+      if(deficit == 0.0f || this.extractNetworks.isEmpty()) {
+        break;
+      }
+
+      share = deficit / this.extractNetworks.size();
+      deficit = 0.0f;
+    }
+
+    this.extractNetworks.clear();
+
+    return total;
   }
 }

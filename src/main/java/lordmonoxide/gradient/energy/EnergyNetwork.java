@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -192,7 +193,6 @@ public class EnergyNetwork {
 
   public float extractEnergy(final float amount) {
     // Find all of the energy sources
-    // NOTE: the break prevents sources from getting added twice
     for(final EnergyNode node : this.nodes.values()) {
       for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
         if(node.te.hasCapability(STORAGE, connection.getKey())) {
@@ -255,6 +255,7 @@ public class EnergyNetwork {
       this.te  = te;
     }
 
+    @Nullable
     public EnergyNode connection(final EnumFacing side) {
       return this.connections.get(side);
     }

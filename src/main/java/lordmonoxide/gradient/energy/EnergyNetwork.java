@@ -1,5 +1,8 @@
 package lordmonoxide.gradient.energy;
 
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.utils.BlockPosUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -9,11 +12,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -238,6 +243,116 @@ public class EnergyNetwork {
     this.extractEnergySources.clear();
 
     return total;
+  }
+
+  public List<BlockPos> pathFind(final BlockPos start, final BlockPos goal) {
+    final Set<BlockPos> closed = new HashSet<>();
+    final Set<BlockPos> open = new HashSet<>();
+
+    final Map<BlockPos, BlockPos> cameFrom = new HashMap<>();
+    final Object2IntMap<BlockPos> gScore = new Object2IntOpenHashMap<>();
+    final Object2IntMap<BlockPos> fScore = new Object2IntLinkedOpenHashMap<>();
+
+    gScore.defaultReturnValue(Integer.MAX_VALUE);
+    fScore.defaultReturnValue(Integer.MAX_VALUE);
+
+    open.add(start);
+    gScore.put(start, 0);
+    fScore.put(start, this.pathFindHeuristic(start, goal));
+
+    while(!open.isEmpty()) {
+      final BlockPos current = this.getLowest(fScore);
+
+      GradientMod.logger.info("Current = " + current);
+
+      if(current.equals(goal)) {
+        GradientMod.logger.info("GOAL!");
+        return this.reconstructPath(cameFrom, goal);
+      }
+
+      open.remove(current);
+      fScore.removeInt(current);
+      closed.add(current);
+
+      final EnergyNode currentNode = this.getNode(current);
+
+      for(final EnumFacing side : EnumFacing.VALUES) {
+        GradientMod.logger.info("Checking side " + side);
+
+        final EnergyNode neighbourNode = currentNode.connection(side);
+
+        if(neighbourNode == null) {
+          GradientMod.logger.info("No node, skipping");
+          continue;
+        }
+
+        final BlockPos neighbour = current.offset(side);
+
+        GradientMod.logger.info("Found " + neighbour);
+
+        if(!neighbourNode.te.hasCapability(TRANSFER, side.getOpposite()) && !neighbour.equals(goal)) {
+          GradientMod.logger.info("Not a transfer node, skipping");
+          continue;
+        }
+
+        if(closed.contains(neighbour)) {
+          GradientMod.logger.info("Already visited, skipping");
+          continue;
+        }
+
+        final int g = gScore.get(current) + 1; // 1 = distance
+
+        GradientMod.logger.info("New G = " + g + ", current G = " + gScore.getInt(neighbour));
+
+        if(g >= gScore.getInt(neighbour)) {
+          GradientMod.logger.info("G >= neighbour");
+          continue;
+        }
+
+        open.add(neighbour);
+        cameFrom.put(neighbour, current);
+        gScore.put(neighbour, g);
+        fScore.put(neighbour, g + this.pathFindHeuristic(neighbour, goal));
+
+        GradientMod.logger.info("Adding node " + neighbour + " G = " + gScore.getInt(neighbour) + " F = " + fScore.getInt(neighbour));
+      }
+    }
+
+    GradientMod.logger.info("Pathfinding failed");
+
+    return new ArrayList<>();
+  }
+
+  private List<BlockPos> reconstructPath(final Map<BlockPos, BlockPos> cameFrom, final BlockPos goal) {
+    final List<BlockPos> path = new ArrayList<>();
+    path.add(goal);
+
+    BlockPos current = goal;
+
+    while(cameFrom.containsKey(current)) {
+      current = cameFrom.get(current);
+      path.add(current);
+    }
+
+    return path;
+  }
+
+  private int pathFindHeuristic(final BlockPos current, final BlockPos goal) {
+    return (int)current.distanceSq(goal);
+  }
+
+  private BlockPos getLowest(final Object2IntMap<BlockPos> values) {
+    int lowest = Integer.MAX_VALUE;
+    BlockPos pos = null;
+
+    for(final Object2IntMap.Entry<BlockPos> entry : values.object2IntEntrySet()) {
+      if(entry.getIntValue() <= lowest) {
+        lowest = entry.getIntValue();
+        pos = entry.getKey();
+      }
+    }
+
+    return pos;
   }
 
   @Override

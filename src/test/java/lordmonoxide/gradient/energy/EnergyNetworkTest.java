@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.energy;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.utils.BlockPosUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 @DisplayName("Energy Network")
@@ -298,6 +300,67 @@ class EnergyNetworkTest {
     Assertions.assertTrue(checkNode(source2Node, BlockPos.ORIGIN.up().up(), null, null, null, null, null, origin2Node), () -> "source2 did not match: " + source2Node);
 
     Assertions.assertEquals(64.0f, newNet.getAvailableEnergy(), 0.0001f, "Available energy did not match");
+  }
+
+  @Test
+  void testBasicPathfinding() {
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage()));
+
+    final List<BlockPos> path = this.net.pathFind(BlockPos.ORIGIN.south(), BlockPos.ORIGIN.north());
+
+    this.verifyPath(path);
+  }
+
+  @Test
+  void testPathfindingMultiplePaths() {
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north().west(), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.storage()));
+    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south().west(), TileEntityWithCapabilities.storage()));
+
+    final List<BlockPos> path = this.net.pathFind(BlockPos.ORIGIN.north().east(), BlockPos.ORIGIN.south().west());
+
+    this.verifyPath(path);
+  }
+
+  @Test
+  void testPathfindingTwoBranches() {
+    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0, -1), TileEntityWithCapabilities.storage()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0,  0), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  0), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  1), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  2), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  3), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  0), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  1), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  2), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  3), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0,  3), TileEntityWithCapabilities.storage()));
+
+    final List<BlockPos> path = this.net.pathFind(new BlockPos(0, 0, -1), new BlockPos(0, 0, 3));
+
+    this.verifyPath(path);
+  }
+
+  private void verifyPath(final List<BlockPos> path) {
+    Assertions.assertTrue(this.net.getNode(path.get(0)).te.hasCapability(STORAGE, BlockPosUtils.getBlockFacing(path.get(0), path.get(1))), "Start node was not storage");
+    Assertions.assertTrue(this.net.getNode(path.get(path.size() - 1)).te.hasCapability(STORAGE, BlockPosUtils.getBlockFacing(path.get(path.size() - 1), path.get(path.size() - 2))), "End node was not storage");
+
+    for(int i = 0; i < path.size() - 1; i++) {
+      Assertions.assertNotNull(BlockPosUtils.areBlocksAdjacent(path.get(i), path.get(i + 1)), "Positions were not adjacent");
+    }
+
+    for(int i = 1; i < path.size() - 1; i++) {
+      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, BlockPosUtils.getBlockFacing(path.get(i), path.get(i + 1))), "Intermediate node was not transfer");
+      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, BlockPosUtils.getBlockFacing(path.get(i), path.get(i - 1))), "Intermediate node was not transfer");
+    }
   }
 
   static <T> Capability<T> newCap(final String name) throws RuntimeException {

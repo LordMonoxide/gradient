@@ -187,7 +187,7 @@ class EnergyNetworkTest {
     this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(STORAGE, s3));
     this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(STORAGE, s4));
 
-    Assertions.assertEquals(20.0f, this.net.extractEnergy(20.0f), 0.001f, "Extracted energy did not match");
+    Assertions.assertEquals(20.0f, this.net.requestEnergy(BlockPos.ORIGIN, 20.0f), 0.001f, "Extracted energy did not match");
     Assertions.assertEquals(995.0f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
     Assertions.assertEquals( 20.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
     Assertions.assertEquals( 15.0f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
@@ -205,7 +205,7 @@ class EnergyNetworkTest {
     this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
     this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
 
-    Assertions.assertEquals(40.0f, this.net.extractEnergy(40.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(40.0f, this.net.requestEnergy(BlockPos.ORIGIN, 40.0f), 0.0001f, "Extracted energy did not match");
     Assertions.assertEquals(9976.0f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
     Assertions.assertEquals(9984.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
   }
@@ -223,7 +223,7 @@ class EnergyNetworkTest {
     this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(STORAGE, s3));
     this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(STORAGE, s4));
 
-    Assertions.assertEquals( 50.0000f, this.net.extractEnergy(50.0f), 0.001f, "Extracted energy did not match");
+    Assertions.assertEquals( 50.0000f, this.net.requestEnergy(BlockPos.ORIGIN, 50.0f), 0.001f, "Extracted energy did not match");
     Assertions.assertEquals(990.0000f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
     Assertions.assertEquals( 11.6667f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
     Assertions.assertEquals(  6.6667f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
@@ -235,7 +235,7 @@ class EnergyNetworkTest {
     final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  0.0f, 1000.0f);
 
     this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(STORAGE, s1));
-    Assertions.assertEquals(0.0f, this.net.extractEnergy(50.0f), 0.001f, "Extracted energy did not match");
+    Assertions.assertEquals(0.0f, this.net.requestEnergy(BlockPos.ORIGIN, 50.0f), 0.001f, "Extracted energy did not match");
     Assertions.assertEquals(1000.0f, s1.getEnergy(), 0.0001f, "Sink energy does not match");
   }
 
@@ -328,6 +328,47 @@ class EnergyNetworkTest {
     final List<BlockPos> path = this.net.pathFind(BlockPos.ORIGIN.north().east(), BlockPos.ORIGIN.south().west());
 
     this.verifyPath(path);
+  }
+
+  @Test
+  void testEnergyTransferredThroughCorrectTransferNodes() {
+    final StorageNode sourceEast = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);
+    final StorageNode sourceWest = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);
+    final TransferNode transferOrigin = new TransferNode();
+    final TransferNode transferEast = new TransferNode();
+    final TransferNode transferWest = new TransferNode();
+    final TransferNode transferOrigin2 = new TransferNode();
+    final TransferNode transferEast2 = new TransferNode();
+    final TransferNode transferWest2 = new TransferNode();
+    final TransferNode transferEast3 = new TransferNode();
+    final TransferNode transferWest3 = new TransferNode();
+    final TransferNode transferWest4 = new TransferNode();
+    final StorageNode sink = new StorageNode(10000.0f, 32.0f, 0.0f, 0.0f);
+
+    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(TRANSFER, transferOrigin));
+    this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferEast));
+    this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferWest));
+    this.net.connect(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferOrigin2));
+    this.net.connect(BlockPos.ORIGIN.north().east(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferEast2));
+    this.net.connect(BlockPos.ORIGIN.north().west(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferWest2));
+    this.net.connect(BlockPos.ORIGIN.north().north().east(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferEast3));
+    this.net.connect(BlockPos.ORIGIN.north().north().west(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferWest3));
+    this.net.connect(BlockPos.ORIGIN.north().north().north().west(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferWest4));
+    this.net.connect(BlockPos.ORIGIN.south().east(), new TileEntityWithCapabilities().addCapability(STORAGE, sourceEast));
+    this.net.connect(BlockPos.ORIGIN.south().west(), new TileEntityWithCapabilities().addCapability(STORAGE, sourceWest));
+    this.net.connect(BlockPos.ORIGIN.north().north().north(), new TileEntityWithCapabilities().addCapability(STORAGE, sink));
+
+    Assertions.assertEquals(20.0f, this.net.requestEnergy(BlockPos.ORIGIN.north().north().north(), 32.0f), 0.0001f, "Extracted energy did not match");
+
+    Assertions.assertEquals(10.0f, transferOrigin.getTransferred(), 0.0001f);
+    Assertions.assertEquals(10.0f, transferEast.getTransferred(), 0.0001f);
+    Assertions.assertEquals(10.0f, transferWest.getTransferred(), 0.0001f);
+    Assertions.assertEquals(10.0f, transferOrigin2.getTransferred(), 0.0001f);
+    Assertions.assertEquals( 0.0f, transferEast2.getTransferred(), 0.0001f);
+    Assertions.assertEquals(20.0f, transferWest2.getTransferred(), 0.0001f);
+    Assertions.assertEquals( 0.0f, transferEast3.getTransferred(), 0.0001f);
+    Assertions.assertEquals(20.0f, transferWest3.getTransferred(), 0.0001f);
+    Assertions.assertEquals(20.0f, transferWest4.getTransferred(), 0.0001f);
   }
 
   @Test

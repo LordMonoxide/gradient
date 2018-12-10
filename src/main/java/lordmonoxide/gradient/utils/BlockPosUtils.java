@@ -31,6 +31,9 @@ public final class BlockPosUtils {
     return null;
   }
 
+  /**
+   * Gets the facing of <tt>origin</tt> that points towards <tt>other</tt>
+   */
   public static EnumFacing getBlockFacing(final BlockPos origin, final BlockPos other) {
     return EnumFacing.getFacingFromVector(other.getX() - origin.getX(), other.getY() - origin.getY(), other.getZ() - origin.getZ());
   }

@@ -178,7 +178,7 @@ public class EnergyNetworkManager {
       for(final Iterator<EnergyNetwork> it = this.extractNetworks.iterator(); it.hasNext(); ) {
         final EnergyNetwork network = it.next();
 
-        final float sourced = network.extractEnergy(share);
+        final float sourced = network.requestEnergy(pos, share);
 
         if(sourced < share) {
           deficit += share - sourced;

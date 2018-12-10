@@ -194,17 +194,18 @@ public class EnergyNetwork {
     return available;
   }
 
-  private final Set<IEnergyStorage> extractEnergySources = new HashSet<>();
+  private final Map<IEnergyStorage, List<BlockPos>> extractEnergySources = new HashMap<>();
 
-  public float extractEnergy(final float amount) {
+  public float requestEnergy(final BlockPos sink, final float amount) {
     // Find all of the energy sources
     for(final EnergyNode node : this.nodes.values()) {
       for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
         if(node.te.hasCapability(STORAGE, connection.getKey())) {
           final IEnergyStorage storage = node.te.getCapability(STORAGE, connection.getKey());
 
-          if(storage.canSource() && connection.getValue() != null && !this.extractEnergySources.contains(storage)) {
-            this.extractEnergySources.add(storage);
+          if(storage.canSource() && connection.getValue() != null && !this.extractEnergySources.containsKey(storage)) {
+            final List<BlockPos> path = this.pathFind(sink, node.pos);
+            this.extractEnergySources.put(storage, path);
           }
         }
       }
@@ -219,14 +220,30 @@ public class EnergyNetwork {
     float total = 0.0f;
 
     while(total < amount) {
-      for(final Iterator<IEnergyStorage> it = this.extractEnergySources.iterator(); it.hasNext(); ) {
-        final IEnergyStorage source = it.next();
+      for(final Iterator<Map.Entry<IEnergyStorage, List<BlockPos>>> it = this.extractEnergySources.entrySet().iterator(); it.hasNext(); ) {
+        final Map.Entry<IEnergyStorage, List<BlockPos>> entry = it.next();
+
+        final IEnergyStorage source = entry.getKey();
+        final List<BlockPos> path = entry.getValue();
 
         final float sourced = source.extractEnergy(share, false);
 
         if(sourced < share) {
           deficit += share - sourced;
           it.remove();
+        }
+
+        for(int i = 1; i < path.size() - 1; i++) {
+          final BlockPos pathPos = path.get(i);
+          final EnumFacing facingFrom = BlockPosUtils.getBlockFacing(pathPos, path.get(i - 1));
+          final EnumFacing facingTo = BlockPosUtils.getBlockFacing(pathPos, path.get(i + 1));
+          final TileEntity transferEntity = this.getNode(pathPos).te;
+
+          if(transferEntity.hasCapability(TRANSFER, facingFrom)) {
+            final IEnergyTransfer transfer = transferEntity.getCapability(TRANSFER, facingFrom);
+            GradientMod.logger.info("Routing {} through {}", sourced, pathPos);
+            transfer.transfer(sourced, facingFrom, facingTo);
+          }
         }
 
         total += sourced;

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 public class EnergyNetworkManagerTest {
-  public static final EnergyNetwork[] EMPTY_ENERGY_NETWORKS = new EnergyNetwork[0];
+  private static final EnergyNetwork[] EMPTY_ENERGY_NETWORKS = new EnergyNetwork[0];
   private World world;
   private EnergyNetworkManager manager;
 

@@ -371,6 +371,39 @@ class EnergyNetworkTest {
   }
 
   @Test
+  void testSeeminglyShorterPathDoesNotReachGoal() {
+    this.net.connect(new BlockPos(0, 0,  1), TileEntityWithCapabilities.storage());
+
+    this.net.connect(new BlockPos(0, 0,  0), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(0, 0, -1), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(0, 0, -2), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(0, 0, -3), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(0, 0, -4), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(0, 0, -5), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(0, 0, -6), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(0, 0, -7), TileEntityWithCapabilities.transfer());
+
+    this.net.connect(new BlockPos(-1, 0, 0), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, 0), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -1), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -2), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -3), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -4), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -5), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -6), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -7), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -8), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-2, 0, -9), TileEntityWithCapabilities.transfer());
+    this.net.connect(new BlockPos(-1, 0, -9), TileEntityWithCapabilities.transfer());
+
+    this.net.connect(new BlockPos(0, 0,  -9), TileEntityWithCapabilities.storage());
+
+    final List<BlockPos> path = this.net.pathFind(new BlockPos(0, 0, 1), EnumFacing.NORTH, new BlockPos(0, 0, -9), EnumFacing.WEST);
+    this.verifyPath(path);
+    Assertions.assertEquals(15, path.size(), "Path was the wrong size");
+  }
+
+  @Test
   void testEnergyTransferredThroughCorrectTransferNodes() {
     final StorageNode sourceEast = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);
     final StorageNode sourceWest = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);

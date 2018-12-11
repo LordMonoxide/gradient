@@ -358,6 +358,7 @@ public class EnergyNetwork {
     }
 
     this.open.add(neighbourTuple);
+    this.closed.add(new Tuple<>(currentTuple.a, side));
     this.cameFrom.put(neighbourTuple, currentTuple);
     this.gScore.put(neighbourTuple, g);
     this.fScore.put(neighbourTuple, g + this.pathFindHeuristic(neighbour, goalTuple.a));

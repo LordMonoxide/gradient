@@ -9,9 +9,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class EnergyNetworkManager {
@@ -24,8 +26,50 @@ public class EnergyNetworkManager {
   private final List<EnergyNetwork> networks = new ArrayList<>();
   private final IBlockAccess world;
 
+  private final Map<BlockPos, TileEntity> allNodes = new HashMap<>();
+
   public EnergyNetworkManager(final IBlockAccess world) {
     this.world = world;
+  }
+
+  private final Map<IEnergyStorage, BlockPos> tickStorageNodes = new HashMap<>();
+  private final Set<IEnergyTransfer> tickTransferNodes = new HashSet<>();
+
+  public void tick() {
+    GradientMod.logger.info("Ticking {}", this);
+
+    this.tickStorageNodes.clear();
+    this.tickTransferNodes.clear();
+
+    for(final TileEntity te : this.allNodes.values()) {
+      GradientMod.logger.info("Checking {}", te);
+      for(final EnumFacing facing : EnumFacing.VALUES) {
+        if(te.hasCapability(STORAGE, facing)) {
+          this.tickStorageNodes.put(te.getCapability(STORAGE, facing), te.getPos());
+        } else if(te.hasCapability(TRANSFER, facing)) {
+          this.tickTransferNodes.add(te.getCapability(TRANSFER, facing));
+        }
+      }
+    }
+
+    for(final IEnergyTransfer transfer : this.tickTransferNodes) {
+      GradientMod.logger.info("Resetting transfer {}", transfer);
+      transfer.resetEnergyTransferred();
+    }
+
+    for(final Map.Entry<IEnergyStorage, BlockPos> entry : this.tickStorageNodes.entrySet()) {
+      final IEnergyStorage storage = entry.getKey();
+      final BlockPos pos = entry.getValue();
+
+      GradientMod.logger.info("Ticking storage {} @ {}", storage, pos);
+
+      final float requested = storage.getRequestedEnergy();
+
+      if(requested != 0.0f) {
+        final float energy = this.requestEnergy(pos, requested);
+        storage.sinkEnergy(energy, false);
+      }
+    }
   }
 
   public int size() {
@@ -109,6 +153,8 @@ public class EnergyNetworkManager {
       added.add(network);
     }
 
+    this.allNodes.put(newNodePos, newTe);
+
     return added;
   }
 
@@ -139,10 +185,10 @@ public class EnergyNetworkManager {
 
   private final Set<EnergyNetwork> extractNetworks = new HashSet<>();
 
-  public float extractEnergy(final BlockPos pos, final float amount) {
+  public float requestEnergy(final BlockPos requestPosition, final float amount) {
     for(final EnergyNetwork network : this.networks) {
-      if(network.contains(pos)) {
-        final EnergyNetwork.EnergyNode node = network.getNode(pos);
+      if(network.contains(requestPosition)) {
+        final EnergyNetwork.EnergyNode node = network.getNode(requestPosition);
 
         for(final EnumFacing side : EnumFacing.VALUES) {
           final EnergyNetwork.EnergyNode connection = node.connection(side);
@@ -178,7 +224,7 @@ public class EnergyNetworkManager {
       for(final Iterator<EnergyNetwork> it = this.extractNetworks.iterator(); it.hasNext(); ) {
         final EnergyNetwork network = it.next();
 
-        final float sourced = network.requestEnergy(pos, share);
+        final float sourced = network.requestEnergy(requestPosition, share);
 
         if(sourced < share) {
           deficit += share - sourced;

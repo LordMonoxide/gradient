@@ -183,7 +183,7 @@ public class EnergyNetwork {
 
           if(storage.canSource() && connection.getValue() != null && !this.availableEnergySources.contains(storage)) {
             this.availableEnergySources.add(storage);
-            available += storage.extractEnergy(storage.getEnergy(), true);
+            available += storage.sourceEnergy(storage.getEnergy(), true);
           }
         }
       }
@@ -226,7 +226,7 @@ public class EnergyNetwork {
         final IEnergyStorage source = entry.getKey();
         final List<BlockPos> path = entry.getValue();
 
-        final float sourced = source.extractEnergy(share, false);
+        final float sourced = source.sourceEnergy(share, false);
 
         if(sourced < share) {
           deficit += share - sourced;

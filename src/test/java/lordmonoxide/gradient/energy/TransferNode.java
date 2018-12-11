@@ -10,6 +10,16 @@ public class TransferNode implements IEnergyTransfer {
     this.transferred += amount;
   }
 
+  @Override
+  public float getEnergyTransferred() {
+    return this.transferred;
+  }
+
+  @Override
+  public void resetEnergyTransferred() {
+    this.transferred = 0.0f;
+  }
+
   public float getTransferred() {
     return this.transferred;
   }

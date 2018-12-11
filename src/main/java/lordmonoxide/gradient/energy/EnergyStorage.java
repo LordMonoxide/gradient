@@ -2,8 +2,8 @@ package lordmonoxide.gradient.energy;
 
 public class EnergyStorage implements IEnergyStorage {
   private final float capacity;
-  private final float maxReceive;
-  private final float maxExtract;
+  private final float maxSink;
+  private final float maxSource;
   float energy;
 
   public EnergyStorage(final float capacity) {
@@ -14,20 +14,20 @@ public class EnergyStorage implements IEnergyStorage {
     this(capacity, maxTransfer, maxTransfer, 0);
   }
 
-  public EnergyStorage(final float capacity, final float maxReceive, final float maxExtract) {
-    this(capacity, maxReceive, maxExtract, 0);
+  public EnergyStorage(final float capacity, final float maxSink, final float maxSource) {
+    this(capacity, maxSink, maxSource, 0);
   }
 
-  public EnergyStorage(final float capacity, final float maxReceive, final float maxExtract, final float energy) {
+  public EnergyStorage(final float capacity, final float maxSink, final float maxSource, final float energy) {
     this.capacity = capacity;
-    this.maxReceive = maxReceive;
-    this.maxExtract = maxExtract;
+    this.maxSink = maxSink;
+    this.maxSource = maxSource;
     this.energy = Math.max(0, Math.min(capacity, energy));
   }
 
   @Override
-  public float receiveEnergy(final float maxReceive, final boolean simulate) {
-    final float energyReceived = Math.min(this.capacity - this.energy, Math.min(this.maxReceive, maxReceive));
+  public float sinkEnergy(final float maxSink, final boolean simulate) {
+    final float energyReceived = Math.min(this.capacity - this.energy, Math.min(this.maxSink, maxSink));
 
     if(!simulate) {
       this.energy += energyReceived;
@@ -37,8 +37,8 @@ public class EnergyStorage implements IEnergyStorage {
   }
 
   @Override
-  public float extractEnergy(final float maxExtract, final boolean simulate) {
-    final float energyExtracted = Math.min(this.energy, Math.min(this.maxExtract, maxExtract));
+  public float sourceEnergy(final float maxSource, final boolean simulate) {
+    final float energyExtracted = Math.min(this.energy, Math.min(this.maxSource, maxSource));
 
     if(!simulate) {
       this.energy -= energyExtracted;
@@ -58,12 +58,22 @@ public class EnergyStorage implements IEnergyStorage {
   }
 
   @Override
+  public float getMaxSink() {
+    return this.maxSink;
+  }
+
+  @Override
+  public float getMaxSource() {
+    return this.maxSource;
+  }
+
+  @Override
   public boolean canSink() {
-    return this.maxExtract > 0;
+    return this.maxSource > 0;
   }
 
   @Override
   public boolean canSource() {
-    return this.maxReceive > 0;
+    return this.maxSink > 0;
   }
 }

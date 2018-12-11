@@ -14,4 +14,7 @@ public interface IEnergyTransfer extends IEnergyNode {
    * @param to     The side energy is flowing to
    */
   void transfer(final float amount, final EnumFacing from, final EnumFacing to);
+
+  float getEnergyTransferred();
+  void resetEnergyTransferred();
 }

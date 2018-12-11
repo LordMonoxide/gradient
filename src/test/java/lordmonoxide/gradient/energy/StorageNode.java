@@ -2,34 +2,34 @@ package lordmonoxide.gradient.energy;
 
 public class StorageNode implements IEnergyStorage {
   private final float capacity;
-  private final float maxReceive;
-  private final float maxExtract;
+  private final float maxSink;
+  private final float maxSource;
   private float energy;
 
   public StorageNode() {
     this(0.0f, 1.0f, 1.0f, 0.0f);
   }
 
-  public StorageNode(final float capacity, final float maxReceive, final float maxExtract, final float energy) {
+  public StorageNode(final float capacity, final float maxSink, final float maxSource, final float energy) {
     this.capacity = capacity;
-    this.maxReceive = maxReceive;
-    this.maxExtract = maxExtract;
+    this.maxSink = maxSink;
+    this.maxSource = maxSource;
     this.energy = energy;
   }
 
   @Override
   public boolean canSink() {
-    return this.maxReceive != 0.0f;
+    return this.maxSink != 0.0f;
   }
 
   @Override
   public boolean canSource() {
-    return this.maxExtract != 0.0f;
+    return this.maxSource != 0.0f;
   }
 
   @Override
-  public float receiveEnergy(final float maxReceive, final boolean simulate) {
-    final float energyReceived = Math.min(this.capacity - this.energy, Math.min(this.maxReceive, maxReceive));
+  public float sinkEnergy(final float maxSink, final boolean simulate) {
+    final float energyReceived = Math.min(this.capacity - this.energy, Math.min(this.maxSink, maxSink));
 
     if(!simulate) {
       this.energy += energyReceived;
@@ -39,8 +39,8 @@ public class StorageNode implements IEnergyStorage {
   }
 
   @Override
-  public float extractEnergy(final float maxExtract, final boolean simulate) {
-    final float energyExtracted = Math.min(this.energy, Math.min(this.maxExtract, maxExtract));
+  public float sourceEnergy(final float maxSource, final boolean simulate) {
+    final float energyExtracted = Math.min(this.energy, Math.min(this.maxSource, maxSource));
 
     if(!simulate) {
       this.energy -= energyExtracted;
@@ -57,6 +57,16 @@ public class StorageNode implements IEnergyStorage {
   @Override
   public float getCapacity() {
     return this.capacity;
+  }
+
+  @Override
+  public float getMaxSink() {
+    return this.maxSink;
+  }
+
+  @Override
+  public float getMaxSource() {
+    return this.maxSource;
   }
 
   public StorageNode setEnergy(final float energy) {

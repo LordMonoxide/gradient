@@ -451,7 +451,7 @@ public class EnergyNetworkManagerTest {
 
     Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertEquals(32.0f, this.manager.extractEnergy(sinkTile.getPos(), 100.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(32.0f, this.manager.requestEnergy(sinkTile.getPos(), 100.0f), 0.0001f, "Extracted energy did not match");
     Assertions.assertEquals(968.0f, sourceStorage.getEnergy(), 0.0001f, "Source energy does not match");
   }
 
@@ -491,7 +491,7 @@ public class EnergyNetworkManagerTest {
 
     Assertions.assertEquals(4, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertEquals(128.0f, this.manager.extractEnergy(sink.getPos(), 1000.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(128.0f, this.manager.requestEnergy(sink.getPos(), 1000.0f), 0.0001f, "Extracted energy did not match");
     Assertions.assertEquals(968.0f, sourceStorageNorth.getEnergy(), 0.0001f, "Source north energy does not match");
     Assertions.assertEquals(968.0f, sourceStorageSouth.getEnergy(), 0.0001f, "Source south energy does not match");
     Assertions.assertEquals(968.0f, sourceStorageEast.getEnergy(), 0.0001f, "Source east energy does not match");
@@ -534,10 +534,56 @@ public class EnergyNetworkManagerTest {
 
     Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
 
-    Assertions.assertEquals(128.0f, this.manager.extractEnergy(sink.getPos(), 128.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(128.0f, this.manager.requestEnergy(sink.getPos(), 128.0f), 0.0001f, "Extracted energy did not match");
     Assertions.assertEquals(980.0f, sourceStorageNorth.getEnergy(), 0.0001f, "Source north energy does not match");
     Assertions.assertEquals(964.0f, sourceStorageSouth.getEnergy(), 0.0001f, "Source south energy does not match");
     Assertions.assertEquals(964.0f, sourceStorageEast.getEnergy(), 0.0001f, "Source east energy does not match");
     Assertions.assertEquals(964.0f, sourceStorageWest.getEnergy(), 0.0001f, "Source west energy does not match");
+  }
+
+  @Test
+  void testTick() {
+    final IEnergyTransfer transfer = new TransferNode();
+    final IEnergyStorage source1 = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);
+    final IEnergyStorage source2 = new StorageNode(10000.0f, 0.0f, 10.0f, 20.0f);
+    final IEnergyStorage sink = new StorageNode(10000.0f, 32.0f, 0.0f, 0.0f);
+
+    final TileEntity teTransfer = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.TRANSFER, transfer));
+    this.manager.connect(teTransfer.getPos(), teTransfer);
+
+    final TileEntity teSource1 = this.world.addTileEntity(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, source1));
+    this.manager.connect(teSource1.getPos(), teSource1);
+
+    final TileEntity teSource2 = this.world.addTileEntity(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, source2));
+    this.manager.connect(teSource2.getPos(), teSource2);
+
+    final TileEntity teSink = this.world.addTileEntity(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sink));
+    this.manager.connect(teSink.getPos(), teSink);
+
+    Assertions.assertEquals(this.manager.size(), 1);
+
+    this.manager.tick();
+
+    Assertions.assertEquals(9990.0f, source1.getEnergy(), 0.0001f);
+    Assertions.assertEquals(  10.0f, source2.getEnergy(), 0.0001f);
+    Assertions.assertEquals(  20.0f, sink.getEnergy(), 0.0001f);
+
+    Assertions.assertEquals(20.0f, transfer.getEnergyTransferred(), 0.0001f);
+
+    this.manager.tick();
+
+    Assertions.assertEquals(9980.0f, source1.getEnergy(), 0.0001f);
+    Assertions.assertEquals(   0.0f, source2.getEnergy(), 0.0001f);
+    Assertions.assertEquals(  40.0f, sink.getEnergy(), 0.0001f);
+
+    Assertions.assertEquals(20.0f, transfer.getEnergyTransferred(), 0.0001f);
+
+    this.manager.tick();
+
+    Assertions.assertEquals(9970.0f, source1.getEnergy(), 0.0001f);
+    Assertions.assertEquals(   0.0f, source2.getEnergy(), 0.0001f);
+    Assertions.assertEquals(  50.0f, sink.getEnergy(), 0.0001f);
+
+    Assertions.assertEquals(10.0f, transfer.getEnergyTransferred(), 0.0001f);
   }
 }

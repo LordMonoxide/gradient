@@ -187,8 +187,7 @@ class EnergyNetworkTest {
     this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(STORAGE, s3));
     this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(STORAGE, s4));
 
-    Assertions.assertEquals(20.0f, this.net.requestEnergy(BlockPos.ORIGIN, 20.0f), 0.001f, "Extracted energy did not match");
-    Assertions.assertEquals(995.0f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
+    Assertions.assertEquals(20.0f, this.net.requestEnergy(BlockPos.ORIGIN.north(), EnumFacing.SOUTH, 20.0f), 0.001f, "Extracted energy did not match");
     Assertions.assertEquals( 20.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
     Assertions.assertEquals( 15.0f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
     Assertions.assertEquals( 95.0f, s4.getEnergy(), 0.001f, "s4 remaining energy did not match");
@@ -205,7 +204,9 @@ class EnergyNetworkTest {
     this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
     this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
 
-    Assertions.assertEquals(40.0f, this.net.requestEnergy(BlockPos.ORIGIN, 40.0f), 0.0001f, "Extracted energy did not match");
+    this.net.connect(BlockPos.ORIGIN.north().north(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(10000.0f, 100.0f, 0.0f, 0.0f)));
+
+    Assertions.assertEquals(40.0f, this.net.requestEnergy(BlockPos.ORIGIN.north().north(), EnumFacing.SOUTH, 40.0f), 0.0001f, "Extracted energy did not match");
     Assertions.assertEquals(9976.0f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
     Assertions.assertEquals(9984.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
   }
@@ -223,7 +224,9 @@ class EnergyNetworkTest {
     this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(STORAGE, s3));
     this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(STORAGE, s4));
 
-    Assertions.assertEquals( 50.0000f, this.net.requestEnergy(BlockPos.ORIGIN, 50.0f), 0.001f, "Extracted energy did not match");
+    this.net.connect(BlockPos.ORIGIN.up(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(10000.0f, 100.0f, 0.0f, 0.0f)));
+
+    Assertions.assertEquals( 50.0000f, this.net.requestEnergy(BlockPos.ORIGIN.up(), EnumFacing.DOWN, 50.0f), 0.001f, "Extracted energy did not match");
     Assertions.assertEquals(990.0000f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
     Assertions.assertEquals( 11.6667f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
     Assertions.assertEquals(  6.6667f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
@@ -235,7 +238,10 @@ class EnergyNetworkTest {
     final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  0.0f, 1000.0f);
 
     this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(STORAGE, s1));
-    Assertions.assertEquals(0.0f, this.net.requestEnergy(BlockPos.ORIGIN, 50.0f), 0.001f, "Extracted energy did not match");
+    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.south().south(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(10000.0f, 100.0f, 0.0f, 0.0f)));
+
+    Assertions.assertEquals(0.0f, this.net.requestEnergy(BlockPos.ORIGIN.south().south(), EnumFacing.NORTH, 50.0f), 0.001f, "Extracted energy did not match");
     Assertions.assertEquals(1000.0f, s1.getEnergy(), 0.0001f, "Sink energy does not match");
   }
 
@@ -308,9 +314,7 @@ class EnergyNetworkTest {
     Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer()));
     Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage()));
 
-    final List<BlockPos> path = this.net.pathFind(BlockPos.ORIGIN.south(), BlockPos.ORIGIN.north());
-
-    this.verifyPath(path);
+    this.verifyPath(this.net.pathFind(BlockPos.ORIGIN.south(), EnumFacing.NORTH, BlockPos.ORIGIN.north(), EnumFacing.SOUTH));
   }
 
   @Test
@@ -325,9 +329,45 @@ class EnergyNetworkTest {
     Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.storage()));
     Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south().west(), TileEntityWithCapabilities.storage()));
 
-    final List<BlockPos> path = this.net.pathFind(BlockPos.ORIGIN.north().east(), BlockPos.ORIGIN.south().west());
+    this.verifyPath(this.net.pathFind(BlockPos.ORIGIN.north().east(), EnumFacing.SOUTH, BlockPos.ORIGIN.south().west(), EnumFacing.NORTH));
+    this.verifyPath(this.net.pathFind(BlockPos.ORIGIN.north().east(), EnumFacing.WEST, BlockPos.ORIGIN.south().west(), EnumFacing.EAST));
+  }
 
+  @Test
+  void testPathfindingTwoBranches() {
+    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0, -1), TileEntityWithCapabilities.storage()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0,  0), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  0), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  1), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  2), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  3), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  0), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  1), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  2), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  3), TileEntityWithCapabilities.transfer()));
+    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0,  3), TileEntityWithCapabilities.storage()));
+
+    this.verifyPath(this.net.pathFind(new BlockPos(0, 0, -1), EnumFacing.SOUTH, new BlockPos(0, 0, 3), EnumFacing.EAST));
+    this.verifyPath(this.net.pathFind(new BlockPos(0, 0, -1), EnumFacing.SOUTH, new BlockPos(0, 0, 3), EnumFacing.WEST));
+  }
+
+  @Test
+  void testPathWithLoop() {
+    final TransferNode transferX = new TransferNode();
+    final TransferNode transferZ = new TransferNode();
+
+    this.net.connect(BlockPos.ORIGIN.south().south(), TileEntityWithCapabilities.storage());
+    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(TRANSFER, transferX, EnumFacing.EAST, EnumFacing.WEST).addCapability(TRANSFER, transferZ, EnumFacing.NORTH, EnumFacing.SOUTH));
+    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.west().west(), TileEntityWithCapabilities.storage());
+
+    final List<BlockPos> path = this.net.pathFind(BlockPos.ORIGIN.south().south(), EnumFacing.NORTH, BlockPos.ORIGIN.west().west(), EnumFacing.EAST);
     this.verifyPath(path);
+    Assertions.assertEquals(9, path.size(), "Path did not loop");
   }
 
   @Test
@@ -358,7 +398,7 @@ class EnergyNetworkTest {
     this.net.connect(BlockPos.ORIGIN.south().west(), new TileEntityWithCapabilities().addCapability(STORAGE, sourceWest));
     this.net.connect(BlockPos.ORIGIN.north().north().north(), new TileEntityWithCapabilities().addCapability(STORAGE, sink));
 
-    Assertions.assertEquals(20.0f, this.net.requestEnergy(BlockPos.ORIGIN.north().north().north(), 32.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(20.0f, this.net.requestEnergy(BlockPos.ORIGIN.north().north().north(), EnumFacing.WEST, 32.0f), 0.0001f, "Extracted energy did not match");
 
     Assertions.assertEquals(10.0f, transferOrigin.getTransferred(), 0.0001f);
     Assertions.assertEquals(10.0f, transferEast.getTransferred(), 0.0001f);
@@ -369,25 +409,6 @@ class EnergyNetworkTest {
     Assertions.assertEquals( 0.0f, transferEast3.getTransferred(), 0.0001f);
     Assertions.assertEquals(20.0f, transferWest3.getTransferred(), 0.0001f);
     Assertions.assertEquals(20.0f, transferWest4.getTransferred(), 0.0001f);
-  }
-
-  @Test
-  void testPathfindingTwoBranches() {
-    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0, -1), TileEntityWithCapabilities.storage()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0,  0), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  0), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  1), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  2), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  3), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  0), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  1), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  2), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  3), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0,  3), TileEntityWithCapabilities.storage()));
-
-    final List<BlockPos> path = this.net.pathFind(new BlockPos(0, 0, -1), new BlockPos(0, 0, 3));
-
-    this.verifyPath(path);
   }
 
   private void verifyPath(final List<BlockPos> path) {

@@ -183,7 +183,7 @@ public class EnergyNetworkManager {
     }
   }
 
-  private final Set<EnergyNetwork> extractNetworks = new HashSet<>();
+  private final Map<EnergyNetwork, EnumFacing> extractNetworks = new HashMap<>();
 
   public float requestEnergy(final BlockPos requestPosition, final float amount) {
     for(final EnergyNetwork network : this.networks) {
@@ -198,12 +198,12 @@ public class EnergyNetworkManager {
 
             if(connection.te.hasCapability(STORAGE, opposite)) {
               if(connection.te.getCapability(STORAGE, opposite).canSource()) {
-                this.extractNetworks.add(network);
+                this.extractNetworks.put(network, side);
                 break;
               }
             } else if(connection.te.hasCapability(TRANSFER, opposite)) {
               if(connection.te.getCapability(TRANSFER, opposite).canSource()) {
-                this.extractNetworks.add(network);
+                this.extractNetworks.put(network, side);
                 break;
               }
             }
@@ -221,10 +221,12 @@ public class EnergyNetworkManager {
     float total = 0.0f;
 
     while(total < amount) {
-      for(final Iterator<EnergyNetwork> it = this.extractNetworks.iterator(); it.hasNext(); ) {
-        final EnergyNetwork network = it.next();
+      for(final Iterator<Map.Entry<EnergyNetwork, EnumFacing>> it = this.extractNetworks.entrySet().iterator(); it.hasNext(); ) {
+        final Map.Entry<EnergyNetwork, EnumFacing> entry = it.next();
+        final EnergyNetwork network = entry.getKey();
+        final EnumFacing requestSide = entry.getValue();
 
-        final float sourced = network.requestEnergy(requestPosition, share);
+        final float sourced = network.requestEnergy(requestPosition, requestSide, share);
 
         if(sourced < share) {
           deficit += share - sourced;

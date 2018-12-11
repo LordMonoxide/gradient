@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.utils.BlockPosUtils;
+import lordmonoxide.gradient.utils.Tuple;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -196,7 +197,7 @@ public class EnergyNetwork {
 
   private final Map<IEnergyStorage, List<BlockPos>> extractEnergySources = new HashMap<>();
 
-  public float requestEnergy(final BlockPos sink, final float amount) {
+  public float requestEnergy(final BlockPos sink, final EnumFacing sinkSide, final float amount) {
     // Find all of the energy sources
     for(final EnergyNode node : this.nodes.values()) {
       for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
@@ -204,7 +205,7 @@ public class EnergyNetwork {
           final IEnergyStorage storage = node.te.getCapability(STORAGE, connection.getKey());
 
           if(storage.canSource() && connection.getValue() != null && !this.extractEnergySources.containsKey(storage)) {
-            final List<BlockPos> path = this.pathFind(sink, node.pos);
+            final List<BlockPos> path = this.pathFind(sink, sinkSide, node.pos, connection.getKey());
             this.extractEnergySources.put(storage, path);
           }
         }
@@ -262,76 +263,50 @@ public class EnergyNetwork {
     return total;
   }
 
-  public List<BlockPos> pathFind(final BlockPos start, final BlockPos goal) {
-    final Set<BlockPos> closed = new HashSet<>();
-    final Set<BlockPos> open = new HashSet<>();
+  private final Set<Tuple<BlockPos, EnumFacing>> closed = new HashSet<>();
+  private final Set<Tuple<BlockPos, EnumFacing>> open = new HashSet<>();
 
-    final Map<BlockPos, BlockPos> cameFrom = new HashMap<>();
-    final Object2IntMap<BlockPos> gScore = new Object2IntOpenHashMap<>();
-    final Object2IntMap<BlockPos> fScore = new Object2IntLinkedOpenHashMap<>();
+  private final Map<Tuple<BlockPos, EnumFacing>, Tuple<BlockPos, EnumFacing>> cameFrom = new HashMap<>();
+  private final Object2IntMap<Tuple<BlockPos, EnumFacing>> gScore = new Object2IntOpenHashMap<>();
+  private final Object2IntMap<Tuple<BlockPos, EnumFacing>> fScore = new Object2IntLinkedOpenHashMap<>();
 
-    gScore.defaultReturnValue(Integer.MAX_VALUE);
-    fScore.defaultReturnValue(Integer.MAX_VALUE);
+  public List<BlockPos> pathFind(final BlockPos start, final EnumFacing startFacing, final BlockPos goal, final EnumFacing goalFacing) {
+    this.closed.clear();
+    this.open.clear();
+    this.cameFrom.clear();
+    this.gScore.clear();
+    this.fScore.clear();
 
-    open.add(start);
-    gScore.put(start, 0);
-    fScore.put(start, this.pathFindHeuristic(start, goal));
+    this.gScore.defaultReturnValue(Integer.MAX_VALUE);
+    this.fScore.defaultReturnValue(Integer.MAX_VALUE);
 
-    while(!open.isEmpty()) {
-      final BlockPos current = this.getLowest(fScore);
+    final Tuple<BlockPos, EnumFacing> startTuple = new Tuple<>(start, startFacing);
+    final Tuple<BlockPos, EnumFacing> goalTuple = new Tuple<>(goal, goalFacing);
 
-      GradientMod.logger.info("Current = " + current);
+    GradientMod.logger.info("Starting pathfind at {} {}, goal {} {}", start, startFacing, goal, goalFacing);
 
-      if(current.equals(goal)) {
+    this.closed.add(startTuple);
+    this.gScore.put(startTuple, 0);
+    this.pathFindSide(startFacing, this.getNode(start), startTuple, goalTuple);
+
+    while(!this.open.isEmpty()) {
+      final Tuple<BlockPos, EnumFacing> current = this.getLowest(this.fScore);
+
+      GradientMod.logger.info("Current = {} {}", current.a, current.b);
+
+      if(current.equals(goalTuple)) {
         GradientMod.logger.info("GOAL!");
-        return this.reconstructPath(cameFrom, goal);
+        return this.reconstructPath(this.cameFrom, goalTuple);
       }
 
-      open.remove(current);
-      fScore.removeInt(current);
-      closed.add(current);
+      this.open.remove(current);
+      this.fScore.removeInt(current);
+      this.closed.add(current);
 
-      final EnergyNode currentNode = this.getNode(current);
+      final EnergyNode currentNode = this.getNode(current.a);
 
       for(final EnumFacing side : EnumFacing.VALUES) {
-        GradientMod.logger.info("Checking side " + side);
-
-        final EnergyNode neighbourNode = currentNode.connection(side);
-
-        if(neighbourNode == null) {
-          GradientMod.logger.info("No node, skipping");
-          continue;
-        }
-
-        final BlockPos neighbour = current.offset(side);
-
-        GradientMod.logger.info("Found " + neighbour);
-
-        if(!neighbourNode.te.hasCapability(TRANSFER, side.getOpposite()) && !neighbour.equals(goal)) {
-          GradientMod.logger.info("Not a transfer node, skipping");
-          continue;
-        }
-
-        if(closed.contains(neighbour)) {
-          GradientMod.logger.info("Already visited, skipping");
-          continue;
-        }
-
-        final int g = gScore.get(current) + 1; // 1 = distance
-
-        GradientMod.logger.info("New G = " + g + ", current G = " + gScore.getInt(neighbour));
-
-        if(g >= gScore.getInt(neighbour)) {
-          GradientMod.logger.info("G >= neighbour");
-          continue;
-        }
-
-        open.add(neighbour);
-        cameFrom.put(neighbour, current);
-        gScore.put(neighbour, g);
-        fScore.put(neighbour, g + this.pathFindHeuristic(neighbour, goal));
-
-        GradientMod.logger.info("Adding node " + neighbour + " G = " + gScore.getInt(neighbour) + " F = " + fScore.getInt(neighbour));
+        this.pathFindSide(side, currentNode, current, goalTuple);
       }
     }
 
@@ -340,15 +315,69 @@ public class EnergyNetwork {
     return new ArrayList<>();
   }
 
-  private List<BlockPos> reconstructPath(final Map<BlockPos, BlockPos> cameFrom, final BlockPos goal) {
-    final List<BlockPos> path = new ArrayList<>();
-    path.add(goal);
+  private void pathFindSide(final EnumFacing side, final EnergyNode currentNode, final Tuple<BlockPos, EnumFacing> currentTuple, final Tuple<BlockPos, EnumFacing> goalTuple) {
+    GradientMod.logger.info("Checking side {}, came from {} {}", side, currentTuple.a, currentTuple.b);
 
-    BlockPos current = goal;
+    final EnergyNode neighbourNode = currentNode.connection(side);
+
+    if(neighbourNode == null) {
+      GradientMod.logger.info("No node, skipping");
+      return;
+    }
+
+    final BlockPos neighbour = currentTuple.a.offset(side);
+
+    GradientMod.logger.info("Found {}", neighbour);
+
+    final EnumFacing opposite = side.getOpposite();
+    final Tuple<BlockPos, EnumFacing> neighbourTuple = new Tuple<>(neighbour, opposite);
+
+    if(!neighbourNode.te.hasCapability(TRANSFER, opposite) && !neighbourTuple.equals(goalTuple)) {
+      GradientMod.logger.info("Not a transfer node, skipping");
+      return;
+    }
+
+    if(this.closed.contains(neighbourTuple)) {
+      GradientMod.logger.info("Already visited, skipping");
+      return;
+    }
+
+    // Make sure the side we're trying to leave from is the same transfer node that we entered from
+    if(currentNode.te.getCapability(TRANSFER, currentTuple.b) != currentNode.te.getCapability(TRANSFER, side)) {
+      GradientMod.logger.info("Sides have different transfer nodes, skipping");
+      return;
+    }
+
+    final int g = this.gScore.getInt(currentTuple) + 1; // 1 = distance
+
+    GradientMod.logger.info("New G = {}, current G = {}", g, this.gScore.getInt(neighbourTuple));
+
+    if(g >= this.gScore.getInt(neighbourTuple)) {
+      GradientMod.logger.info("G >= neighbour");
+      return;
+    }
+
+    this.open.add(neighbourTuple);
+    this.cameFrom.put(neighbourTuple, currentTuple);
+    this.gScore.put(neighbourTuple, g);
+    this.fScore.put(neighbourTuple, g + this.pathFindHeuristic(neighbour, goalTuple.a));
+
+    GradientMod.logger.info("Adding node {} G = {} F = {}", neighbour, this.gScore.getInt(neighbourTuple), this.fScore.getInt(neighbourTuple));
+  }
+
+  private List<BlockPos> reconstructPath(final Map<Tuple<BlockPos, EnumFacing>, Tuple<BlockPos, EnumFacing>> cameFrom, final Tuple<BlockPos, EnumFacing> goal) {
+    GradientMod.logger.info("Path:");
+
+    final List<BlockPos> path = new ArrayList<>();
+    path.add(goal.a);
+    GradientMod.logger.info("{} {}", goal.a, goal.b);
+
+    Tuple<BlockPos, EnumFacing> current = goal;
 
     while(cameFrom.containsKey(current)) {
       current = cameFrom.get(current);
-      path.add(current);
+      path.add(current.a);
+      GradientMod.logger.info("{} {}", current.a, current.b);
     }
 
     return path;
@@ -358,11 +387,11 @@ public class EnergyNetwork {
     return (int)current.distanceSq(goal);
   }
 
-  private BlockPos getLowest(final Object2IntMap<BlockPos> values) {
+  private Tuple<BlockPos, EnumFacing> getLowest(final Object2IntMap<Tuple<BlockPos, EnumFacing>> values) {
     int lowest = Integer.MAX_VALUE;
-    BlockPos pos = null;
+    Tuple<BlockPos, EnumFacing> pos = null;
 
-    for(final Object2IntMap.Entry<BlockPos> entry : values.object2IntEntrySet()) {
+    for(final Object2IntMap.Entry<Tuple<BlockPos, EnumFacing>> entry : values.object2IntEntrySet()) {
       if(entry.getIntValue() <= lowest) {
         lowest = entry.getIntValue();
         pos = entry.getKey();

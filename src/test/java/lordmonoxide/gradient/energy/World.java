@@ -21,6 +21,10 @@ public class World implements IBlockAccess {
     return te;
   }
 
+  public void removeTileEntity(final BlockPos pos) {
+    this.tes.remove(pos);
+  }
+
   @Nullable
   @Override
   public TileEntity getTileEntity(final BlockPos pos) {

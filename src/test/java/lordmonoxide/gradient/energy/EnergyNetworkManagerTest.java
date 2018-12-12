@@ -586,4 +586,110 @@ public class EnergyNetworkManagerTest {
 
     Assertions.assertEquals(10.0f, transfer.getEnergyTransferred(), 0.0001f);
   }
+
+  @Test
+  void testRemoveBasic() {
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(transfer.getPos(), transfer).size());
+
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
+
+    final TileEntity south = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(south.getPos(), south).size());
+
+    Assertions.assertEquals(1, this.manager.size());
+
+    this.world.removeTileEntity(north.getPos());
+    this.manager.disconnect(north.getPos());
+    Assertions.assertEquals(1, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(north.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(south.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(transfer.getPos()).size());
+
+    this.world.removeTileEntity(south.getPos());
+    this.manager.disconnect(south.getPos());
+    Assertions.assertEquals(1, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(south.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(transfer.getPos()).size());
+
+    this.world.removeTileEntity(transfer.getPos());
+    this.manager.disconnect(transfer.getPos());
+    Assertions.assertEquals(0, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(transfer.getPos()).size());
+  }
+
+  @Test
+  void testRemoveSplitsNetwork() {
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(transfer.getPos(), transfer).size());
+
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
+
+    final TileEntity south = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(south.getPos(), south).size());
+
+    Assertions.assertEquals(1, this.manager.size());
+
+    this.world.removeTileEntity(transfer.getPos());
+    this.manager.disconnect(transfer.getPos());
+    Assertions.assertEquals(2, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(transfer.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(north.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(south.getPos()).size());
+    Assertions.assertNotEquals(this.manager.getNetworksForBlock(north.getPos()), this.manager.getNetworksForBlock(south.getPos()));
+  }
+
+  @Test
+  void testRemoveStorageNode() {
+    final TileEntity storage = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(storage.getPos(), storage).size());
+
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
+
+    final TileEntity south = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(south.getPos(), south).size());
+
+    Assertions.assertEquals(2, this.manager.size());
+
+    this.world.removeTileEntity(storage.getPos());
+    this.manager.disconnect(storage.getPos());
+    Assertions.assertEquals(2, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(storage.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(north.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(south.getPos()).size());
+    Assertions.assertNotEquals(this.manager.getNetworksForBlock(north.getPos()), this.manager.getNetworksForBlock(south.getPos()));
+  }
+
+  @Test
+  void testRemovePartOfCircularNetwork() {
+    final TileEntity storage = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(storage.getPos(), storage).size());
+
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
+
+    final TileEntity east = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(east.getPos(), east).size());
+
+    Assertions.assertEquals(2, this.manager.size());
+
+    final TileEntity ne = this.world.addTileEntity(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(ne.getPos(), ne).size());
+
+    Assertions.assertEquals(1, this.manager.size());
+
+    this.world.removeTileEntity(ne.getPos());
+    this.manager.disconnect(ne.getPos());
+    Assertions.assertEquals(2, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(ne.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(north.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(east.getPos()).size());
+    Assertions.assertEquals(2, this.manager.getNetworksForBlock(storage.getPos()).size());
+    Assertions.assertNotEquals(this.manager.getNetworksForBlock(north.getPos()), this.manager.getNetworksForBlock(east.getPos()));
+    Assertions.assertTrue(this.manager.getNetworksForBlock(storage.getPos()).contains(this.manager.getNetworksForBlock(north.getPos()).get(0)));
+    Assertions.assertTrue(this.manager.getNetworksForBlock(storage.getPos()).contains(this.manager.getNetworksForBlock(east.getPos()).get(0)));
+  }
 }

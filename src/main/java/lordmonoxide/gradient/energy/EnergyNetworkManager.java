@@ -183,6 +183,25 @@ public class EnergyNetworkManager {
     }
   }
 
+  public void disconnect(final BlockPos pos) {
+    GradientMod.logger.info("Removing node {}", pos);
+
+    this.allNodes.remove(pos);
+
+    for(final EnergyNetwork network : this.getNetworksForBlock(pos)) {
+      // Do we need to rebuild the network?
+      if(network.disconnect(pos)) {
+        GradientMod.logger.info("Rebuilding network {}", network);
+
+        this.networks.remove(network);
+
+        for(final EnergyNetwork.EnergyNode node : network.nodes.values()) {
+          this.connect(node.pos, node.te);
+        }
+      }
+    }
+  }
+
   private final Map<EnergyNetwork, EnumFacing> extractNetworks = new HashMap<>();
 
   public float requestEnergy(final BlockPos requestPosition, final float amount) {

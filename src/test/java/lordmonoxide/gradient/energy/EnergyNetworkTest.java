@@ -444,6 +444,57 @@ class EnergyNetworkTest {
     Assertions.assertEquals(20.0f, transferWest4.getTransferred(), 0.0001f);
   }
 
+  @Test
+  void testRemoveBasic() {
+    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage());
+    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage());
+
+    Assertions.assertEquals(3, this.net.size());
+
+    Assertions.assertFalse(this.net.disconnect(BlockPos.ORIGIN.north()));
+    Assertions.assertEquals(2, this.net.size());
+
+    Assertions.assertFalse(this.net.disconnect(BlockPos.ORIGIN.south()));
+    Assertions.assertEquals(1, this.net.size());
+  }
+
+  @Test
+  void testRemoveLastNode() {
+    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+
+    Assertions.assertTrue(this.net.disconnect(BlockPos.ORIGIN));
+    Assertions.assertEquals(0, this.net.size());
+  }
+
+  @Test
+  void testRemoveNodeWouldSplitNetwork() {
+    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+
+    Assertions.assertTrue(this.net.disconnect(BlockPos.ORIGIN));
+    Assertions.assertEquals(4, this.net.size());
+  }
+
+  @Test
+  void testRemoveNodeWouldNotSplitNetwork() {
+    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.north().west(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.south().west(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    this.net.connect(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+
+    Assertions.assertFalse(this.net.disconnect(BlockPos.ORIGIN));
+    Assertions.assertEquals(8, this.net.size());
+  }
+
   private void verifyPath(final List<BlockPos> path) {
     Assertions.assertTrue(this.net.getNode(path.get(0)).te.hasCapability(STORAGE, BlockPosUtils.getBlockFacing(path.get(0), path.get(1))), "Start node was not storage");
     Assertions.assertTrue(this.net.getNode(path.get(path.size() - 1)).te.hasCapability(STORAGE, BlockPosUtils.getBlockFacing(path.get(path.size() - 1), path.get(path.size() - 2))), "End node was not storage");

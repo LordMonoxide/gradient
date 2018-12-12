@@ -30,10 +30,14 @@ public class EnergyNetwork {
   @CapabilityInject(IEnergyTransfer.class)
   public static Capability<IEnergyTransfer> TRANSFER;
 
-  private final Map<BlockPos, EnergyNode> nodes = new HashMap<>();
+  final Map<BlockPos, EnergyNode> nodes = new HashMap<>();
 
   public int size() {
     return this.nodes.size();
+  }
+
+  public boolean isEmpty() {
+    return this.nodes.isEmpty();
   }
 
   public boolean contains(final BlockPos pos) {
@@ -149,6 +153,57 @@ public class EnergyNetwork {
     if(newNode != null) {
       this.nodes.put(newNodePos, newNode);
       return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * @return true if this network needs to be rebuild or deleted (i.e. empty) by the manager
+   */
+  public boolean disconnect(final BlockPos pos) {
+    if(!this.nodes.containsKey(pos)) {
+      return false;
+    }
+
+    final EnergyNode node = this.getNode(pos);
+    this.nodes.remove(pos);
+
+    if(node.connections.isEmpty()) {
+      return true;
+    }
+
+    // Remove the neighbour's connection to this node
+    for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
+      connection.getValue().connections.remove(connection.getKey().getOpposite());
+    }
+
+    final EnergyNode firstNeighbour = node.connections.values().iterator().next();
+
+    // See if we can still access the other nodes
+    connectionLoop:
+    for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
+      if(connection.getValue() != firstNeighbour) {
+        for(final EnumFacing startFacing : EnumFacing.VALUES) {
+          if(!firstNeighbour.connections.containsKey(startFacing)) {
+            continue;
+          }
+
+          for(final EnumFacing goalFacing : EnumFacing.VALUES) {
+            if(!connection.getValue().connections.containsKey(goalFacing)) {
+              continue;
+            }
+
+            // If we path successfully, it's connected
+            if(!this.pathFind(firstNeighbour.pos, startFacing, connection.getValue().pos, goalFacing).isEmpty()) {
+              // Continue on to the next connection
+              continue connectionLoop;
+            }
+          }
+        }
+
+        return true;
+      }
     }
 
     return false;

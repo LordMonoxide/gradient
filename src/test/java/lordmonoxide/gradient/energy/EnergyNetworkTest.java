@@ -277,20 +277,20 @@ class EnergyNetworkTest {
     Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().west(), west2));
     Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().up(), source2));
 
-    final EnergyNetwork newNet = EnergyNetwork.merge(net1, net2);
+    net1.merge(net2);
 
-    final EnergyNetwork.EnergyNode originNode = newNet.getNode(BlockPos.ORIGIN);
-    final EnergyNetwork.EnergyNode northNode = newNet.getNode(BlockPos.ORIGIN.north());
-    final EnergyNetwork.EnergyNode southNode = newNet.getNode(BlockPos.ORIGIN.south());
-    final EnergyNetwork.EnergyNode eastNode = newNet.getNode(BlockPos.ORIGIN.east());
-    final EnergyNetwork.EnergyNode westNode = newNet.getNode(BlockPos.ORIGIN.west());
-    final EnergyNetwork.EnergyNode source1Node = newNet.getNode(BlockPos.ORIGIN.down());
-    final EnergyNetwork.EnergyNode origin2Node = newNet.getNode(BlockPos.ORIGIN.up());
-    final EnergyNetwork.EnergyNode north2Node = newNet.getNode(BlockPos.ORIGIN.up().north());
-    final EnergyNetwork.EnergyNode south2Node = newNet.getNode(BlockPos.ORIGIN.up().south());
-    final EnergyNetwork.EnergyNode east2Node = newNet.getNode(BlockPos.ORIGIN.up().east());
-    final EnergyNetwork.EnergyNode west2Node = newNet.getNode(BlockPos.ORIGIN.up().west());
-    final EnergyNetwork.EnergyNode source2Node = newNet.getNode(BlockPos.ORIGIN.up().up());
+    final EnergyNetwork.EnergyNode originNode = net1.getNode(BlockPos.ORIGIN);
+    final EnergyNetwork.EnergyNode northNode = net1.getNode(BlockPos.ORIGIN.north());
+    final EnergyNetwork.EnergyNode southNode = net1.getNode(BlockPos.ORIGIN.south());
+    final EnergyNetwork.EnergyNode eastNode = net1.getNode(BlockPos.ORIGIN.east());
+    final EnergyNetwork.EnergyNode westNode = net1.getNode(BlockPos.ORIGIN.west());
+    final EnergyNetwork.EnergyNode source1Node = net1.getNode(BlockPos.ORIGIN.down());
+    final EnergyNetwork.EnergyNode origin2Node = net1.getNode(BlockPos.ORIGIN.up());
+    final EnergyNetwork.EnergyNode north2Node = net1.getNode(BlockPos.ORIGIN.up().north());
+    final EnergyNetwork.EnergyNode south2Node = net1.getNode(BlockPos.ORIGIN.up().south());
+    final EnergyNetwork.EnergyNode east2Node = net1.getNode(BlockPos.ORIGIN.up().east());
+    final EnergyNetwork.EnergyNode west2Node = net1.getNode(BlockPos.ORIGIN.up().west());
+    final EnergyNetwork.EnergyNode source2Node = net1.getNode(BlockPos.ORIGIN.up().up());
 
     Assertions.assertTrue(checkNode(originNode, BlockPos.ORIGIN, northNode, southNode, eastNode, westNode, origin2Node, source1Node), () -> "origin1 did not match: " + originNode);
     Assertions.assertTrue(checkNode(northNode, BlockPos.ORIGIN.north(), null, originNode, null, null, null, null), () -> "north1 did not match: " + northNode);
@@ -305,7 +305,7 @@ class EnergyNetworkTest {
     Assertions.assertTrue(checkNode(west2Node, BlockPos.ORIGIN.up().west(), null, null, origin2Node, null, null, null), () -> "west2 did not match: " + west2Node);
     Assertions.assertTrue(checkNode(source2Node, BlockPos.ORIGIN.up().up(), null, null, null, null, null, origin2Node), () -> "source2 did not match: " + source2Node);
 
-    Assertions.assertEquals(64.0f, newNet.getAvailableEnergy(), 0.0001f, "Available energy did not match");
+    Assertions.assertEquals(64.0f, net1.getAvailableEnergy(), 0.0001f, "Available energy did not match");
   }
 
   @Test

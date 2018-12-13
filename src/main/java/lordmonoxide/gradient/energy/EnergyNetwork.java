@@ -14,7 +14,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -483,17 +482,16 @@ public class EnergyNetwork {
     }
   }
 
-  static EnergyNetwork merge(final EnergyNetwork... networks) {
-    GradientMod.logger.info("Merging networks {}", Arrays.toString(networks));
-
-    final EnergyNetwork newNet = new EnergyNetwork();
-
-    for(final EnergyNetwork net : networks) {
-      for(final Map.Entry<BlockPos, EnergyNode> node : net.nodes.entrySet()) {
-        newNet.connect(node.getKey(), node.getValue().te, true);
-      }
+  void merge(final EnergyNetwork other) {
+    if(this == other) {
+      GradientMod.logger.info("Skipping merge - same network");
+      return;
     }
 
-    return newNet;
+    GradientMod.logger.info("Merging networks {}, {}", this, other);
+
+    for(final Map.Entry<BlockPos, EnergyNode> node : other.nodes.entrySet()) {
+      this.connect(node.getKey(), node.getValue().te, true);
+    }
   }
 }

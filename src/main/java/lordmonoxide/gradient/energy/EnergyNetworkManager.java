@@ -10,8 +10,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -91,11 +89,11 @@ public class EnergyNetworkManager {
     return networks;
   }
 
-  public Collection<EnergyNetwork> connect(final BlockPos newNodePos, final TileEntity newTe) {
+  public Map<EnumFacing, EnergyNetwork> connect(final BlockPos newNodePos, final TileEntity newTe) {
     GradientMod.logger.info("Attempting to add {} @ {} to a network...", newTe, newNodePos);
 
-    final Map<EnumFacing, EnergyNetwork> added = new EnumMap<>(EnumFacing.class);
-    final Map<EnumFacing, EnergyNetwork> merge = new EnumMap<>(EnumFacing.class);
+    final Map<EnumFacing, EnergyNetwork> added = new HashMap<>();
+    final Map<EnumFacing, EnergyNetwork> merge = new HashMap<>();
 
     for(final EnumFacing facing : EnumFacing.VALUES) {
       final BlockPos networkPos = newNodePos.offset(facing);
@@ -123,14 +121,14 @@ public class EnergyNetworkManager {
           // If worldTe is in its own network, add (may have to merge)
           // If worldTe is in an existing network, new (may have to merge)
           GradientMod.logger.info("New TE is transfer, world TE is storage");
-          final Map<EnumFacing, EnergyNetwork> networks = new EnumMap<>(EnumFacing.class);
+          final Map<EnumFacing, EnergyNetwork> networks = new HashMap<>();
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
         } else if(worldTe.hasCapability(TRANSFER, facing)) {
           // Add to network (may have to merge)
           GradientMod.logger.info("Both TEs are transfers");
-          final Map<EnumFacing, EnergyNetwork> networks = new EnumMap<>(EnumFacing.class);
+          final Map<EnumFacing, EnergyNetwork> networks = new HashMap<>();
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
@@ -152,7 +150,6 @@ public class EnergyNetworkManager {
         final EnergyNetwork otherNetwork = otherEntry.getValue();
 
         if(firstNetwork == otherNetwork) {
-          added.remove(otherFacing);
           it.remove();
           continue;
         }
@@ -163,7 +160,7 @@ public class EnergyNetworkManager {
         if(firstNode.te.getCapability(TRANSFER, firstFacing) == otherNode.te.getCapability(TRANSFER, otherFacing)) {
           firstNetwork.merge(otherNetwork);
           this.networks.remove(otherNetwork);
-          added.remove(otherFacing);
+          added.put(otherFacing, firstNetwork);
           it.remove();
         }
       }
@@ -175,12 +172,12 @@ public class EnergyNetworkManager {
       final EnergyNetwork network = new EnergyNetwork();
       network.connect(newNodePos, newTe);
       this.networks.add(network);
-      added.put(EnumFacing.NORTH, network);
+      added.put(null, network);
     }
 
     this.allNodes.put(newNodePos, newTe);
 
-    return added.values();
+    return added;
   }
 
   private void addToOrCreateNetwork(final BlockPos newNodePos, final TileEntity newTe, final BlockPos networkPos, final TileEntity worldTe, final Map<EnumFacing, EnergyNetwork> added) {
@@ -204,7 +201,7 @@ public class EnergyNetworkManager {
       network.connect(networkPos, worldTe);
       network.connect(newNodePos, newTe);
       this.networks.add(network);
-      added.put(EnumFacing.NORTH, network);
+      added.put(null, network);
     }
   }
 

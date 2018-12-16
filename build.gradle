@@ -70,6 +70,8 @@ dependencies {
   // at runtime, use the full JEI jar
   runtime 'mezz.jei:jei_1.12.2:4.13.1.220'
 
+  testCompile "org.junit.jupiter:junit-jupiter-api:5.3.2"
+
   // you may put jars on which you depend on in ./libs
   // or you may define them like so..
   //compile "some.group:artifact:version:classifier"

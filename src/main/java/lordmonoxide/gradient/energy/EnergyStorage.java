@@ -53,6 +53,11 @@ public class EnergyStorage implements IEnergyStorage {
   }
 
   @Override
+  public void setEnergy(final float amount) {
+    this.energy = amount;
+  }
+
+  @Override
   public float getCapacity() {
     return this.capacity;
   }

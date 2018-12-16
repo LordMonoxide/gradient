@@ -69,8 +69,8 @@ public class StorageNode implements IEnergyStorage {
     return this.maxSource;
   }
 
-  public StorageNode setEnergy(final float energy) {
+  @Override
+  public void setEnergy(final float energy) {
     this.energy = energy;
-    return this;
   }
 }

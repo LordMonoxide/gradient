@@ -29,6 +29,11 @@ public interface IEnergyStorage extends IEnergyNode {
   float getEnergy();
 
   /**
+   * Sets the amount of energy that is stored
+   */
+  void setEnergy(float amount);
+
+  /**
    * Returns the maximum amount of energy that can be stored.
    */
   float getCapacity();

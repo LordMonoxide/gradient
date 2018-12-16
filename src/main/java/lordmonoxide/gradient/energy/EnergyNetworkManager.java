@@ -7,7 +7,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,24 +16,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EnergyNetworkManager {
-  @CapabilityInject(IEnergyStorage.class)
-  public static Capability<IEnergyStorage> STORAGE;
+public class EnergyNetworkManager<STORAGE extends IEnergyStorage, TRANSFER extends IEnergyTransfer> {
+  private final Capability<STORAGE> storage;
+  private final Capability<TRANSFER> transfer;
 
-  @CapabilityInject(IEnergyTransfer.class)
-  public static Capability<IEnergyTransfer> TRANSFER;
-
-  private final List<EnergyNetwork> networks = new ArrayList<>();
+  private final List<EnergyNetwork<STORAGE, TRANSFER>> networks = new ArrayList<>();
   private final IBlockAccess world;
 
   private final Map<BlockPos, TileEntity> allNodes = new HashMap<>();
 
-  public EnergyNetworkManager(final IBlockAccess world) {
+  public EnergyNetworkManager(final IBlockAccess world, final Capability<STORAGE> storage, final Capability<TRANSFER> transfer) {
     this.world = world;
+    this.storage = storage;
+    this.transfer = transfer;
   }
 
-  private final Map<IEnergyStorage, BlockPos> tickStorageNodes = new HashMap<>();
-  private final Set<IEnergyTransfer> tickTransferNodes = new HashSet<>();
+  private final Map<STORAGE, BlockPos> tickStorageNodes = new HashMap<>();
+  private final Set<TRANSFER> tickTransferNodes = new HashSet<>();
 
   public void tick() {
     GradientMod.logger.info("Ticking {}", this);
@@ -45,21 +43,21 @@ public class EnergyNetworkManager {
     for(final TileEntity te : this.allNodes.values()) {
       GradientMod.logger.info("Checking {}", te);
       for(final EnumFacing facing : EnumFacing.VALUES) {
-        if(te.hasCapability(STORAGE, facing)) {
-          this.tickStorageNodes.put(te.getCapability(STORAGE, facing), te.getPos());
-        } else if(te.hasCapability(TRANSFER, facing)) {
-          this.tickTransferNodes.add(te.getCapability(TRANSFER, facing));
+        if(te.hasCapability(this.storage, facing)) {
+          this.tickStorageNodes.put(te.getCapability(this.storage, facing), te.getPos());
+        } else if(te.hasCapability(this.transfer, facing)) {
+          this.tickTransferNodes.add(te.getCapability(this.transfer, facing));
         }
       }
     }
 
-    for(final IEnergyTransfer transfer : this.tickTransferNodes) {
+    for(final TRANSFER transfer : this.tickTransferNodes) {
       GradientMod.logger.info("Resetting transfer {}", transfer);
       transfer.resetEnergyTransferred();
     }
 
-    for(final Map.Entry<IEnergyStorage, BlockPos> entry : this.tickStorageNodes.entrySet()) {
-      final IEnergyStorage storage = entry.getKey();
+    for(final Map.Entry<STORAGE, BlockPos> entry : this.tickStorageNodes.entrySet()) {
+      final STORAGE storage = entry.getKey();
       final BlockPos pos = entry.getValue();
 
       GradientMod.logger.info("Ticking storage {} @ {}", storage, pos);
@@ -77,10 +75,10 @@ public class EnergyNetworkManager {
     return this.networks.size();
   }
 
-  public List<EnergyNetwork> getNetworksForBlock(final BlockPos pos) {
-    final List<EnergyNetwork> networks = new ArrayList<>();
+  public List<EnergyNetwork<STORAGE, TRANSFER>> getNetworksForBlock(final BlockPos pos) {
+    final List<EnergyNetwork<STORAGE, TRANSFER>> networks = new ArrayList<>();
 
-    for(final EnergyNetwork network : this.networks) {
+    for(final EnergyNetwork<STORAGE, TRANSFER> network : this.networks) {
       if(network.contains(pos)) {
         networks.add(network);
       }
@@ -89,11 +87,11 @@ public class EnergyNetworkManager {
     return networks;
   }
 
-  public Map<EnumFacing, EnergyNetwork> connect(final BlockPos newNodePos, final TileEntity newTe) {
+  public Map<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>> connect(final BlockPos newNodePos, final TileEntity newTe) {
     GradientMod.logger.info("Attempting to add {} @ {} to a network...", newTe, newNodePos);
 
-    final Map<EnumFacing, EnergyNetwork> added = new HashMap<>();
-    final Map<EnumFacing, EnergyNetwork> merge = new HashMap<>();
+    final Map<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>> added = new HashMap<>();
+    final Map<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>> merge = new HashMap<>();
 
     for(final EnumFacing facing : EnumFacing.VALUES) {
       final BlockPos networkPos = newNodePos.offset(facing);
@@ -106,29 +104,29 @@ public class EnergyNetworkManager {
 
       GradientMod.logger.info("Found TE {} @ {} ({})", worldTe, networkPos, facing);
 
-      if(newTe.hasCapability(STORAGE, facing)) {
-        if(worldTe.hasCapability(STORAGE, facing)) {
+      if(newTe.hasCapability(this.storage, facing)) {
+        if(worldTe.hasCapability(this.storage, facing)) {
           // New network if we can't connect to the storage's network (we can only connect if it's the only block in the network)
           GradientMod.logger.info("Both TEs are storages");
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, added);
-        } else if(worldTe.hasCapability(TRANSFER, facing)) {
+        } else if(worldTe.hasCapability(this.transfer, facing)) {
           // Add to network, no merge
           GradientMod.logger.info("New TE is storage, world TE is transfer");
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, added);
         }
-      } else if(newTe.hasCapability(TRANSFER, facing)) {
-        if(worldTe.hasCapability(STORAGE, facing)) {
+      } else if(newTe.hasCapability(this.transfer, facing)) {
+        if(worldTe.hasCapability(this.storage, facing)) {
           // If worldTe is in its own network, add (may have to merge)
           // If worldTe is in an existing network, new (may have to merge)
           GradientMod.logger.info("New TE is transfer, world TE is storage");
-          final Map<EnumFacing, EnergyNetwork> networks = new HashMap<>();
+          final Map<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>> networks = new HashMap<>();
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
-        } else if(worldTe.hasCapability(TRANSFER, facing)) {
+        } else if(worldTe.hasCapability(this.transfer, facing)) {
           // Add to network (may have to merge)
           GradientMod.logger.info("Both TEs are transfers");
-          final Map<EnumFacing, EnergyNetwork> networks = new HashMap<>();
+          final Map<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>> networks = new HashMap<>();
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
@@ -138,16 +136,16 @@ public class EnergyNetworkManager {
 
     while(merge.size() > 1) {
       GradientMod.logger.info("Merging networks");
-      final Iterator<Map.Entry<EnumFacing, EnergyNetwork>> it = merge.entrySet().iterator();
-      final Map.Entry<EnumFacing, EnergyNetwork> firstEntry = it.next();
+      final Iterator<Map.Entry<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>>> it = merge.entrySet().iterator();
+      final Map.Entry<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>> firstEntry = it.next();
       final EnumFacing firstFacing = firstEntry.getKey();
-      final EnergyNetwork firstNetwork = firstEntry.getValue();
+      final EnergyNetwork<STORAGE, TRANSFER> firstNetwork = firstEntry.getValue();
       it.remove();
 
       while(it.hasNext()) {
-        final Map.Entry<EnumFacing, EnergyNetwork> otherEntry = it.next();
+        final Map.Entry<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>> otherEntry = it.next();
         final EnumFacing otherFacing = otherEntry.getKey();
-        final EnergyNetwork otherNetwork = otherEntry.getValue();
+        final EnergyNetwork<STORAGE, TRANSFER> otherNetwork = otherEntry.getValue();
 
         if(firstNetwork == otherNetwork) {
           it.remove();
@@ -157,7 +155,7 @@ public class EnergyNetworkManager {
         final EnergyNetwork.EnergyNode firstNode = firstNetwork.getNode(newNodePos);
         final EnergyNetwork.EnergyNode otherNode = otherNetwork.getNode(newNodePos);
 
-        if(firstNode.te.getCapability(TRANSFER, firstFacing) == otherNode.te.getCapability(TRANSFER, otherFacing)) {
+        if(firstNode.te.getCapability(this.transfer, firstFacing) == otherNode.te.getCapability(this.transfer, otherFacing)) {
           firstNetwork.merge(otherNetwork);
           this.networks.remove(otherNetwork);
           added.put(otherFacing, firstNetwork);
@@ -169,7 +167,7 @@ public class EnergyNetworkManager {
     // There were no adjacent nodes, create a new network
     if(added.isEmpty()) {
       GradientMod.logger.info("No adjacent nodes, creating new network");
-      final EnergyNetwork network = new EnergyNetwork();
+      final EnergyNetwork<STORAGE, TRANSFER> network = new EnergyNetwork<>(this.storage, this.transfer);
       network.connect(newNodePos, newTe);
       this.networks.add(network);
       added.put(null, network);
@@ -180,11 +178,11 @@ public class EnergyNetworkManager {
     return added;
   }
 
-  private void addToOrCreateNetwork(final BlockPos newNodePos, final TileEntity newTe, final BlockPos networkPos, final TileEntity worldTe, final Map<EnumFacing, EnergyNetwork> added) {
+  private void addToOrCreateNetwork(final BlockPos newNodePos, final TileEntity newTe, final BlockPos networkPos, final TileEntity worldTe, final Map<EnumFacing, EnergyNetwork<STORAGE, TRANSFER>> added) {
     GradientMod.logger.info("Trying to add new TE {} @ {} to existing networks at {}", newTe, newNodePos, networkPos);
 
     boolean connected = false;
-    for(final EnergyNetwork network : this.getNetworksForBlock(networkPos)) {
+    for(final EnergyNetwork<STORAGE, TRANSFER> network : this.getNetworksForBlock(networkPos)) {
       GradientMod.logger.info("Trying network {}...", network);
 
       if(network.connect(newNodePos, newTe)) {
@@ -197,7 +195,7 @@ public class EnergyNetworkManager {
     if(!connected) {
       // Create a new network if we couldn't connect
       GradientMod.logger.info("Failed to find a network to connect to, creating a new one");
-      final EnergyNetwork network = new EnergyNetwork();
+      final EnergyNetwork<STORAGE, TRANSFER> network = new EnergyNetwork<>(this.storage, this.transfer);
       network.connect(networkPos, worldTe);
       network.connect(newNodePos, newTe);
       this.networks.add(network);
@@ -210,7 +208,7 @@ public class EnergyNetworkManager {
 
     this.allNodes.remove(pos);
 
-    for(final EnergyNetwork network : this.getNetworksForBlock(pos)) {
+    for(final EnergyNetwork<STORAGE, TRANSFER> network : this.getNetworksForBlock(pos)) {
       // Do we need to rebuild the network?
       if(network.disconnect(pos)) {
         GradientMod.logger.info("Rebuilding network {}", network);
@@ -224,10 +222,10 @@ public class EnergyNetworkManager {
     }
   }
 
-  private final Map<EnergyNetwork, EnumFacing> extractNetworks = new HashMap<>();
+  private final Map<EnergyNetwork<STORAGE, TRANSFER>, EnumFacing> extractNetworks = new HashMap<>();
 
   public float requestEnergy(final BlockPos requestPosition, final float amount) {
-    for(final EnergyNetwork network : this.networks) {
+    for(final EnergyNetwork<STORAGE, TRANSFER> network : this.networks) {
       if(network.contains(requestPosition)) {
         final EnergyNetwork.EnergyNode node = network.getNode(requestPosition);
 
@@ -237,13 +235,13 @@ public class EnergyNetworkManager {
           if(connection != null) {
             final EnumFacing opposite = side.getOpposite();
 
-            if(connection.te.hasCapability(STORAGE, opposite)) {
-              if(connection.te.getCapability(STORAGE, opposite).canSource()) {
+            if(connection.te.hasCapability(this.storage, opposite)) {
+              if(connection.te.getCapability(this.storage, opposite).canSource()) {
                 this.extractNetworks.put(network, side);
                 break;
               }
-            } else if(connection.te.hasCapability(TRANSFER, opposite)) {
-              if(connection.te.getCapability(TRANSFER, opposite).canSource()) {
+            } else if(connection.te.hasCapability(this.transfer, opposite)) {
+              if(connection.te.getCapability(this.transfer, opposite).canSource()) {
                 this.extractNetworks.put(network, side);
                 break;
               }
@@ -262,9 +260,9 @@ public class EnergyNetworkManager {
     float total = 0.0f;
 
     while(total < amount) {
-      for(final Iterator<Map.Entry<EnergyNetwork, EnumFacing>> it = this.extractNetworks.entrySet().iterator(); it.hasNext(); ) {
-        final Map.Entry<EnergyNetwork, EnumFacing> entry = it.next();
-        final EnergyNetwork network = entry.getKey();
+      for(final Iterator<Map.Entry<EnergyNetwork<STORAGE, TRANSFER>, EnumFacing>> it = this.extractNetworks.entrySet().iterator(); it.hasNext(); ) {
+        final Map.Entry<EnergyNetwork<STORAGE, TRANSFER>, EnumFacing> entry = it.next();
+        final EnergyNetwork<STORAGE, TRANSFER> network = entry.getKey();
         final EnumFacing requestSide = entry.getValue();
 
         final float sourced = network.requestEnergy(requestPosition, requestSide, share);

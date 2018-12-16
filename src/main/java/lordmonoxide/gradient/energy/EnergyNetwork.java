@@ -10,7 +10,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -22,14 +21,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EnergyNetwork {
-  @CapabilityInject(IEnergyStorage.class)
-  public static Capability<IEnergyStorage> STORAGE;
-
-  @CapabilityInject(IEnergyTransfer.class)
-  public static Capability<IEnergyTransfer> TRANSFER;
+public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEnergyTransfer> {
+  private final Capability<STORAGE> storage;
+  private final Capability<TRANSFER> transfer;
 
   final Map<BlockPos, EnergyNode> nodes = new HashMap<>();
+
+  public EnergyNetwork(final Capability<STORAGE> storage, final Capability<TRANSFER> transfer) {
+    this.storage = storage;
+    this.transfer = transfer;
+  }
 
   public int size() {
     return this.nodes.size();
@@ -77,18 +78,18 @@ public class EnergyNetwork {
 
         final IEnergyNode teNode;
 
-        if(te.hasCapability(STORAGE, facing)) {
+        if(te.hasCapability(this.storage, facing)) {
           // Storage nodes can't connect to other storage nodes unless it's the only one
-          if(!force && node.te.hasCapability(STORAGE, facing.getOpposite()) && this.nodes.size() > 1) {
+          if(!force && node.te.hasCapability(this.storage, facing.getOpposite()) && this.nodes.size() > 1) {
             GradientMod.logger.info("Adjacent node is storage - moving on");
             continue;
           }
 
-          teNode = te.getCapability(STORAGE, facing);
-        } else if(te.hasCapability(TRANSFER, facing)) {
+          teNode = te.getCapability(this.storage, facing);
+        } else if(te.hasCapability(this.transfer, facing)) {
           // Networks are split by storage nodes (a transfer node can connect to a storage node if it is the only node)
           // Transfer nodes can also connect to storage nodes if the transfer node will be connecting to another transfer node
-          if(!force && node.te.hasCapability(STORAGE, facing.getOpposite()) && this.nodes.size() > 1) {
+          if(!force && node.te.hasCapability(this.storage, facing.getOpposite()) && this.nodes.size() > 1) {
             GradientMod.logger.info("Adjacent node is storage - deferring");
 
             if(conditionalConnections == null) {
@@ -99,7 +100,7 @@ public class EnergyNetwork {
             continue;
           }
 
-          teNode = te.getCapability(TRANSFER, facing);
+          teNode = te.getCapability(this.transfer, facing);
         } else {
           continue;
         }
@@ -132,7 +133,7 @@ public class EnergyNetwork {
 
         GradientMod.logger.info("Checking deferred connection {}", facing);
 
-        if(!this.canConnect(te.getCapability(TRANSFER, facing), node, facing.getOpposite())) {
+        if(!this.canConnect(te.getCapability(this.transfer, facing), node, facing.getOpposite())) {
           GradientMod.logger.info("Adjacent node is not connectable");
           continue;
         }
@@ -211,10 +212,10 @@ public class EnergyNetwork {
   private boolean canConnect(final IEnergyNode newNode, final EnergyNode existingNode, final EnumFacing facing) {
     final IEnergyNode existing;
 
-    if(existingNode.te.hasCapability(STORAGE, facing)) {
-      existing = existingNode.te.getCapability(STORAGE, facing);
-    } else if(existingNode.te.hasCapability(TRANSFER, facing)) {
-      existing = existingNode.te.getCapability(TRANSFER, facing);
+    if(existingNode.te.hasCapability(this.storage, facing)) {
+      existing = existingNode.te.getCapability(this.storage, facing);
+    } else if(existingNode.te.hasCapability(this.transfer, facing)) {
+      existing = existingNode.te.getCapability(this.transfer, facing);
     } else {
       return false;
     }
@@ -226,15 +227,15 @@ public class EnergyNetwork {
     return this.nodes.get(pos);
   }
 
-  private final Set<IEnergyStorage> availableEnergySources = new HashSet<>();
+  private final Set<STORAGE> availableEnergySources = new HashSet<>();
 
   public float getAvailableEnergy() {
     float available = 0.0f;
 
     for(final EnergyNode node : this.nodes.values()) {
       for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
-        if(node.te.hasCapability(STORAGE, connection.getKey())) {
-          final IEnergyStorage storage = node.te.getCapability(STORAGE, connection.getKey());
+        if(node.te.hasCapability(this.storage, connection.getKey())) {
+          final STORAGE storage = node.te.getCapability(this.storage, connection.getKey());
 
           if(storage.canSource() && connection.getValue() != null && !this.availableEnergySources.contains(storage)) {
             this.availableEnergySources.add(storage);
@@ -249,14 +250,14 @@ public class EnergyNetwork {
     return available;
   }
 
-  private final Map<IEnergyStorage, List<BlockPos>> extractEnergySources = new HashMap<>();
+  private final Map<STORAGE, List<BlockPos>> extractEnergySources = new HashMap<>();
 
   public float requestEnergy(final BlockPos sink, final EnumFacing sinkSide, final float amount) {
     // Find all of the energy sources
     for(final EnergyNode node : this.nodes.values()) {
       for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
-        if(node.te.hasCapability(STORAGE, connection.getKey())) {
-          final IEnergyStorage storage = node.te.getCapability(STORAGE, connection.getKey());
+        if(node.te.hasCapability(this.storage, connection.getKey())) {
+          final STORAGE storage = node.te.getCapability(this.storage, connection.getKey());
 
           if(storage.canSource() && connection.getValue() != null && !this.extractEnergySources.containsKey(storage)) {
             final List<BlockPos> path = this.pathFind(sink, sinkSide, node.pos, connection.getKey());
@@ -275,10 +276,10 @@ public class EnergyNetwork {
     float total = 0.0f;
 
     while(total < amount) {
-      for(final Iterator<Map.Entry<IEnergyStorage, List<BlockPos>>> it = this.extractEnergySources.entrySet().iterator(); it.hasNext(); ) {
-        final Map.Entry<IEnergyStorage, List<BlockPos>> entry = it.next();
+      for(final Iterator<Map.Entry<STORAGE, List<BlockPos>>> it = this.extractEnergySources.entrySet().iterator(); it.hasNext(); ) {
+        final Map.Entry<STORAGE, List<BlockPos>> entry = it.next();
 
-        final IEnergyStorage source = entry.getKey();
+        final STORAGE source = entry.getKey();
         final List<BlockPos> path = entry.getValue();
 
         final float sourced = source.sourceEnergy(share, false);
@@ -294,8 +295,8 @@ public class EnergyNetwork {
           final EnumFacing facingTo = BlockPosUtils.getBlockFacing(pathPos, path.get(i + 1));
           final TileEntity transferEntity = this.getNode(pathPos).te;
 
-          if(transferEntity.hasCapability(TRANSFER, facingFrom)) {
-            final IEnergyTransfer transfer = transferEntity.getCapability(TRANSFER, facingFrom);
+          if(transferEntity.hasCapability(this.transfer, facingFrom)) {
+            final TRANSFER transfer = transferEntity.getCapability(this.transfer, facingFrom);
             GradientMod.logger.info("Routing {} through {}", sourced, pathPos);
             transfer.transfer(sourced, facingFrom, facingTo);
           }
@@ -386,7 +387,7 @@ public class EnergyNetwork {
     final EnumFacing opposite = side.getOpposite();
     final Tuple<BlockPos, EnumFacing> neighbourTuple = new Tuple<>(neighbour, opposite);
 
-    if(!neighbourNode.te.hasCapability(TRANSFER, opposite) && !neighbourTuple.equals(goalTuple)) {
+    if(!neighbourNode.te.hasCapability(this.transfer, opposite) && !neighbourTuple.equals(goalTuple)) {
       GradientMod.logger.info("Not a transfer node, skipping");
       return;
     }
@@ -397,7 +398,7 @@ public class EnergyNetwork {
     }
 
     // Make sure the side we're trying to leave from is the same transfer node that we entered from
-    if(currentNode.te.getCapability(TRANSFER, currentTuple.b) != currentNode.te.getCapability(TRANSFER, side)) {
+    if(currentNode.te.getCapability(this.transfer, currentTuple.b) != currentNode.te.getCapability(this.transfer, side)) {
       GradientMod.logger.info("Sides have different transfer nodes, skipping");
       return;
     }
@@ -482,7 +483,7 @@ public class EnergyNetwork {
     }
   }
 
-  void merge(final EnergyNetwork other) {
+  void merge(final EnergyNetwork<STORAGE, TRANSFER> other) {
     if(this == other) {
       GradientMod.logger.info("Skipping merge - same network");
       return;

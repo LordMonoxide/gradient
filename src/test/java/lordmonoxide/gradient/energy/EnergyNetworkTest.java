@@ -23,21 +23,16 @@ class EnergyNetworkTest {
   static final Capability<IEnergyStorage> STORAGE = newCap("STORAGE");
   static final Capability<IEnergyTransfer> TRANSFER = newCap("TRANSFER");
 
-  private EnergyNetwork net;
+  private EnergyNetwork<IEnergyStorage, IEnergyTransfer> net;
 
   @BeforeAll
   static void setUpFirst() {
-    EnergyNetwork.STORAGE = STORAGE;
-    EnergyNetwork.TRANSFER = TRANSFER;
-    EnergyNetworkManager.STORAGE = STORAGE;
-    EnergyNetworkManager.TRANSFER = TRANSFER;
-
     GradientMod.logger = LogManager.getLogger(GradientMod.MODID);
   }
 
   @BeforeEach
   void setUp() {
-    this.net = new EnergyNetwork();
+    this.net = new EnergyNetwork<>(STORAGE, TRANSFER);
   }
 
   @Test
@@ -254,7 +249,7 @@ class EnergyNetworkTest {
     final TileEntity west = TileEntityWithCapabilities.sink();
     final TileEntity source1 = TileEntityWithCapabilities.source();
 
-    final EnergyNetwork net1 = new EnergyNetwork();
+    final EnergyNetwork<IEnergyStorage, IEnergyTransfer> net1 = new EnergyNetwork<>(STORAGE, TRANSFER);
     Assertions.assertTrue(net1.connect(BlockPos.ORIGIN, origin));
     Assertions.assertTrue(net1.connect(BlockPos.ORIGIN.north(), north));
     Assertions.assertTrue(net1.connect(BlockPos.ORIGIN.south(), south));
@@ -269,7 +264,7 @@ class EnergyNetworkTest {
     final TileEntity west2 = TileEntityWithCapabilities.sink();
     final TileEntity source2 = TileEntityWithCapabilities.source();
 
-    final EnergyNetwork net2 = new EnergyNetwork();
+    final EnergyNetwork<IEnergyStorage, IEnergyTransfer> net2 = new EnergyNetwork<>(STORAGE, TRANSFER);
     Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up(), origin2));
     Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().north(), north2));
     Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().south(), south2));

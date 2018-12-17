@@ -1,6 +1,10 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.energy.kinetic.CapabilityKineticEnergy;
+import lordmonoxide.gradient.energy.CapabilityEnergy;
+import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
+import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
+import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
+import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
 import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.overrides.GeneratePebbles;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
@@ -67,7 +71,13 @@ public class GradientMod {
     this.syncTriumphAdvancements(event.getModConfigurationDirectory());
 
     CapabilityPlayerProgress.register();
-    CapabilityKineticEnergy.register();
+
+    CapabilityEnergy.register(
+      IKineticEnergyStorage.class,
+      IKineticEnergyTransfer.class,
+      () -> new KineticEnergyStorage(10000.0f),
+      KineticEnergyTransfer::new
+    );
 
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
 

@@ -1,25 +1,28 @@
 package lordmonoxide.gradient.blocks.kinetic.handcrank;
 
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
+import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Nullable;
 
 public class TileHandCrank extends TileEntity implements ITickable {
   @CapabilityInject(IKineticEnergyStorage.class)
-  private static Capability<IKineticEnergyStorage> ENERGY;
+  private static Capability<IKineticEnergyStorage> STORAGE;
 
-  private final Map<BlockPos, IKineticEnergyStorage> neighbours = new HashMap<>();
+  private final IKineticEnergyStorage storage = new KineticEnergyStorage(5.0f, 0.0f, 5.0f);
 
   private int crankTicks;
   private boolean cranking;
+
+  @Override
+  public void onLoad() {
+
+  }
 
   public void crank() {
     this.cranking = true;
@@ -32,38 +35,30 @@ public class TileHandCrank extends TileEntity implements ITickable {
 
       if(this.crankTicks >= 20) {
         this.cranking = false;
-        this.outputToNeighbours();
+        this.storage.addEnergy(5.0f);
+        this.markDirty();
       }
     }
   }
 
-  private void outputToNeighbours() {
-    if(this.neighbours.isEmpty()) {
-      return;
+  @Override
+  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+    if(capability == STORAGE) {
+      return facing == this.world.getBlockState(this.pos).getValue(BlockHandCrank.FACING).getOpposite();
     }
 
-    final float output = 5.0f / this.neighbours.size();
-
-    for(final IKineticEnergyStorage storage : this.neighbours.values()) {
-      System.out.println("Outputting " + output);
-      storage.receiveEnergy(output, false);
-    }
+    return super.hasCapability(capability, facing);
   }
 
-  public void updateNeighbour(final IBlockAccess world, final BlockPos pos, final BlockPos neighbour) {
-    final BlockPos offset = pos.subtract(neighbour);
-    final EnumFacing facing = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ()).getOpposite();
-
-    if(facing == EnumFacing.DOWN) {
-      return;
+  @Nullable
+  @Override
+  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+    if(capability == STORAGE) {
+      if(facing == this.world.getBlockState(this.pos).getValue(BlockHandCrank.FACING).getOpposite()) {
+        return STORAGE.cast(this.storage);
+      }
     }
 
-    this.neighbours.remove(neighbour);
-
-    final TileEntity te = world.getTileEntity(neighbour);
-
-    if(te != null && te.hasCapability(ENERGY, facing)) {
-      this.neighbours.put(neighbour, te.getCapability(ENERGY, facing));
-    }
+    return super.getCapability(capability, facing);
   }
 }

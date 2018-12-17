@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.blocks.kinetic.handcrank;
 
 import lordmonoxide.gradient.blocks.GradientBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -20,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockHandCrank extends GradientBlock {
-  private static final PropertyDirection FACING = BlockHorizontal.FACING;
+  public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
   public BlockHandCrank() {
     super("hand_crank", CreativeTabs.TOOLS, Material.CIRCUITS);
@@ -40,19 +39,6 @@ public class BlockHandCrank extends GradientBlock {
 
     ((TileHandCrank)te).crank();
     return true;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Deprecated
-  @Override
-  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
-    final TileEntity te = world.getTileEntity(pos);
-
-    if(!(te instanceof TileHandCrank)) {
-      return;
-    }
-
-    ((TileHandCrank)te).updateNeighbour(world, pos, neighbor);
   }
 
   @Override

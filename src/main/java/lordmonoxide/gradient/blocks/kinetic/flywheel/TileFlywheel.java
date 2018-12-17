@@ -4,26 +4,20 @@ import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import javax.annotation.Nullable;
 
-public class TileFlywheel extends TileEntity implements ITickable {
+public class TileFlywheel extends TileEntity {
   @CapabilityInject(IKineticEnergyStorage.class)
-  private static Capability<IKineticEnergyStorage> ENERGY;
+  private static Capability<IKineticEnergyStorage> STORAGE;
 
-  private final IKineticEnergyStorage energy = new KineticEnergyStorage(1000.0f);
-
-  @Override
-  public void update() {
-    System.out.println(energy.getEnergyStored());
-  }
+  private final IKineticEnergyStorage energy = new KineticEnergyStorage(100.0f);
 
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    if(capability == ENERGY) {
+    if(capability == STORAGE) {
       final EnumFacing myFacing = this.world.getBlockState(this.pos).getValue(BlockFlywheel.FACING);
       return facing == myFacing.rotateY() || facing == myFacing.rotateYCCW();
     }
@@ -34,11 +28,11 @@ public class TileFlywheel extends TileEntity implements ITickable {
   @Nullable
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == ENERGY) {
+    if(capability == STORAGE) {
       final EnumFacing myFacing = this.world.getBlockState(this.pos).getValue(BlockFlywheel.FACING);
 
       if(facing == myFacing.rotateY() || facing == myFacing.rotateYCCW()) {
-        return ENERGY.cast(this.energy);
+        return STORAGE.cast(this.energy);
       }
     }
 

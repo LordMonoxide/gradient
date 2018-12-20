@@ -60,7 +60,13 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
 
     // If we have a node here already, check to see if it's the same one
     if(this.contains(newNodePos)) {
-      return this.getNode(newNodePos).te == te;
+      if(this.getNode(newNodePos).te == te) {
+        GradientMod.logger.info("{} is already connected at {}", te, newNodePos);
+        return true;
+      }
+
+      GradientMod.logger.info("There is already a different node connected at {}", newNodePos);
+      return false;
     }
 
     EnergyNode newNode = null;

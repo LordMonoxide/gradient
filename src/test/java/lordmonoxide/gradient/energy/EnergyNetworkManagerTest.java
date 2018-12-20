@@ -506,9 +506,27 @@ public class EnergyNetworkManagerTest {
     Assertions.assertEquals(2, this.manager.size());
   }
 
+  /**
+   * #485
+   */
   @Test
-  void testParallelOneWayTransfersDoNotMerge() {
+  void testTileEntitiesAlreadyInWorldBuildNetworkAndDoNotDuplicate() {
+    final TileEntity t1 = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+    final TileEntity t2 = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.storage());
 
+    final Map<EnumFacing, EnergyNetwork<IEnergyStorage, IEnergyTransfer>> networks1 = this.manager.connect(t1.getPos(), t1);
+
+    Assertions.assertEquals(1, networks1.size());
+    Assertions.assertTrue(networks1.containsKey(EnumFacing.EAST));
+    Assertions.assertEquals(1, this.manager.size());
+
+    final Map<EnumFacing, EnergyNetwork<IEnergyStorage, IEnergyTransfer>> networks2 = this.manager.connect(t2.getPos(), t2);
+
+    Assertions.assertEquals(1, networks2.size());
+    Assertions.assertTrue(networks2.containsKey(EnumFacing.WEST));
+    Assertions.assertEquals(1, this.manager.size());
+
+    Assertions.assertEquals(networks1.get(EnumFacing.EAST), networks2.get(EnumFacing.WEST));
   }
 
   @Test

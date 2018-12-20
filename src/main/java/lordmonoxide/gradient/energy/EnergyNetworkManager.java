@@ -31,20 +31,20 @@ public class EnergyNetworkManager<STORAGE extends IEnergyStorage, TRANSFER exten
     this.transfer = transfer;
   }
 
-  private final Map<STORAGE, BlockPos> tickStorageNodes = new HashMap<>();
+  private final Map<STORAGE, BlockPos> tickSinkNodes = new HashMap<>();
   private final Set<TRANSFER> tickTransferNodes = new HashSet<>();
 
   public void tick() {
     GradientMod.logger.info("Ticking {}", this);
 
-    this.tickStorageNodes.clear();
+    this.tickSinkNodes.clear();
     this.tickTransferNodes.clear();
 
     for(final TileEntity te : this.allNodes.values()) {
       GradientMod.logger.info("Checking {}", te);
       for(final EnumFacing facing : EnumFacing.VALUES) {
-        if(te.hasCapability(this.storage, facing)) {
-          this.tickStorageNodes.put(te.getCapability(this.storage, facing), te.getPos());
+        if(te.hasCapability(this.storage, facing) && te.getCapability(this.storage, facing).canSink()) {
+          this.tickSinkNodes.put(te.getCapability(this.storage, facing), te.getPos());
         } else if(te.hasCapability(this.transfer, facing)) {
           this.tickTransferNodes.add(te.getCapability(this.transfer, facing));
         }
@@ -56,21 +56,23 @@ public class EnergyNetworkManager<STORAGE extends IEnergyStorage, TRANSFER exten
       transfer.resetEnergyTransferred();
     }
 
-    for(final Map.Entry<STORAGE, BlockPos> entry : this.tickStorageNodes.entrySet()) {
-      final STORAGE storage = entry.getKey();
+    for(final Map.Entry<STORAGE, BlockPos> entry : this.tickSinkNodes.entrySet()) {
+      final STORAGE sink = entry.getKey();
       final BlockPos pos = entry.getValue();
 
-      GradientMod.logger.info("Ticking storage {} @ {}", storage, pos);
+      GradientMod.logger.info("Ticking sink {} @ {}", sink, pos);
 
-      final float requested = storage.getRequestedEnergy();
+      final float requested = sink.getRequestedEnergy();
 
-      GradientMod.logger.info("{} requesting {} energy", storage, requested);
+      GradientMod.logger.info("{} requesting {} energy", sink, requested);
 
       if(requested != 0.0f) {
         final float energy = this.requestEnergy(pos, requested);
 
+        GradientMod.logger.info("{} got {} energy", sink, energy);
+
         if(energy != 0.0f) {
-          storage.sinkEnergy(energy, false);
+          sink.sinkEnergy(energy, false);
         }
       }
     }

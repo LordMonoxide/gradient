@@ -663,6 +663,43 @@ public class EnergyNetworkManagerTest {
   }
 
   @Test
+  void testPowerIsNotExtractedFromEmptyStorage() {
+    final IEnergyTransfer transfer = new TransferNode() {
+      @Override
+      public void transfer(final float amount, final EnumFacing from, final EnumFacing to) {
+        Assertions.fail("Power should not have been routed");
+        super.transfer(amount, from, to);
+      }
+    };
+    final IEnergyStorage source = new StorageNode(10000.0f, 0.0f, 10.0f, 0.0f);
+    final IEnergyStorage sink = new StorageNode(10000.0f, 32.0f, 0.0f, 0.0f) {
+      @Override
+      public float sinkEnergy(final float maxSink, final boolean simulate) {
+        Assertions.fail("Should not have received energy");
+        return super.sinkEnergy(maxSink, simulate);
+      }
+    };
+
+    final TileEntity teTransfer = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.TRANSFER, transfer));
+    this.manager.connect(teTransfer.getPos(), teTransfer);
+
+    final TileEntity teSource = this.world.addTileEntity(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, source));
+    this.manager.connect(teSource.getPos(), teSource);
+
+    final TileEntity teSink = this.world.addTileEntity(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, sink));
+    this.manager.connect(teSink.getPos(), teSink);
+
+    Assertions.assertEquals(this.manager.size(), 1);
+
+    this.manager.tick();
+
+    Assertions.assertEquals(0.0f, source.getEnergy(), 0.0001f);
+    Assertions.assertEquals(0.0f, sink.getEnergy(), 0.0001f);
+
+    Assertions.assertEquals(0.0f, transfer.getEnergyTransferred(), 0.0001f);
+  }
+
+  @Test
   void testRemoveBasic() {
     final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
     Assertions.assertEquals(1, this.manager.connect(transfer.getPos(), transfer).size());

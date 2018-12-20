@@ -74,11 +74,11 @@ public class EnergyStorage implements IEnergyStorage {
 
   @Override
   public boolean canSink() {
-    return this.maxSource > 0;
+    return this.maxSink > 0;
   }
 
   @Override
   public boolean canSource() {
-    return this.maxSink > 0;
+    return this.maxSource > 0;
   }
 }

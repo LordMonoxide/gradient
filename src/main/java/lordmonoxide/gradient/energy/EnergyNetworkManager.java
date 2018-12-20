@@ -203,10 +203,11 @@ public class EnergyNetworkManager<STORAGE extends IEnergyStorage, TRANSFER exten
       // Create a new network if we couldn't connect
       GradientMod.logger.info("Failed to find a network to connect to, creating a new one");
       final EnergyNetwork<STORAGE, TRANSFER> network = new EnergyNetwork<>(this.storage, this.transfer);
+      this.allNodes.put(networkPos, worldTe);
       network.connect(networkPos, worldTe);
       network.connect(newNodePos, newTe);
       this.networks.add(network);
-      added.put(null, network);
+      added.put(BlockPosUtils.getBlockFacing(newNodePos, networkPos), network);
     }
   }
 

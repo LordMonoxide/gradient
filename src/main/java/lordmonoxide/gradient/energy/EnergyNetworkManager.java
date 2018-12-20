@@ -64,9 +64,14 @@ public class EnergyNetworkManager<STORAGE extends IEnergyStorage, TRANSFER exten
 
       final float requested = storage.getRequestedEnergy();
 
+      GradientMod.logger.info("{} requesting {} energy", storage, requested);
+
       if(requested != 0.0f) {
         final float energy = this.requestEnergy(pos, requested);
-        storage.sinkEnergy(energy, false);
+
+        if(energy != 0.0f) {
+          storage.sinkEnergy(energy, false);
+        }
       }
     }
   }

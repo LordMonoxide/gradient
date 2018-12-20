@@ -259,7 +259,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         if(node.te.hasCapability(this.storage, connection.getKey())) {
           final STORAGE storage = node.te.getCapability(this.storage, connection.getKey());
 
-          if(storage.canSource() && connection.getValue() != null && !this.extractEnergySources.containsKey(storage)) {
+          if(storage.canSource() && storage.getEnergy() != 0.0f && connection.getValue() != null && !this.extractEnergySources.containsKey(storage)) {
             final List<BlockPos> path = this.pathFind(sink, sinkSide, node.pos, connection.getKey());
             this.extractEnergySources.put(storage, path);
           }

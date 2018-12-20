@@ -29,7 +29,7 @@ public class StorageNode implements IEnergyStorage {
 
   @Override
   public float sinkEnergy(final float maxSink, final boolean simulate) {
-    return this.addEnergy(Math.min(this.maxSink, maxSink));
+    return this.addEnergy(Math.min(this.maxSink, maxSink), simulate);
   }
 
   @Override
@@ -54,9 +54,13 @@ public class StorageNode implements IEnergyStorage {
   }
 
   @Override
-  public float addEnergy(final float amount) {
+  public float addEnergy(final float amount, final boolean simulate) {
     final float energyReceived = Math.min(this.capacity - this.energy, amount);
-    this.energy += energyReceived;
+
+    if(!simulate) {
+      this.energy += energyReceived;
+    }
+
     return energyReceived;
   }
 

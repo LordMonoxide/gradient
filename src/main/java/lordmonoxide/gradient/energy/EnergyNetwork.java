@@ -262,6 +262,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     // Find all of the energy sources
     for(final EnergyNode node : this.nodes.values()) {
       for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
+        if(sink.equals(node.pos) && sinkSide == connection.getKey()) {
+          continue;
+        }
+
         if(node.te.hasCapability(this.storage, connection.getKey())) {
           final STORAGE storage = node.te.getCapability(this.storage, connection.getKey());
 

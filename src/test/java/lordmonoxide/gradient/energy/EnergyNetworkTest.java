@@ -182,7 +182,7 @@ class EnergyNetworkTest {
     this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(STORAGE, s3));
     this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(STORAGE, s4));
 
-    Assertions.assertEquals(20.0f, this.net.requestEnergy(BlockPos.ORIGIN.north(), EnumFacing.SOUTH, 20.0f), 0.001f, "Extracted energy did not match");
+    Assertions.assertEquals(15.0f, this.net.requestEnergy(BlockPos.ORIGIN.north(), EnumFacing.SOUTH, 15.0f), 0.001f, "Extracted energy did not match");
     Assertions.assertEquals( 20.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
     Assertions.assertEquals( 15.0f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
     Assertions.assertEquals( 95.0f, s4.getEnergy(), 0.001f, "s4 remaining energy did not match");

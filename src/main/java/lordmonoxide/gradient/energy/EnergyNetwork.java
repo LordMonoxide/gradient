@@ -262,11 +262,27 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     // Find all of the energy sources
     for(final EnergyNode node : this.nodes.values()) {
       for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
+        if(sink.equals(node.pos) && sinkSide == connection.getKey()) {
+          continue;
+        }
+
         if(node.te.hasCapability(this.storage, connection.getKey())) {
           final STORAGE storage = node.te.getCapability(this.storage, connection.getKey());
 
-          if(storage.canSource() && storage.getEnergy() != 0.0f && connection.getValue() != null && !this.extractEnergySources.containsKey(storage)) {
+          if(storage.canSource() && storage.getEnergy() != 0.0f && connection.getValue() != null) {
             final List<BlockPos> path = this.pathFind(sink, sinkSide, node.pos, connection.getKey());
+
+            if(path.isEmpty()) {
+              continue;
+            }
+
+            // Don't overwrite shorter paths
+            if(this.extractEnergySources.containsKey(storage)) {
+              if(this.extractEnergySources.get(storage).size() <= path.size()) {
+                continue;
+              }
+            }
+
             this.extractEnergySources.put(storage, path);
           }
         }

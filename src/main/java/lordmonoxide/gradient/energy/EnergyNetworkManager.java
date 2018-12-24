@@ -6,7 +6,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +20,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class EnergyNetworkManager<STORAGE extends IEnergyStorage, TRANSFER extends IEnergyTransfer> {
+  private static final Map<World, List<EnergyNetworkManager<?, ?>>> clientManagers = new HashMap<>();
+  private static final Map<World, List<EnergyNetworkManager<?, ?>>> serverManagers = new HashMap<>();
+
+  public static <STORAGE extends IEnergyStorage, TRANSFER extends IEnergyTransfer> EnergyNetworkManager<STORAGE, TRANSFER> getManager(final World world, final Capability<STORAGE> storage, final Capability<TRANSFER> transfer) {
+    final Map<World, List<EnergyNetworkManager<?, ?>>> managers = world.isRemote ? clientManagers : serverManagers;
+
+    final List<EnergyNetworkManager<?, ?>> list = managers.computeIfAbsent(world, k -> new ArrayList<>());
+
+    for(final EnergyNetworkManager<?, ?> manager : list) {
+      if(manager.storage == storage && manager.transfer == transfer) {
+        GradientMod.logger.info("Using manager {}", manager);
+        return (EnergyNetworkManager<STORAGE, TRANSFER>)manager;
+      }
+    }
+
+    final EnergyNetworkManager<STORAGE, TRANSFER> manager = new EnergyNetworkManager<>(world, storage, transfer);
+    GradientMod.logger.info("New manager {}", manager);
+    list.add(manager);
+    return manager;
+  }
+
+  @SubscribeEvent
+  public static void onServerTick(final TickEvent.ServerTickEvent event) {
+    if(event.phase == TickEvent.Phase.START) {
+      serverManagers.values().forEach(list -> list.forEach(EnergyNetworkManager::tick));
+    }
+  }
+
   private final Capability<STORAGE> storage;
   private final Capability<TRANSFER> transfer;
 

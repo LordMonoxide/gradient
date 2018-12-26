@@ -6,27 +6,47 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lordmonoxide.gradient.utils.BlockPosUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 
 public class EnergyNetworkState {
-  private final Long2FloatMap storage = new Long2FloatRBTreeMap();
+  private final Long2FloatMap storages = new Long2FloatRBTreeMap();
+  private Capability<? extends IEnergyStorage> storageCap;
+  private Capability<? extends IEnergyTransfer> transferCap;
 
   public boolean isDirty() {
-    return !this.storage.isEmpty();
+    return !this.storages.isEmpty();
   }
 
   void reset() {
-    this.storage.clear();
+    this.storages.clear();
+  }
+
+  void setCapabilities(final Capability<? extends IEnergyStorage> storage, final Capability<? extends IEnergyTransfer> transfer) {
+    this.storageCap = storage;
+    this.transferCap = transfer;
   }
 
   void add(final BlockPos pos, final EnumFacing facing, final float energy) {
-    this.storage.put(BlockPosUtils.serializeBlockPosAndFacing(pos, facing), energy);
+    this.storages.put(BlockPosUtils.serializeBlockPosAndFacing(pos, facing), energy);
+  }
+
+  void add(final long serialized, final float energy) {
+    this.storages.put(serialized, energy);
   }
 
   public int size() {
-    return this.storage.size();
+    return this.storages.size();
   }
 
   public ObjectSet<Long2FloatMap.Entry> entries() {
-    return this.storage.long2FloatEntrySet();
+    return this.storages.long2FloatEntrySet();
+  }
+
+  public Capability<? extends IEnergyStorage> getStorageCapability() {
+    return this.storageCap;
+  }
+
+  public Capability<? extends IEnergyTransfer> getTransferCapability() {
+    return this.transferCap;
   }
 }

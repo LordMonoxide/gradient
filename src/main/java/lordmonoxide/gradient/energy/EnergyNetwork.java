@@ -22,16 +22,20 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
   final Capability<TRANSFER> transfer;
 
   private final List<EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new ArrayList<>();
+  public final int dimension;
   private final IBlockAccess world;
 
   private final Map<BlockPos, TileEntity> allNodes = new HashMap<>();
 
   private final EnergyNetworkState state = new EnergyNetworkState();
 
-  public EnergyNetwork(final IBlockAccess world, final Capability<STORAGE> storage, final Capability<TRANSFER> transfer) {
+  public EnergyNetwork(final int dimension, final IBlockAccess world, final Capability<STORAGE> storage, final Capability<TRANSFER> transfer) {
+    this.dimension = dimension;
     this.world = world;
     this.storage = storage;
     this.transfer = transfer;
+
+    this.state.setCapabilities(storage, transfer);
   }
 
   private final Map<STORAGE, Tuple<BlockPos, EnumFacing>> tickSinkNodes = new HashMap<>();

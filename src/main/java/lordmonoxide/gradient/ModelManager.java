@@ -6,6 +6,8 @@ import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
 import lordmonoxide.gradient.blocks.dryingrack.TileDryingRackRenderer;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePitRenderer;
+import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheel;
+import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheelRenderer;
 import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinder;
 import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinderRenderer;
 import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasin;
@@ -78,6 +80,7 @@ public final class ModelManager {
     ClientRegistry.bindTileEntitySpecialRenderer(TileManualGrinder.class, new TileManualGrinderRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileMixingBasin.class, new TileMixingBasinRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileDryingRack.class, new TileDryingRackRenderer());
+    ClientRegistry.bindTileEntitySpecialRenderer(TileFlywheel.class, new TileFlywheelRenderer());
   }
 
   private static void registerItemModels() {

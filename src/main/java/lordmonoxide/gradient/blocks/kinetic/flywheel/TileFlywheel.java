@@ -1,6 +1,8 @@
 package lordmonoxide.gradient.blocks.kinetic.flywheel;
 
+import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
+import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -13,7 +15,29 @@ public class TileFlywheel extends TileEntity {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
-  private final IKineticEnergyStorage energy = new KineticEnergyStorage(100.0f);
+  @CapabilityInject(IKineticEnergyTransfer.class)
+  private static Capability<IKineticEnergyTransfer> TRANSFER;
+
+  private final IKineticEnergyStorage energy = new KineticEnergyStorage(100.0f) {
+    @Override
+    public float sinkEnergy(final float maxSink, final boolean simulate) {
+      System.out.println("Got " + maxSink);
+      return super.sinkEnergy(maxSink, simulate);
+    }
+  };
+
+  @Override
+  public void onLoad() {
+    if(this.world.isRemote) {
+      return;
+    }
+
+    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).connect(this.pos, this);
+  }
+
+  public float getEnergy() {
+    return this.energy.getEnergy();
+  }
 
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {

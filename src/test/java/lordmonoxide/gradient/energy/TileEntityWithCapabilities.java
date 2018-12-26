@@ -11,27 +11,27 @@ import java.util.Map;
 
 public class TileEntityWithCapabilities extends TileEntity {
   public static TileEntityWithCapabilities sink() {
-    return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, new StorageNode(1000.0f, 32.0f, 0.0f, 0.0f));
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(1000.0f, 32.0f, 0.0f, 0.0f));
   }
 
   public static TileEntityWithCapabilities source() {
-    return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, new StorageNode(1000.0f, 0.0f, 32.0f, 10000000.0f));
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(1000.0f, 0.0f, 32.0f, 10000000.0f));
   }
 
   public static TileEntityWithCapabilities storage() {
-    return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, new StorageNode());
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode());
   }
 
   public static TileEntityWithCapabilities storage(final EnumFacing... sides) {
-    return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.STORAGE, new StorageNode(), sides);
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(), sides);
   }
 
   public static TileEntityWithCapabilities transfer() {
-    return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.TRANSFER, new TransferNode());
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, new TransferNode());
   }
 
   public static TileEntityWithCapabilities transfer(final EnumFacing... sides) {
-    return new TileEntityWithCapabilities().addCapability(EnergyNetworkTest.TRANSFER, new TransferNode(), sides);
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, new TransferNode(), sides);
   }
 
   private final Map<EnumFacing, Map<Capability, Object>> caps = new EnumMap<>(EnumFacing.class);

@@ -23,7 +23,7 @@ public class EnergyNetworkTest {
   @BeforeEach
   void setUp() {
     this.world = new World();
-    this.manager = new EnergyNetwork<>(this.world, EnergyNetworkSegmentTest.STORAGE, EnergyNetworkSegmentTest.TRANSFER);
+    this.manager = new EnergyNetwork<>(0, this.world, EnergyNetworkSegmentTest.STORAGE, EnergyNetworkSegmentTest.TRANSFER);
   }
 
   @Test

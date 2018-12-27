@@ -32,7 +32,7 @@ public final class EnergyNetworkManager {
       }
     }
 
-    final EnergyNetwork<STORAGE, TRANSFER> network = new EnergyNetwork<>(world, storage, transfer);
+    final EnergyNetwork<STORAGE, TRANSFER> network = new EnergyNetwork<>(world.provider.getDimension(), world, storage, transfer);
 
     GradientMod.logger.info("New manager {}", network);
     list.add(network);
@@ -47,7 +47,7 @@ public final class EnergyNetworkManager {
           final EnergyNetworkState state = network.tick();
 
           if(state.isDirty()) {
-            PacketSyncEnergyNetwork.send(state);
+            PacketSyncEnergyNetwork.send(network.dimension, state);
           }
         }
       }

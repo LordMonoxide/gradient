@@ -2,9 +2,9 @@ package lordmonoxide.gradient.energy;
 
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2FloatMap;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
 import lordmonoxide.gradient.utils.BlockPosUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -77,14 +77,14 @@ public class PacketSyncEnergyNetwork implements IMessage {
     @Nullable
     @Override
     public IMessage onMessage(final PacketSyncEnergyNetwork message, final MessageContext ctx) {
-      Minecraft.getMinecraft().addScheduledTask(() -> {
+      GradientMod.proxy.scheduleTask(ctx, () -> {
         for(final Long2FloatMap.Entry entry : message.state.entries()) {
           final long serialized = entry.getLongKey();
           final float energy = entry.getFloatValue();
 
           final BlockPos pos = BlockPosUtils.getBlockPosFromSerialized(serialized);
 
-          final World world = Minecraft.getMinecraft().world;
+          final World world = GradientMod.proxy.getWorld();
 
           if(world.isBlockLoaded(pos)) {
             final TileEntity te = world.getTileEntity(pos);

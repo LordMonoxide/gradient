@@ -34,6 +34,8 @@ public class BlockHandCrank extends GradientBlock {
 
   public BlockHandCrank() {
     super("hand_crank", CreativeTabs.TOOLS, Material.CIRCUITS);
+    this.setResistance(5.0f);
+    this.setHardness(1.0f);
   }
 
   @Override

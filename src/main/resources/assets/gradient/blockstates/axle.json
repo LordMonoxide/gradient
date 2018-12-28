@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "axis=y":    { "model": "gradient:axle" },
+    "axis=z":    { "model": "gradient:axle", "x": 90 },
+    "axis=x":    { "model": "gradient:axle", "x": 90, "y": 90 },
+    "axis=none": { "model": "gradient:axle" }
+  }
+}

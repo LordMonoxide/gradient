@@ -29,6 +29,8 @@ public class BlockFlywheel extends GradientBlock {
 
   public BlockFlywheel() {
     super("flywheel", CreativeTabs.TOOLS, Material.CIRCUITS);
+    this.setResistance(5.0f);
+    this.setHardness(1.0f);
   }
 
   @Override

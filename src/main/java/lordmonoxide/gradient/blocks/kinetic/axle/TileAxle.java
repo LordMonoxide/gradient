@@ -1,11 +1,9 @@
-package lordmonoxide.gradient.blocks.kinetic.flywheel;
+package lordmonoxide.gradient.blocks.kinetic.axle;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
-import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
-import net.minecraft.block.state.IBlockState;
+import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -13,14 +11,14 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import javax.annotation.Nullable;
 
-public class TileFlywheel extends TileEntity {
+public class TileAxle extends TileEntity {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
-  private final IKineticEnergyStorage energy = new KineticEnergyStorage(10000.0f);
+  private final IKineticEnergyTransfer transfer = new KineticEnergyTransfer();
 
   @Override
   public void onLoad() {
@@ -31,19 +29,11 @@ public class TileFlywheel extends TileEntity {
     EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).connect(this.pos, this);
   }
 
-  public float getEnergy() {
-    return this.energy.getEnergy();
-  }
-
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    if(capability == STORAGE) {
-      final IBlockState state = this.world.getBlockState(this.pos);
-
-      if(state.getBlock() == GradientBlocks.FLYWHEEL) {
-        final EnumFacing myFacing = state.getValue(BlockFlywheel.FACING);
-        return facing == myFacing.rotateY() || facing == myFacing.rotateYCCW();
-      }
+    if(capability == TRANSFER) {
+      return true;
+      //return facing == this.world.getBlockState(this.pos).getValue(BlockHandCrank.FACING).getOpposite();
     }
 
     return super.hasCapability(capability, facing);
@@ -52,16 +42,10 @@ public class TileFlywheel extends TileEntity {
   @Nullable
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == STORAGE) {
-      final IBlockState state = this.world.getBlockState(this.pos);
-
-      if(state.getBlock() == GradientBlocks.FLYWHEEL) {
-        final EnumFacing myFacing = state.getValue(BlockFlywheel.FACING);
-
-        if(facing == myFacing.rotateY() || facing == myFacing.rotateYCCW()) {
-          return STORAGE.cast(this.energy);
-        }
-      }
+    if(capability == TRANSFER) {
+      //if(facing == this.world.getBlockState(this.pos).getValue(BlockHandCrank.FACING).getOpposite()) {
+        return TRANSFER.cast(this.transfer);
+      //}
     }
 
     return super.getCapability(capability, facing);

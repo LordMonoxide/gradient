@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end":  "gradient:blocks/axle_end",
+    "side": "gradient:blocks/axle_side"
+  }
+}

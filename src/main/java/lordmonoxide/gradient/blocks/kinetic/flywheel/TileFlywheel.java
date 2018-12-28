@@ -18,13 +18,7 @@ public class TileFlywheel extends TileEntity {
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
-  private final IKineticEnergyStorage energy = new KineticEnergyStorage(100.0f) {
-    @Override
-    public float sinkEnergy(final float maxSink, final boolean simulate) {
-      System.out.println("Got " + maxSink);
-      return super.sinkEnergy(maxSink, simulate);
-    }
-  };
+  private final IKineticEnergyStorage energy = new KineticEnergyStorage(10000.0f);
 
   @Override
   public void onLoad() {

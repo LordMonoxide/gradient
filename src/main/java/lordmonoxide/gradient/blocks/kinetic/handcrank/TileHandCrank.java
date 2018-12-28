@@ -50,7 +50,6 @@ public class TileHandCrank extends TileEntity implements ITickable {
         this.cranking = false;
         this.crankTicks = 0;
         this.storage.addEnergy(1.0f, false);
-        System.out.println(this.storage.getEnergy());
         this.markDirty();
       }
     }

@@ -1,9 +1,11 @@
 package lordmonoxide.gradient.blocks.kinetic.handcrank;
 
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -58,8 +60,11 @@ public class TileHandCrank extends TileEntity implements ITickable {
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     if(capability == STORAGE) {
-      return true;
-      //return facing == this.world.getBlockState(this.pos).getValue(BlockHandCrank.FACING).getOpposite();
+      final IBlockState state = this.world.getBlockState(this.pos);
+
+      if(state.getBlock() == GradientBlocks.HAND_CRANK) {
+        return facing == state.getValue(BlockHandCrank.FACING);
+      }
     }
 
     return super.hasCapability(capability, facing);
@@ -69,9 +74,13 @@ public class TileHandCrank extends TileEntity implements ITickable {
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == STORAGE) {
-      //if(facing == this.world.getBlockState(this.pos).getValue(BlockHandCrank.FACING).getOpposite()) {
-        return STORAGE.cast(this.storage);
-      //}
+      final IBlockState state = this.world.getBlockState(this.pos);
+
+      if(state.getBlock() == GradientBlocks.HAND_CRANK) {
+        if(facing == state.getValue(BlockHandCrank.FACING)) {
+          return STORAGE.cast(this.storage);
+        }
+      }
     }
 
     return super.getCapability(capability, facing);

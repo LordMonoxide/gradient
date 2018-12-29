@@ -9,7 +9,9 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -21,12 +23,17 @@ public class BlockAxle extends BlockRotatedPillar {
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
+  private static final AxisAlignedBB AABB_X = new AxisAlignedBB(0.0d, 5.0d / 16.0d, 5.0d / 16.0d, 1.0d, 11.0d / 16.0d, 11.0d / 16.0d);
+  private static final AxisAlignedBB AABB_Y = new AxisAlignedBB(5.0d / 16.0d, 0.0d, 5.0d / 16.0d, 11.0d / 16.0d, 1.0d, 11.0d / 16.0d);
+  private static final AxisAlignedBB AABB_Z = new AxisAlignedBB(5.0d / 16.0d, 5.0d / 16.0d, 0.0d, 11.0d / 16.0d, 11.0d / 16.0d, 1.0d);
+
   public BlockAxle() {
     super(Material.CIRCUITS);
     this.setRegistryName("axle");
     this.setTranslationKey("axle");
     this.setCreativeTab(CreativeTabs.TOOLS);
     this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, EnumFacing.Axis.Y));
+    this.setLightOpacity(0);
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }
@@ -50,6 +57,35 @@ public class BlockAxle extends BlockRotatedPillar {
   @Override
   public boolean hasTileEntity(final IBlockState state) {
     return true;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public boolean isOpaqueCube(final IBlockState state) {
+    return false;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public boolean isFullCube(final IBlockState state) {
+    return false;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
+    switch(state.getValue(AXIS)) {
+      case X:
+        return AABB_X;
+
+      case Z:
+        return AABB_Z;
+    }
+
+    return AABB_Y;
   }
 }
 

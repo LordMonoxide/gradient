@@ -124,12 +124,14 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
 
       GradientMod.logger.info("Found TE {} @ {} ({})", worldTe, networkPos, facing);
 
+      final EnumFacing opposite = facing.getOpposite();
+
       if(newTe.hasCapability(this.storage, facing)) {
-        if(worldTe.hasCapability(this.storage, facing)) {
+        if(worldTe.hasCapability(this.storage, opposite)) {
           // New network if we can't connect to the storage's network (we can only connect if it's the only block in the network)
           GradientMod.logger.info("Both TEs are storages");
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, added);
-        } else if(worldTe.hasCapability(this.transfer, facing)) {
+        } else if(worldTe.hasCapability(this.transfer, opposite)) {
           // Add to network, no merge
           GradientMod.logger.info("New TE is storage, world TE is transfer");
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, added);
@@ -137,7 +139,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           GradientMod.logger.info("Unconnectable");
         }
       } else if(newTe.hasCapability(this.transfer, facing)) {
-        if(worldTe.hasCapability(this.storage, facing)) {
+        if(worldTe.hasCapability(this.storage, opposite)) {
           // If worldTe is in its own network, add (may have to merge)
           // If worldTe is in an existing network, new (may have to merge)
           GradientMod.logger.info("New TE is transfer, world TE is storage");
@@ -145,7 +147,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
-        } else if(worldTe.hasCapability(this.transfer, facing)) {
+        } else if(worldTe.hasCapability(this.transfer, opposite)) {
           // Add to network (may have to merge)
           GradientMod.logger.info("Both TEs are transfers");
           final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new HashMap<>();

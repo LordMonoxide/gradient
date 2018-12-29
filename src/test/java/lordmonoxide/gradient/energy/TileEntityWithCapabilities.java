@@ -14,8 +14,16 @@ public class TileEntityWithCapabilities extends TileEntity {
     return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(1000.0f, 32.0f, 0.0f, 0.0f));
   }
 
+  public static TileEntityWithCapabilities sink(final EnumFacing... sides) {
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(1000.0f, 32.0f, 0.0f, 0.0f), sides);
+  }
+
   public static TileEntityWithCapabilities source() {
     return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(1000.0f, 0.0f, 32.0f, 10000000.0f));
+  }
+
+  public static TileEntityWithCapabilities source(final EnumFacing... sides) {
+    return new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(1000.0f, 0.0f, 32.0f, 10000000.0f), sides);
   }
 
   public static TileEntityWithCapabilities storage() {

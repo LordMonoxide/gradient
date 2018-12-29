@@ -535,9 +535,9 @@ public class EnergyNetworkTest {
   @Test
   void testIncompatibleDirectionalTransfersDoNotMergeNetworks() {
     final TileEntity sink   = this.world.addTileEntity(new BlockPos(160, 72, 67), TileEntityWithCapabilities.sink());
-    final TileEntity tx     = this.world.addTileEntity(new BlockPos(161, 72, 68), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, new TransferNode(), EnumFacing.EAST, EnumFacing.WEST));
-    final TileEntity source = this.world.addTileEntity(new BlockPos(162, 72, 68), TileEntityWithCapabilities.source());
-    final TileEntity tz     = this.world.addTileEntity(new BlockPos(160, 72, 68), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, new TransferNode(), EnumFacing.NORTH, EnumFacing.SOUTH));
+    final TileEntity tx     = this.world.addTileEntity(new BlockPos(161, 72, 68), TileEntityWithCapabilities.transfer(EnumFacing.EAST, EnumFacing.WEST));
+    final TileEntity source = this.world.addTileEntity(new BlockPos(162, 72, 68), TileEntityWithCapabilities.storage(EnumFacing.WEST));
+    final TileEntity tz     = this.world.addTileEntity(new BlockPos(160, 72, 68), TileEntityWithCapabilities.transfer(EnumFacing.NORTH, EnumFacing.SOUTH));
 
     final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> sinkMap = this.manager.connect(sink.getPos(), sink);
     Assertions.assertEquals(1, sinkMap.size());

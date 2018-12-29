@@ -60,12 +60,14 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
     // If we have a node here already, check to see if it's the same one
     if(this.contains(newNodePos)) {
-      if(this.getNode(newNodePos).te == te) {
+      final EnergyNode existing = this.getNode(newNodePos);
+
+      if(existing.te == te) {
         GradientMod.logger.info("{} is already connected at {}", te, newNodePos);
         return true;
       }
 
-      GradientMod.logger.info("There is already a different node connected at {}", newNodePos);
+      GradientMod.logger.info("There is already a different node connected at {}: {}", newNodePos, existing.te);
       return false;
     }
 
@@ -168,7 +170,10 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
    * @return true if this network needs to be rebuild or deleted (i.e. empty) by the manager
    */
   public boolean disconnect(final BlockPos pos) {
+    GradientMod.logger.info("Removing {} from {}", pos, this);
+
     if(!this.nodes.containsKey(pos)) {
+      GradientMod.logger.info("Node {} did not exist in {}", pos, this);
       return false;
     }
 

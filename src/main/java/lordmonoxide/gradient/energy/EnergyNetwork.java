@@ -133,6 +133,8 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           // Add to network, no merge
           GradientMod.logger.info("New TE is storage, world TE is transfer");
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, added);
+        } else {
+          GradientMod.logger.info("Unconnectable");
         }
       } else if(newTe.hasCapability(this.transfer, facing)) {
         if(worldTe.hasCapability(this.storage, facing)) {
@@ -150,6 +152,8 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
+        } else {
+          GradientMod.logger.info("Unconnectable");
         }
       }
     }

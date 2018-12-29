@@ -529,6 +529,37 @@ public class EnergyNetworkTest {
     Assertions.assertEquals(networks1.get(EnumFacing.EAST), networks2.get(EnumFacing.WEST));
   }
 
+  /**
+   * #500
+   */
+  @Test
+  void testIncompatibleDirectionalTransfersDoNotMergeNetworks() {
+    final TileEntity sink   = this.world.addTileEntity(new BlockPos(160, 72, 67), TileEntityWithCapabilities.sink());
+    final TileEntity tx     = this.world.addTileEntity(new BlockPos(161, 72, 68), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, new TransferNode(), EnumFacing.EAST, EnumFacing.WEST));
+    final TileEntity source = this.world.addTileEntity(new BlockPos(162, 72, 68), TileEntityWithCapabilities.source());
+    final TileEntity tz     = this.world.addTileEntity(new BlockPos(160, 72, 68), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, new TransferNode(), EnumFacing.NORTH, EnumFacing.SOUTH));
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> sinkMap = this.manager.connect(sink.getPos(), sink);
+    Assertions.assertEquals(1, sinkMap.size());
+    Assertions.assertTrue(sinkMap.containsKey(EnumFacing.SOUTH));
+    Assertions.assertEquals(1, this.manager.size());
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> txMap = this.manager.connect(tx.getPos(), tx);
+    Assertions.assertEquals(1, txMap.size());
+    Assertions.assertTrue(txMap.containsKey(EnumFacing.EAST));
+    Assertions.assertEquals(2, this.manager.size());
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> sourceMap = this.manager.connect(source.getPos(), source);
+    Assertions.assertEquals(1, sourceMap.size());
+    Assertions.assertTrue(sourceMap.containsKey(EnumFacing.WEST));
+    Assertions.assertEquals(2, this.manager.size());
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> tzMap = this.manager.connect(tz.getPos(), tz);
+    Assertions.assertEquals(1, tzMap.size());
+    Assertions.assertTrue(tzMap.containsKey(EnumFacing.NORTH));
+    Assertions.assertEquals(2, this.manager.size());
+  }
+
   @Test
   void testExtractingEnergySingleNetwork() {
     final IEnergyStorage sourceStorage = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);

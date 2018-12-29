@@ -1,9 +1,12 @@
 package lordmonoxide.gradient.blocks.kinetic.axle;
 
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
+import net.minecraft.block.BlockRotatedPillar;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -32,8 +35,11 @@ public class TileAxle extends TileEntity {
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     if(capability == TRANSFER) {
-      return true;
-      //return facing == this.world.getBlockState(this.pos).getValue(BlockHandCrank.FACING).getOpposite();
+      final IBlockState state = this.world.getBlockState(this.pos);
+
+      if(state.getBlock() == GradientBlocks.AXLE) {
+        return facing != null && facing.getAxis() == state.getValue(BlockRotatedPillar.AXIS);
+      }
     }
 
     return super.hasCapability(capability, facing);
@@ -43,9 +49,13 @@ public class TileAxle extends TileEntity {
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == TRANSFER) {
-      //if(facing == this.world.getBlockState(this.pos).getValue(BlockHandCrank.FACING).getOpposite()) {
-        return TRANSFER.cast(this.transfer);
-      //}
+      final IBlockState state = this.world.getBlockState(this.pos);
+
+      if(state.getBlock() == GradientBlocks.AXLE) {
+        if(facing != null && facing.getAxis() == state.getValue(BlockRotatedPillar.AXIS)) {
+          return TRANSFER.cast(this.transfer);
+        }
+      }
     }
 
     return super.getCapability(capability, facing);

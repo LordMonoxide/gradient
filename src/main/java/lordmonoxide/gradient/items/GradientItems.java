@@ -117,6 +117,8 @@ public final class GradientItems {
   public static final GradientItem FLOUR = new GradientItem("flour", CreativeTabs.FOOD);
   public static final GradientItem DOUGH = new GradientItem("dough", CreativeTabs.FOOD);
 
+  public static final GradientItem WOODEN_GEAR = new GradientItem("wooden_gear", CreativeTabs.MATERIALS);
+
   private static final Map<GradientMetals.Metal, ItemMetal> NUGGET = new HashMap<>();
   private static final Map<GradientMetals.Metal, ItemMetal> CRUSHED = new HashMap<>();
   private static final Map<GradientMetals.Metal, ItemMetal> CRUSHED_PURIFIED = new HashMap<>();
@@ -308,6 +310,8 @@ public final class GradientItems {
     registry.register(FLOUR);
     registry.register(DOUGH);
 
+    registry.register(WOODEN_GEAR);
+
     registry.register(IGNITER);
 
     registry.register(GRINDING_HEAD);
@@ -448,6 +452,8 @@ public final class GradientItems {
     OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_JUNGLE_WOOD);
     OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_ACACIA_WOOD);
     OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_DARK_OAK_WOOD);
+
+    OreDictionary.registerOre("gearWood", WOODEN_GEAR);
 
     Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);
     Blocks.SPRUCE_STAIRS.setHarvestLevel("axe", 0);

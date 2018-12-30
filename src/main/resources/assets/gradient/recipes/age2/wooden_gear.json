@@ -1,0 +1,21 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
+  "result": {
+    "item": "gradient:wooden_gear"
+  },
+  "pattern": [
+    "FSF",
+    "S S",
+    "FSF"
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    },
+    "F": {
+      "item": "minecraft:flint"
+    }
+  }
+}

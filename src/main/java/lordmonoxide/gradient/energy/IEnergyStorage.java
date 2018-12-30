@@ -34,6 +34,12 @@ public interface IEnergyStorage extends IEnergyNode {
   void setEnergy(float amount);
 
   /**
+   * Add energy to the storage, bypassing sink restrictions (used by things like
+   * generators which don't sink power, but still need an internal power buffer)
+   */
+  float addEnergy(float amount, final boolean simulate);
+
+  /**
    * Returns the maximum amount of energy that can be stored.
    */
   float getCapacity();

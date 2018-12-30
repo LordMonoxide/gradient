@@ -1,516 +1,856 @@
 package lordmonoxide.gradient.energy;
 
-import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.utils.BlockPosUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Constructor;
-import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Map;
 
-@DisplayName("Energy Network")
-class EnergyNetworkTest {
-  static final Capability<IEnergyStorage> STORAGE = newCap("STORAGE");
-  static final Capability<IEnergyTransfer> TRANSFER = newCap("TRANSFER");
-
-  private EnergyNetwork<IEnergyStorage, IEnergyTransfer> net;
+public class EnergyNetworkTest {
+  private static final EnergyNetworkSegment[] EMPTY_ENERGY_NETWORKS = new EnergyNetworkSegment[0];
+  private World world;
+  private EnergyNetwork<IEnergyStorage, IEnergyTransfer> manager;
 
   @BeforeAll
   static void setUpFirst() {
-    GradientMod.logger = LogManager.getLogger(GradientMod.MODID);
+    EnergyNetworkSegmentTest.setUpFirst();
   }
 
   @BeforeEach
   void setUp() {
-    this.net = new EnergyNetwork<>(STORAGE, TRANSFER);
+    this.world = new World();
+    this.manager = new EnergyNetwork<>(0, this.world, EnergyNetworkSegmentTest.STORAGE, EnergyNetworkSegmentTest.TRANSFER);
   }
 
   @Test
-  void testContainsEmptyNetwork() {
-    final boolean contains = this.net.contains(BlockPos.ORIGIN);
+  void testAddingOneTransferNode() {
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> added = this.manager.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
 
-    Assertions.assertFalse(contains, "Contains didn't return false for empty net");
+    Assertions.assertEquals(1, added.size(), "There should only be one network");
+
+    for(final Map.Entry<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> network : added.entrySet()) {
+      Assertions.assertNull(network.getKey());
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getValue().getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, null, null, null, null, null), "Node did not match");
+    }
   }
 
   @Test
-  void testAddingTransferNodeToEmptyNetwork() {
-    final BlockPos pos = BlockPos.ORIGIN;
-    final boolean success = this.net.connect(pos, TileEntityWithCapabilities.transfer());
+  void testAddingOneStorageNode() {
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> added = this.manager.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
 
-    Assertions.assertTrue(success, "Failed to add node to empty net");
-    Assertions.assertTrue(this.net.contains(pos), "Net doesn't contain new node");
+    Assertions.assertEquals(1, added.size(), "There should only be one network");
+
+    for(final Map.Entry<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> network : added.entrySet()) {
+      Assertions.assertNull(network.getKey());
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getValue().getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, null, null, null, null, null), "Node did not match");
+    }
   }
 
   @Test
-  void testAddingStorageNodeToEmptyNetwork() {
-    final BlockPos pos = BlockPos.ORIGIN;
-    final boolean success = this.net.connect(pos, TileEntityWithCapabilities.storage());
+  void testMergingStorageNetworks() {
+    final TileEntity teEast = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.storage());
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> east = this.manager.connect(BlockPos.ORIGIN.east(), teEast);
 
-    Assertions.assertTrue(success, "Failed to add node to empty net");
-    Assertions.assertTrue(this.net.contains(pos), "Net doesn't contain new node");
+    final TileEntity teWest = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.storage());
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> west = this.manager.connect(BlockPos.ORIGIN.west(), teWest);
+
+    Assertions.assertEquals(1, east.size(), "There should only be one network");
+    Assertions.assertEquals(1, west.size(), "There should only be one network");
+    Assertions.assertEquals(2, this.manager.size(), "There should be two networks total");
+
+    for(final Map.Entry<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> network : east.entrySet()) {
+      Assertions.assertNull(network.getKey());
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getValue().getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, null, null, null, null, null), "Node did not match");
+    }
+
+    for(final Map.Entry<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> network : west.entrySet()) {
+      Assertions.assertNull(network.getKey());
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getValue().getNode(BlockPos.ORIGIN.west()), BlockPos.ORIGIN.west(), null, null, null, null, null, null), "Node did not match");
+    }
+
+    final TileEntity teOrigin = TileEntityWithCapabilities.storage();
+
+    this.world.addTileEntity(BlockPos.ORIGIN, teOrigin);
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> origin = this.manager.connect(BlockPos.ORIGIN, teOrigin);
+
+    Assertions.assertEquals(2, origin.size(), "There should be two networks");
+    Assertions.assertEquals(2, this.manager.size(), "There should be two networks total");
+
+    final EnergyNetworkSegment[] originNetworks = origin.values().toArray(EMPTY_ENERGY_NETWORKS);
+
+    if(originNetworks[0].contains(BlockPos.ORIGIN.east())) {
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(originNetworks[0].getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, null, originNetworks[0].getNode(BlockPos.ORIGIN.east()), null, null, null), () -> "Node did not match: " + originNetworks[0].getNode(BlockPos.ORIGIN));
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(originNetworks[0].getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, null, null, originNetworks[0].getNode(BlockPos.ORIGIN), null, null), () -> "Node did not match: " + originNetworks[0].getNode(BlockPos.ORIGIN.east()));
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(originNetworks[1].getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, null, null, originNetworks[1].getNode(BlockPos.ORIGIN.west()), null, null), () -> "Node did not match: " + originNetworks[1].getNode(BlockPos.ORIGIN));
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(originNetworks[1].getNode(BlockPos.ORIGIN.west()), BlockPos.ORIGIN.west(), null, null, originNetworks[1].getNode(BlockPos.ORIGIN), null, null, null), () -> "Node did not match: " + originNetworks[1].getNode(BlockPos.ORIGIN.west()));
+    } else {
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(originNetworks[0].getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, null, null, originNetworks[0].getNode(BlockPos.ORIGIN.west()), null, null), () -> "Node did not match: " + originNetworks[0].getNode(BlockPos.ORIGIN));
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(originNetworks[0].getNode(BlockPos.ORIGIN.west()), BlockPos.ORIGIN.west(), null, null, originNetworks[0].getNode(BlockPos.ORIGIN), null, null, null), () -> "Node did not match: " + originNetworks[0].getNode(BlockPos.ORIGIN.west()));
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(originNetworks[1].getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, null, originNetworks[1].getNode(BlockPos.ORIGIN.east()), null, null, null), () -> "Node did not match: " + originNetworks[1].getNode(BlockPos.ORIGIN));
+      Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(originNetworks[1].getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, null, null, originNetworks[1].getNode(BlockPos.ORIGIN), null, null), () -> "Node did not match: " + originNetworks[1].getNode(BlockPos.ORIGIN.east()));
+    }
   }
 
   @Test
-  void testNodeLinkage() {
-    final BlockPos pos1 = BlockPos.ORIGIN;
-    final BlockPos pos2 = pos1.east();
-    final BlockPos pos3 = pos2.south();
-    final BlockPos pos4 = pos3.west();
-    final BlockPos pos5 = pos1.up();
-    final BlockPos pos6 = pos1.down();
+  void testAddingStorageToTransfer() {
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN, transfer).size());
 
-    Assertions.assertTrue(this.net.connect(pos1, TileEntityWithCapabilities.transfer()), "Failed to connect pos1");
-    final EnergyNetwork.EnergyNode energyNode1 = this.net.getNode(pos1);
-    Assertions.assertTrue(checkNode(energyNode1, pos1, null, null, null, null, null, null), "Node 1 did not match expected");
+    final TileEntity storage1 = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), storage1).size());
 
-    Assertions.assertTrue(this.net.connect(pos2, TileEntityWithCapabilities.transfer()), "Failed to connect pos2");
-    final EnergyNetwork.EnergyNode energyNode2 = this.net.getNode(pos2);
-    Assertions.assertTrue(checkNode(energyNode2, pos2, null, null, null, energyNode1, null, null), "Node 2 did not match expected");
-    Assertions.assertTrue(checkNode(energyNode1, pos1, null, null, energyNode2, null, null, null), "Node 1 did not match expected");
+    final TileEntity storage2 = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.west(), storage2).size());
 
-    Assertions.assertTrue(this.net.connect(pos3, TileEntityWithCapabilities.transfer()), "Failed to connect pos3");
-    final EnergyNetwork.EnergyNode energyNode3 = this.net.getNode(pos3);
-    Assertions.assertTrue(checkNode(energyNode3, pos3, energyNode2, null, null, null, null, null), "Node 3 did not match expected");
-    Assertions.assertTrue(checkNode(energyNode2, pos2, null, energyNode3, null, energyNode1, null, null), "Node 2 did not match expected");
-
-    Assertions.assertTrue(this.net.connect(pos4, TileEntityWithCapabilities.transfer()), "Failed to connect pos4");
-    final EnergyNetwork.EnergyNode energyNode4 = this.net.getNode(pos4);
-    Assertions.assertTrue(checkNode(energyNode4, pos4, energyNode1, null, energyNode3, null, null, null), "Node 4 did not match expected");
-    Assertions.assertTrue(checkNode(energyNode3, pos3, energyNode2, null, null, energyNode4, null, null), "Node 3 did not match expected");
-    Assertions.assertTrue(checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, null, null), "Node 1 did not match expected");
-
-    Assertions.assertTrue(this.net.connect(pos5, TileEntityWithCapabilities.transfer()), "Failed to connect pos5");
-    final EnergyNetwork.EnergyNode energyNode5 = this.net.getNode(pos5);
-    Assertions.assertTrue(checkNode(energyNode5, pos5, null, null, null, null, null, energyNode1), "Node 5 did not match expected");
-    Assertions.assertTrue(checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, energyNode5, null), "Node 1 did not match expected");
-
-    Assertions.assertTrue(this.net.connect(pos6, TileEntityWithCapabilities.transfer()), "Failed to connect pos6");
-    final EnergyNetwork.EnergyNode energyNode6 = this.net.getNode(pos6);
-    Assertions.assertTrue(checkNode(energyNode6, pos6, null, null, null, null, energyNode1, null), "Node 6 did not match expected");
-    Assertions.assertTrue(checkNode(energyNode1, pos1, null, energyNode4, energyNode2, null, energyNode5, energyNode6), "Node 1 did not match expected");
-  }
-
-  static boolean checkNode(@Nullable final EnergyNetwork.EnergyNode node, final BlockPos pos, @Nullable final EnergyNetwork.EnergyNode north, @Nullable final EnergyNetwork.EnergyNode south, @Nullable final EnergyNetwork.EnergyNode east, @Nullable final EnergyNetwork.EnergyNode west, @Nullable final EnergyNetwork.EnergyNode up, @Nullable final EnergyNetwork.EnergyNode down) {
-    return node != null && node.pos.equals(pos) && node.connection(EnumFacing.NORTH) == north && node.connection(EnumFacing.SOUTH) == south && node.connection(EnumFacing.EAST) == east && node.connection(EnumFacing.WEST) == west && node.connection(EnumFacing.UP) == up && node.connection(EnumFacing.DOWN) == down;
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+    Assertions.assertEquals(3, this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0).size(), "Network should have 3 nodes");
   }
 
   @Test
-  void testInvalidConnection() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+  void testAddingTransferBetweenStoragesMerges() {
+    final TileEntity storage1 = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), storage1).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertFalse(this.net.connect(new BlockPos(100.0f, 100.0f, 100.0f), TileEntityWithCapabilities.transfer()), "Invalid connection didn't return false");
+    final TileEntity storage2 = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.west(), storage2).size());
+    Assertions.assertEquals(2, this.manager.size(), "Manager should have two networks");
+
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> transferNetworks = this.manager.connect(BlockPos.ORIGIN, transfer);
+    Assertions.assertEquals(2, transferNetworks.size());
+    Assertions.assertTrue(transferNetworks.containsKey(EnumFacing.EAST));
+    Assertions.assertTrue(transferNetworks.containsKey(EnumFacing.WEST));
+    Assertions.assertFalse(transferNetworks.containsKey(null));
+    Assertions.assertEquals(transferNetworks.get(EnumFacing.EAST), transferNetworks.get(EnumFacing.WEST));
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+    Assertions.assertEquals(3, network.size(), "Network should have 3 nodes");
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, null, network.getNode(BlockPos.ORIGIN.east()), network.getNode(BlockPos.ORIGIN.west()), null, null), () -> "Node did not match: " + network.getNode(BlockPos.ORIGIN));
   }
 
   @Test
-  void testDuplicateConnection() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+  void testAddingTransferToStorage() {
+    final TileEntity storage = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), storage).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertFalse(this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer()), "Duplicate connection didn't return false");
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN, transfer).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+    Assertions.assertEquals(2, network.size(), "Network should have 3 nodes");
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, null, network.getNode(BlockPos.ORIGIN.east()), null, null, null), () -> "Node did not match: " + network.getNode(BlockPos.ORIGIN));
   }
 
   @Test
-  void testStorageNodesCantConnectToOtherStorageNodesUnlessOnlyNode() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+  void testTransferStarWithStorageTipsIsMergedByCentralTransfer() {
+    final TileEntity transferNorth = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.north(), transferNorth).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage()));
-    Assertions.assertFalse(this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage()));
+    final TileEntity transferSouth = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south(), transferSouth).size());
+    Assertions.assertEquals(2, this.manager.size(), "Manager should have two networks");
+
+    final TileEntity transferEast = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), transferEast).size());
+    Assertions.assertEquals(3, this.manager.size(), "Manager should have three networks");
+
+    final TileEntity transferWest = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.west(), transferWest).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity storageNorth = this.world.addTileEntity(BlockPos.ORIGIN.north().north(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.north().north(), storageNorth).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity storageSouth = this.world.addTileEntity(BlockPos.ORIGIN.south().south(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south().south(), storageSouth).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity storageEast = this.world.addTileEntity(BlockPos.ORIGIN.east().east(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east().east(), storageEast).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity storageWest = this.world.addTileEntity(BlockPos.ORIGIN.west().west(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.west().west(), storageWest).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity origin = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> networks = this.manager.connect(BlockPos.ORIGIN, origin);
+    Assertions.assertEquals(4, networks.size());
+    Assertions.assertTrue(networks.containsKey(EnumFacing.NORTH));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.SOUTH));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.EAST));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.WEST));
+    Assertions.assertFalse(networks.containsKey(null));
+    Assertions.assertEquals(networks.get(EnumFacing.NORTH), networks.get(EnumFacing.EAST));
+    Assertions.assertEquals(networks.get(EnumFacing.EAST), networks.get(EnumFacing.SOUTH));
+    Assertions.assertEquals(networks.get(EnumFacing.SOUTH), networks.get(EnumFacing.WEST));
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, network.getNode(BlockPos.ORIGIN.north()), network.getNode(BlockPos.ORIGIN.south()), network.getNode(BlockPos.ORIGIN.east()), network.getNode(BlockPos.ORIGIN.west()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.north()), BlockPos.ORIGIN.north(), network.getNode(BlockPos.ORIGIN.north().north()), network.getNode(BlockPos.ORIGIN), null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south()), BlockPos.ORIGIN.south(), network.getNode(BlockPos.ORIGIN), network.getNode(BlockPos.ORIGIN.south().south()), null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, null, network.getNode(BlockPos.ORIGIN.east().east()), network.getNode(BlockPos.ORIGIN), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.west()), BlockPos.ORIGIN.west(), null, null, network.getNode(BlockPos.ORIGIN), network.getNode(BlockPos.ORIGIN.west().west()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.north().north()), BlockPos.ORIGIN.north().north(), null, network.getNode(BlockPos.ORIGIN.north()), null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south().south()), BlockPos.ORIGIN.south().south(), network.getNode(BlockPos.ORIGIN.south()), null, null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.east().east()), BlockPos.ORIGIN.east().east(), null, null, null, network.getNode(BlockPos.ORIGIN.east()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.west().west()), BlockPos.ORIGIN.west().west(), null, null, network.getNode(BlockPos.ORIGIN.west()), null, null, null));
   }
 
   @Test
-  void testStorageNodesSplitNetwork() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+  void testTransferStarWithStorageTipsIsSplitByCentralStorage() {
+    final TileEntity transferNorth = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.north(), transferNorth).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer()), "First transfer node should connect to storage node");
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north().north(), TileEntityWithCapabilities.transfer()), "Second transfer node should connect to first transfer node");
-    Assertions.assertFalse(this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer()), "Third transfer node should not connect to storage node");
+    final TileEntity transferSouth = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south(), transferSouth).size());
+    Assertions.assertEquals(2, this.manager.size(), "Manager should have two networks");
+
+    final TileEntity transferEast = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), transferEast).size());
+    Assertions.assertEquals(3, this.manager.size(), "Manager should have three networks");
+
+    final TileEntity transferWest = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.west(), transferWest).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity storageNorth = this.world.addTileEntity(BlockPos.ORIGIN.north().north(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.north().north(), storageNorth).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity storageSouth = this.world.addTileEntity(BlockPos.ORIGIN.south().south(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south().south(), storageSouth).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity storageEast = this.world.addTileEntity(BlockPos.ORIGIN.east().east(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east().east(), storageEast).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity storageWest = this.world.addTileEntity(BlockPos.ORIGIN.west().west(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.west().west(), storageWest).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity origin = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(4, this.manager.connect(BlockPos.ORIGIN, origin).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have one network");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> networkNorth = this.manager.getNetworksForBlock(BlockPos.ORIGIN.north()).get(0);
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> networkSouth = this.manager.getNetworksForBlock(BlockPos.ORIGIN.south()).get(0);
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> networkEast = this.manager.getNetworksForBlock(BlockPos.ORIGIN.east()).get(0);
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> networkWest = this.manager.getNetworksForBlock(BlockPos.ORIGIN.west()).get(0);
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkNorth.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, networkNorth.getNode(BlockPos.ORIGIN.north()), networkNorth.getNode(BlockPos.ORIGIN.south()), networkNorth.getNode(BlockPos.ORIGIN.east()), networkNorth.getNode(BlockPos.ORIGIN.west()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkNorth.getNode(BlockPos.ORIGIN.north()), BlockPos.ORIGIN.north(), networkNorth.getNode(BlockPos.ORIGIN.north().north()), networkNorth.getNode(BlockPos.ORIGIN), null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkNorth.getNode(BlockPos.ORIGIN.north().north()), BlockPos.ORIGIN.north().north(), null, networkNorth.getNode(BlockPos.ORIGIN.north()), null, null, null, null));
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkSouth.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, networkSouth.getNode(BlockPos.ORIGIN.north()), networkSouth.getNode(BlockPos.ORIGIN.south()), networkSouth.getNode(BlockPos.ORIGIN.east()), networkSouth.getNode(BlockPos.ORIGIN.west()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkSouth.getNode(BlockPos.ORIGIN.south()), BlockPos.ORIGIN.south(), networkSouth.getNode(BlockPos.ORIGIN), networkSouth.getNode(BlockPos.ORIGIN.south().south()), null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkSouth.getNode(BlockPos.ORIGIN.south().south()), BlockPos.ORIGIN.south().south(), networkSouth.getNode(BlockPos.ORIGIN.south()), null, null, null, null, null));
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkEast.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, networkEast.getNode(BlockPos.ORIGIN.north()), networkEast.getNode(BlockPos.ORIGIN.south()), networkEast.getNode(BlockPos.ORIGIN.east()), networkEast.getNode(BlockPos.ORIGIN.west()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkEast.getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, null, networkEast.getNode(BlockPos.ORIGIN.east().east()), networkEast.getNode(BlockPos.ORIGIN), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkEast.getNode(BlockPos.ORIGIN.east().east()), BlockPos.ORIGIN.east().east(), null, null, null, networkEast.getNode(BlockPos.ORIGIN.east()), null, null));
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkWest.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, networkWest.getNode(BlockPos.ORIGIN.north()), networkWest.getNode(BlockPos.ORIGIN.south()), networkWest.getNode(BlockPos.ORIGIN.east()), networkWest.getNode(BlockPos.ORIGIN.west()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkWest.getNode(BlockPos.ORIGIN.west()), BlockPos.ORIGIN.west(), null, null, networkWest.getNode(BlockPos.ORIGIN), networkWest.getNode(BlockPos.ORIGIN.west().west()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(networkWest.getNode(BlockPos.ORIGIN.west().west()), BlockPos.ORIGIN.west().west(), null, null, networkWest.getNode(BlockPos.ORIGIN.west()), null, null, null));
   }
 
   @Test
-  void testConnectionsRestrictedBySides() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer(EnumFacing.NORTH, EnumFacing.SOUTH));
+  void testStorageAtCornerOfTransferSquareDoesNotCreateNewNetwork() {
+    final TileEntity transfer1 = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN, transfer1).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer(EnumFacing.SOUTH)), "Failed to add north transfer node");
-    Assertions.assertFalse(this.net.connect(BlockPos.ORIGIN.north().north(), TileEntityWithCapabilities.transfer()), "North transfer node 2 should not have been added");
-    Assertions.assertFalse(this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer()), "East transfer node should not have been added");
-    Assertions.assertFalse(this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer(EnumFacing.SOUTH)), "South transfer node should not have been added");
+    final TileEntity transfer2 = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), transfer2).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer3 = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south(), transfer3).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity storage = this.world.addTileEntity(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(2, this.manager.connect(BlockPos.ORIGIN.south().east(), storage).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, network.getNode(BlockPos.ORIGIN.south()), network.getNode(BlockPos.ORIGIN.east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south()), BlockPos.ORIGIN.south(), network.getNode(BlockPos.ORIGIN), null, network.getNode(BlockPos.ORIGIN.south().east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, network.getNode(BlockPos.ORIGIN.south().east()), null, network.getNode(BlockPos.ORIGIN), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south().east()), BlockPos.ORIGIN.south().east(), network.getNode(BlockPos.ORIGIN.east()), null, null, network.getNode(BlockPos.ORIGIN.south()), null, null));
   }
 
   @Test
-  void testEnergyContained() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(1000.0f, 10.0f, 10.0f, 1000.0f)));
-    this.net.connect(BlockPos.ORIGIN.south(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(1000.0f, 10.0f, 50.0f, 25.0f)));
-    this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(1000.0f, 10.0f, 15.0f, 20.0f)));
-    this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(1000.0f, 10.0f, 100.0f, 100.0f)));
+  void testStorageAtCornerOfTransferSquareWithAdjacentTransferNetworkDoesNotCreateNewNetworkOrMergeNetworks() {
+    final TileEntity transfer1 = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN, transfer1).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertEquals(150.0f, this.net.getAvailableEnergy(), 0.001f, "Available energy did not match");
+    final TileEntity transfer2 = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), transfer2).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer3 = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south(), transfer3).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer4 = this.world.addTileEntity(BlockPos.ORIGIN.south().east().east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south().east().east(), transfer4).size());
+    Assertions.assertEquals(2, this.manager.size(), "Manager should have two networks");
+
+    final TileEntity storage = this.world.addTileEntity(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(3, this.manager.connect(BlockPos.ORIGIN.south().east(), storage).size(), "Storage should have been added to two networks");
+    Assertions.assertEquals(2, this.manager.size(), "Manager should have two networks");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network1 = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network2 = this.manager.getNetworksForBlock(BlockPos.ORIGIN.south().east().east()).get(0);
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network1.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, network1.getNode(BlockPos.ORIGIN.south()), network1.getNode(BlockPos.ORIGIN.east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network1.getNode(BlockPos.ORIGIN.south()), BlockPos.ORIGIN.south(), network1.getNode(BlockPos.ORIGIN), null, network1.getNode(BlockPos.ORIGIN.south().east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network1.getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, network1.getNode(BlockPos.ORIGIN.south().east()), null, network1.getNode(BlockPos.ORIGIN), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network1.getNode(BlockPos.ORIGIN.south().east()), BlockPos.ORIGIN.south().east(), network1.getNode(BlockPos.ORIGIN.east()), null, null, network1.getNode(BlockPos.ORIGIN.south()), null, null));
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network2.getNode(BlockPos.ORIGIN.south().east()), BlockPos.ORIGIN.south().east(), null, null, network2.getNode(BlockPos.ORIGIN.south().east().east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network2.getNode(BlockPos.ORIGIN.south().east().east()), BlockPos.ORIGIN.south().east().east(), null, null, null, network2.getNode(BlockPos.ORIGIN.south().east()), null, null));
+  }
+
+  @Test
+  void testTransferAtCornerOfTransferSquareDoesNotCreateNewNetwork() {
+    final TileEntity transfer1 = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN, transfer1).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer2 = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), transfer2).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer3 = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south(), transfer3).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer4 = this.world.addTileEntity(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(2, this.manager.connect(BlockPos.ORIGIN.south().east(), transfer4).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, network.getNode(BlockPos.ORIGIN.south()), network.getNode(BlockPos.ORIGIN.east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south()), BlockPos.ORIGIN.south(), network.getNode(BlockPos.ORIGIN), null, network.getNode(BlockPos.ORIGIN.south().east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, network.getNode(BlockPos.ORIGIN.south().east()), null, network.getNode(BlockPos.ORIGIN), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south().east()), BlockPos.ORIGIN.south().east(), network.getNode(BlockPos.ORIGIN.east()), null, null, network.getNode(BlockPos.ORIGIN.south()), null, null));
+  }
+
+  @Test
+  void testTransferAtCornerOfTransferSquareWithAdjacentTransferNetworkMergesNetworks() {
+    final TileEntity transfer1 = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN, transfer1).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer2 = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.east(), transfer2).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer3 = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south(), transfer3).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity transfer4 = this.world.addTileEntity(BlockPos.ORIGIN.south().east().east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(BlockPos.ORIGIN.south().east().east(), transfer4).size());
+    Assertions.assertEquals(2, this.manager.size(), "Manager should have two networks");
+
+    final TileEntity transferMerge = this.world.addTileEntity(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.transfer());
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> networks = this.manager.connect(BlockPos.ORIGIN.south().east(), transferMerge);
+    Assertions.assertEquals(3, networks.size(), "transferMerge should have been added to one network");
+    Assertions.assertFalse(networks.containsKey(EnumFacing.UP));
+    Assertions.assertFalse(networks.containsKey(EnumFacing.DOWN));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.NORTH));
+    Assertions.assertFalse(networks.containsKey(EnumFacing.SOUTH));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.EAST));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.WEST));
+    Assertions.assertFalse(networks.containsKey(null));
+    Assertions.assertEquals(networks.get(EnumFacing.NORTH), networks.get(EnumFacing.WEST));
+    Assertions.assertEquals(networks.get(EnumFacing.EAST), networks.get(EnumFacing.WEST));
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, null, network.getNode(BlockPos.ORIGIN.south()), network.getNode(BlockPos.ORIGIN.east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south()), BlockPos.ORIGIN.south(), network.getNode(BlockPos.ORIGIN), null, network.getNode(BlockPos.ORIGIN.south().east()), null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.east()), BlockPos.ORIGIN.east(), null, network.getNode(BlockPos.ORIGIN.south().east()), null, network.getNode(BlockPos.ORIGIN), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south().east()), BlockPos.ORIGIN.south().east(), network.getNode(BlockPos.ORIGIN.east()), null, network.getNode(BlockPos.ORIGIN.south().east().east()), network.getNode(BlockPos.ORIGIN.south()), null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(BlockPos.ORIGIN.south().east().east()), BlockPos.ORIGIN.south().east().east(), null, null, null, network.getNode(BlockPos.ORIGIN.south().east()), null, null));
+  }
+
+  @Test
+  void testTwoWayTransferDoesNotConnectInvalidSides() {
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity south = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(south.getPos(), south).size());
+    Assertions.assertEquals(2, this.manager.size(), "Manager should have two networks");
+
+    final TileEntity east = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(east.getPos(), east).size());
+    Assertions.assertEquals(3, this.manager.size(), "Manager should have three networks");
+
+    final TileEntity west = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(west.getPos(), west).size());
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer(EnumFacing.NORTH, EnumFacing.SOUTH));
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> networks = this.manager.connect(transfer.getPos(), transfer);
+    Assertions.assertEquals(2, networks.size());
+    Assertions.assertFalse(networks.containsKey(EnumFacing.UP));
+    Assertions.assertFalse(networks.containsKey(EnumFacing.DOWN));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.NORTH));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.SOUTH));
+    Assertions.assertFalse(networks.containsKey(EnumFacing.EAST));
+    Assertions.assertFalse(networks.containsKey(EnumFacing.WEST));
+    Assertions.assertFalse(networks.containsKey(null));
+    Assertions.assertEquals(networks.get(EnumFacing.NORTH), networks.get(EnumFacing.SOUTH));
+    Assertions.assertEquals(3, this.manager.size(), "Manager should have three networks");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> netMiddle = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> netEast = this.manager.getNetworksForBlock(BlockPos.ORIGIN.east()).get(0);
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> netWest = this.manager.getNetworksForBlock(BlockPos.ORIGIN.west()).get(0);
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(netMiddle.getNode(transfer.getPos()), transfer.getPos(), netMiddle.getNode(north.getPos()), netMiddle.getNode(south.getPos()), null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(netMiddle.getNode(north.getPos()), north.getPos(), null, netMiddle.getNode(transfer.getPos()), null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(netMiddle.getNode(south.getPos()), south.getPos(), netMiddle.getNode(transfer.getPos()), null, null, null, null, null));
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(netEast.getNode(east.getPos()), east.getPos(), null, null, null, null, null, null));
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(netWest.getNode(west.getPos()), west.getPos(), null, null, null, null, null, null));
   }
 
   @Test
   void testTileEntityWithMultipleStorages() {
-    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(STORAGE, new EnergyStorage(10000.0f, 32.0f, 32.0f, 10000.0f), EnumFacing.NORTH, EnumFacing.SOUTH).addCapability(STORAGE, new EnergyStorage(10000.0f, 16.0f, 16.0f, 10000.0f), EnumFacing.EAST, EnumFacing.WEST));
+    final TileEntity origin = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(origin.getPos(), origin).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer()), "Failed to add north transfer node");
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer()), "Failed to add north east transfer node");
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer()), "Failed to add east transfer node");
+    final TileEntity east = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(east.getPos(), east).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertTrue(checkNode(this.net.getNode(BlockPos.ORIGIN), BlockPos.ORIGIN, this.net.getNode(BlockPos.ORIGIN.north()), null, this.net.getNode(BlockPos.ORIGIN.east()), null, null, null), () -> "Storage node did not match expected: " + this.net.getNode(BlockPos.ORIGIN));
+    final TileEntity southEast = this.world.addTileEntity(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(southEast.getPos(), southEast).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertEquals(48.0f, this.net.getAvailableEnergy(), 0.0001f, "Available energy did not match");
+    final TileEntity west = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(west.getPos(), west).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity southWest = this.world.addTileEntity(BlockPos.ORIGIN.south().west(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(southWest.getPos(), southWest).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final TileEntity storage = this.world.addTileEntity(BlockPos.ORIGIN.south(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(), EnumFacing.NORTH).addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(), EnumFacing.EAST).addCapability(EnergyNetworkSegmentTest.STORAGE, new StorageNode(), EnumFacing.WEST));
+    Assertions.assertEquals(3, this.manager.connect(storage.getPos(), storage).size());
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
+
+    final EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> network = this.manager.getNetworksForBlock(BlockPos.ORIGIN).get(0);
+
+    Assertions.assertTrue(EnergyNetworkSegmentTest.checkNode(network.getNode(storage.getPos()), storage.getPos(), network.getNode(origin.getPos()), null, network.getNode(southEast.getPos()), network.getNode(southWest.getPos()), null, null));
   }
 
   @Test
-  void testExtractEnergyBalanced() {
-    final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  10.0f, 1000.0f);
-    final StorageNode s2 = new StorageNode(1000.0f, 10.0f,  50.0f,   25.0f);
-    final StorageNode s3 = new StorageNode(1000.0f, 10.0f,  15.0f,   20.0f);
-    final StorageNode s4 = new StorageNode(1000.0f, 10.0f, 100.0f,  100.0f);
+  void testDirectionalTransferNodeCreatesTwoNetworks() {
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(north.getPos(), north);
 
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(STORAGE, s1));
-    this.net.connect(BlockPos.ORIGIN.south(), new TileEntityWithCapabilities().addCapability(STORAGE, s2));
-    this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(STORAGE, s3));
-    this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(STORAGE, s4));
+    final TileEntity south = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(south.getPos(), south);
 
-    Assertions.assertEquals(15.0f, this.net.requestEnergy(BlockPos.ORIGIN.north(), EnumFacing.SOUTH, 15.0f), 0.001f, "Extracted energy did not match");
-    Assertions.assertEquals( 20.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
-    Assertions.assertEquals( 15.0f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
-    Assertions.assertEquals( 95.0f, s4.getEnergy(), 0.001f, "s4 remaining energy did not match");
+    final TileEntity east = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(east.getPos(), east);
+
+    final TileEntity west = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(west.getPos(), west);
+
+    Assertions.assertEquals(4, this.manager.size());
+
+    final TransferNode x = new TransferNode();
+    final TransferNode z = new TransferNode();
+    final TileEntity origin = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, x, EnumFacing.EAST, EnumFacing.WEST).addCapability(EnergyNetworkSegmentTest.TRANSFER, z, EnumFacing.NORTH, EnumFacing.SOUTH));
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> networks = this.manager.connect(origin.getPos(), origin);
+    Assertions.assertEquals(4, networks.size());
+    Assertions.assertTrue(networks.containsKey(EnumFacing.NORTH));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.SOUTH));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.EAST));
+    Assertions.assertTrue(networks.containsKey(EnumFacing.WEST));
+    Assertions.assertFalse(networks.containsKey(null));
+    Assertions.assertEquals(networks.get(EnumFacing.NORTH), networks.get(EnumFacing.SOUTH));
+    Assertions.assertEquals(networks.get(EnumFacing.EAST), networks.get(EnumFacing.WEST));
+    Assertions.assertNotEquals(networks.get(EnumFacing.NORTH), networks.get(EnumFacing.EAST));
+
+    Assertions.assertEquals(2, this.manager.size());
+  }
+
+  /**
+   * #485
+   */
+  @Test
+  void testTileEntitiesAlreadyInWorldBuildNetworkAndDoNotDuplicate() {
+    final TileEntity t1 = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+    final TileEntity t2 = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.storage());
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> networks1 = this.manager.connect(t1.getPos(), t1);
+
+    Assertions.assertEquals(1, networks1.size());
+    Assertions.assertTrue(networks1.containsKey(EnumFacing.EAST));
+    Assertions.assertEquals(1, this.manager.size());
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> networks2 = this.manager.connect(t2.getPos(), t2);
+
+    Assertions.assertEquals(1, networks2.size());
+    Assertions.assertTrue(networks2.containsKey(EnumFacing.WEST));
+    Assertions.assertEquals(1, this.manager.size());
+
+    Assertions.assertEquals(networks1.get(EnumFacing.EAST), networks2.get(EnumFacing.WEST));
+  }
+
+  /**
+   * #500
+   */
+  @Test
+  void testIncompatibleDirectionalTransfersDoNotMergeNetworks() {
+    final TileEntity sink   = this.world.addTileEntity(new BlockPos(160, 72, 67), TileEntityWithCapabilities.sink());
+    final TileEntity tx     = this.world.addTileEntity(new BlockPos(161, 72, 68), TileEntityWithCapabilities.transfer(EnumFacing.EAST, EnumFacing.WEST));
+    final TileEntity source = this.world.addTileEntity(new BlockPos(162, 72, 68), TileEntityWithCapabilities.storage(EnumFacing.WEST));
+    final TileEntity tz     = this.world.addTileEntity(new BlockPos(160, 72, 68), TileEntityWithCapabilities.transfer(EnumFacing.NORTH, EnumFacing.SOUTH));
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> sinkMap = this.manager.connect(sink.getPos(), sink);
+    Assertions.assertEquals(1, sinkMap.size());
+    Assertions.assertTrue(sinkMap.containsKey(EnumFacing.SOUTH));
+    Assertions.assertEquals(1, this.manager.size());
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> txMap = this.manager.connect(tx.getPos(), tx);
+    Assertions.assertEquals(1, txMap.size());
+    Assertions.assertTrue(txMap.containsKey(EnumFacing.EAST));
+    Assertions.assertEquals(2, this.manager.size());
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> sourceMap = this.manager.connect(source.getPos(), source);
+    Assertions.assertEquals(1, sourceMap.size());
+    Assertions.assertTrue(sourceMap.containsKey(EnumFacing.WEST));
+    Assertions.assertEquals(2, this.manager.size());
+
+    final Map<EnumFacing, EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer>> tzMap = this.manager.connect(tz.getPos(), tz);
+    Assertions.assertEquals(1, tzMap.size());
+    Assertions.assertTrue(tzMap.containsKey(EnumFacing.NORTH));
+    Assertions.assertEquals(2, this.manager.size());
   }
 
   @Test
-  void testExtractFromTileEntityWithMultipleStorages() {
-    final StorageNode s1 = new StorageNode(10000.0f, 32.0f, 32.0f, 10000.0f);
-    final StorageNode s2 = new StorageNode(10000.0f, 16.0f, 16.0f, 10000.0f);
+  void testExtractingEnergySingleNetwork() {
+    final IEnergyStorage sourceStorage = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceTile = this.world.addTileEntity(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorage));
+    this.manager.connect(sourceTile.getPos(), sourceTile);
 
-    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(STORAGE, s1, EnumFacing.NORTH, EnumFacing.SOUTH).addCapability(STORAGE, s2, EnumFacing.EAST, EnumFacing.WEST));
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    this.manager.connect(transfer.getPos(), transfer);
 
-    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    final IEnergyStorage sinkStorage = new StorageNode(10000.0f, 32.0f, 0.0f, 100.0f);
+    final TileEntity sinkTile = this.world.addTileEntity(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sinkStorage));
+    this.manager.connect(sinkTile.getPos(), sinkTile);
 
-    this.net.connect(BlockPos.ORIGIN.north().north(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(10000.0f, 100.0f, 0.0f, 0.0f)));
+    Assertions.assertEquals(1, this.manager.size(), "Manager should have one network");
 
-    Assertions.assertEquals(40.0f, this.net.requestEnergy(BlockPos.ORIGIN.north().north(), EnumFacing.SOUTH, 40.0f), 0.0001f, "Extracted energy did not match");
-    Assertions.assertEquals(9976.0f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
-    Assertions.assertEquals(9984.0f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
+    Assertions.assertEquals(32.0f, this.manager.requestEnergy(sinkTile.getPos(), 100.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(968.0f, sourceStorage.getEnergy(), 0.0001f, "Source energy does not match");
   }
 
   @Test
-  void testExtractEnergyImbalanced() {
-    final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  10.0f, 1000.0f);
-    final StorageNode s2 = new StorageNode(1000.0f, 10.0f,  50.0f,   25.0f);
-    final StorageNode s3 = new StorageNode(1000.0f, 10.0f,  15.0f,   20.0f);
-    final StorageNode s4 = new StorageNode(1000.0f, 10.0f, 100.0f,  100.0f);
+  void testExtractingEnergyMultipleNetworksBalanced() {
+    final IEnergyStorage sourceStorageNorth = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceNorth = this.world.addTileEntity(BlockPos.ORIGIN.north().north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorageNorth));
+    this.manager.connect(sourceNorth.getPos(), sourceNorth);
 
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(STORAGE, s1));
-    this.net.connect(BlockPos.ORIGIN.south(), new TileEntityWithCapabilities().addCapability(STORAGE, s2));
-    this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(STORAGE, s3));
-    this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(STORAGE, s4));
+    final TileEntity transferNorth = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferNorth.getPos(), transferNorth);
 
-    this.net.connect(BlockPos.ORIGIN.up(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(10000.0f, 100.0f, 0.0f, 0.0f)));
+    final IEnergyStorage sourceStorageSouth = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceSouth = this.world.addTileEntity(BlockPos.ORIGIN.south().south(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorageSouth));
+    this.manager.connect(sourceSouth.getPos(), sourceSouth);
 
-    Assertions.assertEquals( 50.0000f, this.net.requestEnergy(BlockPos.ORIGIN.up(), EnumFacing.DOWN, 50.0f), 0.001f, "Extracted energy did not match");
-    Assertions.assertEquals(990.0000f, s1.getEnergy(), 0.001f, "s1 remaining energy did not match");
-    Assertions.assertEquals( 11.6667f, s2.getEnergy(), 0.001f, "s2 remaining energy did not match");
-    Assertions.assertEquals(  6.6667f, s3.getEnergy(), 0.001f, "s3 remaining energy did not match");
-    Assertions.assertEquals( 86.6667f, s4.getEnergy(), 0.001f, "s4 remaining energy did not match");
+    final TileEntity transferSouth = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferSouth.getPos(), transferSouth);
+
+    final IEnergyStorage sourceStorageEast = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceEast = this.world.addTileEntity(BlockPos.ORIGIN.east().east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorageEast));
+    this.manager.connect(sourceEast.getPos(), sourceEast);
+
+    final TileEntity transferEast = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferEast.getPos(), transferEast);
+
+    final IEnergyStorage sourceStorageWest = new StorageNode(10000.0f, 0.0f, 32.0f, 1000.0f);
+    final TileEntity sourceWest = this.world.addTileEntity(BlockPos.ORIGIN.west().west(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorageWest));
+    this.manager.connect(sourceWest.getPos(), sourceWest);
+
+    final TileEntity transferWest = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferWest.getPos(), transferWest);
+
+    final IEnergyStorage sinkStorage = new StorageNode(10000.0f, 32.0f, 0.0f, 100.0f);
+    final TileEntity sink = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sinkStorage));
+    this.manager.connect(sink.getPos(), sink);
+
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have one network");
+
+    Assertions.assertEquals(128.0f, this.manager.requestEnergy(sink.getPos(), 1000.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(968.0f, sourceStorageNorth.getEnergy(), 0.0001f, "Source north energy does not match");
+    Assertions.assertEquals(968.0f, sourceStorageSouth.getEnergy(), 0.0001f, "Source south energy does not match");
+    Assertions.assertEquals(968.0f, sourceStorageEast.getEnergy(), 0.0001f, "Source east energy does not match");
+    Assertions.assertEquals(968.0f, sourceStorageWest.getEnergy(), 0.0001f, "Source west energy does not match");
   }
 
   @Test
-  void testCantExtractFromSink() {
-    final StorageNode s1 = new StorageNode(1000.0f, 10.0f,  0.0f, 1000.0f);
+  void testExtractingEnergyMultipleNetworksImbalanced() {
+    final IEnergyStorage sourceStorageNorth = new StorageNode(10000.0f, 0.0f, 20.0f, 1000.0f);
+    final TileEntity sourceNorth = this.world.addTileEntity(BlockPos.ORIGIN.north().north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorageNorth));
+    this.manager.connect(sourceNorth.getPos(), sourceNorth);
 
-    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(STORAGE, s1));
-    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.south().south(), new TileEntityWithCapabilities().addCapability(STORAGE, new StorageNode(10000.0f, 100.0f, 0.0f, 0.0f)));
+    final TileEntity transferNorth = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferNorth.getPos(), transferNorth);
 
-    Assertions.assertEquals(0.0f, this.net.requestEnergy(BlockPos.ORIGIN.south().south(), EnumFacing.NORTH, 50.0f), 0.001f, "Extracted energy did not match");
-    Assertions.assertEquals(1000.0f, s1.getEnergy(), 0.0001f, "Sink energy does not match");
+    final IEnergyStorage sourceStorageSouth = new StorageNode(10000.0f, 0.0f, 64.0f, 1000.0f);
+    final TileEntity sourceSouth = this.world.addTileEntity(BlockPos.ORIGIN.south().south(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorageSouth));
+    this.manager.connect(sourceSouth.getPos(), sourceSouth);
+
+    final TileEntity transferSouth = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferSouth.getPos(), transferSouth);
+
+    final IEnergyStorage sourceStorageEast = new StorageNode(10000.0f, 0.0f, 64.0f, 1000.0f);
+    final TileEntity sourceEast = this.world.addTileEntity(BlockPos.ORIGIN.east().east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorageEast));
+    this.manager.connect(sourceEast.getPos(), sourceEast);
+
+    final TileEntity transferEast = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferEast.getPos(), transferEast);
+
+    final IEnergyStorage sourceStorageWest = new StorageNode(10000.0f, 0.0f, 64.0f, 1000.0f);
+    final TileEntity sourceWest = this.world.addTileEntity(BlockPos.ORIGIN.west().west(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sourceStorageWest));
+    this.manager.connect(sourceWest.getPos(), sourceWest);
+
+    final TileEntity transferWest = this.world.addTileEntity(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+    this.manager.connect(transferWest.getPos(), transferWest);
+
+    final IEnergyStorage sinkStorage = new StorageNode(10000.0f, 32.0f, 0.0f, 100.0f);
+    final TileEntity sink = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sinkStorage));
+    this.manager.connect(sink.getPos(), sink);
+
+    Assertions.assertEquals(4, this.manager.size(), "Manager should have four networks");
+
+    Assertions.assertEquals(128.0f, this.manager.requestEnergy(sink.getPos(), 128.0f), 0.0001f, "Extracted energy did not match");
+    Assertions.assertEquals(980.0f, sourceStorageNorth.getEnergy(), 0.0001f, "Source north energy does not match");
+    Assertions.assertEquals(964.0f, sourceStorageSouth.getEnergy(), 0.0001f, "Source south energy does not match");
+    Assertions.assertEquals(964.0f, sourceStorageEast.getEnergy(), 0.0001f, "Source east energy does not match");
+    Assertions.assertEquals(964.0f, sourceStorageWest.getEnergy(), 0.0001f, "Source west energy does not match");
   }
 
   @Test
-  void testMergingNetworks() {
-    final TileEntity origin = TileEntityWithCapabilities.transfer();
-    final TileEntity north = TileEntityWithCapabilities.sink();
-    final TileEntity south = TileEntityWithCapabilities.sink();
-    final TileEntity east = TileEntityWithCapabilities.sink();
-    final TileEntity west = TileEntityWithCapabilities.sink();
-    final TileEntity source1 = TileEntityWithCapabilities.source();
+  void testTick() {
+    final IEnergyTransfer transfer = new TransferNode();
+    final IEnergyStorage source1 = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);
+    final IEnergyStorage source2 = new StorageNode(10000.0f, 0.0f, 10.0f, 20.0f);
+    final IEnergyStorage sink = new StorageNode(10000.0f, 32.0f, 0.0f, 0.0f);
 
-    final EnergyNetwork<IEnergyStorage, IEnergyTransfer> net1 = new EnergyNetwork<>(STORAGE, TRANSFER);
-    Assertions.assertTrue(net1.connect(BlockPos.ORIGIN, origin));
-    Assertions.assertTrue(net1.connect(BlockPos.ORIGIN.north(), north));
-    Assertions.assertTrue(net1.connect(BlockPos.ORIGIN.south(), south));
-    Assertions.assertTrue(net1.connect(BlockPos.ORIGIN.east(), east));
-    Assertions.assertTrue(net1.connect(BlockPos.ORIGIN.west(), west));
-    Assertions.assertTrue(net1.connect(BlockPos.ORIGIN.down(), source1));
+    final TileEntity teTransfer = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, transfer));
+    this.manager.connect(teTransfer.getPos(), teTransfer);
 
-    final TileEntity origin2 = TileEntityWithCapabilities.transfer();
-    final TileEntity north2 = TileEntityWithCapabilities.sink();
-    final TileEntity south2 = TileEntityWithCapabilities.sink();
-    final TileEntity east2 = TileEntityWithCapabilities.sink();
-    final TileEntity west2 = TileEntityWithCapabilities.sink();
-    final TileEntity source2 = TileEntityWithCapabilities.source();
+    final TileEntity teSource1 = this.world.addTileEntity(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, source1));
+    this.manager.connect(teSource1.getPos(), teSource1);
 
-    final EnergyNetwork<IEnergyStorage, IEnergyTransfer> net2 = new EnergyNetwork<>(STORAGE, TRANSFER);
-    Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up(), origin2));
-    Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().north(), north2));
-    Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().south(), south2));
-    Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().east(), east2));
-    Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().west(), west2));
-    Assertions.assertTrue(net2.connect(BlockPos.ORIGIN.up().up(), source2));
+    final TileEntity teSource2 = this.world.addTileEntity(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, source2));
+    this.manager.connect(teSource2.getPos(), teSource2);
 
-    net1.merge(net2);
+    final TileEntity teSink = this.world.addTileEntity(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sink));
+    this.manager.connect(teSink.getPos(), teSink);
 
-    final EnergyNetwork.EnergyNode originNode = net1.getNode(BlockPos.ORIGIN);
-    final EnergyNetwork.EnergyNode northNode = net1.getNode(BlockPos.ORIGIN.north());
-    final EnergyNetwork.EnergyNode southNode = net1.getNode(BlockPos.ORIGIN.south());
-    final EnergyNetwork.EnergyNode eastNode = net1.getNode(BlockPos.ORIGIN.east());
-    final EnergyNetwork.EnergyNode westNode = net1.getNode(BlockPos.ORIGIN.west());
-    final EnergyNetwork.EnergyNode source1Node = net1.getNode(BlockPos.ORIGIN.down());
-    final EnergyNetwork.EnergyNode origin2Node = net1.getNode(BlockPos.ORIGIN.up());
-    final EnergyNetwork.EnergyNode north2Node = net1.getNode(BlockPos.ORIGIN.up().north());
-    final EnergyNetwork.EnergyNode south2Node = net1.getNode(BlockPos.ORIGIN.up().south());
-    final EnergyNetwork.EnergyNode east2Node = net1.getNode(BlockPos.ORIGIN.up().east());
-    final EnergyNetwork.EnergyNode west2Node = net1.getNode(BlockPos.ORIGIN.up().west());
-    final EnergyNetwork.EnergyNode source2Node = net1.getNode(BlockPos.ORIGIN.up().up());
+    Assertions.assertEquals(this.manager.size(), 1);
 
-    Assertions.assertTrue(checkNode(originNode, BlockPos.ORIGIN, northNode, southNode, eastNode, westNode, origin2Node, source1Node), () -> "origin1 did not match: " + originNode);
-    Assertions.assertTrue(checkNode(northNode, BlockPos.ORIGIN.north(), null, originNode, null, null, null, null), () -> "north1 did not match: " + northNode);
-    Assertions.assertTrue(checkNode(southNode, BlockPos.ORIGIN.south(), originNode, null, null, null, null, null), () -> "south1 did not match: " + southNode);
-    Assertions.assertTrue(checkNode(eastNode, BlockPos.ORIGIN.east(), null, null, null, originNode, null, null), () -> "east1 did not match: " + eastNode);
-    Assertions.assertTrue(checkNode(westNode, BlockPos.ORIGIN.west(), null, null, originNode, null, null, null), () -> "west1 did not match: " + westNode);
-    Assertions.assertTrue(checkNode(source1Node, BlockPos.ORIGIN.down(), null, null, null, null, originNode, null), () -> "source1 did not match: " + source1Node);
-    Assertions.assertTrue(checkNode(origin2Node, BlockPos.ORIGIN.up(), north2Node, south2Node, east2Node, west2Node, source2Node, originNode), () -> "origin2 did not match: " + origin2Node);
-    Assertions.assertTrue(checkNode(north2Node, BlockPos.ORIGIN.up().north(), null, origin2Node, null, null, null, null), () -> "north2 did not match: " + north2Node);
-    Assertions.assertTrue(checkNode(south2Node, BlockPos.ORIGIN.up().south(), origin2Node, null, null, null, null, null), () -> "south2 did not match: " + south2Node);
-    Assertions.assertTrue(checkNode(east2Node, BlockPos.ORIGIN.up().east(), null, null, null, origin2Node, null, null), () -> "east2 did not match: " + east2Node);
-    Assertions.assertTrue(checkNode(west2Node, BlockPos.ORIGIN.up().west(), null, null, origin2Node, null, null, null), () -> "west2 did not match: " + west2Node);
-    Assertions.assertTrue(checkNode(source2Node, BlockPos.ORIGIN.up().up(), null, null, null, null, null, origin2Node), () -> "source2 did not match: " + source2Node);
+    this.manager.tick();
 
-    Assertions.assertEquals(64.0f, net1.getAvailableEnergy(), 0.0001f, "Available energy did not match");
+    Assertions.assertEquals(9990.0f, source1.getEnergy(), 0.0001f);
+    Assertions.assertEquals(  10.0f, source2.getEnergy(), 0.0001f);
+    Assertions.assertEquals(  20.0f, sink.getEnergy(), 0.0001f);
+
+    Assertions.assertEquals(20.0f, transfer.getEnergyTransferred(), 0.0001f);
+
+    this.manager.tick();
+
+    Assertions.assertEquals(9980.0f, source1.getEnergy(), 0.0001f);
+    Assertions.assertEquals(   0.0f, source2.getEnergy(), 0.0001f);
+    Assertions.assertEquals(  40.0f, sink.getEnergy(), 0.0001f);
+
+    Assertions.assertEquals(20.0f, transfer.getEnergyTransferred(), 0.0001f);
+
+    this.manager.tick();
+
+    Assertions.assertEquals(9970.0f, source1.getEnergy(), 0.0001f);
+    Assertions.assertEquals(   0.0f, source2.getEnergy(), 0.0001f);
+    Assertions.assertEquals(  50.0f, sink.getEnergy(), 0.0001f);
+
+    Assertions.assertEquals(10.0f, transfer.getEnergyTransferred(), 0.0001f);
   }
 
   @Test
-  void testBasicPathfinding() {
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage()));
+  void testPowerIsNotExtractedFromEmptyStorage() {
+    final IEnergyTransfer transfer = new TransferNode() {
+      @Override
+      public void transfer(final float amount, final EnumFacing from, final EnumFacing to) {
+        Assertions.fail("Power should not have been routed");
+        super.transfer(amount, from, to);
+      }
+    };
+    final IEnergyStorage source = new StorageNode(10000.0f, 0.0f, 10.0f, 0.0f);
+    final IEnergyStorage sink = new StorageNode(10000.0f, 32.0f, 0.0f, 0.0f) {
+      @Override
+      public float sinkEnergy(final float maxSink, final boolean simulate) {
+        Assertions.fail("Should not have received energy");
+        return super.sinkEnergy(maxSink, simulate);
+      }
+    };
 
-    this.verifyPath(this.net.pathFind(BlockPos.ORIGIN.south(), EnumFacing.NORTH, BlockPos.ORIGIN.north(), EnumFacing.SOUTH));
-  }
+    final TileEntity teTransfer = this.world.addTileEntity(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.TRANSFER, transfer));
+    this.manager.connect(teTransfer.getPos(), teTransfer);
 
-  @Test
-  void testPathfindingMultiplePaths() {
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north().west(), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.storage()));
-    Assertions.assertTrue(this.net.connect(BlockPos.ORIGIN.south().west(), TileEntityWithCapabilities.storage()));
+    final TileEntity teSource = this.world.addTileEntity(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, source));
+    this.manager.connect(teSource.getPos(), teSource);
 
-    this.verifyPath(this.net.pathFind(BlockPos.ORIGIN.north().east(), EnumFacing.SOUTH, BlockPos.ORIGIN.south().west(), EnumFacing.NORTH));
-    this.verifyPath(this.net.pathFind(BlockPos.ORIGIN.north().east(), EnumFacing.WEST, BlockPos.ORIGIN.south().west(), EnumFacing.EAST));
-  }
+    final TileEntity teSink = this.world.addTileEntity(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sink));
+    this.manager.connect(teSink.getPos(), teSink);
 
-  @Test
-  void testPathfindingTwoBranches() {
-    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0, -1), TileEntityWithCapabilities.storage()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0,  0), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  0), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  1), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  2), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos(-1, 0,  3), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  0), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  1), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  2), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 1, 0,  3), TileEntityWithCapabilities.transfer()));
-    Assertions.assertTrue(this.net.connect(new BlockPos( 0, 0,  3), TileEntityWithCapabilities.storage()));
+    Assertions.assertEquals(this.manager.size(), 1);
 
-    this.verifyPath(this.net.pathFind(new BlockPos(0, 0, -1), EnumFacing.SOUTH, new BlockPos(0, 0, 3), EnumFacing.EAST));
-    this.verifyPath(this.net.pathFind(new BlockPos(0, 0, -1), EnumFacing.SOUTH, new BlockPos(0, 0, 3), EnumFacing.WEST));
-  }
+    this.manager.tick();
 
-  @Test
-  void testPathWithLoop() {
-    final TransferNode transferX = new TransferNode();
-    final TransferNode transferZ = new TransferNode();
+    Assertions.assertEquals(0.0f, source.getEnergy(), 0.0001f);
+    Assertions.assertEquals(0.0f, sink.getEnergy(), 0.0001f);
 
-    this.net.connect(BlockPos.ORIGIN.south().south(), TileEntityWithCapabilities.storage());
-    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(TRANSFER, transferX, EnumFacing.EAST, EnumFacing.WEST).addCapability(TRANSFER, transferZ, EnumFacing.NORTH, EnumFacing.SOUTH));
-    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.west().west(), TileEntityWithCapabilities.storage());
-
-    final List<BlockPos> path = this.net.pathFind(BlockPos.ORIGIN.south().south(), EnumFacing.NORTH, BlockPos.ORIGIN.west().west(), EnumFacing.EAST);
-    this.verifyPath(path);
-    Assertions.assertEquals(9, path.size(), "Path did not loop");
-  }
-
-  @Test
-  void testSeeminglyShorterPathDoesNotReachGoal() {
-    this.net.connect(new BlockPos(0, 0,  1), TileEntityWithCapabilities.storage());
-
-    this.net.connect(new BlockPos(0, 0,  0), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(0, 0, -1), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(0, 0, -2), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(0, 0, -3), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(0, 0, -4), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(0, 0, -5), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(0, 0, -6), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(0, 0, -7), TileEntityWithCapabilities.transfer());
-
-    this.net.connect(new BlockPos(-1, 0, 0), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, 0), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -1), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -2), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -3), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -4), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -5), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -6), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -7), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -8), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-2, 0, -9), TileEntityWithCapabilities.transfer());
-    this.net.connect(new BlockPos(-1, 0, -9), TileEntityWithCapabilities.transfer());
-
-    this.net.connect(new BlockPos(0, 0,  -9), TileEntityWithCapabilities.storage());
-
-    final List<BlockPos> path = this.net.pathFind(new BlockPos(0, 0, 1), EnumFacing.NORTH, new BlockPos(0, 0, -9), EnumFacing.WEST);
-    this.verifyPath(path);
-    Assertions.assertEquals(15, path.size(), "Path was the wrong size");
-  }
-
-  @Test
-  void testEnergyTransferredThroughCorrectTransferNodes() {
-    final StorageNode sourceEast = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);
-    final StorageNode sourceWest = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);
-    final TransferNode transferOrigin = new TransferNode();
-    final TransferNode transferEast = new TransferNode();
-    final TransferNode transferWest = new TransferNode();
-    final TransferNode transferOrigin2 = new TransferNode();
-    final TransferNode transferEast2 = new TransferNode();
-    final TransferNode transferWest2 = new TransferNode();
-    final TransferNode transferEast3 = new TransferNode();
-    final TransferNode transferWest3 = new TransferNode();
-    final TransferNode transferWest4 = new TransferNode();
-    final StorageNode sink = new StorageNode(10000.0f, 32.0f, 0.0f, 0.0f);
-
-    this.net.connect(BlockPos.ORIGIN, new TileEntityWithCapabilities().addCapability(TRANSFER, transferOrigin));
-    this.net.connect(BlockPos.ORIGIN.east(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferEast));
-    this.net.connect(BlockPos.ORIGIN.west(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferWest));
-    this.net.connect(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferOrigin2));
-    this.net.connect(BlockPos.ORIGIN.north().east(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferEast2));
-    this.net.connect(BlockPos.ORIGIN.north().west(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferWest2));
-    this.net.connect(BlockPos.ORIGIN.north().north().east(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferEast3));
-    this.net.connect(BlockPos.ORIGIN.north().north().west(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferWest3));
-    this.net.connect(BlockPos.ORIGIN.north().north().north().west(), new TileEntityWithCapabilities().addCapability(TRANSFER, transferWest4));
-    this.net.connect(BlockPos.ORIGIN.south().east(), new TileEntityWithCapabilities().addCapability(STORAGE, sourceEast));
-    this.net.connect(BlockPos.ORIGIN.south().west(), new TileEntityWithCapabilities().addCapability(STORAGE, sourceWest));
-    this.net.connect(BlockPos.ORIGIN.north().north().north(), new TileEntityWithCapabilities().addCapability(STORAGE, sink));
-
-    Assertions.assertEquals(20.0f, this.net.requestEnergy(BlockPos.ORIGIN.north().north().north(), EnumFacing.WEST, 32.0f), 0.0001f, "Extracted energy did not match");
-
-    Assertions.assertEquals(10.0f, transferOrigin.getTransferred(), 0.0001f);
-    Assertions.assertEquals(10.0f, transferEast.getTransferred(), 0.0001f);
-    Assertions.assertEquals(10.0f, transferWest.getTransferred(), 0.0001f);
-    Assertions.assertEquals(10.0f, transferOrigin2.getTransferred(), 0.0001f);
-    Assertions.assertEquals( 0.0f, transferEast2.getTransferred(), 0.0001f);
-    Assertions.assertEquals(20.0f, transferWest2.getTransferred(), 0.0001f);
-    Assertions.assertEquals( 0.0f, transferEast3.getTransferred(), 0.0001f);
-    Assertions.assertEquals(20.0f, transferWest3.getTransferred(), 0.0001f);
-    Assertions.assertEquals(20.0f, transferWest4.getTransferred(), 0.0001f);
+    Assertions.assertEquals(0.0f, transfer.getEnergyTransferred(), 0.0001f);
   }
 
   @Test
   void testRemoveBasic() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage());
-    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage());
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(transfer.getPos(), transfer).size());
 
-    Assertions.assertEquals(3, this.net.size());
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
 
-    Assertions.assertFalse(this.net.disconnect(BlockPos.ORIGIN.north()));
-    Assertions.assertEquals(2, this.net.size());
+    final TileEntity south = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(south.getPos(), south).size());
 
-    Assertions.assertFalse(this.net.disconnect(BlockPos.ORIGIN.south()));
-    Assertions.assertEquals(1, this.net.size());
+    Assertions.assertEquals(1, this.manager.size());
+
+    this.world.removeTileEntity(north.getPos());
+    this.manager.disconnect(north.getPos());
+    Assertions.assertEquals(1, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(north.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(south.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(transfer.getPos()).size());
+
+    this.world.removeTileEntity(south.getPos());
+    this.manager.disconnect(south.getPos());
+    Assertions.assertEquals(1, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(south.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(transfer.getPos()).size());
+
+    this.world.removeTileEntity(transfer.getPos());
+    this.manager.disconnect(transfer.getPos());
+    Assertions.assertEquals(0, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(transfer.getPos()).size());
   }
 
   @Test
-  void testRemoveLastNode() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+  void testRemoveSplitsNetwork() {
+    final TileEntity transfer = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(transfer.getPos(), transfer).size());
 
-    Assertions.assertTrue(this.net.disconnect(BlockPos.ORIGIN));
-    Assertions.assertEquals(0, this.net.size());
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
+
+    final TileEntity south = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(south.getPos(), south).size());
+
+    Assertions.assertEquals(1, this.manager.size());
+
+    this.world.removeTileEntity(transfer.getPos());
+    this.manager.disconnect(transfer.getPos());
+    Assertions.assertEquals(2, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(transfer.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(north.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(south.getPos()).size());
+    Assertions.assertNotEquals(this.manager.getNetworksForBlock(north.getPos()), this.manager.getNetworksForBlock(south.getPos()));
   }
 
   @Test
-  void testRemoveNodeWouldSplitNetwork() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+  void testRemoveStorageNode() {
+    final TileEntity storage = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(storage.getPos(), storage).size());
 
-    Assertions.assertTrue(this.net.disconnect(BlockPos.ORIGIN));
-    Assertions.assertEquals(4, this.net.size());
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
+
+    final TileEntity south = this.world.addTileEntity(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(south.getPos(), south).size());
+
+    Assertions.assertEquals(2, this.manager.size());
+
+    this.world.removeTileEntity(storage.getPos());
+    this.manager.disconnect(storage.getPos());
+    Assertions.assertEquals(2, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(storage.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(north.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(south.getPos()).size());
+    Assertions.assertNotEquals(this.manager.getNetworksForBlock(north.getPos()), this.manager.getNetworksForBlock(south.getPos()));
   }
 
   @Test
-  void testRemoveNodeWouldNotSplitNetwork() {
-    this.net.connect(BlockPos.ORIGIN, TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.north().west(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.south(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.south().east(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.south().west(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
-    this.net.connect(BlockPos.ORIGIN.west(), TileEntityWithCapabilities.transfer());
+  void testRemovePartOfCircularNetwork() {
+    final TileEntity storage = this.world.addTileEntity(BlockPos.ORIGIN, TileEntityWithCapabilities.storage());
+    Assertions.assertEquals(1, this.manager.connect(storage.getPos(), storage).size());
 
-    Assertions.assertFalse(this.net.disconnect(BlockPos.ORIGIN));
-    Assertions.assertEquals(8, this.net.size());
-  }
+    final TileEntity north = this.world.addTileEntity(BlockPos.ORIGIN.north(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(north.getPos(), north).size());
 
-  private void verifyPath(final List<BlockPos> path) {
-    Assertions.assertTrue(this.net.getNode(path.get(0)).te.hasCapability(STORAGE, BlockPosUtils.getBlockFacing(path.get(0), path.get(1))), "Start node was not storage");
-    Assertions.assertTrue(this.net.getNode(path.get(path.size() - 1)).te.hasCapability(STORAGE, BlockPosUtils.getBlockFacing(path.get(path.size() - 1), path.get(path.size() - 2))), "End node was not storage");
+    final TileEntity east = this.world.addTileEntity(BlockPos.ORIGIN.east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(1, this.manager.connect(east.getPos(), east).size());
 
-    for(int i = 0; i < path.size() - 1; i++) {
-      Assertions.assertNotNull(BlockPosUtils.areBlocksAdjacent(path.get(i), path.get(i + 1)), "Positions were not adjacent");
-    }
+    Assertions.assertEquals(2, this.manager.size());
 
-    for(int i = 1; i < path.size() - 1; i++) {
-      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, BlockPosUtils.getBlockFacing(path.get(i), path.get(i + 1))), "Intermediate node was not transfer");
-      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, BlockPosUtils.getBlockFacing(path.get(i), path.get(i - 1))), "Intermediate node was not transfer");
-    }
-  }
+    final TileEntity ne = this.world.addTileEntity(BlockPos.ORIGIN.north().east(), TileEntityWithCapabilities.transfer());
+    Assertions.assertEquals(2, this.manager.connect(ne.getPos(), ne).size());
 
-  static <T> Capability<T> newCap(final String name) throws RuntimeException {
-    try {
-      final Constructor<Capability> constructor = Capability.class.getDeclaredConstructor(String.class, Capability.IStorage.class, Callable.class);
-      constructor.setAccessible(true);
-      return constructor.newInstance(name, null, null);
-    } catch(final Exception e) {
-      throw new RuntimeException(e);
-    }
+    Assertions.assertEquals(1, this.manager.size());
+
+    this.world.removeTileEntity(ne.getPos());
+    this.manager.disconnect(ne.getPos());
+    Assertions.assertEquals(2, this.manager.size());
+    Assertions.assertEquals(0, this.manager.getNetworksForBlock(ne.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(north.getPos()).size());
+    Assertions.assertEquals(1, this.manager.getNetworksForBlock(east.getPos()).size());
+    Assertions.assertEquals(2, this.manager.getNetworksForBlock(storage.getPos()).size());
+    Assertions.assertNotEquals(this.manager.getNetworksForBlock(north.getPos()), this.manager.getNetworksForBlock(east.getPos()));
+    Assertions.assertTrue(this.manager.getNetworksForBlock(storage.getPos()).contains(this.manager.getNetworksForBlock(north.getPos()).get(0)));
+    Assertions.assertTrue(this.manager.getNetworksForBlock(storage.getPos()).contains(this.manager.getNetworksForBlock(east.getPos()).get(0)));
   }
 }

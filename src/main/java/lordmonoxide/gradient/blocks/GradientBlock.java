@@ -14,9 +14,13 @@ public class GradientBlock extends Block {
   }
 
   public GradientBlock(final String name, final CreativeTabs creativeTab, final Material material) {
+    this(name, material);
+    this.setCreativeTab(creativeTab);
+  }
+
+  public GradientBlock(final String name, final Material material) {
     super(material, material.getMaterialMapColor());
     this.setRegistryName(name);
     this.setTranslationKey(name);
-    this.setCreativeTab(creativeTab);
   }
 }

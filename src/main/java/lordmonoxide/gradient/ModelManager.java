@@ -1,23 +1,25 @@
 package lordmonoxide.gradient;
 
+import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
 import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
 import lordmonoxide.gradient.blocks.dryingrack.TileDryingRackRenderer;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePitRenderer;
+import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheel;
+import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheelRenderer;
 import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinder;
 import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinderRenderer;
 import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasin;
 import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasinRenderer;
 import lordmonoxide.gradient.items.GradientItems;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -63,7 +65,7 @@ public final class ModelManager {
 
     final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, "fluid"), fluid.getName());
 
-    ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> modelResourceLocation));
+    registerItemModel(item, modelResourceLocation);
 
     ModelLoader.setCustomStateMapper(fluid.getBlock(), new StateMapperBase() {
       @Override
@@ -78,13 +80,15 @@ public final class ModelManager {
     ClientRegistry.bindTileEntitySpecialRenderer(TileManualGrinder.class, new TileManualGrinderRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileMixingBasin.class, new TileMixingBasinRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileDryingRack.class, new TileDryingRackRenderer());
+    ClientRegistry.bindTileEntitySpecialRenderer(TileFlywheel.class, new TileFlywheelRenderer());
   }
 
   private static void registerItemModels() {
     // Register items with custom model names first
     //registerItemModel(ModItems.SNOWBALL_LAUNCHER, "minecraft:fishing_rod");
 
-    //registerVariantItemModels(ModItems.VARIANTS_ITEM, "variant", ItemVariants.EnumType.values());
+    registerVariantItemModels(Item.getItemFromBlock(GradientBlocks.CLAY_CAST_HARDENED), "cast", BlockClayCast.CAST);
+    registerVariantItemModels(Item.getItemFromBlock(GradientBlocks.CLAY_CAST_UNHARDENED), "cast", BlockClayCast.CAST);
 
     // Then register items with default model names
     GradientItems.ITEMS.stream()
@@ -109,40 +113,30 @@ public final class ModelManager {
       return;
     }
 
-    if(!item.getHasSubtypes()) {
+    if(item.getHasSubtypes()) {
       ModelBakery.registerItemVariants(item, fullModelLocation);
-      ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> fullModelLocation));
+      ModelLoader.setCustomMeshDefinition(item, stack -> fullModelLocation);
       return;
     }
 
-    final NonNullList<ItemStack> stacks = NonNullList.create();
-    item.getSubItems(item.getCreativeTab(), stacks);
-
-    stacks.forEach(stack -> ModelLoader.setCustomModelResourceLocation(item, stack.getMetadata(), new ModelResourceLocation(new ResourceLocation(GradientMod.MODID, item.getTranslationKey(stack).substring(5)), "inventory")));
+    ModelLoader.setCustomModelResourceLocation(item, 0, fullModelLocation);
   }
 
-  /**
-   * A hackish adapter that allows lambdas to be used as {@link ItemMeshDefinition} implementations without breaking ForgeGradle's
-   * reobfuscation and causing {@link AbstractMethodError}s.
-   * <p>
-   * Written by diesieben07 in this thread:
-   * http://www.minecraftforge.net/forum/index.php/topic,34034.0.html
-   *
-   * @author diesieben07
-   */
-  @FunctionalInterface
-  interface MeshDefinitionFix extends ItemMeshDefinition {
-    ModelResourceLocation getLocation(final ItemStack stack);
+  private static <T extends Comparable<T>> void registerVariantItemModels(final Item item, final String variantName, final IProperty<T> variants) {
+    int i = 0;
 
-    // Helper method to easily create lambda instances of this class
-    static ItemMeshDefinition create(final MeshDefinitionFix lambda) {
-      return lambda;
+    for(final T variant : variants.getAllowedValues()) {
+      registerItemModelForMeta(item, i++, variantName + '=' + variants.getName(variant));
     }
+  }
 
-    @Override
-    default ModelResourceLocation getModelLocation(final ItemStack stack) {
-      return this.getLocation(stack);
-    }
+  private static void registerItemModelForMeta(final Item item, final int metadata, final String variant) {
+    registerItemModelForMeta(item, metadata, new ModelResourceLocation(item.getRegistryName(), variant));
+  }
+
+  private static void registerItemModelForMeta(final Item item, final int metadata, final ModelResourceLocation modelResourceLocation) {
+    itemsRegistered.add(item);
+    ModelLoader.setCustomModelResourceLocation(item, metadata, modelResourceLocation);
   }
 
   @FunctionalInterface

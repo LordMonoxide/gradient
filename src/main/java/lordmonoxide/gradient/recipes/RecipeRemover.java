@@ -100,6 +100,8 @@ public final class RecipeRemover {
 
       "extrautils2:teleporter",
       "extrautils2:golden_lasso",
+
+      "buildcraftcore:gear_wood",
     };
 
     final IForgeRegistryModifiable<IRecipe> registry = (IForgeRegistryModifiable<IRecipe>)event.getRegistry();

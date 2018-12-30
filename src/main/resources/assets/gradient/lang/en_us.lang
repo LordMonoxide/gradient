@@ -225,6 +225,8 @@ item.salt.name=Salt
 item.flour.name=Flour
 item.dough.name=Dough
 
+item.wooden_gear.name=Wooden Gear
+
 # Metal
 metal.melt_temp=Melting Point: %f °C
 metal.melt_time=Melting Time: %d sec

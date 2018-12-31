@@ -4,7 +4,6 @@ import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
-import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -29,7 +28,7 @@ public class BlockHandCrank extends GradientBlock {
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
-  public static final PropertyDirection FACING = BlockHorizontal.FACING;
+  public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
   public BlockHandCrank() {
     super("hand_crank", CreativeTabs.TOOLS, Material.CIRCUITS);
@@ -78,12 +77,12 @@ public class BlockHandCrank extends GradientBlock {
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
+    return this.getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta));
   }
 
   @Override
   public int getMetaFromState(final IBlockState state) {
-    return state.getValue(FACING).getHorizontalIndex();
+    return state.getValue(FACING).getIndex();
   }
 
   @SuppressWarnings("deprecation")

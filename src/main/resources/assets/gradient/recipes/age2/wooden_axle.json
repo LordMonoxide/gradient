@@ -1,0 +1,22 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
+  "result": {
+    "item": "gradient:axle"
+  },
+  "pattern": [
+    " F ",
+    "SSS",
+    " F "
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    },
+    "F": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    }
+  }
+}

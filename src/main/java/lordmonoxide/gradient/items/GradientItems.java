@@ -95,8 +95,9 @@ public final class GradientItems {
   public static final GradientArmour HIDE_SHIRT     = new GradientArmour("hide_shirt", MATERIAL_HIDE, 0, EntityEquipmentSlot.CHEST);
   public static final GradientArmour HIDE_HEADCOVER = new GradientArmour("hide_headcover", MATERIAL_HIDE, 0, EntityEquipmentSlot.HEAD);
 
-  public static final HideBedding HIDE_BEDDING = new HideBedding();
-  public static final Waterskin   WATERSKIN    = new Waterskin();
+  public static final HideBedding  HIDE_BEDDING = new HideBedding();
+  public static final Waterskin    WATERSKIN    = new Waterskin();
+  public static final GradientItem LEATHER_CORD = new GradientItem("leather_cord", CreativeTabs.MATERIALS);
 
   public static final FireStarter  FIRE_STARTER  = new FireStarter();
   public static final StoneHammer  STONE_HAMMER  = new StoneHammer();
@@ -290,6 +291,7 @@ public final class GradientItems {
 
     registry.register(HIDE_BEDDING);
     registry.register(WATERSKIN);
+    registry.register(LEATHER_CORD);
 
     registry.register(FIRE_STARTER);
     registry.register(STONE_HAMMER);
@@ -345,6 +347,7 @@ public final class GradientItems {
 
     OreDictionary.registerOre("fibre",  FIBRE);
     OreDictionary.registerOre("string", TWINE);
+    OreDictionary.registerOre("string", LEATHER_CORD);
 
     OreDictionary.registerOre("barkWood", BARK_OAK);
     OreDictionary.registerOre("barkWood", BARK_SPRUCE);

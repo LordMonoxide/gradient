@@ -30,8 +30,8 @@ item.hide_shirt.name=Hide Shirt
 item.hide_headcover.name=Hide Headcover
 
 item.hide_bedding.name=Hide Bedding
-
 item.waterskin.name=Waterskin
+item.leather_cord.name=Leather Cord
 
 # Tools
 item.bone_awl.name=Bone Awl

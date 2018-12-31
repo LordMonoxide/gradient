@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package lordmonoxide.gradient.blocks.kinetic.axle;
+package lordmonoxide.gradient.blocks.kinetic.woodenaxle;
 
 import mcp.MethodsReturnNonnullByDefault;
 

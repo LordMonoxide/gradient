@@ -225,6 +225,7 @@ item.salt.name=Salt
 item.flour.name=Flour
 item.dough.name=Dough
 
+tile.wooden_axle.name=Wooden Axle
 item.wooden_gear.name=Wooden Gear
 
 # Metal

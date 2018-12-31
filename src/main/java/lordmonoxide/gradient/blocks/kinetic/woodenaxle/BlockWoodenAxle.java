@@ -1,4 +1,4 @@
-package lordmonoxide.gradient.blocks.kinetic.axle;
+package lordmonoxide.gradient.blocks.kinetic.woodenaxle;
 
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-public class BlockAxle extends BlockRotatedPillar {
+public class BlockWoodenAxle extends BlockRotatedPillar {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
@@ -27,10 +27,10 @@ public class BlockAxle extends BlockRotatedPillar {
   private static final AxisAlignedBB AABB_Y = new AxisAlignedBB(5.0d / 16.0d, 0.0d, 5.0d / 16.0d, 11.0d / 16.0d, 1.0d, 11.0d / 16.0d);
   private static final AxisAlignedBB AABB_Z = new AxisAlignedBB(5.0d / 16.0d, 5.0d / 16.0d, 0.0d, 11.0d / 16.0d, 11.0d / 16.0d, 1.0d);
 
-  public BlockAxle() {
+  public BlockWoodenAxle() {
     super(Material.CIRCUITS);
-    this.setRegistryName("axle");
-    this.setTranslationKey("axle");
+    this.setRegistryName("wooden_axle");
+    this.setTranslationKey("wooden_axle");
     this.setCreativeTab(CreativeTabs.TOOLS);
     this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, EnumFacing.Axis.Y));
     this.setLightOpacity(0);
@@ -50,8 +50,8 @@ public class BlockAxle extends BlockRotatedPillar {
   }
 
   @Override
-  public TileAxle createTileEntity(final World world, final IBlockState state) {
-    return new TileAxle();
+  public TileWoodenAxle createTileEntity(final World world, final IBlockState state) {
+    return new TileWoodenAxle();
   }
 
   @Override

@@ -21,8 +21,8 @@ import lordmonoxide.gradient.blocks.dryingrack.BlockDryingRack;
 import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
-import lordmonoxide.gradient.blocks.kinetic.axle.BlockAxle;
-import lordmonoxide.gradient.blocks.kinetic.axle.TileAxle;
+import lordmonoxide.gradient.blocks.kinetic.woodenaxle.BlockWoodenAxle;
+import lordmonoxide.gradient.blocks.kinetic.woodenaxle.TileWoodenAxle;
 import lordmonoxide.gradient.blocks.kinetic.flywheel.BlockFlywheel;
 import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheel;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.BlockHandCrank;
@@ -80,9 +80,9 @@ public final class GradientBlocks {
   public static final BlockLog            HARDENED_LOG    = new BlockLog("hardened_log");
   public static final BlockHardenedPlanks HARDENED_PLANKS = new BlockHardenedPlanks();
 
-  public static final BlockHandCrank HAND_CRANK = new BlockHandCrank();
-  public static final BlockFlywheel  FLYWHEEL   = new BlockFlywheel();
-  public static final BlockAxle      AXLE       = new BlockAxle();
+  public static final BlockHandCrank  HAND_CRANK  = new BlockHandCrank();
+  public static final BlockFlywheel   FLYWHEEL    = new BlockFlywheel();
+  public static final BlockWoodenAxle WOODEN_AXLE = new BlockWoodenAxle();
 
   public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
@@ -152,7 +152,7 @@ public final class GradientBlocks {
 
     registry.register(HAND_CRANK);
     registry.register(FLYWHEEL);
-    registry.register(AXLE);
+    registry.register(WOODEN_AXLE);
 
     registry.register(CLAY_FURNACE_UNHARDENED);
     registry.register(CLAY_FURNACE_HARDENED);
@@ -183,7 +183,7 @@ public final class GradientBlocks {
 
     GameRegistry.registerTileEntity(TileHandCrank.class, HAND_CRANK.getRegistryName());
     GameRegistry.registerTileEntity(TileFlywheel.class,  FLYWHEEL.getRegistryName());
-    GameRegistry.registerTileEntity(TileAxle.class,      AXLE.getRegistryName());
+    GameRegistry.registerTileEntity(TileWoodenAxle.class,      WOODEN_AXLE.getRegistryName());
 
     GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
 

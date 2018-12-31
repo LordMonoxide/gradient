@@ -2,21 +2,20 @@
   "type": "gradient:age_gated_shaped",
   "age": 2,
   "result": {
-    "item": "gradient:axle"
+    "item": "gradient:wooden_axle"
   },
   "pattern": [
-    " F ",
+    " C ",
     "SSS",
-    " F "
+    " C "
   ],
   "key": {
     "S": {
       "type": "forge:ore_dict",
       "ore": "stickWood"
     },
-    "F": {
-      "type": "forge:ore_dict",
-      "ore": "string"
+    "C": {
+      "item": "gradient:leather_cord"
     }
   }
 }

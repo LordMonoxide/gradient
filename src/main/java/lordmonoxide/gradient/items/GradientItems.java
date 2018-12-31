@@ -456,6 +456,7 @@ public final class GradientItems {
     OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_ACACIA_WOOD);
     OreDictionary.registerOre("logWood", GradientBlocks.STRIPPED_DARK_OAK_WOOD);
 
+    OreDictionary.registerOre("axleWood", GradientBlocks.WOODEN_AXLE);
     OreDictionary.registerOre("gearWood", WOODEN_GEAR);
 
     Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);

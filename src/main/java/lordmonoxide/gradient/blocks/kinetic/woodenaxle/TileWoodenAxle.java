@@ -1,4 +1,4 @@
-package lordmonoxide.gradient.blocks.kinetic.axle;
+package lordmonoxide.gradient.blocks.kinetic.woodenaxle;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
@@ -14,7 +14,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import javax.annotation.Nullable;
 
-public class TileAxle extends TileEntity {
+public class TileWoodenAxle extends TileEntity {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
@@ -37,7 +37,7 @@ public class TileAxle extends TileEntity {
     if(capability == TRANSFER) {
       final IBlockState state = this.world.getBlockState(this.pos);
 
-      if(state.getBlock() == GradientBlocks.AXLE) {
+      if(state.getBlock() == GradientBlocks.WOODEN_AXLE) {
         return facing != null && facing.getAxis() == state.getValue(BlockRotatedPillar.AXIS);
       }
     }
@@ -51,7 +51,7 @@ public class TileAxle extends TileEntity {
     if(capability == TRANSFER) {
       final IBlockState state = this.world.getBlockState(this.pos);
 
-      if(state.getBlock() == GradientBlocks.AXLE) {
+      if(state.getBlock() == GradientBlocks.WOODEN_AXLE) {
         if(facing != null && facing.getAxis() == state.getValue(BlockRotatedPillar.AXIS)) {
           return TRANSFER.cast(this.transfer);
         }

@@ -27,6 +27,8 @@ import lordmonoxide.gradient.blocks.kinetic.flywheel.BlockFlywheel;
 import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheel;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.BlockHandCrank;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.TileHandCrank;
+import lordmonoxide.gradient.blocks.kinetic.woodengearbox.BlockWoodenGearbox;
+import lordmonoxide.gradient.blocks.kinetic.woodengearbox.TileWoodenGearbox;
 import lordmonoxide.gradient.blocks.manualgrinder.BlockManualGrinder;
 import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinder;
 import lordmonoxide.gradient.blocks.mixingbasin.BlockMixingBasin;
@@ -80,9 +82,10 @@ public final class GradientBlocks {
   public static final BlockLog            HARDENED_LOG    = new BlockLog("hardened_log");
   public static final BlockHardenedPlanks HARDENED_PLANKS = new BlockHardenedPlanks();
 
-  public static final BlockHandCrank  HAND_CRANK  = new BlockHandCrank();
-  public static final BlockFlywheel   FLYWHEEL    = new BlockFlywheel();
-  public static final BlockWoodenAxle WOODEN_AXLE = new BlockWoodenAxle();
+  public static final BlockHandCrank     HAND_CRANK     = new BlockHandCrank();
+  public static final BlockFlywheel      FLYWHEEL       = new BlockFlywheel();
+  public static final BlockWoodenAxle    WOODEN_AXLE    = new BlockWoodenAxle();
+  public static final BlockWoodenGearbox WOODEN_GEARBOX = new BlockWoodenGearbox();
 
   public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
@@ -153,6 +156,7 @@ public final class GradientBlocks {
     registry.register(HAND_CRANK);
     registry.register(FLYWHEEL);
     registry.register(WOODEN_AXLE);
+    registry.register(WOODEN_GEARBOX);
 
     registry.register(CLAY_FURNACE_UNHARDENED);
     registry.register(CLAY_FURNACE_HARDENED);
@@ -181,9 +185,10 @@ public final class GradientBlocks {
 
     GameRegistry.registerTileEntity(TileDryingRack.class, DRYING_RACK.getRegistryName());
 
-    GameRegistry.registerTileEntity(TileHandCrank.class, HAND_CRANK.getRegistryName());
-    GameRegistry.registerTileEntity(TileFlywheel.class,  FLYWHEEL.getRegistryName());
-    GameRegistry.registerTileEntity(TileWoodenAxle.class,      WOODEN_AXLE.getRegistryName());
+    GameRegistry.registerTileEntity(TileHandCrank.class,     HAND_CRANK.getRegistryName());
+    GameRegistry.registerTileEntity(TileFlywheel.class,      FLYWHEEL.getRegistryName());
+    GameRegistry.registerTileEntity(TileWoodenAxle.class,    WOODEN_AXLE.getRegistryName());
+    GameRegistry.registerTileEntity(TileWoodenGearbox.class, WOODEN_GEARBOX.getRegistryName());
 
     GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
 

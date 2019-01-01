@@ -666,6 +666,33 @@ public class EnergyNetworkTest {
   }
 
   @Test
+  void testTileEntityWithMultipleSinksOnSameNetwork() {
+    final StorageNode sink1 = new StorageNode(10000.0f, 10.0f, 0.0f, 0.0f);
+    final StorageNode sink2 = new StorageNode(10000.0f, 10.0f, 0.0f, 0.0f);
+    final StorageNode source = new StorageNode(10000.0f, 0.0f, 100.0f, 10000.0f);
+
+    final TileEntity teTransfer1 = this.world.addTileEntity(new BlockPos(0, 0, 0), TileEntityWithCapabilities.transfer());
+    final TileEntity teTransfer2 = this.world.addTileEntity(new BlockPos(1, 0, 0), TileEntityWithCapabilities.transfer());
+    final TileEntity teTransfer3 = this.world.addTileEntity(new BlockPos(1, 0, 1), TileEntityWithCapabilities.transfer());
+    final TileEntity teSink = this.world.addTileEntity(new BlockPos(0, 0, 1), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sink1, EnumFacing.NORTH).addCapability(EnergyNetworkSegmentTest.STORAGE, sink2, EnumFacing.EAST));
+    final TileEntity teSource = this.world.addTileEntity(new BlockPos(-1, 0, 0), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, source));
+
+    this.manager.connect(teTransfer1.getPos(), teTransfer1);
+    this.manager.connect(teTransfer2.getPos(), teTransfer2);
+    this.manager.connect(teTransfer3.getPos(), teTransfer3);
+    this.manager.connect(teSink.getPos(), teSink);
+    this.manager.connect(teSource.getPos(), teSource);
+
+    Assertions.assertEquals(1, this.manager.size());
+
+    this.manager.tick();
+
+    Assertions.assertEquals(10.0f, sink1.getEnergy());
+    Assertions.assertEquals(10.0f, sink2.getEnergy());
+    Assertions.assertEquals(9980.0f, source.getEnergy());
+  }
+
+  @Test
   void testTick() {
     final IEnergyTransfer transfer = new TransferNode();
     final IEnergyStorage source1 = new StorageNode(10000.0f, 0.0f, 10.0f, 10000.0f);
@@ -684,7 +711,7 @@ public class EnergyNetworkTest {
     final TileEntity teSink = this.world.addTileEntity(BlockPos.ORIGIN.north(), new TileEntityWithCapabilities().addCapability(EnergyNetworkSegmentTest.STORAGE, sink));
     this.manager.connect(teSink.getPos(), teSink);
 
-    Assertions.assertEquals(this.manager.size(), 1);
+    Assertions.assertEquals(1, this.manager.size());
 
     this.manager.tick();
 

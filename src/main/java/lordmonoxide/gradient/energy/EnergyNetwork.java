@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.energy;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.config.EnergyNetworkConfig;
 import lordmonoxide.gradient.utils.BlockPosUtils;
 import lordmonoxide.gradient.utils.Tuple;
 import net.minecraft.tileentity.TileEntity;
@@ -42,7 +43,9 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
   private final Set<TRANSFER> tickTransferNodes = new HashSet<>();
 
   public EnergyNetworkState tick() {
-    GradientMod.logger.info("Ticking {}", this);
+    if(EnergyNetworkConfig.enableTickDebug) {
+      GradientMod.logger.info("Ticking {}", this);
+    }
 
     this.state.reset();
 
@@ -50,7 +53,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     this.tickTransferNodes.clear();
 
     for(final TileEntity te : this.allNodes.values()) {
-      GradientMod.logger.info("Checking {}", te);
+      if(EnergyNetworkConfig.enableTickDebug) {
+        GradientMod.logger.info("Checking {}", te);
+      }
+
       for(final EnumFacing facing : EnumFacing.VALUES) {
         if(te.hasCapability(this.storage, facing) && te.getCapability(this.storage, facing).canSink()) {
           this.tickSinkNodes.put(te.getCapability(this.storage, facing), new Tuple<>(te.getPos(), facing));
@@ -61,7 +67,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     }
 
     for(final TRANSFER transfer : this.tickTransferNodes) {
-      GradientMod.logger.info("Resetting transfer {}", transfer);
+      if(EnergyNetworkConfig.enableTickDebug) {
+        GradientMod.logger.info("Resetting transfer {}", transfer);
+      }
+
       transfer.resetEnergyTransferred();
     }
 
@@ -70,16 +79,22 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       final BlockPos pos = entry.getValue().a;
       final EnumFacing facing = entry.getValue().b;
 
-      GradientMod.logger.info("Ticking sink {} @ {}", sink, pos);
+      if(EnergyNetworkConfig.enableTickDebug) {
+        GradientMod.logger.info("Ticking sink {} @ {}", sink, pos);
+      }
 
       final float requested = sink.getRequestedEnergy();
 
-      GradientMod.logger.info("{} requesting {} energy", sink, requested);
+      if(EnergyNetworkConfig.enableTickDebug) {
+        GradientMod.logger.info("{} requesting {} energy", sink, requested);
+      }
 
       if(requested != 0.0f) {
         final float energy = this.requestEnergy(pos, requested);
 
-        GradientMod.logger.info("{} got {} energy", sink, energy);
+        if(EnergyNetworkConfig.enableTickDebug) {
+          GradientMod.logger.info("{} got {} energy", sink, energy);
+        }
 
         if(energy != 0.0f) {
           sink.sinkEnergy(energy, false);
@@ -108,7 +123,9 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
   }
 
   public Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> connect(final BlockPos newNodePos, final TileEntity newTe) {
-    GradientMod.logger.info("Attempting to add {} @ {} to a network...", newTe, newNodePos);
+    if(EnergyNetworkConfig.enableNodeDebug) {
+      GradientMod.logger.info("Attempting to add {} @ {} to a network...", newTe, newNodePos);
+    }
 
     final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> added = new HashMap<>();
     final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> merge = new HashMap<>();
@@ -122,46 +139,67 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         continue;
       }
 
-      GradientMod.logger.info("Found TE {} @ {} ({})", worldTe, networkPos, facing);
+      if(EnergyNetworkConfig.enableNodeDebug) {
+        GradientMod.logger.info("Found TE {} @ {} ({})", worldTe, networkPos, facing);
+      }
 
       final EnumFacing opposite = facing.getOpposite();
 
       if(newTe.hasCapability(this.storage, facing)) {
         if(worldTe.hasCapability(this.storage, opposite)) {
           // New network if we can't connect to the storage's network (we can only connect if it's the only block in the network)
-          GradientMod.logger.info("Both TEs are storages");
+          if(EnergyNetworkConfig.enableNodeDebug) {
+            GradientMod.logger.info("Both TEs are storages");
+          }
+
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, added);
         } else if(worldTe.hasCapability(this.transfer, opposite)) {
           // Add to network, no merge
-          GradientMod.logger.info("New TE is storage, world TE is transfer");
+          if(EnergyNetworkConfig.enableNodeDebug) {
+            GradientMod.logger.info("New TE is storage, world TE is transfer");
+          }
+
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, added);
         } else {
-          GradientMod.logger.info("Unconnectable");
+          if(EnergyNetworkConfig.enableNodeDebug) {
+            GradientMod.logger.info("Unconnectable");
+          }
         }
       } else if(newTe.hasCapability(this.transfer, facing)) {
         if(worldTe.hasCapability(this.storage, opposite)) {
           // If worldTe is in its own network, add (may have to merge)
           // If worldTe is in an existing network, new (may have to merge)
-          GradientMod.logger.info("New TE is transfer, world TE is storage");
+          if(EnergyNetworkConfig.enableNodeDebug) {
+            GradientMod.logger.info("New TE is transfer, world TE is storage");
+          }
+
           final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new HashMap<>();
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
         } else if(worldTe.hasCapability(this.transfer, opposite)) {
           // Add to network (may have to merge)
-          GradientMod.logger.info("Both TEs are transfers");
+          if(EnergyNetworkConfig.enableNodeDebug) {
+            GradientMod.logger.info("Both TEs are transfers");
+          }
+
           final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new HashMap<>();
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
         } else {
-          GradientMod.logger.info("Unconnectable");
+          if(EnergyNetworkConfig.enableNodeDebug) {
+            GradientMod.logger.info("Unconnectable");
+          }
         }
       }
     }
 
     while(merge.size() > 1) {
-      GradientMod.logger.info("Merging networks");
+      if(EnergyNetworkConfig.enableNodeDebug) {
+        GradientMod.logger.info("Merging networks");
+      }
+
       final Iterator<Map.Entry<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>>> it = merge.entrySet().iterator();
       final Map.Entry<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> firstEntry = it.next();
       final EnumFacing firstFacing = firstEntry.getKey();
@@ -192,7 +230,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
 
     // There were no adjacent nodes, create a new network
     if(added.isEmpty()) {
-      GradientMod.logger.info("No adjacent nodes, creating new network");
+      if(EnergyNetworkConfig.enableNodeDebug) {
+        GradientMod.logger.info("No adjacent nodes, creating new network");
+      }
+
       final EnergyNetworkSegment<STORAGE, TRANSFER> network = new EnergyNetworkSegment<>(this.storage, this.transfer);
       network.connect(newNodePos, newTe);
       this.networks.add(network);
@@ -205,14 +246,21 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
   }
 
   private void addToOrCreateNetwork(final BlockPos newNodePos, final TileEntity newTe, final BlockPos networkPos, final TileEntity worldTe, final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> added) {
-    GradientMod.logger.info("Trying to add new TE {} @ {} to existing networks at {}", newTe, newNodePos, networkPos);
+    if(EnergyNetworkConfig.enableNodeDebug) {
+      GradientMod.logger.info("Trying to add new TE {} @ {} to existing networks at {}", newTe, newNodePos, networkPos);
+    }
 
     boolean connected = false;
     for(final EnergyNetworkSegment<STORAGE, TRANSFER> network : this.getNetworksForBlock(networkPos)) {
-      GradientMod.logger.info("Trying network {}...", network);
+      if(EnergyNetworkConfig.enableNodeDebug) {
+        GradientMod.logger.info("Trying network {}...", network);
+      }
 
       if(network.connect(newNodePos, newTe)) {
-        GradientMod.logger.info("Success!");
+        if(EnergyNetworkConfig.enableNodeDebug) {
+          GradientMod.logger.info("Success!");
+        }
+
         added.put(BlockPosUtils.getBlockFacing(newNodePos, networkPos), network);
         connected = true;
       }
@@ -220,7 +268,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
 
     if(!connected) {
       // Create a new network if we couldn't connect
-      GradientMod.logger.info("Failed to find a network to connect to, creating a new one");
+      if(EnergyNetworkConfig.enableNodeDebug) {
+        GradientMod.logger.info("Failed to find a network to connect to, creating a new one");
+      }
+
       final EnergyNetworkSegment<STORAGE, TRANSFER> network = new EnergyNetworkSegment<>(this.storage, this.transfer);
       this.allNodes.put(networkPos, worldTe);
       network.connect(networkPos, worldTe);
@@ -231,14 +282,18 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
   }
 
   public void disconnect(final BlockPos pos) {
-    GradientMod.logger.info("Removing node {}", pos);
+    if(EnergyNetworkConfig.enableNodeDebug) {
+      GradientMod.logger.info("Removing node {}", pos);
+    }
 
     this.allNodes.remove(pos);
 
     for(final EnergyNetworkSegment<STORAGE, TRANSFER> network : this.getNetworksForBlock(pos)) {
       // Do we need to rebuild the network?
       if(network.disconnect(pos)) {
-        GradientMod.logger.info("Rebuilding network {}", network);
+        if(EnergyNetworkConfig.enableNodeDebug) {
+          GradientMod.logger.info("Rebuilding network {}", network);
+        }
 
         this.networks.remove(network);
 

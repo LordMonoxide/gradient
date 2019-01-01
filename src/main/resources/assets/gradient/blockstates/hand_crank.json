@@ -1,5 +1,7 @@
 {
   "variants": {
+    "facing=down":  { "model": "gradient:hand_crank", "x":  90 },
+    "facing=up":    { "model": "gradient:hand_crank", "x": -90 },
     "facing=north": { "model": "gradient:hand_crank" },
     "facing=east":  { "model": "gradient:hand_crank", "y":  90 },
     "facing=south": { "model": "gradient:hand_crank", "y": 180 },

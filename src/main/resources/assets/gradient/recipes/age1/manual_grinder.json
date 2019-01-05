@@ -1,0 +1,24 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 1,
+  "result": {
+    "item": "gradient:manual_grinder"
+  },
+  "pattern": [
+    " P ",
+    "S S",
+    "CSC"
+  ],
+  "key": {
+    "P": {
+      "item": "gradient:pebble"
+    },
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "cobblestone"
+    },
+    "C": {
+      "item": "minecraft:clay_ball"
+    }
+  }
+}

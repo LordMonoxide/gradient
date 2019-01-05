@@ -1,12 +1,12 @@
 package lordmonoxide.gradient.blocks.firepit;
 
-import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
 import lordmonoxide.gradient.items.FireStarter;
+import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
@@ -32,14 +32,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Random;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class BlockFirePit extends HeatSinkerBlock {
-  @GameRegistry.ObjectHolder("gradient:fibre_torch_lit")
-  private static final Block FIBRE_TORCH_LIT = null;
-
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
 
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -68,25 +69,27 @@ public class BlockFirePit extends HeatSinkerBlock {
     super.getDrops(drops, world, pos, state, fortune);
 
     if(state.getValue(HAS_FURNACE)) {
-      final Block furnace = GradientBlocks.CLAY_FURNACE;
-      drops.add(new ItemStack(furnace, 1, furnace.getMetaFromState(furnace.getDefaultState().withProperty(BlockClayFurnace.HARDENED, true))));
+      drops.add(new ItemStack(GradientBlocks.CLAY_FURNACE_HARDENED));
     }
   }
 
   @Override
   @Deprecated
+  @SuppressWarnings("deprecation")
   public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
 
   @Override
   @Deprecated
+  @SuppressWarnings("deprecation")
   public boolean isFullCube(final IBlockState state) {
     return false;
   }
 
   @Override
   @Deprecated
+  @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
     if(!state.getValue(HAS_FURNACE)) {
       return AABB;
@@ -108,7 +111,7 @@ public class BlockFirePit extends HeatSinkerBlock {
       return ((TileFirePit)te).getLightLevel(state);
     }
 
-    return state.getLightValue(world, pos);
+    return super.getLightValue(state, world, pos);
   }
 
   @Override
@@ -119,109 +122,159 @@ public class BlockFirePit extends HeatSinkerBlock {
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
+      final TileFirePit firepit = (TileFirePit)world.getTileEntity(pos);
+
+      if(firepit == null) {
+        return false;
+      }
+
+      final ItemStack held = player.getHeldItem(hand);
+
       if(!player.isSneaking()) {
-        final ItemStack stack = player.getHeldItem(hand);
+        if(held.getItem() instanceof FireStarter) {
+          if(!firepit.isBurning()) {
+            if(!player.isCreative()) {
+              held.damageItem(1, player);
+            }
 
-        if(stack.getItem() instanceof FireStarter) {
-          final TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
-
-          if(tile == null) {
-            return false;
-          }
-
-          if(!tile.isBurning()) {
-            tile.light();
+            firepit.light();
             return true;
           }
         }
 
-        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() instanceof BlockTorchUnlit) {
-          final TileFirePit tile = (TileFirePit)world.getTileEntity(pos);
-
-          if(tile == null) {
-            return false;
-          }
-
-          if(tile.isBurning()) {
-            player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)stack.getItem()).getBlock()).lit, stack.getCount()));
+        if(Block.getBlockFromItem(held.getItem()) instanceof BlockTorchUnlit) {
+          if(firepit.isBurning()) {
+            player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)held.getItem()).getBlock()).lit, held.getCount()));
             return true;
           }
         }
 
-        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() instanceof BlockClayFurnace) {
+        if(Block.getBlockFromItem(held.getItem()) == GradientBlocks.CLAY_FURNACE_HARDENED) {
           if(!state.getValue(HAS_FURNACE)) {
-            if(!GradientBlocks.CLAY_FURNACE.getStateFromMeta(stack.getMetadata()).getValue(BlockClayFurnace.HARDENED)) {
-              return false;
-            }
-
-            final TileFirePit te = (TileFirePit)world.getTileEntity(pos);
-
-            if(te == null) {
-              return false;
-            }
-
             world.setBlockState(pos, state.withProperty(HAS_FURNACE, true));
 
             // Changing the blockstate replaces the tile entity... swap it
             // back to the old one.  Not sure how terrible doing this is.
-            te.validate();
-            world.setTileEntity(pos, te);
-            te.attachFurnace();
+            firepit.validate();
+            world.setTileEntity(pos, firepit);
+            firepit.attachFurnace();
 
             if(!player.isCreative()) {
-              stack.shrink(1);
+              held.shrink(1);
             }
 
             return true;
           }
         }
+      }
 
-        player.openGui(GradientMod.instance, GradientGuiHandler.FIRE_PIT, world, pos.getX(), pos.getY(), pos.getZ());
+      // Remove input
+      if(player.isSneaking()) {
+        if(firepit.hasInput()) {
+          final ItemStack input = firepit.takeInput();
+          ItemHandlerHelper.giveItemToPlayer(player, input);
+          return true;
+        }
+
+        if(!firepit.isBurning()) {
+          for(int slot = 0; slot < TileFirePit.FUEL_SLOTS_COUNT; slot++) {
+            if(firepit.hasFuel(slot)) {
+              final ItemStack fuel = firepit.takeFuel(slot);
+              ItemHandlerHelper.giveItemToPlayer(player, fuel);
+              return true;
+            }
+          }
+        }
+
+        return true;
+      }
+
+      // Take stuff out
+      if(firepit.hasOutput()) {
+        final ItemStack output = firepit.takeOutput();
+        ItemHandlerHelper.giveItemToPlayer(player, output);
+        return true;
+      }
+
+      // Put stuff in
+      if(!held.isEmpty()) {
+        final ItemStack remaining = firepit.insertItem(held.copy(), player);
+
+        if(!player.isCreative()) {
+          player.setHeldItem(hand, remaining);
+        }
+
+        return true;
       }
     }
 
     return true;
   }
 
-  @Override
-  @Deprecated
-  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
-    super.neighborChanged(state, world, pos, block, neighbor);
+  private static final BlockPos.MutableBlockPos blockPlacedPos = new BlockPos.MutableBlockPos();
 
-    final TileEntity te = world.getTileEntity(pos);
+  @SubscribeEvent
+  public static void blockPlacedHandler(final BlockEvent.PlaceEvent event) {
+    final World world = event.getWorld();
+    final BlockPos pos = event.getPos();
+
+    final Age age = RecipeHelper.getPlayerAge(event.getPlayer());
+
+    blockPlacedPos.setPos(pos);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.EAST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.SOUTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.SOUTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.WEST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.WEST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
+  }
+
+  private static void updateFirePit(final World world, final BlockPos firePitPos, final BlockPos placedPos, final Age age) {
+    final TileEntity te = world.getTileEntity(firePitPos);
 
     if(te instanceof TileFirePit) {
-      ((TileFirePit)te).updateHardenable(neighbor);
+      ((TileFirePit)te).updateHardenable(placedPos, age);
     }
   }
 
   @Override
   public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
     world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+
+    final TileEntity te = world.getTileEntity(pos);
+
+    if(te instanceof TileFirePit) {
+      ((TileFirePit)te).updateSurroundingHardenables(RecipeHelper.getPlayerAge(placer));
+    }
   }
 
   @Override
   @Deprecated
+  @SuppressWarnings("deprecation")
   public IBlockState getStateFromMeta(final int meta) {
     final EnumFacing facing = EnumFacing.byHorizontalIndex(meta & 0b11);
-    final boolean hasFurnace = (meta >>> 2) == 1;
+    final boolean hasFurnace = meta >>> 2 == 1;
 
     return this.getDefaultState().withProperty(FACING, facing).withProperty(HAS_FURNACE, hasFurnace);
   }
 
   @Override
   public int getMetaFromState(final IBlockState state) {
-    return state.getValue(FACING).getHorizontalIndex() | ((state.getValue(HAS_FURNACE) ? 1 : 0) << 2);
+    return state.getValue(FACING).getHorizontalIndex() | (state.getValue(HAS_FURNACE) ? 1 : 0) << 2;
   }
 
   @Override
   @Deprecated
+  @SuppressWarnings("deprecation")
   public IBlockState withRotation(final IBlockState state, final Rotation rot) {
     return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
   }
 
   @Override
   @Deprecated
+  @SuppressWarnings("deprecation")
   public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
     return state.withRotation(mirror.toRotation(state.getValue(FACING)));
   }

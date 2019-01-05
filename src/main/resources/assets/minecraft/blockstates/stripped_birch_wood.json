@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "inventory": { "model": "stripped_birch" },
+    "axis=y":    { "model": "stripped_birch" },
+    "axis=z":    { "model": "stripped_birch", "x": 90 },
+    "axis=x":    { "model": "stripped_birch", "x": 90, "y": 90 },
+    "axis=none": { "model": "stripped_birch" }
+  }
+}

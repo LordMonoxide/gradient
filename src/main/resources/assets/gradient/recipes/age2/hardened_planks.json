@@ -1,0 +1,14 @@
+{
+  "type": "gradient:age_gated_shapeless",
+  "age": 2,
+  "result": {
+    "item": "gradient:hardened_planks",
+    "count": 2
+  },
+  "ingredients": [{
+    "item": "gradient:hardened_log"
+  }, {
+    "type": "gradient:ore",
+    "ore": "toolAxe"
+  }]
+}

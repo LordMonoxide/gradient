@@ -87,8 +87,12 @@ public final class RecipeRemover {
       "minecraft:torch",
       "minecraft:string_to_wool",
 
+      "minecraft:bone_meal_from_bone",
+      "minecraft:bone_meal_from_block",
+      "minecraft:bone_block",
       "minecraft:sugar",
       "minecraft:bread",
+      "minecraft:leather",
 
       "natura:common/barley_flour",
       "natura:common/wheat_flour",
@@ -96,6 +100,8 @@ public final class RecipeRemover {
 
       "extrautils2:teleporter",
       "extrautils2:golden_lasso",
+
+      "buildcraftcore:gear_wood",
     };
 
     final IForgeRegistryModifiable<IRecipe> registry = (IForgeRegistryModifiable<IRecipe>)event.getRegistry();
@@ -107,60 +113,65 @@ public final class RecipeRemover {
     }
   }
 
-  @SubscribeEvent
-  public static void replacePlankRecipes(final RegistryEvent.Register<IRecipe> event) {
+  //GOTCHA: This can't use the recipe registry event because Forestry doesn't register its recipes properly
+  public static void replacePlankRecipes(final IForgeRegistryModifiable<IRecipe> registry) {
+    final List<ItemStack> planks = new ArrayList<>();
+
+    for(final ItemStack stackPlankBlock : OreDictionary.getOres("plankWood")) {
+      if(!(stackPlankBlock.getItem() instanceof ItemBlock)) {
+        continue;
+      }
+
+      final Block blockPlank = ((ItemBlock)stackPlankBlock.getItem()).getBlock();
+
+      for(final IBlockState statePlank : blockPlank.getBlockState().getValidStates()) {
+        final ItemStack stackPlank = stackPlankBlock.copy();
+        stackPlank.setItemDamage(blockPlank.getMetaFromState(statePlank));
+        planks.add(stackPlank);
+      }
+    }
+
+    final List<ItemStack> logs = new ArrayList<>();
+
+    for(final ItemStack stackLogBlock : OreDictionary.getOres("logWood")) {
+      if(!(stackLogBlock.getItem() instanceof ItemBlock)) {
+        continue;
+      }
+
+      final Block blockLog = ((ItemBlock)stackLogBlock.getItem()).getBlock();
+
+      for(final IBlockState stateLog : blockLog.getBlockState().getValidStates()) {
+        final ItemStack stackLog = stackLogBlock.copy();
+        stackLog.setItemDamage(blockLog.getMetaFromState(stateLog));
+        logs.add(stackLog);
+      }
+    }
+
+    final InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 2, 2);
+
     final List<IRecipe> toAdd = new ArrayList<>();
     final List<IRecipe> toRemove = new ArrayList<>();
-
-    final IForgeRegistryModifiable<IRecipe> registry = (IForgeRegistryModifiable<IRecipe>)event.getRegistry();
-
-    int removed = 0;
 
     for(final IRecipe recipe : registry) {
       final ItemStack output = recipe.getRecipeOutput();
 
       outerLoop:
-      for(final ItemStack stackPlankBlock : OreDictionary.getOres("plankWood")) {
-        if(!(stackPlankBlock.getItem() instanceof ItemBlock)) {
-          continue;
-        }
+      for(final ItemStack stackPlank : planks) {
+        if(output.isItemEqual(stackPlank)) {
+          for(final ItemStack stackLog : logs) {
+            inv.setInventorySlotContents(0, stackLog);
 
-        final Block blockPlank = ((ItemBlock)stackPlankBlock.getItem()).getBlock();
+            if(recipe.matches(inv, null)) {
+              toAdd.add(new AgeGatedShapelessToolRecipe(
+                GradientMod.MODID,
+                Age.AGE1,
+                new ItemStack(output.getItem(), 2, output.getMetadata()),
+                NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(stackLog), new IngredientOre("toolAxe"))
+              ).setRegistryName(GradientMod.resource(output.getTranslationKey() + '@' + output.getMetadata() + ".from." + stackLog.getTranslationKey() + '@' + stackLog.getMetadata() + ".with.axe")));
 
-        for(final IBlockState statePlank : blockPlank.getBlockState().getValidStates()) {
-          final ItemStack stackPlank = stackPlankBlock.copy();
-          stackPlank.setItemDamage(blockPlank.getMetaFromState(statePlank));
+              toRemove.add(recipe);
 
-          if(output.isItemEqual(stackPlank)) {
-            for(final ItemStack stackLogBlock : OreDictionary.getOres("logWood")) {
-              if(!(stackLogBlock.getItem() instanceof ItemBlock)) {
-                continue;
-              }
-
-              final Block blockLog = ((ItemBlock)stackLogBlock.getItem()).getBlock();
-
-              for(final IBlockState stateLog : blockLog.getBlockState().getValidStates()) {
-                final ItemStack stackLog = stackLogBlock.copy();
-                stackLog.setItemDamage(blockLog.getMetaFromState(stateLog));
-
-                final InventoryCrafting inv = new InventoryCrafting(DUMMY_CONTAINER, 2, 2);
-                inv.setInventorySlotContents(0, stackLog);
-
-                if(recipe.matches(inv, null)) {
-                  toAdd.add(new AgeGatedShapelessToolRecipe(
-                    GradientMod.MODID,
-                    Age.AGE1,
-                    new ItemStack(output.getItem(), 2, output.getMetadata()),
-                    NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(stackLog), new IngredientOre("toolMattock"))
-                  ).setRegistryName(GradientMod.resource(output.getTranslationKey() + ".from." + stackLog.getTranslationKey() + ".with.mattock")));
-
-                  toRemove.add(recipe);
-
-                  removed++;
-
-                  break outerLoop;
-                }
-              }
+              break outerLoop;
             }
           }
         }
@@ -179,13 +190,13 @@ public final class RecipeRemover {
       GradientMod.MODID,
       Age.AGE1,
       new ItemStack(Items.STICK, 2),
-      NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), new IngredientOre("toolMattock"))
-    ).setRegistryName(GradientMod.resource("sticks.from.planks.with.mattock")));
+      NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), new IngredientOre("toolAxe"))
+    ).setRegistryName(GradientMod.resource("sticks.from.planks.with.axe")));
 
-    if(removed == 0) {
-      GradientMod.logger.warn("Failed to replaced plank recipes!");
+    if(toRemove.isEmpty()) {
+      GradientMod.logger.warn("Failed to replace plank recipes!");
     } else {
-      GradientMod.logger.info("Replaced {} plank recipes!", removed);
+      GradientMod.logger.info("Replaced {} plank recipes!", toRemove.size());
     }
   }
 }

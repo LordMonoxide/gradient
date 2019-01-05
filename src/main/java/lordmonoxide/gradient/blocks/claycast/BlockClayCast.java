@@ -1,9 +1,10 @@
 package lordmonoxide.gradient.blocks.claycast;
 
+import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.GradientCasts;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -25,20 +26,35 @@ public class BlockClayCast extends GradientBlock {
 
   public static final GradientCasts.PropertyCast CAST = GradientCasts.PropertyCast.create("cast");
 
-  public BlockClayCast() {
-    super("clay_cast", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
+  public static BlockClayCast hardened() {
+    return new BlockClayCast(true);
+  }
+
+  public static BlockClayCast unhardened() {
+    return new BlockClayCast(false);
+  }
+
+  private final boolean hardened;
+
+  protected BlockClayCast(final boolean hardened) {
+    super("clay_cast" + '.' + (hardened ? "hardened" : "unhardened"), CreativeTabs.TOOLS, hardened ? GradientBlocks.MATERIAL_CLAY_MACHINE : Material.CLAY);
     this.setDefaultState(this.blockState.getBaseState().withProperty(CAST, GradientCasts.PICKAXE));
-    this.setResistance(5.0f);
+    this.setResistance(hardened ? 5.0f : 2.0f);
     this.setHardness(1.0f);
+    this.hardened = hardened;
   }
 
   @Override
   @SideOnly(Side.CLIENT)
-  public void addInformation(final ItemStack stack, @Nullable final World player, final List<String> tooltip, final ITooltipFlag advanced) {
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      final String metalName = I18n.format("fluid." + metal.name);
-      final int metalAmount = this.getStateFromMeta(stack.getMetadata()).getValue(CAST).amountForMetal(metal);
-      tooltip.add(I18n.format("tile.clay_cast.metal_amount", metalName, metalAmount));
+  public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
+    super.addInformation(stack, world, tooltip, flag);
+
+    if(this.hardened) {
+      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+        final String metalName = I18n.format("fluid." + metal.name);
+        final int metalAmount = this.getStateFromMeta(stack.getMetadata()).getValue(CAST).amountForMetal(metal);
+        tooltip.add(I18n.format("tile.clay_cast.hardened.metal_amount", metalName, metalAmount));
+      }
     }
   }
 

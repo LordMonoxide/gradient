@@ -1,0 +1,21 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 1,
+  "result": {
+    "item": "gradient:hide_bedding"
+  },
+  "pattern": [
+    "HHH",
+    "FFF"
+  ],
+  "key": {
+    "H": {
+      "type": "forge:ore_dict",
+      "ore": "hide"
+    },
+    "F": {
+      "type": "forge:ore_dict",
+      "ore": "fibre"
+    }
+  }
+}

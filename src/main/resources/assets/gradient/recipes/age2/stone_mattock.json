@@ -1,0 +1,23 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
+  "result": {
+    "item": "gradient:stone_mattock"
+  },
+  "pattern": [
+    "PFP",
+    " S "
+  ],
+  "key": {
+    "P": {
+      "item": "gradient:pebble"
+    },
+    "F": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    },
+    "S": {
+      "item": "gradient:hardened_stick"
+    }
+  }
+}

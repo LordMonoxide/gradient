@@ -1,0 +1,10 @@
+setIcon(<minecraft:planks>)
+setTitle("Chop Chop")
+setDescription("Chop some wood into planks")
+addParent("gradient:age1/wood")
+
+criteria1 = addCriteria("hasPlanks", "minecraft:inventory_changed")
+criteria1.addItem(<ore:plankWood>)
+
+setRequiresParents()
+setPos(127,27)

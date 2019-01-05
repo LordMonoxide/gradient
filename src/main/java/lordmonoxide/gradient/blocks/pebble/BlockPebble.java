@@ -3,10 +3,12 @@ package lordmonoxide.gradient.blocks.pebble;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,15 +18,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
 public class BlockPebble extends GradientBlock {
-  @GameRegistry.ObjectHolder("gradient:pebble")
-  private static final Item PEBBLE = null;
-
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.25d, 0.0d, 0.25d, 0.75d, 0.25d, 0.75d);
 
   @Nullable
@@ -51,14 +49,16 @@ public class BlockPebble extends GradientBlock {
   public void getDrops(final NonNullList<ItemStack> drops, final IBlockAccess world, final BlockPos pos, final IBlockState state, final int fortune) {
     final Random rand = world instanceof World ? ((World)world).rand : RANDOM;
 
-    if(rand.nextInt(3) == 0) {
-      drops.add(new ItemStack(Items.FLINT));
-    } else {
-      drops.add(new ItemStack(PEBBLE));
+    for(int i = 0; i < rand.nextInt(2); i++) {
+      if(rand.nextInt(6) == 0) {
+        drops.add(new ItemStack(Items.FLINT));
+      } else {
+        drops.add(new ItemStack(Item.getItemFromBlock(this)));
+      }
     }
 
     if(this.metal != null) {
-      if(rand.nextInt(3) == 0) {
+      if(rand.nextInt(2) == 0) {
         drops.add(new ItemStack(ForgeRegistries.ITEMS.getValue(GradientMod.resource("nugget." + this.metal.name))));
       }
     }
@@ -105,6 +105,17 @@ public class BlockPebble extends GradientBlock {
         down.getMaterial() == Material.PACKED_ICE ||
         down.getMaterial() == Material.ROCK ||
         down.getMaterial() == Material.SAND
-      ) && down.isFullBlock();
+      ) && down.isFullBlock()
+    ;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos fromPos) {
+    if(world.isAirBlock(pos.down())) {
+      this.dropBlockAsItem(world, pos, state, 0);
+      world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+    }
   }
 }

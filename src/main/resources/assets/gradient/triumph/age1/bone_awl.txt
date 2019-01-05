@@ -1,0 +1,10 @@
+setIcon(<gradient:bone_awl>)
+setTitle("Awl Be Back")
+setDescription("Craft an awl for working with animal hide")
+addParent("gradient:age1/hide")
+
+criteria1 = addCriteria("hasAwl", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:bone_awl>)
+
+setRequiresParents()
+setPos(64,122)

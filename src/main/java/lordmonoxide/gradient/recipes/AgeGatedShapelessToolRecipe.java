@@ -2,44 +2,47 @@ package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.items.GradientItemTool;
 import lordmonoxide.gradient.progress.Age;
-import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
-import lordmonoxide.gradient.progress.PlayerProgress;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Random;
 
-public class AgeGatedShapelessToolRecipe extends ShapelessRecipes {
+public class AgeGatedShapelessToolRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
   private static final Random rand = new Random();
 
-  private final Age age;
+  private final ShapelessRecipes recipe;
+  public final Age age;
 
   public AgeGatedShapelessToolRecipe(final String group, final Age age, final ItemStack output, final NonNullList<Ingredient> ingredients) {
-    super(group, output, ingredients);
+    this.recipe = new ShapelessRecipes(group, output, ingredients);
     this.age = age;
   }
 
   @Override
   public boolean matches(final InventoryCrafting inv, final World world) {
-    final EntityPlayer player = RecipeHelper.findPlayerFromInv(inv);
+    return RecipeHelper.playerMeetsAgeRequirement(inv, this.age) && this.recipe.matches(inv, world);
+  }
 
-    if(player != null) {
-      final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
+  @Override
+  public ItemStack getCraftingResult(final InventoryCrafting inv) {
+    return this.recipe.getCraftingResult(inv);
+  }
 
-      if(progress != null) {
-        if(!progress.meetsAgeRequirement(this.age)) {
-          return false;
-        }
-      }
-    }
+  @Override
+  public boolean canFit(final int width, final int height) {
+    return this.recipe.canFit(width, height);
+  }
 
-    return super.matches(inv, world);
+  @Override
+  public ItemStack getRecipeOutput() {
+    return this.recipe.getRecipeOutput();
   }
 
   @Override
@@ -63,5 +66,20 @@ public class AgeGatedShapelessToolRecipe extends ShapelessRecipes {
     }
 
     return list;
+  }
+
+  @Override
+  public NonNullList<Ingredient> getIngredients() {
+    return this.recipe.getIngredients();
+  }
+
+  @Override
+  public boolean isDynamic() {
+    return this.recipe.isDynamic();
+  }
+
+  @Override
+  public String getGroup() {
+    return this.recipe.getGroup();
   }
 }

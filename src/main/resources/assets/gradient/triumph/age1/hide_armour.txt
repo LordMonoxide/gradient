@@ -1,0 +1,22 @@
+setIcon(<gradient:hide_pants>)
+setTitle("The Buttflappening")
+setDescription("Craft a full set of hide armour. You'll be rewarded with a handful of torches that don't go out!")
+addParent("gradient:age1/bone_awl")
+
+setFrameType("CHALLENGE")
+setRewardItem(<minecraft:torch, ore:torch, meta:0, count:4>)
+
+criteria1 = addCriteria("hasHeadcover", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:hide_headcover>)
+
+criteria2 = addCriteria("hasShirt", "minecraft:inventory_changed")
+criteria2.addItem(<gradient:hide_shirt>)
+
+criteria3 = addCriteria("hasPants", "minecraft:inventory_changed")
+criteria3.addItem(<gradient:hide_pants>)
+
+criteria4 = addCriteria("hasBoots", "minecraft:inventory_changed")
+criteria4.addItem(<gradient:hide_boots>)
+
+setRequiresParents()
+setPos(96,137)

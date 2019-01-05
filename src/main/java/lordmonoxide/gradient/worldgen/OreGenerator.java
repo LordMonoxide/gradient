@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.worldgen;
 
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -11,6 +12,7 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.gen.feature.WorldGenSand;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.IWorldGenerator;
@@ -218,6 +220,8 @@ public class OreGenerator implements IWorldGenerator {
     });
   });
 
+  private final WorldGenerator salt = new WorldGenSand(GradientBlocks.SALT_BLOCK, 4);
+
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
@@ -257,6 +261,10 @@ public class OreGenerator implements IWorldGenerator {
       if(random.nextInt(81) == 0) {
         this.runGenerator(this.pyrite, world, random, chunkX, chunkZ, 30, 0, 256);
       }
+
+      final int x = random.nextInt(16) + 8;
+      final int z = random.nextInt(16) + 8;
+      this.salt.generate(world, random, world.getTopSolidOrLiquidBlock(chunkPos.getBlock(x, 0, z)));
     }
   }
 

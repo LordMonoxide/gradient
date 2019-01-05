@@ -2,7 +2,7 @@
   "type": "gradient:age_gated_shaped",
   "age": 2,
   "result": {
-    "item": "gradient:clay_crucible_unhardened"
+    "item": "gradient:clay_crucible.unhardened"
   },
   "pattern": [
     "C C",

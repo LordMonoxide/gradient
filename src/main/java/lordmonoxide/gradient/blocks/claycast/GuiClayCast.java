@@ -1,10 +1,10 @@
 package lordmonoxide.gradient.blocks.claycast;
 
+import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.containers.GradientGuiContainer;
-import lordmonoxide.gradient.items.CastItem;
-import lordmonoxide.gradient.GradientCasts;
+import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
@@ -43,7 +43,7 @@ public class GuiClayCast extends GradientGuiContainer {
   }
 
   private GuiButton addButtonForTool(final GradientCasts.Cast cast, final int x, final int y) {
-    return this.addButton(new ItemButton(cast.id, CastItem.getCastItem(cast, GradientMetals.COPPER, 1), x, y));
+    return this.addButton(new ItemButton(cast.id, GradientItems.castItem(cast, GradientMetals.COPPER, 1), x, y));
   }
 
   @Override

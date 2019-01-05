@@ -1,6 +1,13 @@
 # Items
 item.fibre.name=Fibre
 item.twine.name=Twine
+item.bark_oak.name=Oak Bark
+item.bark_spruce.name=Spruce Bark
+item.bark_birch.name=Birch Bark
+item.bark_jungle.name=Jungle Bark
+item.bark_acacia.name=Acacia Bark
+item.bark_dark_oak.name=Dark Oak Bark
+item.mulch.name=Mulch
 item.hide_cow.name=Cow Hide
 item.hide_donkey.name=Donkey Hide
 item.hide_horse.name=Horse Hide
@@ -12,9 +19,24 @@ item.hide_polar_bear.name=Polar Bear Hide
 item.hide_sheep.name=Sheep Hide
 item.hide_wolf.name=Wolf Hide
 
+item.hide_raw.name=Raw Hide
+item.hide_salted.name=Salted Hide
+item.hide_preserved.name=Preserved Hide
+item.hide_tanned.name=Tanned Hide
+
+item.hide_boots.name=Hide Boots
+item.hide_pants.name=Hide Pants
+item.hide_shirt.name=Hide Shirt
+item.hide_headcover.name=Hide Headcover
+
+item.hide_bedding.name=Hide Bedding
+item.waterskin.name=Waterskin
+item.leather_cord.name=Leather Cord
+
 # Tools
-item.bone_needle.name=Bone Needle
+item.bone_awl.name=Bone Awl
 item.stone_hammer.name=Stone Hammer
+item.stone_hatchet.name=Stone Hatchet
 item.stone_mattock.name=Stone Mattock
 item.fire_starter.name=Fire Starter
 item.flint_knife.name=Flint Knife
@@ -175,8 +197,6 @@ item.plate.pyrite.name=Pyrite Plate
 item.plate.graphite.name=Graphite Plate
 item.plate.cassiterite.name=Cassiterite Plate
 
-item.mortar.name=Mortar and Pestle
-
 # Machine parts
 item.igniter.name=Ignition Powder
 item.grinding_head.name=Grinding Head
@@ -206,6 +226,7 @@ tile.ore.pyrite.name=Pyrite Ore
 tile.ore.graphite.name=Graphite Ore
 tile.ore.cassiterite.name=Cassiterite Ore
 tile.ore.glass.name=Glass Ore
+tile.salt_block.name=Salt Block
 tile.pebble.name=Pebble
 tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
@@ -215,33 +236,41 @@ tile.fibre_torch_lit.name=Lit Fibre Torch
 tile.fibre_torch_unlit.name=Unlit Fibre Torch
 tile.fibre_torch_unlit.tooltip=Light on a fire pit or with another torch
 
-tile.clay_bowl.unhardened.name=Unhardened Clay Bowl
-tile.clay_bowl.hardened.name=Clay Bowl
+tile.hardened_log.name=Hardened Log
+tile.hardened_planks.name=Hardened Planks
+item.hardened_stick.name=Hardened Stick
+
+tile.standing_torch.name=Torch Stand
+
 tile.clay_bucket.unhardened.name=Unhardened Clay Bucket
 tile.clay_bucket.hardened.name=Clay Bucket
 item.clay_bucket_item.name=Clay Bucket of %s
 item.clay_bucket_item.empty.name=Empty Clay Bucket
 tile.clay_furnace.unhardened.name=Unhardened Clay Furnace
 tile.clay_furnace.hardened.name=Clay Furnace
-tile.clay_crucible_unhardened.name=Unhardened Clay Crucible
-tile.clay_crucible.name=Clay Crucible
+tile.clay_crucible.unhardened.name=Unhardened Clay Crucible
+tile.clay_crucible.hardened.name=Clay Crucible
 tile.clay_crucible.molten=%s: %f
 tile.clay_crucible.no_metal=The crucible is empty
 tile.clay_crucible.not_enough_metal=This cast requires %d mB
 tile.clay_crucible.metal_cant_make_tools=This metal can't be used to make tools
-tile.clay_cast_unhardened.pickaxe.name=Unhardened Clay Cast (Pickaxe)
-tile.clay_cast_unhardened.mattock.name=Unhardened Clay Cast (Mattock)
-tile.clay_cast_unhardened.sword.name=Unhardened Clay Cast (Sword)
-tile.clay_cast_unhardened.hammer.name=Unhardened Clay Cast (Hammer)
-tile.clay_cast_unhardened.ingot.name=Unhardened Clay Cast (Ingot)
-tile.clay_cast_unhardened.block.name=Unhardened Clay Cast (Block)
-tile.clay_cast.metal_amount=%s → %d mB
-tile.clay_cast.pickaxe.name=Clay Cast (Pickaxe)
-tile.clay_cast.mattock.name=Clay Cast (Mattock)
-tile.clay_cast.sword.name=Clay Cast (Sword)
-tile.clay_cast.hammer.name=Clay Cast (Hammer)
-tile.clay_cast.ingot.name=Clay Cast (Ingot)
-tile.clay_cast.block.name=Clay Cast (Block)
+tile.clay_cast.unhardened.pickaxe.name=Unhardened Clay Cast (Pickaxe)
+tile.clay_cast.unhardened.mattock.name=Unhardened Clay Cast (Mattock)
+tile.clay_cast.unhardened.sword.name=Unhardened Clay Cast (Sword)
+tile.clay_cast.unhardened.hammer.name=Unhardened Clay Cast (Hammer)
+tile.clay_cast.unhardened.ingot.name=Unhardened Clay Cast (Ingot)
+tile.clay_cast.unhardened.block.name=Unhardened Clay Cast (Block)
+tile.clay_cast.hardened.metal_amount=%s → %d mB
+tile.clay_cast.hardened.pickaxe.name=Clay Cast (Pickaxe)
+tile.clay_cast.hardened.mattock.name=Clay Cast (Mattock)
+tile.clay_cast.hardened.sword.name=Clay Cast (Sword)
+tile.clay_cast.hardened.hammer.name=Clay Cast (Hammer)
+tile.clay_cast.hardened.ingot.name=Clay Cast (Ingot)
+tile.clay_cast.hardened.block.name=Clay Cast (Block)
+
+tile.manual_grinder.name=Grindstone
+tile.mixing_basin.name=Mixing Basin
+tile.drying_rack.name=Drying Rack
 
 tile.bronze_machine_hull.name=Bronze Machine Hull
 tile.bronze_furnace.name=Bronze Furnace
@@ -270,17 +299,40 @@ item.salt.name=Salt
 item.flour.name=Flour
 item.dough.name=Dough
 
+tile.wooden_axle.name=Wooden Axle
+item.wooden_gear.name=Wooden Gear
+tile.wooden_gearbox.name=Wooden Gearbox
+
 # Metal
 metal.melt_temp=Melting Point: %f °C
 metal.melt_time=Melting Time: %d sec
 metal.amount=Amount: %d mB
 
-# Hardenable tooltip
-hardenable.tooltip=Place next to a fire pit to harden (%d sec)
+# JEI integration
+jei.requirement.age=Requires %s
+
+jei.age.1=Nomadic (Age 1)
+jei.age.2=Agricultural (Age 2)
+jei.age.3=Bronze (Age 3)
+jei.age.4=Industrial (Age 4)
+
+jei.firepit.temperature=%f °C
+jei.firepit.ticks=%d ticks
+
+jei.mixer.passes=%d stirs
+jei.mixer.ticks=%d ticks
+
+jei.grinder.passes=%d grinds
+jei.grinder.ticks=%d ticks
+
+jei.hardening.name=Hardening
+jei.hardening.ticks=%d ticks
+jei.hardening.instructions=Place next to a firepit
 
 # Commands
 commands.setage.usage=/setage <age> [<player>]
-commands.setage.set=%s age set to %s
+commands.setage.set=Your age is now %s
+commands.setage.set_other=%s's age is now %s
 
 # Debug
 item.infinicoal.name=Infinicoal (debug)

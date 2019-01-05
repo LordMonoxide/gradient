@@ -1,0 +1,27 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 1,
+  "result": {
+    "item": "gradient:waterskin",
+    "data": 0
+  },
+  "pattern": [
+    "SHS",
+    "HAH",
+    "SHS"
+  ],
+  "key": {
+    "H": {
+      "type": "forge:ore_dict",
+      "ore": "hide"
+    },
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "awl"
+    },
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "string"
+    }
+  }
+}

@@ -1,30 +1,38 @@
 package lordmonoxide.gradient.blocks.firepit;
 
-import lordmonoxide.gradient.GradientFood;
 import lordmonoxide.gradient.GradientFuel;
-import lordmonoxide.gradient.blocks.heat.Hardenable;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
-import net.minecraft.block.Block;
+import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.recipes.FirePitRecipe;
+import lordmonoxide.gradient.recipes.HardeningRecipe;
+import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Random;
 
 // With a single furnace, a crucible will heat up to 1038 degrees
 // Two furnaces, 1152
@@ -44,14 +52,14 @@ public class TileFirePit extends HeatProducer {
 
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
 
+  @Nullable
+  private FirePitRecipe recipe;
+  private Age age = Age.AGE1;
+  private int ticks;
+
   private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
 
-  @Nullable
-  private GradientFood.CookingFood food;
-
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
-
-  private boolean firstTick = true;
 
   private int lastLight;
 
@@ -77,13 +85,76 @@ public class TileFirePit extends HeatProducer {
     return this.fuels[slot];
   }
 
-  public boolean isCooking() {
-    return this.food != null;
+  public boolean hasFuel(final int slot) {
+    return !this.getFuel(slot).isEmpty();
   }
 
-  @Nullable
-  public GradientFood.CookingFood getCookingFood() {
-    return this.food;
+  public ItemStack getFuel(final int slot) {
+    return this.inventory.getStackInSlot(FIRST_FUEL_SLOT + slot);
+  }
+
+  public ItemStack takeFuel(final int slot) {
+    final ItemStack fuel = this.inventory.extractItem(FIRST_FUEL_SLOT + slot, this.inventory.getSlotLimit(FIRST_FUEL_SLOT + slot), false);
+    this.sync();
+    return fuel;
+  }
+
+  public boolean hasInput() {
+    return !this.getInput().isEmpty();
+  }
+
+  public ItemStack getInput() {
+    return this.inventory.getStackInSlot(FIRST_INPUT_SLOT);
+  }
+
+  public ItemStack takeInput() {
+    final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, this.inventory.getSlotLimit(FIRST_INPUT_SLOT), false);
+    this.recipe = null;
+    this.ticks = 0;
+    this.sync();
+    return input;
+  }
+
+  public boolean hasOutput() {
+    return !this.getOutput().isEmpty();
+  }
+
+  public ItemStack getOutput() {
+    return this.inventory.getStackInSlot(FIRST_OUTPUT_SLOT);
+  }
+
+  public ItemStack takeOutput() {
+    final ItemStack output = this.inventory.extractItem(FIRST_OUTPUT_SLOT, this.inventory.getSlotLimit(FIRST_OUTPUT_SLOT), false);
+    this.sync();
+    return output;
+  }
+
+  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
+    if(GradientFuel.has(stack)) {
+      for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
+        if(!this.hasFuel(slot)) {
+          final ItemStack input = stack.splitStack(1);
+          this.setFuelSlot(slot, input);
+          this.sync();
+          return stack;
+        }
+      }
+    }
+
+    if(!this.hasInput()) {
+      this.age = RecipeHelper.getPlayerAge(player);
+
+      final ItemStack input = stack.splitStack(1);
+      this.inventory.setStackInSlot(FIRST_INPUT_SLOT, input);
+
+      this.updateRecipe();
+      this.ticks = 0;
+
+      this.sync();
+      return stack;
+    }
+
+    return stack;
   }
 
   public int getLightLevel(final IBlockState state) {
@@ -112,33 +183,35 @@ public class TileFirePit extends HeatProducer {
     this.sync();
   }
 
-  public void updateHardenable(final BlockPos pos) {
+  public void updateHardenable(final BlockPos pos, final Age age) {
     if(this.world.isRemote) {
       return;
     }
 
-    final Block block = this.getWorld().getBlockState(pos).getBlock();
+    final IBlockState state = this.getWorld().getBlockState(pos);
 
-    if(!(block instanceof Hardenable)) {
+    final HardeningRecipe recipe = RecipeHelper.findRecipe(HardeningRecipe.class, r -> r.matches(state, age));
+
+    if(recipe == null) {
       this.hardenables.remove(pos);
       return;
     }
 
-    this.hardenables.put(pos, new Hardening((Hardenable)block, pos));
+    this.hardenables.put(pos, new Hardening(recipe, age));
   }
 
-  private void findSurroundingHardenables() {
+  public void updateSurroundingHardenables(final Age age) {
     final BlockPos north = this.pos.north();
     final BlockPos south = this.pos.south();
 
-    this.updateHardenable(north.east());
-    this.updateHardenable(north);
-    this.updateHardenable(north.west());
-    this.updateHardenable(this.pos.east());
-    this.updateHardenable(this.pos.west());
-    this.updateHardenable(south.east());
-    this.updateHardenable(south);
-    this.updateHardenable(south.west());
+    this.updateHardenable(north.east(), age);
+    this.updateHardenable(north, age);
+    this.updateHardenable(north.west(), age);
+    this.updateHardenable(this.pos.east(), age);
+    this.updateHardenable(this.pos.west(), age);
+    this.updateHardenable(south.east(), age);
+    this.updateHardenable(south, age);
+    this.updateHardenable(south.west(), age);
   }
 
   @Override
@@ -157,11 +230,6 @@ public class TileFirePit extends HeatProducer {
       this.generateParticles();
       this.playSounds();
     } else {
-      if(this.firstTick) {
-        this.findSurroundingHardenables();
-        this.firstTick = false;
-      }
-
       this.hardenHardenables();
     }
   }
@@ -179,29 +247,22 @@ public class TileFirePit extends HeatProducer {
   }
 
   private void cook() {
-    if(!this.isCooking() && !this.getFoodSlot().isEmpty()) {
-      final GradientFood.Food food = GradientFood.get(this.getFoodSlot());
+    if(this.recipe == null) {
+      return;
+    }
 
-      if(food != GradientFood.INVALID_FOOD && this.canCook(food)) {
-        this.food = new GradientFood.CookingFood(food);
+    if(this.ticks < this.recipe.ticks) {
+      if(this.getHeat() >= this.recipe.temperature) {
+        this.ticks++;
+        this.markDirty();
       }
     }
 
-    if(this.food != null) {
-      this.food.tick();
-
-      if(this.food.isCooked()) {
-        final ItemStack output = this.food.food.cooked.copy();
-        this.food = null;
-
-        final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
-
-        if(input.getItem().hasContainerItem(input)) {
-          this.inventory.insertItem(FIRST_INPUT_SLOT, input.getItem().getContainerItem(input), false);
-        }
-
-        this.inventory.insertItem(FIRST_OUTPUT_SLOT, output, false);
-      }
+    if(this.ticks >= this.recipe.ticks) {
+      this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
+      this.inventory.insertItem(FIRST_OUTPUT_SLOT, this.recipe.getRecipeOutput().copy(), false);
+      this.recipe = null;
+      this.sync();
     }
   }
 
@@ -210,12 +271,34 @@ public class TileFirePit extends HeatProducer {
       return;
     }
 
-    this.hardenables.keySet().removeIf(pos -> !(this.getWorld().getBlockState(pos).getBlock() instanceof Hardenable) || ((Hardenable)this.getWorld().getBlockState(pos).getBlock()).isHardened(this.getWorld().getBlockState(pos)));
-    this.hardenables.values().stream()
-      .map(Hardening::tick)
-      .filter(Hardening::isHardened)
-      .collect(Collectors.toList()) // Gotta decouple here to avoid concurrent modification exceptions
-      .forEach(hardenable -> this.getWorld().setBlockState(hardenable.pos, hardenable.block.getHardened(this.getWorld().getBlockState(hardenable.pos))));
+    final Iterator<Map.Entry<BlockPos, Hardening>> it = this.hardenables.entrySet().iterator();
+
+    final Map<BlockPos, IBlockState> toAdd = new HashMap<>();
+
+    while(it.hasNext()) {
+      final Map.Entry<BlockPos, Hardening> entry = it.next();
+      final BlockPos pos = entry.getKey();
+      final Hardening hardening = entry.getValue();
+      final IBlockState current = this.getWorld().getBlockState(pos);
+
+      if(!hardening.recipe.matches(current, hardening.age)) {
+        it.remove();
+        continue;
+      }
+
+      hardening.tick();
+
+      if(hardening.isHardened()) {
+        toAdd.put(pos, hardening.recipe.getCraftingResult(current));
+        it.remove();
+      }
+    }
+
+    this.markDirty();
+
+    for(final Map.Entry<BlockPos, IBlockState> entry : toAdd.entrySet()) {
+      this.getWorld().setBlockState(entry.getKey(), entry.getValue());
+    }
   }
 
   private void updateLight() {
@@ -231,24 +314,31 @@ public class TileFirePit extends HeatProducer {
 
   private void generateParticles() {
     if(this.hasHeat()) {
-      if(this.isBurning()) { // Fire
-        final double radius = this.getWorld().rand.nextDouble() * 0.25d;
-        final double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
+      final Random rand = this.getWorld().rand;
+
+      // Fire
+      if(this.isBurning()) {
+        if(this.getHeat() >= 200 || rand.nextInt(600) >= 400 - this.getHeat() * 2) {
+          final double radius = rand.nextDouble() * 0.25d;
+          final double angle  = rand.nextDouble() * Math.PI * 2;
+
+          final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
+          final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
+
+          this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        }
+      }
+
+      // Smoke
+      if(this.getHeat() >= 200 || !this.isBurning()) {
+        final double radius = rand.nextDouble() * 0.35d;
+        final double angle  = rand.nextDouble() * Math.PI * 2;
 
         final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
         final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-        this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
-
-      // Smoke
-      final double radius = this.getWorld().rand.nextDouble() * 0.35d;
-      final double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
-
-      final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
-      final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
-
-      this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
     }
   }
 
@@ -308,16 +398,8 @@ public class TileFirePit extends HeatProducer {
     return this.getHeat() >= fuel.ignitionTemp;
   }
 
-  private ItemStack getFoodSlot() {
-    return this.inventory.getStackInSlot(FIRST_INPUT_SLOT);
-  }
-
-  private boolean canCook(final GradientFood.Food food) {
-    return this.getHeat() >= food.cookTemp;
-  }
-
-  public boolean canOutputItem(final ItemStack stack) {
-    return this.inventory.insertItem(FIRST_OUTPUT_SLOT, stack, true).isEmpty();
+  private void updateRecipe() {
+    this.recipe = RecipeHelper.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(this.inventory, this.age, FIRST_INPUT_SLOT, FIRST_INPUT_SLOT));
   }
 
   @Override
@@ -339,11 +421,21 @@ public class TileFirePit extends HeatProducer {
 
     compound.setTag("fuel", fuels);
 
-    final GradientFood.CookingFood food = this.getCookingFood();
+    compound.setInteger("player_age", this.age.value());
+    compound.setInteger("ticks", this.ticks);
 
-    if(food != null) {
-      compound.setTag("food", food.writeToNbt(new NBTTagCompound()));
+    final NBTTagList hardenings = new NBTTagList();
+    for(final Map.Entry<BlockPos, Hardening> entry : this.hardenables.entrySet()) {
+      final NBTTagCompound hardening = new NBTTagCompound();
+      hardening.setTag("pos", NBTUtil.createPosTag(entry.getKey()));
+      hardening.setString("recipe", entry.getValue().recipe.getRegistryName().toString());
+      hardening.setInteger("age", entry.getValue().age.value());
+      hardening.setInteger("ticks", entry.getValue().hardenTicks);
+
+      hardenings.appendTag(hardening);
     }
+
+    compound.setTag("hardening", hardenings);
 
     return super.writeToNBT(compound);
   }
@@ -370,11 +462,33 @@ public class TileFirePit extends HeatProducer {
       }
     }
 
-    if(compound.hasKey("food")) {
-      this.food = GradientFood.CookingFood.fromNbt(GradientFood.get(this.getFoodSlot()), compound.getCompoundTag("food"));
-    } else {
-      this.food = null;
+    final int age = compound.getInteger("player_age");
+
+    try {
+      this.age = Age.get(age);
+    } catch(final IndexOutOfBoundsException e) {
+      GradientMod.logger.warn("Invalid age in %s: %d", this, age);
     }
+
+    this.ticks = compound.getInteger("ticks");
+
+    this.hardenables.clear();
+
+    for(final NBTBase tag : compound.getTagList("hardening", Constants.NBT.TAG_COMPOUND)) {
+      final NBTTagCompound hardeningNbt = (NBTTagCompound)tag;
+
+      final BlockPos pos = NBTUtil.getPosFromTag(hardeningNbt.getCompoundTag("pos"));
+      final HardeningRecipe recipe = (HardeningRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(hardeningNbt.getString("recipe")));
+      final Age age1 = Age.get(hardeningNbt.getInteger("age"));
+      final int ticks = hardeningNbt.getInteger("ticks");
+
+      final Hardening hardening = new Hardening(recipe, age1);
+      hardening.hardenTicks = ticks;
+
+      this.hardenables.put(pos, hardening);
+    }
+
+    this.updateRecipe();
 
     super.readFromNBT(compound);
   }
@@ -396,29 +510,22 @@ public class TileFirePit extends HeatProducer {
     return super.getCapability(capability, facing);
   }
 
-  public final class Hardening {
-    public final Hardenable block;
-    public final BlockPos pos;
-    private final int hardenTicksTotal;
+  public static final class Hardening {
+    public final HardeningRecipe recipe;
+    public final Age age;
     private int hardenTicks;
 
-    private Hardening(final Hardenable block, final BlockPos pos) {
-      this(block, pos, block.getHardeningTime(TileFirePit.this.world.getBlockState(pos)) * 20);
+    private Hardening(final HardeningRecipe recipe, final Age age) {
+      this.recipe = recipe;
+      this.age = age;
     }
 
-    private Hardening(final Hardenable block, final BlockPos pos, final int hardenTicksTotal) {
-      this.block = block;
-      this.pos = pos;
-      this.hardenTicksTotal = hardenTicksTotal;
-    }
-
-    public Hardening tick() {
+    private void tick() {
       this.hardenTicks++;
-      return this;
     }
 
     public boolean isHardened() {
-      return this.hardenTicks >= this.hardenTicksTotal;
+      return this.hardenTicks >= this.recipe.ticks;
     }
   }
 }

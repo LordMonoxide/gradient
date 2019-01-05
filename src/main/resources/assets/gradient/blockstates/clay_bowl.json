@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "hardened=false": { "model": "gradient:clay_bowl.unhardened" },
-    "hardened=true":  { "model": "gradient:clay_bowl.hardened" }
-  }
-}

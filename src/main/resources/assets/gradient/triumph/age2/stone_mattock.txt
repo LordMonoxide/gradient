@@ -1,0 +1,10 @@
+setIcon(<gradient:stone_mattock>)
+setTitle("Two for one")
+setDescription("Craft a stone mattock")
+addParent("gradient:age2/root")
+
+criteria1 = addCriteria("hasMattock", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:stone_mattock>)
+
+setRequiresParents()
+setPos(45,-32)

@@ -1,0 +1,10 @@
+setIcon(<gradient:stone_pickaxe>)
+setTitle("Mining 201")
+setDescription("Craft a stone pickaxe")
+addParent("gradient:age2/root")
+
+criteria1 = addCriteria("hasPickaxe", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:stone_pickaxe>)
+
+setRequiresParents()
+setPos(64,27)

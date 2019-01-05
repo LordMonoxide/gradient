@@ -103,6 +103,7 @@ public final class GradientItems {
   public static final StoneHammer  STONE_HAMMER  = new StoneHammer();
   public static final StoneHatchet STONE_HATCHET = new StoneHatchet();
   public static final StoneMattock STONE_MATTOCK = new StoneMattock();
+  public static final StonePickaxe STONE_PICKAXE = new StonePickaxe();
   public static final FlintKnife   FLINT_KNIFE   = new FlintKnife();
   public static final BoneAwl      BONE_AWL      = new BoneAwl();
 
@@ -297,6 +298,7 @@ public final class GradientItems {
     registry.register(STONE_HAMMER);
     registry.register(STONE_HATCHET);
     registry.register(STONE_MATTOCK);
+    registry.register(STONE_PICKAXE);
     registry.register(FLINT_KNIFE);
     registry.register(BONE_AWL);
 
@@ -374,6 +376,7 @@ public final class GradientItems {
     OreDictionary.registerOre("toolAxe", STONE_HATCHET.getWildcardItemStack());
     OreDictionary.registerOre("toolAxe", STONE_MATTOCK.getWildcardItemStack());
     OreDictionary.registerOre("toolHoe", STONE_MATTOCK.getWildcardItemStack());
+    OreDictionary.registerOre("toolPickaxe", STONE_PICKAXE.getWildcardItemStack());
     OreDictionary.registerOre("toolKnife", FLINT_KNIFE.getWildcardItemStack());
 
     // Metals/metal tools

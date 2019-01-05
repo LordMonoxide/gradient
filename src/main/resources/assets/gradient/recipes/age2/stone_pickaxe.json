@@ -2,11 +2,11 @@
   "type": "gradient:age_gated_shaped",
   "age": 2,
   "result": {
-    "item": "gradient:stone_mattock"
+    "item": "gradient:stone_pickaxe"
   },
   "pattern": [
-    "P  ",
-    "PLP",
+    "PPP",
+    " L ",
     " S "
   ],
   "key": {

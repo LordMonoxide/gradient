@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -61,6 +62,11 @@ public class GradientMod {
   public static Logger logger;
 
   @Mod.EventHandler
+  public void construct(final FMLConstructionEvent event) {
+    FluidRegistry.enableUniversalBucket();
+  }
+
+  @Mod.EventHandler
   public void preInit(final FMLPreInitializationEvent event) throws URISyntaxException, IOException {
     //noinspection AssignmentToStaticFieldFromInstanceMethod
     logger = event.getModLog();
@@ -80,8 +86,6 @@ public class GradientMod {
     );
 
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
-
-    FluidRegistry.enableUniversalBucket();
 
     proxy.preInit(event);
   }

@@ -1,0 +1,10 @@
+setIcon(<gradient:hardened_planks>)
+setTitle("Hard Planks")
+setDescription("Harden planks by placing them next to a firepit, or chopping hardened logs")
+addParent("gradient:age2/hardened_log")
+
+criteria1 = addCriteria("hasHardenedPlanks", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:hardened_planks>)
+
+setRequiresParents()
+setPos(62,96)

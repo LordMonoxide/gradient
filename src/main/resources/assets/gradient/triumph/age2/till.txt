@@ -1,0 +1,9 @@
+setIcon(<minecraft:farmland>)
+setTitle("Hoedown")
+setDescription("Till dirt with your mattock")
+addParent("gradient:age2/stone_mattock")
+
+criteria1 = addCriteria("tilledSoil", "gradient:used_hoe")
+
+setRequiresParents()
+setPos(186,37)

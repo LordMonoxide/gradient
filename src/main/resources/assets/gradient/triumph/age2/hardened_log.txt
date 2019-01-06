@@ -1,0 +1,10 @@
+setIcon(<gradient:hardened_log>)
+setTitle("Hard Wood")
+setDescription("Harden a log by placing it next to a firepit")
+addParent("gradient:age2/root")
+
+criteria1 = addCriteria("hasHardenedLog", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:hardened_log>)
+
+setRequiresParents()
+setPos(33,96)

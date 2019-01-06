@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import lordmonoxide.gradient.advancements.AdvancementTriggers;
 import lordmonoxide.gradient.energy.CapabilityEnergy;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
@@ -75,6 +76,7 @@ public class GradientMod {
     logger.info("------------------- PREINIT -------------------");
 
     this.syncTriumphAdvancements(event.getModConfigurationDirectory());
+    AdvancementTriggers.register();
 
     CapabilityPlayerProgress.register();
 

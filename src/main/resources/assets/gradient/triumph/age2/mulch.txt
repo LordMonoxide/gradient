@@ -1,0 +1,10 @@
+setIcon(<gradient:mulch>)
+setTitle("Mulch Ado about Nothing")
+setDescription("Craft mulch to speed up the growth of your crops")
+addParent("gradient:age2/bark")
+
+criteria1 = addCriteria("hasMulch", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:mulch>)
+
+setRequiresParents()
+setPos(91,54)

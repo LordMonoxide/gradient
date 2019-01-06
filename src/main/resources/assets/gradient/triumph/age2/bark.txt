@@ -1,0 +1,10 @@
+setIcon(<gradient:bark_oak>)
+setTitle("Barking up the Right Tree")
+setDescription("Use a flint knife to scrape bark off of a tree")
+addParent("gradient:age2/flint_knife")
+
+criteria1 = addCriteria("hasBark", "minecraft:inventory_changed")
+criteria1.addItem(<ore:barkWood>)
+
+setRequiresParents()
+setPos(62,54)

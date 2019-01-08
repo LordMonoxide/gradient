@@ -8,4 +8,4 @@ criteria1 = addCriteria("hasWoodenAxle", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:wooden_axle>)
 
 setRequiresParents()
-setPos(157,82)
+setPos(160,99)

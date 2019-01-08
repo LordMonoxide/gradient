@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasWheat", "minecraft:inventory_changed")
 criteria1.addItem(<minecraft:wheat>)
 
 setRequiresParents()
-setPos(215,37)
+setPos(222,45)

@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasHardenedPlanks", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:hardened_planks>)
 
 setRequiresParents()
-setPos(62,96)
+setPos(95,99)

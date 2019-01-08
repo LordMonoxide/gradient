@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasDryingRack", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:drying_rack>)
 
 setRequiresParents()
-setPos(33,25)
+setPos(95,45)

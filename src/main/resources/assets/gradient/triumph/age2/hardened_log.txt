@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasHardenedLog", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:hardened_log>)
 
 setRequiresParents()
-setPos(33,96)
+setPos(64,99)

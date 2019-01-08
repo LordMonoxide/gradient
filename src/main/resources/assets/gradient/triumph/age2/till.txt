@@ -6,4 +6,4 @@ addParent("gradient:age2/stone_mattock")
 criteria1 = addCriteria("tilledSoil", "gradient:used_hoe")
 
 setRequiresParents()
-setPos(186,37)
+setPos(191,45)

@@ -8,4 +8,4 @@ criteria1 = addCriteria("hasWoodenGearbox", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:wooden_gearbox>)
 
 setRequiresParents()
-setPos(190,96)
+setPos(193,113)

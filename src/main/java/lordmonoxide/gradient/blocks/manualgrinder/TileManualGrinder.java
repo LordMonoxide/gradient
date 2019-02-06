@@ -1,15 +1,11 @@
 package lordmonoxide.gradient.blocks.manualgrinder;
 
-import buildcraft.lib.misc.CraftingUtil;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -20,7 +16,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -30,21 +25,13 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
-  @GameRegistry.ObjectHolder("gradient:grinding_discriminator")
-  private static final Item GRINDING_DISCRIMINATOR = null;
-
-  private final ContainerManualGrinder container = new ContainerManualGrinder();
-  private final InventoryCrafting crafting = new InventoryCrafting(this.container, 2, 1);
   private final ItemStackHandler inventory = new ItemStackHandler(2);
 
   @Nullable
   private GrindingRecipe recipe;
+  private Age age = Age.AGE1;
   private int passes;
   private int ticks;
-
-  public TileManualGrinder() {
-    this.crafting.setInventorySlotContents(1, new ItemStack(GRINDING_DISCRIMINATOR));
-  }
 
   public boolean hasInput() {
     return !this.inventory.getStackInSlot(0).isEmpty();
@@ -77,14 +64,19 @@ public class TileManualGrinder extends TileEntity implements ITickable {
 
   public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
     if(!this.hasInput()) {
-      this.recipe = this.findRecipe(stack, RecipeHelper.getPlayerAge(player));
+      this.age = RecipeHelper.getPlayerAge(player);
+
+      final ItemStack remaining = this.inventory.insertItem(0, stack, false);
+
+      this.updateRecipe();
       this.passes = 0;
 
-      if(this.recipe == null) {
-        return stack;
+      if(this.recipe != null) {
+        this.ticks = this.recipe.ticks;
       }
 
-      this.ticks = this.recipe.ticks;
+      this.sync();
+      return remaining;
     }
 
     final ItemStack remaining = this.inventory.insertItem(0, stack, false);
@@ -111,7 +103,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
       this.passes = 0;
 
       this.inventory.extractItem(0, 1, false);
-      this.inventory.insertItem(1, this.recipe.getCraftingResult(this.crafting), false);
+      this.inventory.insertItem(1, this.recipe.getRecipeOutput().copy(), false);
 
       if(!this.hasInput()) {
         this.recipe = null;
@@ -136,17 +128,8 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     }
   }
 
-  @Nullable
-  private GrindingRecipe findRecipe(final ItemStack input, final Age age) {
-    this.container.setPlayerAge(age);
-    this.crafting.setInventorySlotContents(0, input);
-    final IRecipe recipe = CraftingUtil.findMatchingRecipe(this.crafting, this.world);
-
-    if(!(recipe instanceof GrindingRecipe)) {
-      return null;
-    }
-
-    return (GrindingRecipe)recipe;
+  private void updateRecipe() {
+    this.recipe = RecipeHelper.findRecipe(GrindingRecipe.class, recipe -> recipe.matches(this.inventory, this.age, 0, 0));
   }
 
   @Override
@@ -154,7 +137,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setInteger("passes", this.passes);
     compound.setInteger("ticks", this.ticks);
-    compound.setInteger("player_age", this.container.getPlayerAge().value());
+    compound.setInteger("player_age", this.age.value());
 
     return super.writeToNBT(compound);
   }
@@ -166,9 +149,9 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     this.inventory.deserializeNBT(inv);
     this.passes = compound.getInteger("passes");
     this.ticks = compound.getInteger("ticks");
-    this.container.setPlayerAge(Age.get(compound.getInteger("player_age")));
+    this.age = Age.get(compound.getInteger("player_age"));
 
-    this.recipe = this.findRecipe(this.getInput(), this.container.getPlayerAge());
+    this.updateRecipe();
 
     super.readFromNBT(compound);
   }

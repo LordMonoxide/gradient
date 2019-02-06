@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.overrides;
 
+import lordmonoxide.gradient.GradientMod;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemSword;
@@ -7,15 +8,15 @@ import net.minecraft.item.ItemTool;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public final class DisableVanillaTools {
-  public static final DisableVanillaTools instance = new DisableVanillaTools();
-
   private DisableVanillaTools() { }
 
   @SubscribeEvent
-  public void onBreakSpeed(final PlayerEvent.BreakSpeed event) {
+  public static void onBreakSpeed(final PlayerEvent.BreakSpeed event) {
     final Item held = event.getEntityPlayer().getHeldItemMainhand().getItem();
 
     if(held instanceof ItemTool || held instanceof ItemHoe || held instanceof ItemSword) {
@@ -24,7 +25,7 @@ public final class DisableVanillaTools {
   }
 
   @SubscribeEvent
-  public void onUseHoe(final UseHoeEvent event) {
+  public static void onUseHoe(final UseHoeEvent event) {
     final Item held = event.getCurrent().getItem();
 
     if(held instanceof ItemHoe) {
@@ -33,7 +34,7 @@ public final class DisableVanillaTools {
   }
 
   @SubscribeEvent
-  public void onAttackEntity(final AttackEntityEvent event) {
+  public static void onAttackEntity(final AttackEntityEvent event) {
     final Item held = event.getEntityPlayer().getHeldItemMainhand().getItem();
 
     if(held instanceof ItemTool || held instanceof ItemHoe || held instanceof ItemSword) {

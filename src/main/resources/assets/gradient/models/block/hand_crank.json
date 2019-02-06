@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube_directional",
+  "textures": {
+    "particle": "gradient:blocks/salt_block",
+    "down":  "gradient:blocks/salt_block",
+    "up":    "gradient:blocks/salt_block",
+    "north": "gradient:blocks/hardened_log",
+    "south": "gradient:blocks/salt_block",
+    "west":  "gradient:blocks/salt_block",
+    "east":  "gradient:blocks/salt_block"
+  }
+}

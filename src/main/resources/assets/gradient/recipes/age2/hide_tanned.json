@@ -1,0 +1,19 @@
+{
+  "type": "gradient:mixing",
+  "age": 2,
+  "passes": 3,
+  "ticks": 60,
+  "result": {
+    "item": "gradient:hide_tanned",
+    "count": 3
+  },
+  "ingredients": [{
+    "item": "gradient:hide_preserved"
+  }, {
+    "item": "gradient:hide_preserved"
+  }, {
+    "item": "gradient:hide_preserved"
+  }, {
+    "item": "gradient:mulch"
+  }]
+}

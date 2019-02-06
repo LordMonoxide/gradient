@@ -6,7 +6,7 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
-import lordmonoxide.gradient.items.*;
+import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -20,7 +20,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
@@ -48,26 +47,26 @@ public final class ExtraRecipes {
   }
 
   private static void registerDusts(final IForgeRegistry<IRecipe> registry) {
-    final Ingredient mortar = Ingredient.fromStacks(new ItemStack(GradientItems.MORTAR, 1, OreDictionary.WILDCARD_VALUE));
-
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       if(metal.canMakeDustWithMortar) {
         final String recipeName = "recipe.dust." + metal.name;
 
         GradientMod.logger.info("Adding recipe {}", recipeName);
 
-        registry.register(new AgeGatedShapelessToolRecipe(
+        registry.register(new GrindingRecipe(
             GradientMod.MODID,
             Age.AGE3,
-            Dust.getDust(metal, 1),
-            NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), mortar)
+            3,
+            60,
+            GradientItems.dust(metal).getItemStack(),
+            NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)))
         ).setRegistryName(GradientMod.resource(recipeName)));
       }
     }
   }
 
   private static void registerPlates(final IForgeRegistry<IRecipe> registry) {
-    final ItemStack[] hammers = GradientMetals.metals.stream().map(metal -> Tool.getTool(GradientTools.HAMMER, metal, 1, OreDictionary.WILDCARD_VALUE)).toArray(ItemStack[]::new);
+    final ItemStack[] hammers = GradientMetals.metals.stream().filter(metal -> metal.canMakeTools).map(metal -> GradientItems.tool(GradientTools.HAMMER, metal).getWildcardItemStack()).toArray(ItemStack[]::new);
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       if(!metal.canMakePlates) {
@@ -81,7 +80,7 @@ public final class ExtraRecipes {
       registry.register(new AgeGatedShapelessToolRecipe(
           GradientMod.MODID,
           Age.AGE3,
-          Plate.getPlate(metal, 1),
+          GradientItems.plate(metal).getItemStack(),
           NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(hammers))
       ).setRegistryName(GradientMod.resource(recipeName)));
     }
@@ -89,7 +88,7 @@ public final class ExtraRecipes {
 
   private static void registerAlloys(final IForgeRegistry<IRecipe> registry) {
     for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
-      final ItemStack output = AlloyNugget.get(alloy.output.metal, alloy.output.amount);
+      final ItemStack output = GradientItems.alloyNugget(alloy).getItemStack(alloy.output.amount);
 
       final Ingredient[] ingredients = new Ingredient[alloy.inputs.size()];
 
@@ -126,7 +125,7 @@ public final class ExtraRecipes {
 
           registry.register(new ShapelessRecipes(
               GradientMod.MODID,
-              CastItem.getCastItem(cast, metal, 1),
+              GradientItems.castItem(cast, metal, 1),
               NonNullList.from(Ingredient.EMPTY, ingredients)
           ).setRegistryName(GradientMod.resource(recipeName)));
         }
@@ -141,8 +140,8 @@ public final class ExtraRecipes {
           registry.register(new ShapedRecipes(
               GradientMod.MODID,
               1, 3,
-              NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(CastItem.getCastItem(type.cast, metal, 1)), new OreIngredient("string"), new OreIngredient("stickWood")),
-              Tool.getTool(type, metal, 1, 0)
+              NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(GradientItems.castItem(type.cast, metal, 1)), new OreIngredient("string"), new OreIngredient("stickWood")),
+              GradientItems.tool(type, metal).getItemStack()
           ).setRegistryName(GradientMod.resource("tool." + type.cast.name + '.' + metal.name)));
         }
       }
@@ -155,7 +154,7 @@ public final class ExtraRecipes {
         continue;
       }
 
-      final ItemStack[] pickaxes = GradientMetals.metals.stream().filter(m -> m.hardness >= metal.hardness).map(m -> Tool.getTool(GradientTools.PICKAXE, m, 1, OreDictionary.WILDCARD_VALUE)).toArray(ItemStack[]::new);
+      final ItemStack[] pickaxes = GradientMetals.metals.stream().filter(m -> m.canMakeTools && m.canMakeNuggets && m.hardness >= metal.hardness).map(m -> GradientItems.tool(GradientTools.PICKAXE, m).getWildcardItemStack()).toArray(ItemStack[]::new);
 
       final String recipeName = "recipe.nugget." + metal.name + ".pickaxed";
 
@@ -164,7 +163,7 @@ public final class ExtraRecipes {
       registry.register(new AgeGatedShapelessToolRecipe(
           GradientMod.MODID,
           Age.AGE3,
-          Nugget.get(metal, 4),
+          GradientItems.nugget(metal).getItemStack(4),
           NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(pickaxes))
       ).setRegistryName(GradientMod.resource(recipeName)));
     }

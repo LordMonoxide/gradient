@@ -1,0 +1,23 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
+  "result": {
+    "item": "gradient:stone_mattock"
+  },
+  "pattern": [
+    "P  ",
+    "PLP",
+    " S "
+  ],
+  "key": {
+    "P": {
+      "item": "gradient:pebble"
+    },
+    "L": {
+      "item": "gradient:leather_cord"
+    },
+    "S": {
+      "item": "gradient:hardened_stick"
+    }
+  }
+}

@@ -39,7 +39,7 @@ public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixin
 
         GlStateManager.pushMatrix();
 
-        final double angle = (5 - slot) * Math.PI / 4 + facingAngle;
+        final double angle = (6 - slot) * Math.PI / 4 + facingAngle;
         final float inputX = (float)Math.cos(angle) * 0.25f;
         final float inputZ = (float)Math.sin(angle) * 0.25f;
 

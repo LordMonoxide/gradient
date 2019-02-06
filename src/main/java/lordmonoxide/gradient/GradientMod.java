@@ -1,20 +1,22 @@
 package lordmonoxide.gradient;
 
+import lordmonoxide.gradient.energy.CapabilityEnergy;
+import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
+import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
+import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
+import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
 import lordmonoxide.gradient.init.IProxy;
-import lordmonoxide.gradient.overrides.DisableBreakingBlocksWithoutTools;
-import lordmonoxide.gradient.overrides.DisableVanillaTools;
 import lordmonoxide.gradient.overrides.GeneratePebbles;
-import lordmonoxide.gradient.overrides.OverrideInventory;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.recipes.RecipeRemover;
 import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -59,7 +61,8 @@ public class GradientMod {
   @Nonnull
   public static Logger logger;
 
-  static {
+  @Mod.EventHandler
+  public void construct(final FMLConstructionEvent event) {
     FluidRegistry.enableUniversalBucket();
   }
 
@@ -75,7 +78,13 @@ public class GradientMod {
 
     CapabilityPlayerProgress.register();
 
-    MinecraftForge.EVENT_BUS.register(OverrideInventory.instance);
+    CapabilityEnergy.register(
+      IKineticEnergyStorage.class,
+      IKineticEnergyTransfer.class,
+      () -> new KineticEnergyStorage(10000.0f),
+      KineticEnergyTransfer::new
+    );
+
     NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
 
     proxy.preInit(event);
@@ -84,9 +93,6 @@ public class GradientMod {
   @Mod.EventHandler
   public void init(final FMLInitializationEvent event) {
     logger.info("------------------- INIT -------------------");
-
-    MinecraftForge.EVENT_BUS.register(DisableVanillaTools.instance);
-    MinecraftForge.EVENT_BUS.register(DisableBreakingBlocksWithoutTools.instance);
 
     GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     GameRegistry.registerWorldGenerator(new OreGenerator(), 0);

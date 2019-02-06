@@ -1,0 +1,26 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
+  "result": {
+    "item": "gradient:wooden_gearbox"
+  },
+  "pattern": [
+    "PGP",
+    "GAG",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    },
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "gearWood"
+    },
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "axleWood"
+    }
+  }
+}

@@ -13,6 +13,7 @@ public final class CoreBlocks {
   private CoreBlocks() { }
 
   public static final BlockPebble PEBBLE = new BlockPebble();
+  public static final BlockSalt SALT = new BlockSalt();
 
   @SubscribeEvent(priority = EventPriority.LOW)
   public static void registerItems(final RegistryEvent.Register<Block> event) {
@@ -21,5 +22,6 @@ public final class CoreBlocks {
     final IForgeRegistry<Block> registry = event.getRegistry();
 
     registry.register(PEBBLE);
+    registry.register(SALT);
   }
 }

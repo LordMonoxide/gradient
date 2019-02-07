@@ -1,4 +1,6 @@
 {
   "item.gradient-core.fibre": "Fibre",
-  "block.gradient-core.pebble": "Pebble"
+  "block.gradient-core.pebble": "Pebble",
+  "block.gradient-core.salt_block": "Salt Block",
+  "item.gradient-core.salt": "Salt"
 }

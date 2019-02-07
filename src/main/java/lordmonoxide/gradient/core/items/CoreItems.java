@@ -3,6 +3,7 @@ package lordmonoxide.gradient.core.items;
 import lordmonoxide.gradient.core.GradientCore;
 import lordmonoxide.gradient.core.blocks.CoreBlocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -15,6 +16,7 @@ public final class CoreItems {
   private CoreItems() { }
 
   public static final Item FIBRE = new Item(new Item.Builder().group(ItemGroup.MATERIALS)).setRegistryName(GradientCore.resource("fibre"));
+  public static final Item SALT = new Item(new Item.Builder().group(ItemGroup.FOOD)).setRegistryName(GradientCore.resource("salt"));
 
   @SubscribeEvent(priority = EventPriority.LOW)
   public static void registerItems(final RegistryEvent.Register<Item> event) {
@@ -24,5 +26,7 @@ public final class CoreItems {
 
     registry.register(FIBRE);
     registry.register(new ItemPebble(CoreBlocks.PEBBLE, new Item.Builder().group(ItemGroup.MATERIALS)).setRegistryName(CoreBlocks.PEBBLE.getRegistryName()));
+    registry.register(new ItemBlock(CoreBlocks.SALT, new Item.Builder().group(ItemGroup.FOOD)).setRegistryName(CoreBlocks.SALT.getRegistryName()));
+    registry.register(SALT);
   }
 }

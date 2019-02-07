@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "gradient:bronze_grinder" },
-    "facing=east":  { "model": "gradient:bronze_grinder", "y":  90 },
-    "facing=south": { "model": "gradient:bronze_grinder", "y": 180 },
-    "facing=west":  { "model": "gradient:bronze_grinder", "y": 270 }
-  }
-}

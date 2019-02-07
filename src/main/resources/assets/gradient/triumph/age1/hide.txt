@@ -1,9 +1,0 @@
-setIcon(<gradient:hide_cow>)
-setTitle("Animal Hide")
-setDescription("Kill an animal and collect its hide")
-addParent("gradient:age1/root")
-
-criteria1 = addCriteria("hasHide", "minecraft:inventory_changed")
-criteria1.addItem(<ore:hide>)
-
-setRequiresParents()

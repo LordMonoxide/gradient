@@ -1,9 +1,0 @@
-{
-  "variants": {
-    "facing=up": { "model": "gradient:fibre_torch_unlit" },
-    "facing=east": { "model": "gradient:fibre_torch_wall_unlit" },
-    "facing=south": { "model": "gradient:fibre_torch_wall_unlit", "y": 90 },
-    "facing=west": { "model": "gradient:fibre_torch_wall_unlit", "y": 180 },
-    "facing=north": { "model": "gradient:fibre_torch_wall_unlit", "y": 270 }
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "axis=y":    { "model": "gradient:hardened_log" },
-    "axis=z":    { "model": "gradient:hardened_log", "x": 90 },
-    "axis=x":    { "model": "gradient:hardened_log", "x": 90, "y": 90 },
-    "axis=none": { "model": "gradient:hardened_bark" }
-  }
-}

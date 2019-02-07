@@ -1,8 +1,0 @@
-{
-  "parent": "gradient:block/drying_rack",
-  "display": {
-    "gui": {
-      "scale": [0.65, 0.65, 0.65]
-    }
-  }
-}

@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package lordmonoxide.gradient;
+package lordmonoxide.gradient.core.items;
 
 import mcp.MethodsReturnNonnullByDefault;
 

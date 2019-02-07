@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "gradient:wooden_gearbox" },
-    "facing=east":  { "model": "gradient:wooden_gearbox", "y":  90 },
-    "facing=south": { "model": "gradient:wooden_gearbox", "y": 180 },
-    "facing=west":  { "model": "gradient:wooden_gearbox", "y": 270 }
-  }
-}

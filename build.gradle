@@ -1,14 +1,16 @@
 buildscript {
   repositories {
+    maven { url = 'https://files.minecraftforge.net/maven' }
     jcenter()
-    maven { url = "http://files.minecraftforge.net/maven" }
+    mavenCentral()
   }
   dependencies {
-    classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
   }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
+apply plugin: 'net.minecraftforge.gradle'
+//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
 
 ext.configFile = file "build.properties"
 configFile.withReader {
@@ -18,27 +20,42 @@ configFile.withReader {
 }
 
 version = config.version
-group= "lordmonoxide.gradient" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "lordmonoxide.gradient" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "gradient"
 
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
-compileJava {
-  sourceCompatibility = targetCompatibility = "1.8"
-}
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.9' // Need this here so eclipse task generates correctly.
 
 minecraft {
-  version = config.mc_version + "-" + config.forge_version
-  runDir = "run"
-
   // the mappings can be changed at any time, and must be in the following format.
   // snapshot_YYYYMMDD   snapshot are built nightly.
   // stable_#            stables are built at the discretion of the MCP team.
   // Use non-default mappings at your own risk. they may not allways work.
   // simply re-run your setup task after changing the mappings to update your workspace.
-  mappings = config.mappings_version
+  mappings channel: 'snapshot', version: config.mappings_version
   // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-  // replace "\${version}", project.version
+  //accessTransformer = file('my_at.cfg')
+
+  // default run configurations.
+  // these can be tweaked, removed, or duplicated as needed.
+  runs {
+    client = {
+      // recommended logging data for a userdev environment
+      properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+      // recommended logging level for the console
+      properties 'forge.logging.console.level': 'debug'
+      workingDirectory project.file('run').canonicalPath
+      source sourceSets.main
+    }
+    server = {
+      // recommended logging data for a userdev environment
+      properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+      // recommended logging level for the console
+      properties 'forge.logging.console.level': 'debug'
+      workingDirectory project.file('run').canonicalPath
+      source sourceSets.main
+    }
+  }
 }
 
 repositories {
@@ -61,14 +78,19 @@ repositories {
 }
 
 dependencies {
-  deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.101-ex112'
+  // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+  // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+  // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+  minecraft 'net.minecraftforge.test:forge:' + config.forge_version
 
-  deobfCompile 'com.mod-buildcraft:buildcraft:7.99.18'
+  //deobf 'net.industrial-craft:industrialcraft-2:2.8.101-ex112'
+
+  //deobf 'com.mod-buildcraft:buildcraft:7.99.18'
 
   // compile against the JEI API but do not include it at runtime
-  deobfProvided 'mezz.jei:jei_1.12.2:4.13.1.220:api'
+  //deobf 'mezz.jei:jei_1.12.2:4.13.1.220:api'
   // at runtime, use the full JEI jar
-  runtime 'mezz.jei:jei_1.12.2:4.13.1.220'
+  //runtime 'mezz.jei:jei_1.12.2:4.13.1.220'
 
   testCompile "org.junit.jupiter:junit-jupiter-api:5.3.2"
 
@@ -84,31 +106,23 @@ dependencies {
   // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
   //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
 
-  // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-  // except that these dependencies get remapped to your current MCP mappings
-  //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-  //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+  // These dependencies get remapped to your current MCP mappings
+  //deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
 
   // for more info...
   // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
   // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
-processResources {
-  // this will ensure that this task is redone when the versions change.
-  inputs.property "version", project.version
-  inputs.property "mcversion", project.minecraft.version
-
-  // replace stuff in mcmod.info, nothing else
-  from(sourceSets.main.resources.srcDirs) {
-    include 'mcmod.info'
-
-    // replace version and mcversion
-    expand 'version':project.version, 'mcversion':project.minecraft.version
-  }
-
-  // copy everything else, thats not the mcmod.info
-  from(sourceSets.main.resources.srcDirs) {
-    exclude 'mcmod.info'
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+  manifest {
+    attributes(["Specification-Title": "examplemod",
+                "Specification-Vendor": "examplemodsareus",
+                "Specification-Version": "24.0", // We are version 1 of the modlauncher specification
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" :"examplemodsareus",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
   }
 }

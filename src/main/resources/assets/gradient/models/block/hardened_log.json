@@ -1,7 +1,0 @@
-{
-  "parent": "block/cube_column",
-  "textures": {
-    "end":  "gradient:blocks/hardened_log_top",
-    "side": "gradient:blocks/hardened_log"
-  }
-}

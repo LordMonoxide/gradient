@@ -1,9 +1,0 @@
-{
-  "variants": {
-    "inventory": { "model": "stripped_jungle" },
-    "axis=y":    { "model": "stripped_jungle" },
-    "axis=z":    { "model": "stripped_jungle", "x": 90 },
-    "axis=x":    { "model": "stripped_jungle", "x": 90, "y": 90 },
-    "axis=none": { "model": "stripped_jungle" }
-  }
-}

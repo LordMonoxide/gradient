@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "gradient-age1:stone_hatchet"
+  },
+  "pattern": [
+    "PF",
+    " S"
+  ],
+  "key": {
+    "P": {
+      "item": "gradient-core:pebble"
+    },
+    "F": {
+      "tag": "gradient-core:strings"
+    },
+    "S": {
+      "tag": "gradient-core:sticks"
+    }
+  }
+}

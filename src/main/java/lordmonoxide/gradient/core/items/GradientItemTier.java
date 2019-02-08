@@ -1,4 +1,4 @@
-package lordmonoxide.gradient.age1.items;
+package lordmonoxide.gradient.core.items;
 
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.crafting.Ingredient;
@@ -6,7 +6,7 @@ import net.minecraft.util.LazyLoadBase;
 
 import java.util.function.Supplier;
 
-public enum GradientItemTiers implements IItemTier {
+public enum GradientItemTier implements IItemTier {
   //TODO: repair ingredient
   STONE(0, 19, 0.5f, 0.0f, 5, () -> Ingredient.fromItems());
 
@@ -22,7 +22,7 @@ public enum GradientItemTiers implements IItemTier {
   private final int enchantability;
   private final LazyLoadBase<Ingredient> repairMaterial;
 
-  GradientItemTiers(final int harvestLevel, final int maxUses, final float efficiency, final float attackDamage, final int enchantability, final Supplier<Ingredient> repairMaterial) {
+  GradientItemTier(final int harvestLevel, final int maxUses, final float efficiency, final float attackDamage, final int enchantability, final Supplier<Ingredient> repairMaterial) {
     this.harvestLevel = harvestLevel;
     this.maxUses = maxUses;
     this.efficiency = efficiency;

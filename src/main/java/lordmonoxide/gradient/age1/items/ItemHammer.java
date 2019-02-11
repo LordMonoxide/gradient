@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 public class ItemHammer extends ItemTool {
-  protected ItemHammer(final IItemTier tier, final float attackDamage, final float attackSpeed, final Item.Builder builder) {
+  public ItemHammer(final IItemTier tier, final float attackDamage, final float attackSpeed, final Item.Builder builder) {
     super(attackDamage, attackSpeed, tier, Set.of(), builder.addToolType(ToolType.PICKAXE, tier.getHarvestLevel()).addToolType(GradientToolType.HAMMER, tier.getHarvestLevel()));
   }
 

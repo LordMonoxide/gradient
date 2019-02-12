@@ -14,8 +14,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = GradientCore.MODID)
-public final class AddExtraDrops {
-  private AddExtraDrops() { }
+public final class BlockDrops {
+  private BlockDrops() { }
 
   @SubscribeEvent
   public static void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {

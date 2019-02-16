@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class ItemOre extends ItemBlock {
-  public ItemOre(final Block block, final Builder builder) {
+  public ItemOre(final Block block, final Properties builder) {
     super(block, builder);
   }
 

@@ -1,25 +1,33 @@
 package lordmonoxide.gradient.core.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ShapeUtils;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
 public class BlockPebble extends Block {
   public BlockPebble() {
-    super(Block.Builder.create(Material.GROUND, MapColor.GRAY).doesNotBlockMovement());
+    super(Block.Properties.create(Material.GROUND, MaterialColor.GRAY).doesNotBlockMovement());
+  }
+
+  //TODO: remove this once the forge registry is fixed
+  @Override
+  public Item asItem() {
+    return ForgeRegistries.ITEMS.getValue(this.getRegistryName());
   }
 
   @Override
@@ -47,7 +55,7 @@ public class BlockPebble extends Block {
   @Deprecated
   @SuppressWarnings("deprecation")
   public VoxelShape getShape(final IBlockState state, final IBlockReader world, final BlockPos pos) {
-    return ShapeUtils.create(0.25d, 0.0d, 0.25d, 0.75d, 0.25d, 0.75d);
+    return VoxelShapes.create(0.25d, 0.0d, 0.25d, 0.75d, 0.25d, 0.75d);
   }
 
   @Override

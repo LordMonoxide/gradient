@@ -3,7 +3,7 @@ package lordmonoxide.gradient.core.client;
 import lordmonoxide.gradient.core.GradientCore;
 import lordmonoxide.gradient.core.client.tesr.TileOreRenderer;
 import lordmonoxide.gradient.core.tileentities.TileOre;
-import net.minecraft.client.renderer.block.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;

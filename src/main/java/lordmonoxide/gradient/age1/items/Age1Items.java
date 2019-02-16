@@ -14,8 +14,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 public final class Age1Items {
   private Age1Items() { }
 
-  public static final Item STONE_HATCHET = new ItemAxe(GradientItemTier.STONE, 4.0f, -2.4f, new Item.Builder().group(ItemGroup.TOOLS)) { }.setRegistryName(GradientAge1.resource("stone_hatchet"));
-  public static final Item STONE_HAMMER = new ItemHammer(GradientItemTier.STONE, 2.0f, -2.4f, new Item.Builder().group(ItemGroup.TOOLS)).setRegistryName(GradientAge1.resource("stone_hammer"));
+  public static final Item STONE_HATCHET = new ItemAxe(GradientItemTier.STONE, 4.0f, -2.4f, new Item.Properties().group(ItemGroup.TOOLS)) { }.setRegistryName(GradientAge1.resource("stone_hatchet"));
+  public static final Item STONE_HAMMER = new ItemHammer(GradientItemTier.STONE, 2.0f, -2.4f, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientAge1.resource("stone_hammer"));
 
   @SubscribeEvent
   public static void registerItems(final RegistryEvent.Register<Item> event) {

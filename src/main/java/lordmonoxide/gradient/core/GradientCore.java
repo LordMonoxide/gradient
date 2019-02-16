@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,10 +33,10 @@ public class GradientCore {
   }
 
   public GradientCore() {
-    FMLModLoadingContext.get().getModEventBus().addListener(this::worldGen);
-    FMLModLoadingContext.get().getModEventBus().addListener(this::setupClient);
-    FMLModLoadingContext.get().getModEventBus().addListener(this::setupServer);
-    FMLModLoadingContext.get().getModEventBus().register(this);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::worldGen);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupServer);
+    FMLJavaModLoadingContext.get().getModEventBus().register(this);
   }
 
   private void worldGen(final FMLCommonSetupEvent event) {

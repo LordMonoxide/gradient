@@ -4,6 +4,9 @@
   "block.gradient-core.salt_block": "Salt Block",
   "item.gradient-core.salt": "Salt",
   
+  "item.gradient-core.ore.native_copper": "Copper Ore",
+  "item.gradient-core.ore.native_gold": "Gold Ore",
+  
   "item.gradient-core.hide_cow": "Cow Hide",
   "item.gradient-core.hide_donkey": "Donkey Hide",
   "item.gradient-core.hide_horse": "Horse Hide",

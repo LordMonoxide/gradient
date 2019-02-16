@@ -1,14 +1,11 @@
 package lordmonoxide.gradient.core.blocks;
 
-import lordmonoxide.gradient.core.GradientCore;
 import lordmonoxide.gradient.core.items.CoreItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,7 +15,6 @@ import java.util.Random;
 public class BlockSalt extends Block {
   public BlockSalt() {
     super(Builder.create(Material.SAND, MapColor.QUARTZ).hardnessAndResistance(0.5f).sound(SoundType.SAND));
-    this.setRegistryName(GradientCore.resource("salt_block"));
   }
 
   @Override

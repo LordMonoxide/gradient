@@ -2,6 +2,8 @@ package lordmonoxide.gradient.core;
 
 import com.google.common.collect.Lists;
 import lordmonoxide.gradient.core.blocks.CoreBlocks;
+import lordmonoxide.gradient.core.geology.elements.Elements;
+import lordmonoxide.gradient.core.geology.ores.Ores;
 import net.minecraft.init.Blocks;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -45,17 +47,15 @@ public class GradientCore {
   }
 
   private void setupClient(final FMLClientSetupEvent event) {
-    this.registerResourceLoader((IReloadableResourceManager)event.getMinecraftSupplier().get().getResourceManager());
+    registerResourceLoader((IReloadableResourceManager)event.getMinecraftSupplier().get().getResourceManager());
   }
 
   private void setupServer(final FMLDedicatedServerSetupEvent event) {
-    this.registerResourceLoader(event.getServerSupplier().get().getResourceManager());
+    registerResourceLoader(event.getServerSupplier().get().getResourceManager());
   }
 
-  private void registerResourceLoader(final IReloadableResourceManager resourceManager) {
-    resourceManager.addReloadListener(manager -> {
-      LOGGER.info("METALS:");
-      manager.getAllResourceLocations("metals", s -> true).forEach(LOGGER::info);
-    });
+  private static void registerResourceLoader(final IReloadableResourceManager resourceManager) {
+    resourceManager.addReloadListener(Elements::reload);
+    resourceManager.addReloadListener(Ores::reload);
   }
 }

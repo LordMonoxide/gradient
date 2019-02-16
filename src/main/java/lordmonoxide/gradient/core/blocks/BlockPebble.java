@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.core.blocks;
 
-import lordmonoxide.gradient.core.GradientCore;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -21,7 +20,6 @@ import java.util.Random;
 public class BlockPebble extends Block {
   public BlockPebble() {
     super(Block.Builder.create(Material.GROUND, MapColor.GRAY).doesNotBlockMovement());
-    this.setRegistryName(GradientCore.resource("pebble"));
   }
 
   @Override

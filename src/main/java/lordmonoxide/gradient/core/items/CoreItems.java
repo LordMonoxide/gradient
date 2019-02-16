@@ -40,6 +40,8 @@ public final class CoreItems {
     registry.register(new ItemBlock(CoreBlocks.SALT, new Item.Builder().group(ItemGroup.FOOD)).setRegistryName(CoreBlocks.SALT.getRegistryName()));
     registry.register(SALT);
 
+    registry.register(new ItemOre(CoreBlocks.ORE, new Item.Builder().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(CoreBlocks.ORE.getRegistryName()));
+
     registry.register(HIDE_COW);
     registry.register(HIDE_DONKEY);
     registry.register(HIDE_HORSE);

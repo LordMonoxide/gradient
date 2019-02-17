@@ -1,0 +1,22 @@
+{
+  "type": "metal",
+  "meltTemp": 1830,
+  "hardness": 3.5,
+  "weight": 96.98,
+  "colourDiffuse": "5C615B",
+  "colourSpecular": "73736B",
+  "colourShadow1": "3B3D28",
+  "colourShadow2": "1F2825",
+  "colourEdge1": "151108",
+  "colourEdge2": "0D0900",
+  "colourEdge3": "010101",
+  "elements": [
+    {
+      "element": "gradient-core:zinc",
+      "count": 2
+    },
+    {
+      "element": "gradient-core:sulphur"
+    }
+  ]
+}

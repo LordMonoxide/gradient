@@ -74,7 +74,7 @@ public class Metal extends Element {
     for(int i = 0; i < list.size(); i++) {
       final JsonObject element = list.get(i).getAsJsonObject();
       final ResourceLocation loc = new ResourceLocation(JsonUtils.getString(element, "element"));
-      final int count = JsonUtils.getInt(element, "count");
+      final int count = JsonUtils.getInt(element, "count", 1);
 
       elements.add(new AlloyElement(() -> Elements.get(loc), count));
     }

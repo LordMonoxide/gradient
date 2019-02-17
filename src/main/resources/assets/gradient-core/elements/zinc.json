@@ -1,0 +1,13 @@
+{
+  "type": "metal",
+  "meltTemp": 419.53,
+  "hardness": 2.5,
+  "weight": 65.38,
+  "colourDiffuse": "B3B3BB",
+  "colourSpecular": "F7FBFA",
+  "colourShadow1": "727179",
+  "colourShadow2": "4C4B51",
+  "colourEdge1": "2F3C42",
+  "colourEdge2": "121D1F",
+  "colourEdge3": "0C0D11"
+}

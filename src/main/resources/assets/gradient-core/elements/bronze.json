@@ -9,5 +9,15 @@
   "colourShadow2": "DEAA00",
   "colourEdge1": "DB7800",
   "colourEdge2": "795D00",
-  "colourEdge3": "795D00"
+  "colourEdge3": "795D00",
+  "elements": [
+    {
+      "element": "gradient-core:copper",
+      "count": 3
+    },
+    {
+      "element": "gradient-core:tin",
+      "count": 1
+    }
+  ]
 }

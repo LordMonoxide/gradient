@@ -7,8 +7,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 
 public class TileOre extends TileEntity {
+  private ResourceLocation oreTexture;
   private Ore ore;
 
   public TileOre() {
@@ -19,10 +21,19 @@ public class TileOre extends TileEntity {
     return this.ore;
   }
 
+  public ResourceLocation getOreTexture() {
+    return this.oreTexture;
+  }
+
+  private void setOre(final Ore ore) {
+    this.ore = ore;
+    this.oreTexture = new ResourceLocation(ore.name.getNamespace(), "textures/blocks/ore." + ore.name.getPath() + ".png");
+  }
+
   @Override
   public void read(final NBTTagCompound compound) {
     super.read(compound);
-    this.ore = Ores.get(NbtUtil.getResourceLocation(this.getTileData()));
+    this.setOre(Ores.get(NbtUtil.getResourceLocation(this.getTileData())));
   }
 
   @Override

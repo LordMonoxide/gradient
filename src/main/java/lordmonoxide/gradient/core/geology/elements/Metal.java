@@ -5,6 +5,8 @@ import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 
 public class Metal extends Element {
+  private static final int ALPHA_MASK = 0xFF000000;
+
   public final int   meltTime;
   public final float meltTemp;
   public final float hardness;
@@ -41,13 +43,18 @@ public class Metal extends Element {
       JsonUtils.getFloat(json, "meltTemp"),
       JsonUtils.getFloat(json, "hardness"),
       JsonUtils.getFloat(json, "weight"),
-      Integer.parseInt(JsonUtils.getString(json, "colourDiffuse"), 16),
-      Integer.parseInt(JsonUtils.getString(json, "colourSpecular"), 16),
-      Integer.parseInt(JsonUtils.getString(json, "colourShadow1"), 16),
-      Integer.parseInt(JsonUtils.getString(json, "colourShadow2"), 16),
-      Integer.parseInt(JsonUtils.getString(json, "colourEdge1"), 16),
-      Integer.parseInt(JsonUtils.getString(json, "colourEdge2"), 16),
-      Integer.parseInt(JsonUtils.getString(json, "colourEdge3"), 16)
+      readInt(json, "colourDiffuse"),
+      readInt(json, "colourSpecular"),
+      readInt(json, "colourShadow1"),
+      readInt(json, "colourShadow2"),
+      readInt(json, "colourEdge1"),
+      readInt(json, "colourEdge2"),
+      readInt(json, "colourEdge3")
     );
+  }
+
+  private static int readInt(final JsonObject json, final String key) {
+    final int rgb = Integer.parseInt(JsonUtils.getString(json, key), 16);
+    return ALPHA_MASK | Integer.reverseBytes(rgb) >>> 8;
   }
 }

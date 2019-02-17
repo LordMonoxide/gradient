@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.core.blocks;
 
-import lordmonoxide.gradient.core.GradientCore;
 import lordmonoxide.gradient.core.geology.ores.Ore;
 import lordmonoxide.gradient.core.tileentities.TileOre;
 import lordmonoxide.gradient.core.utils.NbtUtil;
@@ -53,7 +52,6 @@ public class BlockOre extends Block {
     final TileEntity tile = world.getTileEntity(pos);
 
     if(tile instanceof TileOre) {
-      GradientCore.LOGGER.info("Add {} {}", ((TileOre)tile).getOre(), state);
       this.oreMap.put(state, ((TileOre)tile).getOre());
     }
 
@@ -67,15 +65,12 @@ public class BlockOre extends Block {
 
     final Ore ore = this.oreMap.remove(state);
 
-    GradientCore.LOGGER.info("Got {} {}", ore, state);
     if(ore != null) {
       final NBTTagCompound tag = stack.getOrCreateChildTag("BlockEntityTag");
       tag.setTag("ForgeData", NbtUtil.setResourceLocation(new NBTTagCompound(), ore.name));
-      GradientCore.LOGGER.info("Setting nbt {}", tag);
     }
 
     for(int i = 0; i < count; i++) {
-      GradientCore.LOGGER.info("Adding drop {}", stack);
       drops.add(stack);
     }
   }

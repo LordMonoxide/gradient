@@ -6,6 +6,10 @@
   
   "item.gradient-core.ore.native_copper": "Copper Ore",
   "item.gradient-core.ore.native_gold": "Gold Ore",
+  "item.gradient-core.ore.cassiterite": "Cassiterite Ore",
+  "item.gradient-core.ore.graphite": "Graphite Ore",
+  "item.gradient-core.ore.hematite": "Hematite Ore",
+  "item.gradient-core.ore.pyrite": "Pyrite Ore",
   
   "item.gradient-core.hide_cow": "Cow Hide",
   "item.gradient-core.hide_donkey": "Donkey Hide",

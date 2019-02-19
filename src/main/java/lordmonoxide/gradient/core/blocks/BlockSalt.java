@@ -19,12 +19,6 @@ public class BlockSalt extends Block {
     super(Properties.create(Material.SAND, MaterialColor.QUARTZ).hardnessAndResistance(0.5f).sound(SoundType.SAND));
   }
 
-  //TODO: remove this once the forge registry is fixed
-  @Override
-  public Item asItem() {
-    return ForgeRegistries.ITEMS.getValue(this.getRegistryName());
-  }
-
   @Override
   public int getItemsToDropCount(final IBlockState state, final int fortune, final World world, final BlockPos pos, final Random random) {
     return random.nextInt(4 + fortune * 2) + 1;

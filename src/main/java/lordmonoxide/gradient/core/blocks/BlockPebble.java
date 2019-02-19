@@ -24,12 +24,6 @@ public class BlockPebble extends Block {
     super(Block.Properties.create(Material.GROUND, MaterialColor.GRAY).doesNotBlockMovement());
   }
 
-  //TODO: remove this once the forge registry is fixed
-  @Override
-  public Item asItem() {
-    return ForgeRegistries.ITEMS.getValue(this.getRegistryName());
-  }
-
   @Override
   public int getItemsToDropCount(final IBlockState state, final int fortune, final World world, final BlockPos pos, final Random random) {
     return random.nextInt(2) + 1;

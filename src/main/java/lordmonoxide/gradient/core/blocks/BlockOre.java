@@ -29,12 +29,6 @@ public class BlockOre extends Block {
     super(Properties.create(Material.ROCK).hardnessAndResistance(3.0f));
   }
 
-  //TODO: remove this once the forge registry is fixed
-  @Override
-  public Item asItem() {
-    return ForgeRegistries.ITEMS.getValue(this.getRegistryName());
-  }
-
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")

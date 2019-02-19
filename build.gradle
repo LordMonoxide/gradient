@@ -75,29 +75,29 @@ minecraft {
 }
 
 repositories {
-  maven {
-    //IC2
-    name = "player-ic2"
-    url = "http://maven.ic2.player.to/"
-  }
+  //maven {
+  //  //IC2
+  //  name = "player-ic2"
+  //  url = "http://maven.ic2.player.to/"
+  //}
 
-  maven {
-    name = "BuildCraft"
-    url = "http://www.mod-buildcraft.com/maven"
-  }
+  //maven {
+  //  name = "BuildCraft"
+  //  url = "http://www.mod-buildcraft.com/maven"
+  //}
 
-  maven {
-    // JEI
-    name = "Progwml6 maven"
-    url = "http://dvs1.progwml6.com/files/maven"
-  }
+  //maven {
+  // // JEI
+  //  name = "Progwml6 maven"
+  //  url = "http://dvs1.progwml6.com/files/maven"
+  //}
 }
 
 dependencies {
   // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
   // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
   // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-  minecraft 'net.minecraftforge:forge:1.13.2-25.0.34'
+  minecraft 'net.minecraftforge:forge:1.13.2-25.0.37'
 
   //deobf 'net.industrial-craft:industrialcraft-2:2.8.101-ex112'
 

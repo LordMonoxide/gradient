@@ -51,13 +51,13 @@ public class Metal extends Element {
       JsonUtils.getFloat(json, "meltTemp"),
       JsonUtils.getFloat(json, "hardness"),
       JsonUtils.getFloat(json, "weight"),
-      readInt(json, "colourDiffuse"),
-      readInt(json, "colourSpecular"),
-      readInt(json, "colourShadow1"),
-      readInt(json, "colourShadow2"),
-      readInt(json, "colourEdge1"),
-      readInt(json, "colourEdge2"),
-      readInt(json, "colourEdge3"),
+      readColour(json, "colourDiffuse"),
+      readColour(json, "colourSpecular"),
+      readColour(json, "colourShadow1"),
+      readColour(json, "colourShadow2"),
+      readColour(json, "colourEdge1"),
+      readColour(json, "colourEdge2"),
+      readColour(json, "colourEdge3"),
       getElements(json)
     );
   }
@@ -74,7 +74,7 @@ public class Metal extends Element {
     for(int i = 0; i < list.size(); i++) {
       final JsonObject element = list.get(i).getAsJsonObject();
       final ResourceLocation loc = new ResourceLocation(JsonUtils.getString(element, "element"));
-      final int count = JsonUtils.getInt(element, "count", 1);
+      final int count = JsonUtils.getInt(element, "amount");
 
       elements.add(new AlloyElement(() -> Elements.get(loc), count));
     }
@@ -82,18 +82,18 @@ public class Metal extends Element {
     return elements;
   }
 
-  private static int readInt(final JsonObject json, final String key) {
+  private static int readColour(final JsonObject json, final String key) {
     final int rgb = Integer.parseInt(JsonUtils.getString(json, key), 16);
     return ALPHA_MASK | Integer.reverseBytes(rgb) >>> 8;
   }
 
   public static class AlloyElement {
     public final Supplier<Element> element;
-    public final int count;
+    public final int amount;
 
-    public AlloyElement(final Supplier<Element> element, final int count) {
+    public AlloyElement(final Supplier<Element> element, final int amount) {
       this.element = element;
-      this.count = count;
+      this.amount = amount;
     }
   }
 }

@@ -9,5 +9,11 @@
   "colourShadow2": "676767",
   "colourEdge1": "6D6D6D",
   "colourEdge2": "595959",
-  "colourEdge3": "505050"
+  "colourEdge3": "505050",
+  "elements": [
+    {
+      "element": "gradient-core:tin",
+      "amount": 1000
+    }
+  ]
 }

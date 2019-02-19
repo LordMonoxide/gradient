@@ -13,10 +13,11 @@
   "elements": [
     {
       "element": "gradient-core:copper",
-      "count": 3
+      "amount": 750
     },
     {
-      "element": "gradient-core:tin"
+      "element": "gradient-core:tin",
+      "amount": 250
     }
   ]
 }

@@ -13,10 +13,11 @@
   "elements": [
     {
       "element": "gradient-core:zinc",
-      "count": 2
+      "amount": 750
     },
     {
-      "element": "gradient-core:sulphur"
+      "element": "gradient-core:sulphur",
+      "amount": 250
     }
   ]
 }

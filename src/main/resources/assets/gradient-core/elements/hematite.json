@@ -9,5 +9,11 @@
   "colourShadow2": "525252",
   "colourEdge1": "5F5F5F",
   "colourEdge2": "242424",
-  "colourEdge3": "151515"
+  "colourEdge3": "151515",
+  "elements": [
+    {
+      "element": "gradient-core:iron",
+      "amount": 1000
+    }
+  ]
 }

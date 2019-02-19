@@ -1,0 +1,31 @@
+{
+  "type": "metal",
+  "meltTemp": 1165,
+  "hardness": 3.5,
+  "weight": 344.668,
+  "colourDiffuse": "2E01E2",
+  "colourSpecular": "9B81D8",
+  "colourShadow1": "2901B9",
+  "colourShadow2": "271770",
+  "colourEdge1": "231C3D",
+  "colourEdge2": "1C1630",
+  "colourEdge3": "130F21",
+  "elements": [
+    {
+      "element": "gradient-core:copper",
+      "amount": 550
+    },
+    {
+      "element": "gradient-core:oxygen",
+      "amount": 370
+    },
+    {
+      "element": "gradient-core:carbon",
+      "amount": 70
+    },
+    {
+      "element": "gradient-core:hydrogen",
+      "amount": 10
+    }
+  ]
+}

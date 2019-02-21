@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.core.events;
 
 import lordmonoxide.gradient.core.GradientCore;
+import lordmonoxide.gradient.core.blocks.CoreBlocks;
 import lordmonoxide.gradient.core.items.CoreItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
@@ -54,6 +55,19 @@ public final class BlockDrops {
 
         if(amount != 0) {
           event.getDrops().add(new ItemStack(CoreItems.FIBRE, amount));
+        }
+      }
+    }
+  }
+
+  @SubscribeEvent
+  public static void gravelDropsPebbles(final BlockEvent.HarvestDropsEvent event) {
+    final IBlockState state = event.getState();
+
+    if(state.getBlock() == Blocks.GRAVEL) {
+      for(int i = 0; i < 3 + event.getFortuneLevel(); i++) {
+        if(event.getWorld().getRandom().nextInt(10) == 0) {
+          event.getDrops().add(new ItemStack(CoreBlocks.PEBBLE));
         }
       }
     }

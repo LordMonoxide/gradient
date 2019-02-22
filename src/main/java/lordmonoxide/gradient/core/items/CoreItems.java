@@ -6,7 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -29,7 +28,7 @@ public final class CoreItems {
   public static final Item HIDE_SHEEP      = new Item(new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(GradientCore.resource("hide_sheep"));
   public static final Item HIDE_WOLF       = new Item(new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(GradientCore.resource("hide_wolf"));
 
-  @SubscribeEvent(priority = EventPriority.LOW)
+  @SubscribeEvent
   public static void registerItems(final RegistryEvent.Register<Item> event) {
     GradientCore.LOGGER.info("REGISTERING CORE ITEMS");
 

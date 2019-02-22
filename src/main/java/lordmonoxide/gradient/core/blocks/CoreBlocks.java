@@ -3,7 +3,6 @@ package lordmonoxide.gradient.core.blocks;
 import lordmonoxide.gradient.core.GradientCore;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -17,7 +16,7 @@ public final class CoreBlocks {
 
   public static final Block ORE = new BlockOre().setRegistryName(GradientCore.resource("ore"));
 
-  @SubscribeEvent(priority = EventPriority.LOW)
+  @SubscribeEvent
   public static void registerBlocks(final RegistryEvent.Register<Block> event) {
     GradientCore.LOGGER.info("REGISTERING CORE BLOCKS");
 

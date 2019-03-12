@@ -61,7 +61,7 @@ repositories {
 }
 
 dependencies {
-  deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.101-ex112'
+  deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.111-ex112'
 
   deobfCompile 'com.mod-buildcraft:buildcraft:7.99.18'
 

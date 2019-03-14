@@ -1,0 +1,12 @@
+{
+  "type": "gradient:firepit",
+  "age": 2,
+  "ticks": 600,
+  "temperature": 200,
+  "result": {
+    "item": "minecraft:sugar"
+  },
+  "ingredients": [{
+    "item": "gradient:sugarcane_paste"
+  }]
+}

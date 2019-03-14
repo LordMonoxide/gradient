@@ -116,7 +116,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
       }
     }
 
-    if(mop.typeOfHit != RayTraceResult.Type.BLOCK) {
+    if(mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK) {
       return ActionResult.newResult(EnumActionResult.PASS, itemstack);
     }
 
@@ -160,7 +160,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
     // not for us to handle
     final ItemStack emptyBucket = event.getEmptyBucket();
-    if(emptyBucket.isEmpty() || !emptyBucket.isItemEqual(ItemClayBucket.this.empty)) {
+    if(emptyBucket.isEmpty() || !emptyBucket.isItemEqual(this.empty)) {
       return;
     }
 

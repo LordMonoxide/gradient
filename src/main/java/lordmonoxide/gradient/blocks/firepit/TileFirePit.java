@@ -129,7 +129,7 @@ public class TileFirePit extends HeatProducer {
     return output;
   }
 
-  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
+  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player, final IBlockState state) {
     if(GradientFuel.has(stack)) {
       for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
         if(!this.hasFuel(slot)) {
@@ -141,7 +141,7 @@ public class TileFirePit extends HeatProducer {
       }
     }
 
-    if(!this.hasInput()) {
+    if(!this.hasInput() && !this.hasFurnace(state)) {
       this.age = RecipeHelper.getPlayerAge(player);
 
       final ItemStack input = stack.splitStack(1);

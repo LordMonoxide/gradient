@@ -198,7 +198,7 @@ public class BlockFirePit extends HeatSinkerBlock {
 
       // Put stuff in
       if(!held.isEmpty()) {
-        final ItemStack remaining = firepit.insertItem(held.copy(), player);
+        final ItemStack remaining = firepit.insertItem(held.copy(), player, state);
 
         if(!player.isCreative()) {
           player.setHeldItem(hand, remaining);

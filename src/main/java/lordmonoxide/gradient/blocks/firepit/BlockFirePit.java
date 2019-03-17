@@ -41,7 +41,7 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class BlockFirePit extends HeatSinkerBlock {
-  private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
+  private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.25d, 1.0d);
 
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
   public static final PropertyBool HAS_FURNACE = PropertyBool.create("has_furnace");
@@ -281,6 +281,6 @@ public class BlockFirePit extends HeatSinkerBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING, HAS_FURNACE);
+    return new BlockStateContainer.Builder(this).add(FACING, HAS_FURNACE).build();
   }
 }

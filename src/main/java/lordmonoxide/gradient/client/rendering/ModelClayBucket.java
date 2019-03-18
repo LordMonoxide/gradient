@@ -25,7 +25,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.*;
+import net.minecraftforge.client.model.BakedItemModel;
+import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ItemLayerModel;
+import net.minecraftforge.client.model.ItemTextureQuadConverter;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.ModelStateComposition;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
+import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.Fluid;
@@ -34,6 +43,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +55,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Side.CLIENT)
 public final class ModelClayBucket implements IModel {
   @SubscribeEvent
   public static void onTextureStitch(final TextureStitchEvent.Pre event) {
@@ -272,6 +284,7 @@ public final class ModelClayBucket implements IModel {
     }
   }
 
+  @SideOnly(Side.CLIENT)
   private static final class BucketBaseSprite extends TextureAtlasSprite {
     private final ResourceLocation bucket = GradientMod.resource("items/clay_bucket_empty");
     private final ImmutableList<ResourceLocation> dependencies = ImmutableList.of(this.bucket);
@@ -305,6 +318,7 @@ public final class ModelClayBucket implements IModel {
   /**
    * Creates a bucket cover sprite from the vanilla resource.
    */
+  @SideOnly(Side.CLIENT)
   private static final class BucketCoverSprite extends TextureAtlasSprite {
     private final ResourceLocation bucket = GradientMod.resource("items/clay_bucket_empty");
     private final ResourceLocation bucketCoverMask = GradientMod.resource("items/clay_bucket_cover_mask");
@@ -353,6 +367,7 @@ public final class ModelClayBucket implements IModel {
     }
   }
 
+  @SideOnly(Side.CLIENT)
   private static final class BakedClayBucketOverrideHandler extends ItemOverrideList {
     private static final BakedClayBucketOverrideHandler INSTANCE = new BakedClayBucketOverrideHandler();
 
@@ -389,6 +404,7 @@ public final class ModelClayBucket implements IModel {
   }
 
   // the dynamic bucket is based on the empty bucket
+  @SideOnly(Side.CLIENT)
   private static final class BakedClayBucket extends BakedItemModel {
     private final ModelClayBucket parent;
     private final Map<String, IBakedModel> cache; // contains all the baked models since they'll never change

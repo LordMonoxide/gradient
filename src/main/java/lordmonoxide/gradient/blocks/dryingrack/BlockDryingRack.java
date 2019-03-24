@@ -22,6 +22,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nullable;
+
 public class BlockDryingRack extends GradientBlock {
   private static final AxisAlignedBB AABB_NORTH  = new AxisAlignedBB( 0.0d,         13.0d / 16.0d,  0.0d,         1.0d,         1.0d, 2.0d / 16.0d);
   private static final AxisAlignedBB AABB_SOUTH  = new AxisAlignedBB( 0.0d,         13.0d / 16.0d, 14.0d / 16.0d, 1.0d,         1.0d, 1.0d);
@@ -187,5 +189,13 @@ public class BlockDryingRack extends GradientBlock {
     }
 
     return AABB_DOWN_Z;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  @Nullable
+  public AxisAlignedBB getCollisionBoundingBox(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+    return null;
   }
 }

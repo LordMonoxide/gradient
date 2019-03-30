@@ -10,6 +10,7 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Random;
@@ -47,25 +48,24 @@ public class AgeGatedShapelessToolRecipe extends IForgeRegistryEntry.Impl<IRecip
 
   @Override
   public NonNullList<ItemStack> getRemainingItems(final InventoryCrafting inv) {
-    final NonNullList<ItemStack> list = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+    final NonNullList<ItemStack> remaining = IRecipe.super.getRemainingItems(inv);
 
-    for(int i = 0; i < list.size(); ++i) {
+    for(int i = 0; i < remaining.size(); ++i) {
       final ItemStack stack = inv.getStackInSlot(i);
 
       if(stack.getItem() instanceof GradientItemTool) {
         stack.attemptDamageItem(1, rand, null);
 
         if(stack.isItemStackDamageable() && stack.getItemDamage() > stack.getMaxDamage()) {
-          list.set(i, ItemStack.EMPTY);
+          ForgeEventFactory.onPlayerDestroyItem(ForgeHooks.getCraftingPlayer(), stack, null);
+          remaining.set(i, ItemStack.EMPTY);
         } else {
-          list.set(i, stack.copy());
+          remaining.set(i, stack.copy());
         }
-      } else {
-        list.set(i, ForgeHooks.getContainerItem(stack));
       }
     }
 
-    return list;
+    return remaining;
   }
 
   @Override

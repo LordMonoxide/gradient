@@ -13,7 +13,7 @@
     "has_furnace": {
       "true": {
         "submodel": {
-          "furnace": { "model": "gradient:clay_furnace.hardened" }
+          "furnace": { "model": "gradient:clay_furnace.used" }
         }
       },
       "false": { }

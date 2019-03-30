@@ -13,6 +13,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -263,6 +264,28 @@ public class BlockFirePit extends HeatSinkerBlock {
   @Override
   public int getMetaFromState(final IBlockState state) {
     return state.getValue(FACING).getHorizontalIndex() | (state.getValue(HAS_FURNACE) ? 1 : 0) << 2;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+    if(state.getValue(HAS_FURNACE)) {
+      return GradientBlocks.CLAY_FURNACE_HARDENED.isSideSolid(state, world, pos, side);
+    }
+
+    return false;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+    if(state.getValue(HAS_FURNACE)) {
+      return GradientBlocks.CLAY_FURNACE_HARDENED.getBlockFaceShape(world, state, pos, face);
+    }
+
+    return BlockFaceShape.UNDEFINED;
   }
 
   @Override

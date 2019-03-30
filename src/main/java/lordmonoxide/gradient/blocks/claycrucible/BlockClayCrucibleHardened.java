@@ -8,6 +8,7 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.GradientItems;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,6 +36,20 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+    return false;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+    return BlockFaceShape.UNDEFINED;
+  }
+
 
   @Override
   @Deprecated

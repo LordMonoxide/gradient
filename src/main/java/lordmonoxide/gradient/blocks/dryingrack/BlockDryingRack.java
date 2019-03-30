@@ -5,6 +5,7 @@ import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -140,6 +141,20 @@ public class BlockDryingRack extends GradientBlock {
   @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer(this, FACING, ROOF);
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+    return false;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+    return BlockFaceShape.UNDEFINED;
   }
 
   @SuppressWarnings("deprecation")

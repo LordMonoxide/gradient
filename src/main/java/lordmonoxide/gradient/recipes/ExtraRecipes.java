@@ -140,7 +140,7 @@ public final class ExtraRecipes {
           registry.register(new ShapedRecipes(
               GradientMod.MODID,
               1, 3,
-              NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(GradientItems.castItem(type.cast, metal, 1)), new OreIngredient("string"), new OreIngredient("stickWood")),
+              NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(GradientItems.castItem(type.cast, metal, 1)), Ingredient.fromItem(GradientItems.LEATHER_CORD), Ingredient.fromItem(GradientItems.HARDENED_STICK)),
               GradientItems.tool(type, metal).getItemStack()
           ).setRegistryName(GradientMod.resource("tool." + type.cast.name + '.' + metal.name)));
         }

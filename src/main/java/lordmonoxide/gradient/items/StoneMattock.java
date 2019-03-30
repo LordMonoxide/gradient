@@ -1,9 +1,11 @@
 package lordmonoxide.gradient.items;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -26,6 +28,13 @@ public class StoneMattock extends GradientItemWorldTool {
 
   @Override
   public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+    final IBlockState state = world.getBlockState(pos);
+
+    // Handled in event handler; need this here to stop from placing items in offhand (see #541)
+    if(state.getBlock() == Blocks.LOG || state.getBlock() == Blocks.LOG2) {
+      return EnumActionResult.SUCCESS;
+    }
+
     return Items.STONE_HOE.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 

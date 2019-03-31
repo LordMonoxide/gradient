@@ -116,7 +116,6 @@ public class TileClayOven extends HeatSinker {
 
     final float heatScale = 1.0f - ((this.getHeat() - this.recipe.temperature) / 2000.0f + 0.1f);
 
-    System.out.println("Food " + this.ticks + '/' + this.recipe.ticks * heatScale + " (" + this.getHeat() + ") (" + heatScale + ')');
     if(this.ticks < this.recipe.ticks * heatScale) {
       if(this.getHeat() >= this.recipe.temperature) {
         this.ticks++;

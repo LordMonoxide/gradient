@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "gradient:clay_oven.hardened" },
+    "facing=east":  { "model": "gradient:clay_oven.hardened", "y":  90 },
+    "facing=south": { "model": "gradient:clay_oven.hardened", "y": 180 },
+    "facing=west":  { "model": "gradient:clay_oven.hardened", "y": 270 }
+  }
+}

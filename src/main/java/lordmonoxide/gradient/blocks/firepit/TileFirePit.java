@@ -467,7 +467,7 @@ public class TileFirePit extends HeatProducer {
     try {
       this.age = Age.get(age);
     } catch(final IndexOutOfBoundsException e) {
-      GradientMod.logger.warn("Invalid age in %s: %d", this, age);
+      GradientMod.logger.warn("Invalid age in {}: {}", this, age);
     }
 
     this.ticks = compound.getInteger("ticks");

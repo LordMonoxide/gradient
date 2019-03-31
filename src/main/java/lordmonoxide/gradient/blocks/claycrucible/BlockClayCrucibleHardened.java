@@ -36,6 +36,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }
+
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
@@ -49,7 +50,6 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
     return BlockFaceShape.UNDEFINED;
   }
-
 
   @Override
   @Deprecated

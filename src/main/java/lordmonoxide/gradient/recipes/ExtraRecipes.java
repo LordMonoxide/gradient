@@ -173,8 +173,8 @@ public final class ExtraRecipes {
     final NBTTagCompound nbt = new NBTTagCompound();
     nbt.setInteger("amount", 1000); // Water amount
 
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictHelper.getFirst("crushedPurifiedBronze"));
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictHelper.getFirst("crushedPurifiedMagnesium"));
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictHelper.getFirst("purifiedBronze"));
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictHelper.getFirst("purifiedMagnesium"));
   }
 
   private static void registerExtractorRecipes() {

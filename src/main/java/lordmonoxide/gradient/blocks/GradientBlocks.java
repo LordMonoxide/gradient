@@ -69,8 +69,6 @@ public final class GradientBlocks {
   public static final Block STRIPPED_ACACIA_WOOD   = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_acacia_wood")).setTranslationKey("stripped_acacia_wood");
   public static final Block STRIPPED_DARK_OAK_WOOD = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_dark_oak_wood")).setTranslationKey("stripped_dark_oak_wood");
 
-  public static final BlockOreMagnesium ORE_MAGNESIUM = new BlockOreMagnesium();
-
   public static final BlockFirePit    FIRE_PIT          = new BlockFirePit();
   public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f, 0.9375f);
   public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT);
@@ -132,7 +130,16 @@ public final class GradientBlocks {
 
     final IForgeRegistry<Block> registry = event.getRegistry();
 
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      registry.register(new BlockOre(metal));
+    }
+
     registry.register(PEBBLE);
+
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      registry.register(new BlockPebble(metal));
+    }
+
     registry.register(SALT_BLOCK);
 
     registry.register(STRIPPED_OAK_WOOD);
@@ -141,8 +148,6 @@ public final class GradientBlocks {
     registry.register(STRIPPED_JUNGLE_WOOD);
     registry.register(STRIPPED_ACACIA_WOOD);
     registry.register(STRIPPED_DARK_OAK_WOOD);
-
-    registry.register(ORE_MAGNESIUM);
 
     registry.register(FIRE_PIT);
     registry.register(FIBRE_TORCH_LIT);

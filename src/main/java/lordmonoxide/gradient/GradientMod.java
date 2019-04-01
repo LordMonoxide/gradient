@@ -6,13 +6,14 @@ import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
 import lordmonoxide.gradient.init.IProxy;
-import lordmonoxide.gradient.overrides.GeneratePebbles;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.recipes.RecipeRemover;
+import lordmonoxide.gradient.worldgen.DisableVanillaOre;
 import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -78,6 +79,8 @@ public class GradientMod {
 
     CapabilityPlayerProgress.register();
 
+    MinecraftForge.ORE_GEN_BUS.register(DisableVanillaOre.class);
+
     CapabilityEnergy.register(
       IKineticEnergyStorage.class,
       IKineticEnergyTransfer.class,
@@ -94,7 +97,6 @@ public class GradientMod {
   public void init(final FMLInitializationEvent event) {
     logger.info("------------------- INIT -------------------");
 
-    GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
 
     GradientMetals.registerMeltables();

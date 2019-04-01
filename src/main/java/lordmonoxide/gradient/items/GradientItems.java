@@ -123,7 +123,7 @@ public final class GradientItems {
 
   private static final Map<GradientMetals.Metal, ItemMetal> NUGGET = new HashMap<>();
   private static final Map<GradientMetals.Metal, ItemMetal> CRUSHED = new HashMap<>();
-  private static final Map<GradientMetals.Metal, ItemMetal> CRUSHED_PURIFIED = new HashMap<>();
+  private static final Map<GradientMetals.Metal, ItemMetal> PURIFIED = new HashMap<>();
   private static final Map<GradientMetals.Metal, ItemMetal> DUST = new HashMap<>();
   private static final Map<GradientMetals.Metal, ItemMetal> PLATE = new HashMap<>();
   private static final Map<GradientCasts.Cast, Map<GradientMetals.Metal, CastItem>> CAST_ITEM = new HashMap<>();
@@ -138,7 +138,7 @@ public final class GradientItems {
 
       if(metal.canMakeIngots) {
         CRUSHED.put(metal, new ItemMetal("crushed", metal));
-        CRUSHED_PURIFIED.put(metal, new ItemMetal("crushed.purified", metal));
+        PURIFIED.put(metal, new ItemMetal("purified", metal));
       }
 
       DUST.put(metal, new ItemMetal("dust", metal));
@@ -189,8 +189,8 @@ public final class GradientItems {
     return CRUSHED.get(metal);
   }
 
-  public static ItemMetal crushedPurified(final GradientMetals.Metal metal) {
-    return CRUSHED_PURIFIED.get(metal);
+  public static ItemMetal purified(final GradientMetals.Metal metal) {
+    return PURIFIED.get(metal);
   }
 
   public static ItemMetal dust(final GradientMetals.Metal metal) {
@@ -233,6 +233,12 @@ public final class GradientItems {
     registry.register(new ItemBlock(GradientBlocks.STRIPPED_DARK_OAK_WOOD).setRegistryName(GradientBlocks.STRIPPED_DARK_OAK_WOOD.getRegistryName()));
 
     registry.register(new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName()));
+
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      final Block pebble = ForgeRegistries.BLOCKS.getValue(GradientMod.resource(GradientBlocks.PEBBLE.getRegistryName().getPath() + '.' + metal.name));
+      registry.register(new ItemPebble(pebble).setRegistryName(pebble.getRegistryName()));
+    }
+
     registry.register(new ItemClayCastUnhardened(GradientBlocks.CLAY_CAST_UNHARDENED).setRegistryName(GradientBlocks.CLAY_CAST_UNHARDENED.getRegistryName()));
     registry.register(new ItemClayCast(GradientBlocks.CLAY_CAST_HARDENED).setRegistryName(GradientBlocks.CLAY_CAST_HARDENED.getRegistryName()));
 
@@ -322,7 +328,7 @@ public final class GradientItems {
 
     NUGGET.values().forEach(registry::register);
     CRUSHED.values().forEach(registry::register);
-    CRUSHED_PURIFIED.values().forEach(registry::register);
+    PURIFIED.values().forEach(registry::register);
     DUST.values().forEach(registry::register);
     PLATE.values().forEach(registry::register);
     CAST_ITEM.values().forEach(map -> map.values().forEach(registry::register));
@@ -377,25 +383,26 @@ public final class GradientItems {
     OreDictionary.registerOre("toolKnife", FLINT_KNIFE.getWildcardItemStack());
 
     // Metals/metal tools
-    OreDictionary.registerOre("oreMagnesium", GradientBlocks.ORE_MAGNESIUM);
     OreDictionary.registerOre("nuggetCoal", NUGGET_COAL);
 
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);
 
+      OreDictionary.registerOre("ore" + caps, ForgeRegistries.BLOCKS.getValue(GradientMod.resource("ore." + metal.name)));
+
       if(metal.canMakeNuggets) {
         OreDictionary.registerOre("nugget" + caps, nugget(metal));
         OreDictionary.registerOre("crushed" + caps, crushed(metal));
-        OreDictionary.registerOre("crushedPurified" + caps, crushedPurified(metal));
+        OreDictionary.registerOre("purified" + caps, purified(metal));
       }
 
       OreDictionary.registerOre("dust" + caps, dust(metal));
 
       if(metal.canMakeIngots) {
-        OreDictionary.registerOre("ingot" + caps, GradientItems.castItem(GradientCasts.INGOT, metal, 1));
+        OreDictionary.registerOre("ingot" + caps, castItem(GradientCasts.INGOT, metal, 1));
       }
 
-      OreDictionary.registerOre("block" + caps, GradientItems.castItem(GradientCasts.BLOCK, metal, 1));
+      OreDictionary.registerOre("block" + caps, castItem(GradientCasts.BLOCK, metal, 1));
 
       if(metal.canMakePlates) {
         OreDictionary.registerOre("plate" + caps, plate(metal));

@@ -1,10 +1,10 @@
 package lordmonoxide.gradient.blocks.firepit;
 
-import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
+import lordmonoxide.gradient.recipes.FuelRecipe;
 import lordmonoxide.gradient.recipes.HardeningRecipe;
 import lordmonoxide.gradient.recipes.RecipeHelper;
 import net.minecraft.block.state.IBlockState;
@@ -57,7 +57,7 @@ public class TileFirePit extends HeatProducer {
   private Age age = Age.AGE1;
   private int ticks;
 
-  private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
+  private final Fuel[] fuels = new Fuel[FUEL_SLOTS_COUNT];
 
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
 
@@ -78,10 +78,10 @@ public class TileFirePit extends HeatProducer {
   }
 
   public boolean isBurning(final int slot) {
-    return this.fuels[slot] != null;
+    return this.fuels[slot] != null && this.fuels[slot].isBurning;
   }
 
-  public GradientFuel.BurningFuel getBurningFuel(final int slot) {
+  public Fuel getBurningFuel(final int slot) {
     return this.fuels[slot];
   }
 
@@ -95,6 +95,7 @@ public class TileFirePit extends HeatProducer {
 
   public ItemStack takeFuel(final int slot) {
     final ItemStack fuel = this.inventory.extractItem(FIRST_FUEL_SLOT + slot, this.inventory.getSlotLimit(FIRST_FUEL_SLOT + slot), false);
+    this.fuels[slot] = null;
     this.sync();
     return fuel;
   }
@@ -129,20 +130,25 @@ public class TileFirePit extends HeatProducer {
     return output;
   }
 
-  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
-    if(GradientFuel.has(stack)) {
-      for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
-        if(!this.hasFuel(slot)) {
+  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player, final IBlockState state) {
+    final Age age = RecipeHelper.getPlayerAge(player);
+
+    for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
+      if(!this.hasFuel(slot)) {
+        final FuelRecipe recipe = RecipeHelper.findRecipe(FuelRecipe.class, r -> r.matches(stack));
+
+        if(recipe != null) {
           final ItemStack input = stack.splitStack(1);
           this.setFuelSlot(slot, input);
+          this.fuels[slot] = new Fuel(recipe, age);
           this.sync();
           return stack;
         }
       }
     }
 
-    if(!this.hasInput()) {
-      this.age = RecipeHelper.getPlayerAge(player);
+    if(!this.hasInput() && !this.hasFurnace(state)) {
+      this.age = age;
 
       final ItemStack input = stack.splitStack(1);
       this.inventory.setStackInSlot(FIRST_INPUT_SLOT, input);
@@ -236,11 +242,10 @@ public class TileFirePit extends HeatProducer {
 
   private void igniteFuel() {
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
-      if(!this.isBurning(i) && !this.getFuelSlot(i).isEmpty()) {
-        final GradientFuel.Fuel fuel = GradientFuel.get(this.getFuelSlot(i));
-
-        if(this.canIgnite(fuel)) {
-          this.fuels[i] = new GradientFuel.BurningFuel(fuel);
+      if(!this.isBurning(i) && this.fuels[i] != null) {
+        if(this.canIgnite(this.fuels[i])) {
+          this.fuels[i].ignite();
+          this.sync();
         }
       }
     }
@@ -356,7 +361,7 @@ public class TileFirePit extends HeatProducer {
 
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
       if(this.isBurning(slot)) {
-        final GradientFuel.BurningFuel fuel = this.fuels[slot];
+        final Fuel fuel = this.fuels[slot];
 
         fuel.tick();
 
@@ -365,8 +370,8 @@ public class TileFirePit extends HeatProducer {
           this.setFuelSlot(slot, ItemStack.EMPTY);
         }
 
-        if(fuel.fuel.burnTemp > this.getHeat()) {
-          temperatureChange += fuel.fuel.heatPerSec;
+        if(fuel.recipe.burnTemp > this.getHeat()) {
+          temperatureChange += fuel.recipe.heatPerSec;
         }
       }
     }
@@ -386,16 +391,12 @@ public class TileFirePit extends HeatProducer {
     return 0.6f;
   }
 
-  private ItemStack getFuelSlot(final int slot) {
-    return this.inventory.getStackInSlot(FIRST_FUEL_SLOT + slot);
-  }
-
   private void setFuelSlot(final int slot, final ItemStack stack) {
     this.inventory.setStackInSlot(FIRST_FUEL_SLOT + slot, stack);
   }
 
-  private boolean canIgnite(final GradientFuel.Fuel fuel) {
-    return this.getHeat() >= fuel.ignitionTemp;
+  private boolean canIgnite(final Fuel fuel) {
+    return this.getHeat() >= fuel.recipe.ignitionTemp;
   }
 
   private void updateRecipe() {
@@ -410,11 +411,14 @@ public class TileFirePit extends HeatProducer {
 
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
       if(this.isBurning(i)) {
-        final GradientFuel.BurningFuel fuel = this.getBurningFuel(i);
+        final Fuel fuel = this.getBurningFuel(i);
 
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
-        fuel.writeToNbt(tag);
+        tag.setString("recipe", fuel.recipe.getRegistryName().toString());
+        tag.setInteger("age", fuel.age.value());
+        tag.setInteger("ticks", fuel.burnTicks);
+        tag.setBoolean("burning", fuel.isBurning);
         fuels.appendTag(tag);
       }
     }
@@ -458,7 +462,16 @@ public class TileFirePit extends HeatProducer {
       final int slot = tag.getInteger("slot");
 
       if(slot < FUEL_SLOTS_COUNT) {
-        this.fuels[slot] = GradientFuel.BurningFuel.fromNbt(GradientFuel.get(this.getFuelSlot(slot)), tag);
+        final FuelRecipe recipe = (FuelRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(tag.getString("recipe")));
+        final Age age1 = Age.get(tag.getInteger("age"));
+        final int ticks = tag.getInteger("ticks");
+        final boolean burning = tag.getBoolean("burning");
+
+        final Fuel fuel = new Fuel(recipe, age1);
+        fuel.burnTicks = ticks;
+        fuel.isBurning = burning;
+
+        this.fuels[slot] = fuel;
       }
     }
 
@@ -467,7 +480,7 @@ public class TileFirePit extends HeatProducer {
     try {
       this.age = Age.get(age);
     } catch(final IndexOutOfBoundsException e) {
-      GradientMod.logger.warn("Invalid age in %s: %d", this, age);
+      GradientMod.logger.warn("Invalid age in {}: {}", this, age);
     }
 
     this.ticks = compound.getInteger("ticks");
@@ -508,6 +521,32 @@ public class TileFirePit extends HeatProducer {
     }
 
     return super.getCapability(capability, facing);
+  }
+
+  public static final class Fuel {
+    public final FuelRecipe recipe;
+    public final Age age;
+    private final int burnTicksTotal;
+    private int burnTicks;
+    private boolean isBurning;
+
+    private Fuel(final FuelRecipe recipe, final Age age) {
+      this.recipe = recipe;
+      this.age = age;
+      this.burnTicksTotal = this.recipe.duration * 20;
+    }
+
+    private void tick() {
+      this.burnTicks++;
+    }
+
+    private void ignite() {
+      this.isBurning = true;
+    }
+
+    public boolean isDepleted() {
+      return this.burnTicks >= this.burnTicksTotal;
+    }
   }
 
   public static final class Hardening {

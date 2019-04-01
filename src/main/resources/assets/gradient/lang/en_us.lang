@@ -38,6 +38,7 @@ item.bone_awl.name=Bone Awl
 item.stone_hammer.name=Stone Hammer
 item.stone_hatchet.name=Stone Hatchet
 item.stone_mattock.name=Stone Mattock
+item.stone_pickaxe.name=Stone Pickaxe
 item.fire_starter.name=Fire Starter
 item.flint_knife.name=Flint Knife
 item.tool.pickaxe.copper.name=Copper Pickaxe
@@ -248,6 +249,8 @@ item.clay_bucket_item.name=Clay Bucket of %s
 item.clay_bucket_item.empty.name=Empty Clay Bucket
 tile.clay_furnace.unhardened.name=Unhardened Clay Furnace
 tile.clay_furnace.hardened.name=Clay Furnace
+tile.clay_oven.unhardened.name=Unhardened Clay Oven
+tile.clay_oven.hardened.name=Clay Oven
 tile.clay_crucible.unhardened.name=Unhardened Clay Crucible
 tile.clay_crucible.hardened.name=Clay Crucible
 tile.clay_crucible.molten=%s: %f
@@ -328,6 +331,12 @@ jei.grinder.ticks=%d ticks
 jei.hardening.name=Hardening
 jei.hardening.ticks=%d ticks
 jei.hardening.instructions=Place next to a firepit
+
+jei.fuel.name=Fuel
+jei.fuel.duration=Burn time: %d seconds
+jei.fuel.ignitionTemp=Ignition temperature: %d °C
+jei.fuel.burnTemp=Max temperature: %d °C
+jei.fuel.heatPerSec=Heat: %d °C/s
 
 # Commands
 commands.setage.usage=/setage <age> [<player>]

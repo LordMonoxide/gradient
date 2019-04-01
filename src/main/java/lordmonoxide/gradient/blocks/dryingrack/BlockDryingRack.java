@@ -5,6 +5,7 @@ import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,6 +22,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
+
+import javax.annotation.Nullable;
 
 public class BlockDryingRack extends GradientBlock {
   private static final AxisAlignedBB AABB_NORTH  = new AxisAlignedBB( 0.0d,         13.0d / 16.0d,  0.0d,         1.0d,         1.0d, 2.0d / 16.0d);
@@ -140,6 +143,20 @@ public class BlockDryingRack extends GradientBlock {
     return new BlockStateContainer(this, FACING, ROOF);
   }
 
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+    return false;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+    return BlockFaceShape.UNDEFINED;
+  }
+
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
@@ -187,5 +204,13 @@ public class BlockDryingRack extends GradientBlock {
     }
 
     return AABB_DOWN_Z;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  @Nullable
+  public AxisAlignedBB getCollisionBoundingBox(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+    return null;
   }
 }

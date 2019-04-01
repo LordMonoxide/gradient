@@ -17,6 +17,9 @@ import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleHardened;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.claycrucible.TileClayCrucible;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
+import lordmonoxide.gradient.blocks.clayoven.BlockClayOvenHardened;
+import lordmonoxide.gradient.blocks.clayoven.BlockClayOvenUnhardened;
+import lordmonoxide.gradient.blocks.clayoven.TileClayOven;
 import lordmonoxide.gradient.blocks.dryingrack.BlockDryingRack;
 import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
@@ -89,6 +92,8 @@ public final class GradientBlocks {
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = new BlockClayCrucibleUnhardened();
   public static final BlockClayCrucibleHardened   CLAY_CRUCIBLE_HARDENED   = new BlockClayCrucibleHardened();
+  public static final BlockClayOvenUnhardened     CLAY_OVEN_UNHARDENED     = new BlockClayOvenUnhardened();
+  public static final BlockClayOvenHardened       CLAY_OVEN_HARDENED       = new BlockClayOvenHardened();
   public static final BlockClayCast               CLAY_CAST_UNHARDENED     = BlockClayCast.unhardened();
   public static final BlockClayCast               CLAY_CAST_HARDENED       = BlockClayCast.hardened();
   public static final BlockClayBucket             CLAY_BUCKET_UNHARDENED   = BlockClayBucket.unhardened();
@@ -167,6 +172,8 @@ public final class GradientBlocks {
     registry.register(CLAY_FURNACE_HARDENED);
     registry.register(CLAY_CRUCIBLE_UNHARDENED);
     registry.register(CLAY_CRUCIBLE_HARDENED);
+    registry.register(CLAY_OVEN_UNHARDENED);
+    registry.register(CLAY_OVEN_HARDENED);
     registry.register(CLAY_CAST_UNHARDENED);
     registry.register(CLAY_CAST_HARDENED);
     registry.register(CLAY_BUCKET_UNHARDENED);
@@ -196,6 +203,7 @@ public final class GradientBlocks {
     GameRegistry.registerTileEntity(TileWoodenGearbox.class, WOODEN_GEARBOX.getRegistryName());
 
     GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
+    GameRegistry.registerTileEntity(TileClayOven.class,     CLAY_OVEN_HARDENED.getRegistryName());
 
     GameRegistry.registerTileEntity(TileBronzeFurnace.class, BRONZE_FURNACE.getRegistryName());
     GameRegistry.registerTileEntity(TileBronzeBoiler.class,  BRONZE_BOILER.getRegistryName());

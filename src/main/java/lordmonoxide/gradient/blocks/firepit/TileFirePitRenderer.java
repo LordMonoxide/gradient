@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks.firepit;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -13,22 +14,26 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> {
   @Override
   public void render(final TileFirePit firepit, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
+    final IBlockState state = firepit.getWorld().getBlockState(firepit.getPos());
+
     GlStateManager.pushMatrix();
-    GlStateManager.translate((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f);
+    GlStateManager.translate(x + 0.5d, y + 0.5d, z + 0.5d);
 
     final EnumFacing facing = EnumFacing.byHorizontalIndex(firepit.getBlockMetadata());
     final double facingAngle = Math.toRadians(facing.getHorizontalAngle());
+
+    final double fuelAngleOffset = firepit.hasFurnace(state) ? Math.PI / 2 : 0.0d;
 
     for(int slot = 0; slot < TileFirePit.FUEL_SLOTS_COUNT; slot++) {
       if(firepit.hasFuel(slot)) {
         final ItemStack fuel = firepit.getFuel(slot);
 
-        final double angle = (5 - slot) * Math.PI / 4 + facingAngle;
-        final float inputX = (float)Math.cos(angle) * 0.25f;
-        final float inputZ = (float)Math.sin(angle) * 0.25f;
+        final double angle = (5 - slot) * Math.PI / 4 + facingAngle - fuelAngleOffset;
+        final double inputX = Math.cos(angle) * 0.25d;
+        final double inputZ = Math.sin(angle) * 0.25d;
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(inputX, -0.25f, inputZ);
+        GlStateManager.translate(inputX, -0.4375d, inputZ);
         GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
         GlStateManager.scale(0.5f, 0.5f, 0.5f);
         Minecraft.getMinecraft().getRenderItem().renderItem(fuel, ItemCameraTransforms.TransformType.GROUND);
@@ -41,7 +46,7 @@ public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> 
 
       GlStateManager.pushMatrix();
 
-      GlStateManager.translate(0.0f, -0.25f, 0.0f);
+      GlStateManager.translate(0.0d, -0.3125d, 0.0d);
       GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
       GlStateManager.scale(0.5f, 0.5f, 0.5f);
       Minecraft.getMinecraft().getRenderItem().renderItem(input, ItemCameraTransforms.TransformType.GROUND);
@@ -52,11 +57,11 @@ public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> 
     if(firepit.hasOutput()) {
       final ItemStack output = firepit.getOutput();
 
-      final float inputX = (float)Math.cos(facingAngle) * 0.25f;
-      final float inputZ = (float)Math.sin(facingAngle) * 0.25f;
+      final double inputX = Math.cos(facingAngle) * 0.25f;
+      final double inputZ = Math.sin(facingAngle) * 0.25f;
 
       GlStateManager.pushMatrix();
-      GlStateManager.translate(inputX, -0.25f, inputZ);
+      GlStateManager.translate(inputX, -0.40625d, inputZ);
 
       if(output.getCount() > 1) {
         this.drawNameplate(firepit, Integer.toString(output.getCount()), -0.5d, -1.05d, -0.5d, 16);

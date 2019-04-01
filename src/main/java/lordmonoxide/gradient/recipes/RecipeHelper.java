@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.recipes;
 
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.PlayerProgress;
@@ -50,7 +51,8 @@ public final class RecipeHelper {
 
       // Can't find player
       return null;
-    } catch(final Exception e) {
+    } catch(final Throwable e) {
+      GradientMod.logger.error("Failed to get player from inv", e);
       throw new RuntimeException(e);
     }
   }

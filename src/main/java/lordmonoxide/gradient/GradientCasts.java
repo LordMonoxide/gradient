@@ -9,13 +9,14 @@ import net.minecraftforge.fluids.Fluid;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 public final class GradientCasts {
   private GradientCasts() { }
 
-  private static final Map<String, Cast> CASTS = new HashMap<>();
+  private static final Map<String, Cast> CASTS = new LinkedHashMap<>();
 
   public static final Cast PICKAXE = register("pickaxe").isValid(metal -> metal.canMakeTools).add();
   public static final Cast MATTOCK = register("mattock").isValid(metal -> metal.canMakeTools).add();

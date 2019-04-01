@@ -17,16 +17,19 @@ import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleHardened;
 import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
 import lordmonoxide.gradient.blocks.claycrucible.TileClayCrucible;
 import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
+import lordmonoxide.gradient.blocks.clayoven.BlockClayOvenHardened;
+import lordmonoxide.gradient.blocks.clayoven.BlockClayOvenUnhardened;
+import lordmonoxide.gradient.blocks.clayoven.TileClayOven;
 import lordmonoxide.gradient.blocks.dryingrack.BlockDryingRack;
 import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
 import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
 import lordmonoxide.gradient.blocks.firepit.TileFirePit;
-import lordmonoxide.gradient.blocks.kinetic.woodenaxle.BlockWoodenAxle;
-import lordmonoxide.gradient.blocks.kinetic.woodenaxle.TileWoodenAxle;
 import lordmonoxide.gradient.blocks.kinetic.flywheel.BlockFlywheel;
 import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheel;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.BlockHandCrank;
 import lordmonoxide.gradient.blocks.kinetic.handcrank.TileHandCrank;
+import lordmonoxide.gradient.blocks.kinetic.woodenaxle.BlockWoodenAxle;
+import lordmonoxide.gradient.blocks.kinetic.woodenaxle.TileWoodenAxle;
 import lordmonoxide.gradient.blocks.kinetic.woodengearbox.BlockWoodenGearbox;
 import lordmonoxide.gradient.blocks.kinetic.woodengearbox.TileWoodenGearbox;
 import lordmonoxide.gradient.blocks.manualgrinder.BlockManualGrinder;
@@ -66,8 +69,6 @@ public final class GradientBlocks {
   public static final Block STRIPPED_ACACIA_WOOD   = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_acacia_wood")).setTranslationKey("stripped_acacia_wood");
   public static final Block STRIPPED_DARK_OAK_WOOD = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_dark_oak_wood")).setTranslationKey("stripped_dark_oak_wood");
 
-  public static final BlockOreMagnesium ORE_MAGNESIUM = new BlockOreMagnesium();
-
   public static final BlockFirePit    FIRE_PIT          = new BlockFirePit();
   public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f, 0.9375f);
   public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT);
@@ -91,6 +92,8 @@ public final class GradientBlocks {
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
   public static final BlockClayCrucibleUnhardened CLAY_CRUCIBLE_UNHARDENED = new BlockClayCrucibleUnhardened();
   public static final BlockClayCrucibleHardened   CLAY_CRUCIBLE_HARDENED   = new BlockClayCrucibleHardened();
+  public static final BlockClayOvenUnhardened     CLAY_OVEN_UNHARDENED     = new BlockClayOvenUnhardened();
+  public static final BlockClayOvenHardened       CLAY_OVEN_HARDENED       = new BlockClayOvenHardened();
   public static final BlockClayCast               CLAY_CAST_UNHARDENED     = BlockClayCast.unhardened();
   public static final BlockClayCast               CLAY_CAST_HARDENED       = BlockClayCast.hardened();
   public static final BlockClayBucket             CLAY_BUCKET_UNHARDENED   = BlockClayBucket.unhardened();
@@ -127,7 +130,16 @@ public final class GradientBlocks {
 
     final IForgeRegistry<Block> registry = event.getRegistry();
 
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      registry.register(new BlockOre(metal));
+    }
+
     registry.register(PEBBLE);
+
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      registry.register(new BlockPebble(metal));
+    }
+
     registry.register(SALT_BLOCK);
 
     registry.register(STRIPPED_OAK_WOOD);
@@ -136,8 +148,6 @@ public final class GradientBlocks {
     registry.register(STRIPPED_JUNGLE_WOOD);
     registry.register(STRIPPED_ACACIA_WOOD);
     registry.register(STRIPPED_DARK_OAK_WOOD);
-
-    registry.register(ORE_MAGNESIUM);
 
     registry.register(FIRE_PIT);
     registry.register(FIBRE_TORCH_LIT);
@@ -162,6 +172,8 @@ public final class GradientBlocks {
     registry.register(CLAY_FURNACE_HARDENED);
     registry.register(CLAY_CRUCIBLE_UNHARDENED);
     registry.register(CLAY_CRUCIBLE_HARDENED);
+    registry.register(CLAY_OVEN_UNHARDENED);
+    registry.register(CLAY_OVEN_HARDENED);
     registry.register(CLAY_CAST_UNHARDENED);
     registry.register(CLAY_CAST_HARDENED);
     registry.register(CLAY_BUCKET_UNHARDENED);
@@ -191,6 +203,7 @@ public final class GradientBlocks {
     GameRegistry.registerTileEntity(TileWoodenGearbox.class, WOODEN_GEARBOX.getRegistryName());
 
     GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
+    GameRegistry.registerTileEntity(TileClayOven.class,     CLAY_OVEN_HARDENED.getRegistryName());
 
     GameRegistry.registerTileEntity(TileBronzeFurnace.class, BRONZE_FURNACE.getRegistryName());
     GameRegistry.registerTileEntity(TileBronzeBoiler.class,  BRONZE_BOILER.getRegistryName());

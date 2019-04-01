@@ -73,10 +73,11 @@ public class Waterskin extends ItemFluidContainer {
   public ActionResult<ItemStack> onItemRightClick(@Nonnull final World world, @Nonnull final EntityPlayer player, @Nonnull final EnumHand hand) {
     final ItemStack itemstack = player.getHeldItem(hand);
     final FluidStack fluidStack = getFluid(itemstack);
+
     if(fluidStack == null) {
       final RayTraceResult target = this.rayTrace(world, player, true);
 
-      if(target.typeOfHit != RayTraceResult.Type.BLOCK) {
+      if(target == null || target.typeOfHit != RayTraceResult.Type.BLOCK) {
         return ActionResult.newResult(EnumActionResult.PASS, itemstack);
       }
 

@@ -6,6 +6,7 @@ import lordmonoxide.gradient.blocks.ItemBlockProvider;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -15,6 +16,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockClayFurnace extends GradientBlock implements ItemBlockProvider {
@@ -37,7 +39,33 @@ public class BlockClayFurnace extends GradientBlock implements ItemBlockProvider
 
   @Override
   @Deprecated
+  @SuppressWarnings("deprecation")
+  public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+    return side != EnumFacing.UP && side != EnumFacing.SOUTH;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+    if(face != EnumFacing.UP && face != EnumFacing.SOUTH) {
+      return BlockFaceShape.SOLID;
+    }
+
+    return BlockFaceShape.UNDEFINED;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
   public boolean isOpaqueCube(final IBlockState state) {
+    return false;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  public boolean isTopSolid(final IBlockState state) {
     return false;
   }
 
@@ -46,6 +74,7 @@ public class BlockClayFurnace extends GradientBlock implements ItemBlockProvider
     world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
@@ -57,12 +86,14 @@ public class BlockClayFurnace extends GradientBlock implements ItemBlockProvider
     return state.getValue(FACING).getHorizontalIndex();
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState withRotation(final IBlockState state, final Rotation rot) {
     return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState withMirror(final IBlockState state, final Mirror mirror) {

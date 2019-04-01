@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.energy;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.config.EnergyNetworkConfig;
+import lordmonoxide.gradient.config.GradientConfig;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLLog;
@@ -28,7 +28,7 @@ public final class EnergyNetworkManager {
 
     for(final EnergyNetwork<?, ?> manager : list) {
       if(manager.storage == storage && manager.transfer == transfer) {
-        if(EnergyNetworkConfig.enableNodeDebug) {
+        if(GradientConfig.enet.enableNodeDebug) {
           GradientMod.logger.info("Using manager {}", manager);
         }
 
@@ -38,7 +38,7 @@ public final class EnergyNetworkManager {
 
     final EnergyNetwork<STORAGE, TRANSFER> network = new EnergyNetwork<>(world.provider.getDimension(), world, storage, transfer);
 
-    if(EnergyNetworkConfig.enableNodeDebug) {
+    if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("New manager {}", network);
     }
 

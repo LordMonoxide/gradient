@@ -1,18 +1,25 @@
 package lordmonoxide.gradient.blocks.pebble;
 
+import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -20,31 +27,43 @@ import java.util.Random;
 public class BlockPebble extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.25d, 0.0d, 0.25d, 0.75d, 0.25d, 0.75d);
 
+  @Nullable
+  private final GradientMetals.Metal metal;
+
   public BlockPebble() {
     super("pebble", CreativeTabs.MATERIALS, Material.GROUND, MapColor.GRAY); //$NON-NLS-1$
     this.setHardness(0.0f);
     this.setResistance(0.0f);
     this.setLightOpacity(0);
+    this.metal = null;
   }
 
-  /**
-   * Returns the quantity of items to drop on block destruction.
-   */
-  @Override
-  public int quantityDropped(final IBlockState state, final int fortune, final Random rand) {
-    return rand.nextInt(2) + 1;
+  public BlockPebble(final GradientMetals.Metal metal) {
+    super("pebble." + metal.name, CreativeTabs.MATERIALS, Material.GROUND, MapColor.GRAY); //$NON-NLS-1$
+    this.setHardness(0.0f);
+    this.setResistance(0.0f);
+    this.setLightOpacity(0);
+    this.metal = metal;
+    this.setTranslationKey("pebble");
   }
 
-  /**
-   * Get the Item that this Block should drop when harvested.
-   */
   @Override
-  public Item getItemDropped(final IBlockState state, final Random rand, final int fortune) {
-    if(rand.nextInt(6) == 0) {
-      return Items.FLINT;
+  public void getDrops(final NonNullList<ItemStack> drops, final IBlockAccess world, final BlockPos pos, final IBlockState state, final int fortune) {
+    final Random rand = world instanceof World ? ((World)world).rand : RANDOM;
+
+    for(int i = 0; i < rand.nextInt(2); i++) {
+      if(rand.nextInt(6) == 0) {
+        drops.add(new ItemStack(Items.FLINT));
+      } else {
+        drops.add(new ItemStack(Item.getItemFromBlock(this)));
+      }
     }
 
-    return Item.getItemFromBlock(this);
+    if(this.metal != null) {
+      if(rand.nextInt(2) == 0) {
+        drops.add(new ItemStack(ForgeRegistries.ITEMS.getValue(GradientMod.resource("nugget." + this.metal.name))));
+      }
+    }
   }
 
   /**
@@ -54,6 +73,18 @@ public class BlockPebble extends GradientBlock {
   @SuppressWarnings("deprecation")
   public boolean isOpaqueCube(final IBlockState state) {
     return false;
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+    return false;
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+    return BlockFaceShape.UNDEFINED;
   }
 
   @Override

@@ -1,0 +1,10 @@
+{
+  "type": "gradient:fuel",
+  "duration": 107374182,
+  "ignitionTemp": 0,
+  "burnTemp": 2700,
+  "heatPerSec": 1.5,
+  "ingredient": {
+    "item": "gradient:infinicoal"
+  }
+}

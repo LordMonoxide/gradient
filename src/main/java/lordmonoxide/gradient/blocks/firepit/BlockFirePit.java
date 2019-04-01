@@ -13,6 +13,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -41,7 +42,7 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class BlockFirePit extends HeatSinkerBlock {
-  private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.3d, 1.0d);
+  private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.25d, 1.0d);
 
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
   public static final PropertyBool HAS_FURNACE = PropertyBool.create("has_furnace");
@@ -198,7 +199,7 @@ public class BlockFirePit extends HeatSinkerBlock {
 
       // Put stuff in
       if(!held.isEmpty()) {
-        final ItemStack remaining = firepit.insertItem(held.copy(), player);
+        final ItemStack remaining = firepit.insertItem(held.copy(), player, state);
 
         if(!player.isCreative()) {
           player.setHeldItem(hand, remaining);
@@ -268,6 +269,28 @@ public class BlockFirePit extends HeatSinkerBlock {
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
+  public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+    if(state.getValue(HAS_FURNACE)) {
+      return GradientBlocks.CLAY_FURNACE_HARDENED.isSideSolid(state, world, pos, side);
+    }
+
+    return false;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+    if(state.getValue(HAS_FURNACE)) {
+      return GradientBlocks.CLAY_FURNACE_HARDENED.getBlockFaceShape(world, state, pos, face);
+    }
+
+    return BlockFaceShape.UNDEFINED;
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
   public IBlockState withRotation(final IBlockState state, final Rotation rot) {
     return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
   }
@@ -281,6 +304,6 @@ public class BlockFirePit extends HeatSinkerBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING, HAS_FURNACE);
+    return new BlockStateContainer.Builder(this).add(FACING, HAS_FURNACE).build();
   }
 }

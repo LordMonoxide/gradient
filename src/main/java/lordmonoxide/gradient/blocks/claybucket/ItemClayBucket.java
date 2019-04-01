@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks.claybucket;
 
 import lordmonoxide.gradient.ModelManager;
+import lordmonoxide.gradient.client.rendering.ModelClayBucket;
 import lordmonoxide.gradient.items.GradientItem;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.BlockDispenser;
@@ -8,17 +9,25 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.DispenseFluidContainer;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -116,7 +125,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
       }
     }
 
-    if(mop.typeOfHit != RayTraceResult.Type.BLOCK) {
+    if(mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK) {
       return ActionResult.newResult(EnumActionResult.PASS, itemstack);
     }
 
@@ -160,7 +169,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
     // not for us to handle
     final ItemStack emptyBucket = event.getEmptyBucket();
-    if(emptyBucket.isEmpty() || !emptyBucket.isItemEqual(ItemClayBucket.this.empty)) {
+    if(emptyBucket.isEmpty() || !emptyBucket.isItemEqual(this.empty)) {
       return;
     }
 
@@ -189,7 +198,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
   @Override
   public void registerCustomModels() {
-    ModelLoader.setBucketModelDefinition(this);
+    ModelClayBucket.setBucketModelDefinition(this);
   }
 
   public class FluidBucketWrapper implements IFluidHandlerItem, ICapabilityProvider {

@@ -1,0 +1,10 @@
+{
+  "type": "gradient:fuel",
+  "duration": 5,
+  "ignitionTemp": 50,
+  "burnTemp": 500,
+  "heatPerSec": 32.0,
+  "ingredient": {
+    "item": "gradient:igniter"
+  }
+}

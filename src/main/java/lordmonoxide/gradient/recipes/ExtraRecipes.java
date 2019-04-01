@@ -140,7 +140,7 @@ public final class ExtraRecipes {
           registry.register(new ShapedRecipes(
               GradientMod.MODID,
               1, 3,
-              NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(GradientItems.castItem(type.cast, metal, 1)), new OreIngredient("string"), new OreIngredient("stickWood")),
+              NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(GradientItems.castItem(type.cast, metal, 1)), Ingredient.fromItem(GradientItems.LEATHER_CORD), Ingredient.fromItem(GradientItems.HARDENED_STICK)),
               GradientItems.tool(type, metal).getItemStack()
           ).setRegistryName(GradientMod.resource("tool." + type.cast.name + '.' + metal.name)));
         }
@@ -173,8 +173,8 @@ public final class ExtraRecipes {
     final NBTTagCompound nbt = new NBTTagCompound();
     nbt.setInteger("amount", 1000); // Water amount
 
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictHelper.getFirst("crushedPurifiedBronze"));
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictHelper.getFirst("crushedPurifiedMagnesium"));
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictHelper.getFirst("purifiedBronze"));
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictHelper.getFirst("purifiedMagnesium"));
   }
 
   private static void registerExtractorRecipes() {

@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.worldgen;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.config.GradientConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -224,6 +225,10 @@ public class OreGenerator implements IWorldGenerator {
 
   @Override
   public void generate(final Random random, final int chunkX, final int chunkZ, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
+    if(!GradientConfig.worldgen.generateOres) {
+      return;
+    }
+
     if(world.provider.getDimensionType() == DimensionType.OVERWORLD) {
       final ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
 

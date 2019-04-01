@@ -343,8 +343,6 @@ public final class GradientItems {
   public static void initOreDict(final RegistryEvent.Register<Item> event) {
     GradientMod.logger.info("Registering ore dict entries");
 
-    OreDictionary.registerOre("infinicoal", INFINICOAL);
-
     OreDictionary.registerOre("coal", Items.COAL);
 
     OreDictionary.registerOre("fibre",  FIBRE);
@@ -370,7 +368,6 @@ public final class GradientItems {
     OreDictionary.registerOre("hide", HIDE_WOLF);
 
     // Tools
-    OreDictionary.registerOre("igniter", GradientItems.IGNITER);
     OreDictionary.registerOre("awl", BONE_AWL.getWildcardItemStack());
     OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
     OreDictionary.registerOre("toolAxe", STONE_HATCHET.getWildcardItemStack());

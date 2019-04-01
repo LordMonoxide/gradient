@@ -10,6 +10,7 @@ import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.recipes.RecipeRemover;
 import lordmonoxide.gradient.worldgen.DisableVanillaOre;
+import lordmonoxide.gradient.worldgen.GeneratePebbles;
 import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -97,6 +98,7 @@ public class GradientMod {
   public void init(final FMLInitializationEvent event) {
     logger.info("------------------- INIT -------------------");
 
+    GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
 
     GradientMetals.registerMeltables();

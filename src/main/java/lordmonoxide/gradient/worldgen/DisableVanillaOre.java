@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.worldgen;
 
+import lordmonoxide.gradient.config.GradientConfig;
 import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -12,6 +13,10 @@ public final class DisableVanillaOre {
 
   @SubscribeEvent
   public static void blockOreSpawn(final OreGenEvent.GenerateMinable event) {
+    if(!GradientConfig.worldgen.disableVanillaOres) {
+      return;
+    }
+
     switch(event.getType()) {
       case COAL:
       case GOLD:

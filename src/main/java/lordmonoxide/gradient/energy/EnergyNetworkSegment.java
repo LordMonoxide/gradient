@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.config.EnergyNetworkConfig;
+import lordmonoxide.gradient.config.GradientConfig;
 import lordmonoxide.gradient.utils.BlockPosUtils;
 import lordmonoxide.gradient.utils.Tuple;
 import net.minecraft.tileentity.TileEntity;
@@ -50,13 +50,13 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
   }
 
   private boolean connect(final BlockPos newNodePos, final TileEntity te, final boolean force) {
-    if(EnergyNetworkConfig.enableNodeDebug) {
+    if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("Adding node {} to enet {} @ {}", te, this, newNodePos);
     }
 
     // First node is always accepted
     if(this.nodes.isEmpty()) {
-      if(EnergyNetworkConfig.enableNodeDebug) {
+      if(GradientConfig.enet.enableNodeDebug) {
         GradientMod.logger.info("First node, adding");
       }
 
@@ -69,14 +69,14 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
       final EnergyNode existing = this.getNode(newNodePos);
 
       if(existing.te == te) {
-        if(EnergyNetworkConfig.enableNodeDebug) {
+        if(GradientConfig.enet.enableNodeDebug) {
           GradientMod.logger.info("{} is already connected at {}", te, newNodePos);
         }
 
         return true;
       }
 
-      if(EnergyNetworkConfig.enableNodeDebug) {
+      if(GradientConfig.enet.enableNodeDebug) {
         GradientMod.logger.info("There is already a different node connected at {}: {}", newNodePos, existing.te);
       }
 
@@ -94,7 +94,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
       final EnumFacing facing = BlockPosUtils.areBlocksAdjacent(newNodePos, nodePos);
 
       if(facing != null) {
-        if(EnergyNetworkConfig.enableNodeDebug) {
+        if(GradientConfig.enet.enableNodeDebug) {
           GradientMod.logger.info("New node is adjacent to {} on facing {}", node, facing);
         }
 
@@ -103,7 +103,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
         if(te.hasCapability(this.storage, facing)) {
           // Storage nodes can't connect to other storage nodes unless it's the only one
           if(!force && node.te.hasCapability(this.storage, facing.getOpposite()) && this.nodes.size() > 1) {
-            if(EnergyNetworkConfig.enableNodeDebug) {
+            if(GradientConfig.enet.enableNodeDebug) {
               GradientMod.logger.info("Adjacent node is storage - moving on");
             }
 
@@ -115,7 +115,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
           // Networks are split by storage nodes (a transfer node can connect to a storage node if it is the only node)
           // Transfer nodes can also connect to storage nodes if the transfer node will be connecting to another transfer node
           if(!force && node.te.hasCapability(this.storage, facing.getOpposite()) && this.nodes.size() > 1) {
-            if(EnergyNetworkConfig.enableNodeDebug) {
+            if(GradientConfig.enet.enableNodeDebug) {
               GradientMod.logger.info("Adjacent node is storage - deferring");
             }
 
@@ -135,14 +135,14 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
         final boolean canConnect = this.canConnect(teNode, node, facing.getOpposite());
 
         if(!force && !canConnect) {
-          if(EnergyNetworkConfig.enableNodeDebug) {
+          if(GradientConfig.enet.enableNodeDebug) {
             GradientMod.logger.info("Adjacent node is not connectable");
           }
 
           continue;
         }
 
-        if(EnergyNetworkConfig.enableNodeDebug) {
+        if(GradientConfig.enet.enableNodeDebug) {
           GradientMod.logger.info("Connecting!");
         }
 
@@ -163,19 +163,19 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
         final EnumFacing facing = entry.getKey();
         final EnergyNode node = entry.getValue();
 
-        if(EnergyNetworkConfig.enableNodeDebug) {
+        if(GradientConfig.enet.enableNodeDebug) {
           GradientMod.logger.info("Checking deferred connection {}", facing);
         }
 
         if(!this.canConnect(te.getCapability(this.transfer, facing), node, facing.getOpposite())) {
-          if(EnergyNetworkConfig.enableNodeDebug) {
+          if(GradientConfig.enet.enableNodeDebug) {
             GradientMod.logger.info("Adjacent node is not connectable");
           }
 
           continue;
         }
 
-        if(EnergyNetworkConfig.enableNodeDebug) {
+        if(GradientConfig.enet.enableNodeDebug) {
           GradientMod.logger.info("Connecting!");
         }
 
@@ -185,7 +185,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     }
 
     if(force && newNode == null) {
-      if(EnergyNetworkConfig.enableNodeDebug) {
+      if(GradientConfig.enet.enableNodeDebug) {
         GradientMod.logger.info("No connections possible but force is true, connecting anyway");
       }
 
@@ -204,12 +204,12 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
    * @return true if this network needs to be rebuild or deleted (i.e. empty) by the manager
    */
   public boolean disconnect(final BlockPos pos) {
-    if(EnergyNetworkConfig.enableNodeDebug) {
+    if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("Removing {} from {}", pos, this);
     }
 
     if(!this.nodes.containsKey(pos)) {
-      if(EnergyNetworkConfig.enableNodeDebug) {
+      if(GradientConfig.enet.enableNodeDebug) {
         GradientMod.logger.info("Node {} did not exist in {}", pos, this);
       }
 
@@ -364,7 +364,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
           if(transferEntity.hasCapability(this.transfer, facingFrom)) {
             final TRANSFER transfer = transferEntity.getCapability(this.transfer, facingFrom);
 
-            if(EnergyNetworkConfig.enableNodeDebug) {
+            if(GradientConfig.enet.enableNodeDebug) {
               GradientMod.logger.info("Routing {} through {}", sourced, pathPos);
             }
 
@@ -408,7 +408,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     final Tuple<BlockPos, EnumFacing> startTuple = new Tuple<>(start, startFacing);
     final Tuple<BlockPos, EnumFacing> goalTuple = new Tuple<>(goal, goalFacing);
 
-    if(EnergyNetworkConfig.enablePathDebug) {
+    if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Starting pathfind at {} {}, goal {} {}", start, startFacing, goal, goalFacing);
     }
 
@@ -419,12 +419,12 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     while(!this.open.isEmpty()) {
       final Tuple<BlockPos, EnumFacing> current = this.getLowest(this.fScore);
 
-      if(EnergyNetworkConfig.enablePathDebug) {
+      if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("Current = {} {}", current.a, current.b);
       }
 
       if(current.equals(goalTuple)) {
-        if(EnergyNetworkConfig.enablePathDebug) {
+        if(GradientConfig.enet.enablePathDebug) {
           GradientMod.logger.info("GOAL!");
         }
 
@@ -442,7 +442,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
       }
     }
 
-    if(EnergyNetworkConfig.enablePathDebug) {
+    if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Pathfinding failed");
     }
 
@@ -450,14 +450,14 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
   }
 
   private void pathFindSide(final EnumFacing side, final EnergyNode currentNode, final Tuple<BlockPos, EnumFacing> currentTuple, final Tuple<BlockPos, EnumFacing> goalTuple) {
-    if(EnergyNetworkConfig.enablePathDebug) {
+    if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Checking side {}, came from {} {}", side, currentTuple.a, currentTuple.b);
     }
 
     final EnergyNode neighbourNode = currentNode.connection(side);
 
     if(neighbourNode == null) {
-      if(EnergyNetworkConfig.enablePathDebug) {
+      if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("No node, skipping");
       }
 
@@ -466,7 +466,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
     final BlockPos neighbour = currentTuple.a.offset(side);
 
-    if(EnergyNetworkConfig.enablePathDebug) {
+    if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Found {}", neighbour);
     }
 
@@ -474,7 +474,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     final Tuple<BlockPos, EnumFacing> neighbourTuple = new Tuple<>(neighbour, opposite);
 
     if(!neighbourNode.te.hasCapability(this.transfer, opposite) && !neighbourTuple.equals(goalTuple)) {
-      if(EnergyNetworkConfig.enablePathDebug) {
+      if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("Not a transfer node, skipping");
       }
 
@@ -482,7 +482,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     }
 
     if(this.closed.contains(neighbourTuple)) {
-      if(EnergyNetworkConfig.enablePathDebug) {
+      if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("Already visited, skipping");
       }
 
@@ -491,7 +491,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
     // Make sure the side we're trying to leave from is the same transfer node that we entered from
     if(currentNode.te.getCapability(this.transfer, currentTuple.b) != currentNode.te.getCapability(this.transfer, side)) {
-      if(EnergyNetworkConfig.enablePathDebug) {
+      if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("Sides have different transfer nodes, skipping");
       }
 
@@ -500,12 +500,12 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
     final int g = this.gScore.getInt(currentTuple) + 1; // 1 = distance
 
-    if(EnergyNetworkConfig.enablePathDebug) {
+    if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("New G = {}, current G = {}", g, this.gScore.getInt(neighbourTuple));
     }
 
     if(g >= this.gScore.getInt(neighbourTuple)) {
-      if(EnergyNetworkConfig.enablePathDebug) {
+      if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("G >= neighbour");
       }
 
@@ -518,20 +518,20 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     this.gScore.put(neighbourTuple, g);
     this.fScore.put(neighbourTuple, g + this.pathFindHeuristic(neighbour, goalTuple.a));
 
-    if(EnergyNetworkConfig.enablePathDebug) {
+    if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Adding node {} G = {} F = {}", neighbour, this.gScore.getInt(neighbourTuple), this.fScore.getInt(neighbourTuple));
     }
   }
 
   private List<BlockPos> reconstructPath(final Map<Tuple<BlockPos, EnumFacing>, Tuple<BlockPos, EnumFacing>> cameFrom, final Tuple<BlockPos, EnumFacing> goal) {
-    if(EnergyNetworkConfig.enablePathDebug) {
+    if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Path:");
     }
 
     final List<BlockPos> path = new ArrayList<>();
     path.add(goal.a);
 
-    if(EnergyNetworkConfig.enablePathDebug) {
+    if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("{} {}", goal.a, goal.b);
     }
 
@@ -541,7 +541,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
       current = cameFrom.get(current);
       path.add(current.a);
 
-      if(EnergyNetworkConfig.enablePathDebug) {
+      if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("{} {}", current.a, current.b);
       }
     }
@@ -595,14 +595,14 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
   void merge(final EnergyNetworkSegment<STORAGE, TRANSFER> other) {
     if(this == other) {
-      if(EnergyNetworkConfig.enableNodeDebug) {
+      if(GradientConfig.enet.enableNodeDebug) {
         GradientMod.logger.info("Skipping merge - same network");
       }
 
       return;
     }
 
-    if(EnergyNetworkConfig.enableNodeDebug) {
+    if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("Merging networks {}, {}", this, other);
     }
 

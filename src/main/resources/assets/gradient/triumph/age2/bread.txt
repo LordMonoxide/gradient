@@ -9,4 +9,4 @@ criteria1 = addCriteria("hasBread", "minecraft:inventory_changed")
 criteria1.addItem(<minecraft:bread>)
 
 setRequiresParents()
-setPos(253,45)
+setPos(252,53)

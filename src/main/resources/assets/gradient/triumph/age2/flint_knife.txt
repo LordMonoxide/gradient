@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasFlintKnife", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:flint_knife>)
 
 setRequiresParents()
-setPos(33,72)
+setPos(33,46)

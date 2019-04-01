@@ -10,4 +10,4 @@ criteria1 = addCriteria("hasLeather", "minecraft:inventory_changed")
 criteria1.addItem(<minecraft:leather>)
 
 setRequiresParents()
-setPos(127,59)
+setPos(127,32)

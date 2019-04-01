@@ -1,0 +1,15 @@
+setIcon(<minecraft:gold_nugget>)
+setTitle("I Dig It")
+setDescription("Mine your first metal with a pickaxe or hammer")
+addParent("gradient:age2/stone_pickaxe")
+
+setRequirements("any")
+
+criteria1 = addCriteria("hasNugget", "minecraft:inventory_changed")
+criteria1.addItem(<ore:nugget>)
+
+criteria2 = addCriteria("hasOre", "minecraft:inventory_changed")
+criteria2.addItem(<ore:ore>)
+
+setRequiresParents()
+setPos(222,24)

@@ -8,4 +8,4 @@ criteria1 = addCriteria("hasPickaxe", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:stone_pickaxe>)
 
 setRequiresParents()
-setPos(160,18)
+setPos(159,11)

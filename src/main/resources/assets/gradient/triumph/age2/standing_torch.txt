@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasTorchStand", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:standing_torch>)
 
 setRequiresParents()
-setPos(95,18)
+setPos(95,-34)

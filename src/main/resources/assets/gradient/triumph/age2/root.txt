@@ -7,4 +7,4 @@ setAnnounceToChat(false)
 
 criteria = addCriteria("completedParent", "triumph:completed_advancement")
 criteria.setAdvancement("gradient:age1/goal")
-setPos(0,59)
+setPos(-3,-8)

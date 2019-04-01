@@ -8,4 +8,4 @@ criteria1 = addCriteria("hasMattock", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:stone_mattock>)
 
 setRequiresParents()
-setPos(160,45)
+setPos(160,53)

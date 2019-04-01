@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasBark", "minecraft:inventory_changed")
 criteria1.addItem(<ore:barkWood>)
 
 setRequiresParents()
-setPos(64,72)
+setPos(64,46)

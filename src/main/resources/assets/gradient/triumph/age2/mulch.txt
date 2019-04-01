@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasMulch", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:mulch>)
 
 setRequiresParents()
-setPos(95,72)
+setPos(95,46)

@@ -10,4 +10,4 @@ criteria1 = addCriteria("hasTorch", "minecraft:inventory_changed")
 criteria1.addItem(<minecraft:torch>)
 
 setRequiresParents()
-setPos(223,0)
+setPos(208,-34)

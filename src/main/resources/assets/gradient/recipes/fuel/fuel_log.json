@@ -1,0 +1,11 @@
+{
+  "type": "gradient:fuel",
+  "duration": 900,
+  "ignitionTemp": 300,
+  "burnTemp": 750,
+  "heatPerSec": 0.76,
+  "ingredient": {
+    "type": "forge:ore_dict",
+    "ore": "logWood"
+  }
+}

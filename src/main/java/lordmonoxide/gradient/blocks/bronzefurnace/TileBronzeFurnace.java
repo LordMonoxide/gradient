@@ -1,7 +1,8 @@
 package lordmonoxide.gradient.blocks.bronzefurnace;
 
-import lordmonoxide.gradient.GradientFuel;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
+import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.recipes.FuelRecipe;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -9,10 +10,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -30,7 +33,7 @@ public class TileBronzeFurnace extends HeatProducer {
 
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
 
-  private final GradientFuel.BurningFuel[] fuels = new GradientFuel.BurningFuel[FUEL_SLOTS_COUNT];
+  private final Fuel[] fuels = new Fuel[FUEL_SLOTS_COUNT];
 
   private int lastLight;
 
@@ -45,10 +48,10 @@ public class TileBronzeFurnace extends HeatProducer {
   }
 
   public boolean isBurning(final int slot) {
-    return this.fuels[slot] != null;
+    return this.fuels[slot] != null && this.fuels[slot].isBurning;
   }
 
-  public GradientFuel.BurningFuel getBurningFuel(final int slot) {
+  public Fuel getBurningFuel(final int slot) {
     return this.fuels[slot];
   }
 
@@ -88,11 +91,10 @@ public class TileBronzeFurnace extends HeatProducer {
 
   private void igniteFuel() {
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
-      if(!this.isBurning(i) && !this.getFuelSlot(i).isEmpty()) {
-        final GradientFuel.Fuel fuel = GradientFuel.get(this.getFuelSlot(i));
-
-        if(this.canIgnite(fuel)) {
-          this.fuels[i] = new GradientFuel.BurningFuel(fuel);
+      if(!this.isBurning(i) && this.fuels[i] != null) {
+        if(this.canIgnite(this.fuels[i])) {
+          this.fuels[i].ignite();
+          this.sync();
         }
       }
     }
@@ -147,7 +149,7 @@ public class TileBronzeFurnace extends HeatProducer {
 
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
       if(this.isBurning(slot)) {
-        final GradientFuel.BurningFuel fuel = this.fuels[slot];
+        final Fuel fuel = this.fuels[slot];
 
         fuel.tick();
 
@@ -156,8 +158,8 @@ public class TileBronzeFurnace extends HeatProducer {
           this.setFuelSlot(slot, ItemStack.EMPTY);
         }
 
-        if(fuel.fuel.burnTemp > this.getHeat()) {
-          temperatureChange += fuel.fuel.heatPerSec;
+        if(fuel.recipe.burnTemp > this.getHeat()) {
+          temperatureChange += fuel.recipe.heatPerSec;
         }
       }
     }
@@ -183,8 +185,8 @@ public class TileBronzeFurnace extends HeatProducer {
     this.inventory.setStackInSlot(FIRST_FUEL_SLOT + slot, stack);
   }
 
-  private boolean canIgnite(final GradientFuel.Fuel fuel) {
-    return this.getHeat() >= fuel.ignitionTemp;
+  private boolean canIgnite(final Fuel fuel) {
+    return this.getHeat() >= fuel.recipe.ignitionTemp;
   }
 
   @Override
@@ -195,11 +197,14 @@ public class TileBronzeFurnace extends HeatProducer {
 
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
       if(this.isBurning(i)) {
-        final GradientFuel.BurningFuel fuel = this.getBurningFuel(i);
+        final Fuel fuel = this.getBurningFuel(i);
 
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
-        fuel.writeToNbt(tag);
+        tag.setString("recipe", fuel.recipe.getRegistryName().toString());
+        tag.setInteger("age", fuel.age.value());
+        tag.setInteger("ticks", fuel.burnTicks);
+        tag.setBoolean("burning", fuel.isBurning);
         fuels.appendTag(tag);
       }
     }
@@ -227,7 +232,16 @@ public class TileBronzeFurnace extends HeatProducer {
       final int slot = tag.getInteger("slot");
 
       if(slot < FUEL_SLOTS_COUNT) {
-        this.fuels[slot] = GradientFuel.BurningFuel.fromNbt(GradientFuel.get(this.getFuelSlot(slot)), tag);
+        final FuelRecipe recipe = (FuelRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(tag.getString("recipe")));
+        final Age age1 = Age.get(tag.getInteger("age"));
+        final int ticks = tag.getInteger("ticks");
+        final boolean burning = tag.getBoolean("burning");
+
+        final Fuel fuel = new Fuel(recipe, age1);
+        fuel.burnTicks = ticks;
+        fuel.isBurning = burning;
+
+        this.fuels[slot] = fuel;
       }
     }
 
@@ -249,5 +263,35 @@ public class TileBronzeFurnace extends HeatProducer {
     }
 
     return super.getCapability(capability, facing);
+  }
+
+  public static final class Fuel {
+    public final FuelRecipe recipe;
+    public final Age age;
+    private final int burnTicksTotal;
+    private int burnTicks;
+    private boolean isBurning;
+
+    private Fuel(final FuelRecipe recipe, final Age age) {
+      this.recipe = recipe;
+      this.age = age;
+      this.burnTicksTotal = this.recipe.duration * 20;
+    }
+
+    private void tick() {
+      this.burnTicks++;
+    }
+
+    private void ignite() {
+      this.isBurning = true;
+    }
+
+    public boolean isDepleted() {
+      return this.burnTicks >= this.burnTicksTotal;
+    }
+
+    public float burnPercent() {
+      return (float)this.burnTicks / this.burnTicksTotal;
+    }
   }
 }

@@ -258,6 +258,12 @@ jei.hardening.name=Hardening
 jei.hardening.ticks=%d ticks
 jei.hardening.instructions=Place next to a firepit
 
+jei.fuel.name=Fuel
+jei.fuel.duration=Burn time: %d seconds
+jei.fuel.ignitionTemp=Ignition temperature: %d °C
+jei.fuel.burnTemp=Max temperature: %d °C
+jei.fuel.heatPerSec=Heat: %d °C/s
+
 # Commands
 commands.setage.usage=/setage <age> [<player>]
 commands.setage.set=Your age is now %s

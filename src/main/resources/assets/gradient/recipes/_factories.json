@@ -2,6 +2,7 @@
   "recipes": {
     "age_gated_shaped": "lordmonoxide.gradient.recipes.AgeGatedShapedToolRecipeFactory",
     "age_gated_shapeless": "lordmonoxide.gradient.recipes.AgeGatedShapelessToolRecipeFactory",
+    "fuel": "lordmonoxide.gradient.recipes.FuelRecipeFactory",
     "firepit": "lordmonoxide.gradient.recipes.FirePitRecipeFactory",
     "hardening": "lordmonoxide.gradient.recipes.HardeningRecipeFactory",
     "grinding": "lordmonoxide.gradient.recipes.GrindingRecipeFactory",

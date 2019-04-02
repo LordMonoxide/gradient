@@ -1,0 +1,10 @@
+setIcon(<gradient:clay_oven.hardened>)
+setTitle("Is Something Burning?")
+setDescription("Make a clay oven to cook your food faster")
+addParent("gradient:age2/clay_furnace")
+
+criteria1 = addCriteria("hasOven", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:clay_oven.hardened>)
+
+setRequiresParents()
+setPos(144,-93)

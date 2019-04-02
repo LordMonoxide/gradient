@@ -1,0 +1,11 @@
+setIcon(<gradient:clay_crucible.hardened>)
+setTitle("Melting Point")
+setDescription("Make a clay crucible to begin your journey into the bronze age")
+addParent("gradient:age2/clay_furnace")
+addParent("gradient:age2/ore")
+
+criteria1 = addCriteria("hasCrucible", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:clay_crucible.hardened>)
+
+setRequiresParents()
+setPos(256,-62)

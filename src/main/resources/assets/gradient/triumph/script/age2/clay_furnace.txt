@@ -1,0 +1,12 @@
+setIcon(<gradient:clay_furnace.hardened>)
+setTitle("Heating Things Up")
+setDescription("Make a furnace out of clay and place it beside your fire pit to harden")
+addParent("gradient:age2/clay")
+
+setFrameType("GOAL")
+
+criteria1 = addCriteria("hasFurnace", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:clay_furnace.hardened>)
+
+setRequiresParents()
+setPos(127,-62)

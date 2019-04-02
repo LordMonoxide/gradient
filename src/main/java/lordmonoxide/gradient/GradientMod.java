@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import lordmonoxide.gradient.advancements.AdvancementTriggers;
 import lordmonoxide.gradient.energy.CapabilityEnergy;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
@@ -77,6 +78,7 @@ public class GradientMod {
     logger.info("------------------- PREINIT -------------------");
 
     this.syncTriumphAdvancements(event.getModConfigurationDirectory());
+    AdvancementTriggers.register();
 
     CapabilityPlayerProgress.register();
 
@@ -129,31 +131,46 @@ public class GradientMod {
   }
 
   private void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
-    final Path destDir = configDir.toPath().resolve("triumph/script/" + MODID);
+    final Path destScriptDir = configDir.toPath().resolve("triumph/script/" + MODID);
+    final Path destJsonDir = configDir.toPath().resolve("triumph/json/" + MODID);
 
-    logger.info("Copying triumphs to " + destDir);
+    logger.info("Copying triumphs");
 
-    FileUtils.deleteDirectory(destDir.toFile());
+    FileUtils.deleteDirectory(destScriptDir.toFile());
+    FileUtils.deleteDirectory(destJsonDir.toFile());
 
     final URLConnection connection = this.getClass().getResource("").openConnection();
 
     if(connection instanceof JarURLConnection) {
       final JarFile jar = ((JarURLConnection)connection).getJarFile();
 
+      final String scriptsDir = "assets/" + MODID + "/triumph/script/";
+      final String jsonDir = "assets/" + MODID + "/triumph/json/";
+
       jar.stream().forEach(entry -> {
-        if(!entry.isDirectory() && entry.getName().startsWith("assets/gradient/triumph/")) {
-          try(final InputStream stream = jar.getInputStream(jar.getEntry(entry.getName()))) {
-            final Path path = destDir.resolve(entry.getName().substring(24));
-            Files.createDirectories(path.getParent());
-            IOUtils.copy(stream, Files.newOutputStream(path));
-          } catch(final IOException e) {
-            GradientMod.logger.error("Error copying triumph", e);
-          }
+        if(!entry.isDirectory() && entry.getName().startsWith(scriptsDir)) {
+          this.copyJarDirectory(jar, entry.getName(), scriptsDir, destScriptDir);
+          this.copyJarDirectory(jar, entry.getName(), jsonDir, destJsonDir);
         }
       });
     } else {
-      final File sourceDir = Paths.get(this.getClass().getResource("../../assets/" + MODID + "/triumph").toURI()).toFile();
-      FileUtils.copyDirectory(sourceDir, destDir.toFile());
+      this.copyDevDirectory("../../assets/" + MODID + "/triumph/script", destScriptDir);
+      this.copyDevDirectory("../../assets/" + MODID + "/triumph/json", destJsonDir);
     }
+  }
+
+  private void copyJarDirectory(final JarFile jar, final String fileName, final String sourceDir, final Path destDir) {
+    try(final InputStream stream = jar.getInputStream(jar.getEntry(fileName))) {
+      final Path path = destDir.resolve(fileName.substring(sourceDir.length()));
+      Files.createDirectories(path.getParent());
+      IOUtils.copy(stream, Files.newOutputStream(path));
+    } catch(final IOException e) {
+      GradientMod.logger.error("Error copying triumph", e);
+    }
+  }
+
+  private void copyDevDirectory(final String sourceDir, final Path destDir) throws URISyntaxException, IOException {
+    final File dir = Paths.get(this.getClass().getResource(sourceDir).toURI()).toFile();
+    FileUtils.copyDirectory(dir, destDir.toFile());
   }
 }

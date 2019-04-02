@@ -1,0 +1,10 @@
+setIcon(<gradient:flint_knife>)
+setTitle("Work It")
+setDescription("Craft a flint knife")
+addParent("gradient:age2/root")
+
+criteria1 = addCriteria("hasFlintKnife", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:flint_knife>)
+
+setRequiresParents()
+setPos(33,46)

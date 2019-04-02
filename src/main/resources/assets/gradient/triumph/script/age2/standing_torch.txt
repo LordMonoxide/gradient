@@ -1,0 +1,10 @@
+setIcon(<gradient:standing_torch>)
+setTitle("Let There Be Slightly More Light")
+setDescription("Make a torch stand to increase the range of your fibre torches")
+addParent("gradient:age2/root")
+
+criteria1 = addCriteria("hasTorchStand", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:standing_torch>)
+
+setRequiresParents()
+setPos(95,-34)

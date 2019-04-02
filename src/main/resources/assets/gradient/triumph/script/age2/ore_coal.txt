@@ -1,0 +1,15 @@
+setIcon(<minecraft:coal>)
+setTitle("Getting Dirty")
+setDescription("Track down some coal ore and use your pickaxe or hammer to harvest it")
+addParent("gradient:age2/stone_pickaxe")
+
+setRequirements("any")
+
+criteria1 = addCriteria("hasCoal", "minecraft:inventory_changed")
+criteria1.addItem(<minecraft:coal>)
+
+criteria2 = addCriteria("hasCoalNugget", "minecraft:inventory_changed")
+criteria2.addItem(<gradient:nugget.coal>)
+
+setRequiresParents()
+setPos(191,-3)

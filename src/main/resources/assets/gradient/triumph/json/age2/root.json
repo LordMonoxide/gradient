@@ -1,0 +1,18 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:wheat"
+    },
+    "title": "Age 2: Agriculture",
+    "description": "Settling down",
+    "background": "minecraft:textures/blocks/farmland_dry.png"
+  },
+  "criteria": {
+    "slept_in_bed": {
+      "trigger": "gradient:changed_age",
+      "conditions": {
+        "age": 2
+      }
+    }
+  }
+}

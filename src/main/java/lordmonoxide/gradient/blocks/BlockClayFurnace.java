@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockClayFurnace extends GradientBlock implements ItemBlockProvider {
+public class BlockClayFurnace extends GradientBlock {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
   public static BlockClayFurnace hardened() {

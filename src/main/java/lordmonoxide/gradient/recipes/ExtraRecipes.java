@@ -5,9 +5,10 @@ import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
-import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
+import lordmonoxide.gradient.items.ItemClayCast;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.utils.OreDictUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
@@ -173,8 +174,8 @@ public final class ExtraRecipes {
     final NBTTagCompound nbt = new NBTTagCompound();
     nbt.setInteger("amount", 1000); // Water amount
 
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictHelper.getFirst("purifiedBronze"));
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictHelper.getFirst("purifiedMagnesium"));
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictUtils.getFirst("purifiedBronze"));
+    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictUtils.getFirst("purifiedMagnesium"));
   }
 
   private static void registerExtractorRecipes() {

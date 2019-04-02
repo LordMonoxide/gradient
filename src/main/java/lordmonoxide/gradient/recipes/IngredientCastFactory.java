@@ -2,7 +2,7 @@ package lordmonoxide.gradient.recipes;
 
 import com.google.gson.JsonObject;
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
+import lordmonoxide.gradient.items.ItemClayCast;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IIngredientFactory;

@@ -1,7 +1,7 @@
 package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.pebble.EntityPebble;
+import lordmonoxide.gradient.entities.EntityPebble;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;

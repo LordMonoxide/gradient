@@ -2,7 +2,7 @@ package lordmonoxide.gradient.integrations.jei.mixing;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasin;
+import lordmonoxide.gradient.tileentities.TileMixingBasin;
 import lordmonoxide.gradient.integrations.jei.GradientRecipeCategoryUid;
 import lordmonoxide.gradient.integrations.jei.JeiRecipeCategory;
 import mezz.jei.api.IGuiHelper;

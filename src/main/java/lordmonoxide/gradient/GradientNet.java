@@ -1,9 +1,9 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.bronzeboiler.PacketUpdateBronzeBoilerSteamSink;
-import lordmonoxide.gradient.blocks.bronzefurnace.PacketLightBronzeFurnace;
-import lordmonoxide.gradient.blocks.claycast.PacketSwitchCast;
-import lordmonoxide.gradient.blocks.heat.PacketUpdateHeatNeighbours;
+import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
+import lordmonoxide.gradient.network.PacketLightBronzeFurnace;
+import lordmonoxide.gradient.network.PacketSwitchCast;
+import lordmonoxide.gradient.network.PacketUpdateHeatNeighbours;
 import lordmonoxide.gradient.energy.PacketSyncEnergyNetwork;
 import lordmonoxide.gradient.progress.PacketUpdatePlayerProgress;
 import net.minecraftforge.fml.common.network.NetworkRegistry;

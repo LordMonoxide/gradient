@@ -6,6 +6,8 @@ import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -14,6 +16,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class BlockClayBucket extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(3.0d / 16.0d, 0.0d, 3.0d / 16.0d, 1.0d - 3.0d / 16.0d, 0.5d, 1.0d - 3.0d / 16.0d);
@@ -33,6 +38,15 @@ public class BlockClayBucket extends GradientBlock {
     this.setResistance(hardened ? 5.0f : 2.0f);
     this.setHardness(1.0f);
     this.hardened = hardened;
+  }
+
+  @Override
+  public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<String> tooltip, final ITooltipFlag flagIn) {
+    super.addInformation(stack, worldIn, tooltip, flagIn);
+
+    if(!this.hardened) {
+      tooltip.add(I18n.format("unhardened_clay.tooltip"));
+    }
   }
 
   @Override

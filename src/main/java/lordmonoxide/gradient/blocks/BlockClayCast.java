@@ -4,7 +4,6 @@ import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -24,23 +23,22 @@ import java.util.List;
 public class BlockClayCast extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
 
-  public static final GradientCasts.PropertyCast CAST = GradientCasts.PropertyCast.create("cast");
-
-  public static BlockClayCast hardened() {
-    return new BlockClayCast(true);
+  public static BlockClayCast hardened(final GradientCasts.Cast cast) {
+    return new BlockClayCast(cast, true);
   }
 
-  public static BlockClayCast unhardened() {
-    return new BlockClayCast(false);
+  public static BlockClayCast unhardened(final GradientCasts.Cast cast) {
+    return new BlockClayCast(cast, false);
   }
 
+  public final GradientCasts.Cast cast;
   private final boolean hardened;
 
-  protected BlockClayCast(final boolean hardened) {
-    super("clay_cast" + '.' + (hardened ? "hardened" : "unhardened"), CreativeTabs.TOOLS, hardened ? GradientBlocks.MATERIAL_CLAY_MACHINE : Material.CLAY);
-    this.setDefaultState(this.blockState.getBaseState().withProperty(CAST, GradientCasts.PICKAXE));
+  private BlockClayCast(final GradientCasts.Cast cast, final boolean hardened) {
+    super("clay_cast" + '.' + cast.name + '.' + (hardened ? "hardened" : "unhardened"), CreativeTabs.TOOLS, hardened ? GradientBlocks.MATERIAL_CLAY_MACHINE : Material.CLAY);
     this.setResistance(hardened ? 5.0f : 2.0f);
     this.setHardness(1.0f);
+    this.cast = cast;
     this.hardened = hardened;
   }
 
@@ -55,31 +53,10 @@ public class BlockClayCast extends GradientBlock {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         tooltip.add(I18n.format("tile.clay_cast.hardened.tooltip"));
         final String metalName = I18n.format("fluid." + metal.name);
-        final int metalAmount = this.getStateFromMeta(stack.getMetadata()).getValue(CAST).amountForMetal(metal);
+        final int metalAmount = this.cast.amountForMetal(metal);
         tooltip.add(I18n.format("tile.clay_cast.hardened.metal_amount", metalName, metalAmount));
       }
     }
-  }
-
-  @Override
-  protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, CAST);
-  }
-
-  @Override
-  @Deprecated
-  public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(CAST, GradientCasts.getCast(meta));
-  }
-
-  @Override
-  public int getMetaFromState(final IBlockState state) {
-    return state.getValue(CAST).id;
-  }
-
-  @Override
-  public int damageDropped(final IBlockState state) {
-    return this.getMetaFromState(state);
   }
 
   @Override
@@ -100,18 +77,21 @@ public class BlockClayCast extends GradientBlock {
     return BlockFaceShape.UNDEFINED;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public boolean isFullCube(final IBlockState state) {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {

@@ -4,7 +4,9 @@ import io.netty.buffer.ByteBuf;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
+import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.ItemClayCastUnhardened;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -53,13 +55,14 @@ public class PacketSwitchCast implements IMessage {
       }
 
       ctx.getServerHandler().player.getServerWorld().addScheduledTask(() -> {
-        final ItemStack hand = ctx.getServerHandler().player.inventory.getCurrentItem();
+        final InventoryPlayer inv = ctx.getServerHandler().player.inventory;
+        final ItemStack hand = inv.getCurrentItem();
 
         if(!(hand.getItem() instanceof ItemClayCastUnhardened)) {
           return;
         }
 
-        hand.setItemDamage(packet.cast.id);
+        inv.setInventorySlotContents(inv.currentItem, new ItemStack(GradientItems.CLAY_CAST_UNHARDENED.get(packet.cast), hand.getCount()));
       });
 
       return null;

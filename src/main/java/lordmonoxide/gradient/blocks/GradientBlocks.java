@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import com.google.common.collect.ImmutableMap;
+import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
@@ -84,8 +85,23 @@ public final class GradientBlocks {
   public static final BlockClayCrucibleHardened   CLAY_CRUCIBLE_HARDENED   = new BlockClayCrucibleHardened();
   public static final BlockClayOvenUnhardened     CLAY_OVEN_UNHARDENED     = new BlockClayOvenUnhardened();
   public static final BlockClayOvenHardened       CLAY_OVEN_HARDENED       = new BlockClayOvenHardened();
-  public static final BlockClayCast               CLAY_CAST_UNHARDENED     = BlockClayCast.unhardened();
-  public static final BlockClayCast               CLAY_CAST_HARDENED       = BlockClayCast.hardened();
+
+  public static final ImmutableMap<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_UNHARDENED;
+  public static final ImmutableMap<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_HARDENED;
+
+  static {
+    final ImmutableMap.Builder<GradientCasts.Cast, BlockClayCast> unhardened = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientCasts.Cast, BlockClayCast> hardened = ImmutableMap.builder();
+
+    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
+      unhardened.put(cast, BlockClayCast.unhardened(cast));
+      hardened.put(cast, BlockClayCast.hardened(cast));
+    }
+
+    CLAY_CASTS_UNHARDENED = unhardened.build();
+    CLAY_CASTS_HARDENED = hardened.build();
+  }
+
   public static final BlockClayBucket             CLAY_BUCKET_UNHARDENED   = BlockClayBucket.unhardened();
   public static final BlockClayBucket             CLAY_BUCKET_HARDENED     = BlockClayBucket.hardened();
 
@@ -171,8 +187,8 @@ public final class GradientBlocks {
     registry.register(CLAY_CRUCIBLE_HARDENED);
     registry.register(CLAY_OVEN_UNHARDENED);
     registry.register(CLAY_OVEN_HARDENED);
-    registry.register(CLAY_CAST_UNHARDENED);
-    registry.register(CLAY_CAST_HARDENED);
+    CLAY_CASTS_UNHARDENED.values().forEach(registry::register);
+    CLAY_CASTS_HARDENED.values().forEach(registry::register);
     registry.register(CLAY_BUCKET_UNHARDENED);
     registry.register(CLAY_BUCKET_HARDENED);
 

@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.items.ItemClayCastUnhardened;
 import lordmonoxide.gradient.tileentities.TileClayCrucible;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.GradientItems;
@@ -113,8 +114,8 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
         final ItemStack stack = player.getHeldItem(hand);
 
         // Cast item
-        if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() == GradientBlocks.CLAY_CAST_HARDENED) {
-          final GradientCasts.Cast cast = GradientBlocks.CLAY_CAST_HARDENED.getStateFromMeta(stack.getMetadata()).getValue(BlockClayCast.CAST);
+        if(stack.getItem() instanceof ItemBlock && !(stack.getItem() instanceof ItemClayCastUnhardened) && ((ItemBlock)stack.getItem()).getBlock() instanceof BlockClayCast) {
+          final GradientCasts.Cast cast = ((BlockClayCast)((ItemBlock)stack.getItem()).getBlock()).cast;
 
           if(te.getMoltenMetal() == null) {
             player.sendMessage(new TextComponentTranslation("tile.clay_crucible.no_metal").setStyle(new Style().setColor(TextFormatting.RED)));

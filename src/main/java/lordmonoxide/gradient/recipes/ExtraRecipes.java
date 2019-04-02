@@ -5,7 +5,6 @@ import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
-import lordmonoxide.gradient.items.ItemClayCast;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.utils.OreDictUtils;
@@ -117,7 +116,7 @@ public final class ExtraRecipes {
           final int amount = cast.amountForMetal(metal) / Fluid.BUCKET_VOLUME;
 
           final Ingredient[] ingredients = new Ingredient[amount + 1];
-          ingredients[amount] = Ingredient.fromStacks(ItemClayCast.getCast(cast));
+          ingredients[amount] = Ingredient.fromItem(GradientItems.CLAY_CAST_HARDENED.get(cast));
           Arrays.fill(ingredients, 0, amount, new IngredientNBT(GradientMetals.getBucket(metal)));
 
           final String recipeName = "cast." + cast.name + '.' + metal.name;

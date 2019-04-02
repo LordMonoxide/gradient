@@ -1,7 +1,5 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.BlockClayCast;
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.client.tesr.TileClayOvenRenderer;
 import lordmonoxide.gradient.client.tesr.TileDryingRackRenderer;
 import lordmonoxide.gradient.client.tesr.TileFirePitRenderer;
@@ -89,9 +87,6 @@ public final class ModelManager {
   private static void registerItemModels() {
     // Register items with custom model names first
     //registerItemModel(ModItems.SNOWBALL_LAUNCHER, "minecraft:fishing_rod");
-
-    registerVariantItemModels(Item.getItemFromBlock(GradientBlocks.CLAY_CAST_HARDENED), "cast", BlockClayCast.CAST);
-    registerVariantItemModels(Item.getItemFromBlock(GradientBlocks.CLAY_CAST_UNHARDENED), "cast", BlockClayCast.CAST);
 
     // Then register items with default model names
     GradientItems.ITEMS.stream()

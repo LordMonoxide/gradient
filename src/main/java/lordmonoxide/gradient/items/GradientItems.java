@@ -123,8 +123,26 @@ public final class GradientItems {
   public static final Item CLAY_CRUCIBLE_HARDENED   = new ItemBlock(GradientBlocks.CLAY_CRUCIBLE_HARDENED).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName());
   public static final Item CLAY_OVEN_UNHARDENED     = new ItemBlock(GradientBlocks.CLAY_OVEN_UNHARDENED).setRegistryName(GradientBlocks.CLAY_OVEN_UNHARDENED.getRegistryName());
   public static final Item CLAY_OVEN_HARDENED       = new ItemBlock(GradientBlocks.CLAY_OVEN_HARDENED).setRegistryName(GradientBlocks.CLAY_OVEN_HARDENED.getRegistryName());
-  public static final Item CLAY_CAST_UNHARDENED     = new ItemClayCastUnhardened(GradientBlocks.CLAY_CAST_UNHARDENED).setRegistryName(GradientBlocks.CLAY_CAST_UNHARDENED.getRegistryName());
-  public static final Item CLAY_CAST_HARDENED       = new ItemClayCast(GradientBlocks.CLAY_CAST_HARDENED).setRegistryName(GradientBlocks.CLAY_CAST_HARDENED.getRegistryName());
+
+  public static final ImmutableMap<GradientCasts.Cast, Item> CLAY_CAST_UNHARDENED;
+  public static final ImmutableMap<GradientCasts.Cast, Item> CLAY_CAST_HARDENED;
+
+  static {
+    final ImmutableMap.Builder<GradientCasts.Cast, Item> unhardened = ImmutableMap.builder();
+    final ImmutableMap.Builder<GradientCasts.Cast, Item> hardened = ImmutableMap.builder();
+
+    for(final GradientCasts.Cast cast : GradientCasts.casts()) {
+      final Block blockUnhardened = GradientBlocks.CLAY_CASTS_UNHARDENED.get(cast);
+      final Block blockHardened = GradientBlocks.CLAY_CASTS_HARDENED.get(cast);
+
+      unhardened.put(cast, new ItemClayCastUnhardened(blockUnhardened).setRegistryName(blockUnhardened.getRegistryName()));
+      hardened.put(cast, new ItemBlock(blockHardened).setRegistryName(blockHardened.getRegistryName()));
+    }
+
+    CLAY_CAST_UNHARDENED = unhardened.build();
+    CLAY_CAST_HARDENED = hardened.build();
+  }
+
   public static final Item CLAY_BUCKET_UNHARDENED   = new ItemBlock(GradientBlocks.CLAY_BUCKET_UNHARDENED).setRegistryName(GradientBlocks.CLAY_BUCKET_UNHARDENED.getRegistryName());
   public static final Item CLAY_BUCKET_HARDENED     = new ItemBlock(GradientBlocks.CLAY_BUCKET_HARDENED).setRegistryName(GradientBlocks.CLAY_BUCKET_HARDENED.getRegistryName());
 
@@ -338,8 +356,8 @@ public final class GradientItems {
     registry.register(CLAY_CRUCIBLE_HARDENED);
     registry.register(CLAY_OVEN_UNHARDENED);
     registry.register(CLAY_OVEN_HARDENED);
-    registry.register(CLAY_CAST_UNHARDENED);
-    registry.register(CLAY_CAST_HARDENED);
+    CLAY_CAST_UNHARDENED.values().forEach(registry::register);
+    CLAY_CAST_HARDENED.values().forEach(registry::register);
     registry.register(CLAY_BUCKET_UNHARDENED);
     registry.register(CLAY_BUCKET_HARDENED);
 

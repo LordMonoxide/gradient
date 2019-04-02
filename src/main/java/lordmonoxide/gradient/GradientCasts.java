@@ -1,8 +1,6 @@
 package lordmonoxide.gradient;
 
-import com.google.common.base.Optional;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
@@ -58,7 +56,7 @@ public final class GradientCasts {
     return PICKAXE;
   }
 
-  public static class Cast implements Comparable<Cast> {
+  public static class Cast {
     private static int currentId;
 
     public final int id;
@@ -92,13 +90,6 @@ public final class GradientCasts {
     }
 
     @Override
-    public int compareTo(final Cast o) {
-      assert o != null;
-
-      return Integer.compare(this.id, o.id);
-    }
-
-    @Override
     public boolean equals(final Object o) {
       assert o instanceof Cast;
 
@@ -107,38 +98,7 @@ public final class GradientCasts {
 
     @Override
     public int hashCode() {
-      return this.id;
-    }
-  }
-
-  public static class PropertyCast extends PropertyHelper<Cast> {
-    public static PropertyCast create(final String name) {
-      return new PropertyCast(name);
-    }
-
-    protected PropertyCast(final String name) {
-      super(name, Cast.class);
-    }
-
-    @Override
-    public Collection<Cast> getAllowedValues() {
-      return CASTS.values();
-    }
-
-    @Override
-    public Optional<Cast> parseValue(final String value) {
-      final Cast cast = CASTS.get(value);
-
-      if(cast == null) {
-        return Optional.absent();
-      }
-
-      return Optional.of(cast);
-    }
-
-    @Override
-    public String getName(final Cast cast) {
-      return cast.name;
+      return Integer.hashCode(this.id);
     }
   }
 

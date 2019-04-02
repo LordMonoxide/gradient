@@ -117,8 +117,8 @@ public final class GradientItems {
   public static final Item MIXING_BASIN   = new ItemBlock(GradientBlocks.MIXING_BASIN).setRegistryName(GradientBlocks.MIXING_BASIN.getRegistryName());
   public static final Item DRYING_RACK    = new ItemBlock(GradientBlocks.DRYING_RACK).setRegistryName(GradientBlocks.DRYING_RACK.getRegistryName());
 
-  public static final Item CLAY_FURNACE_UNHARDENED  = GradientBlocks.CLAY_FURNACE_UNHARDENED.getItemBlock(GradientBlocks.CLAY_FURNACE_UNHARDENED).setRegistryName(GradientBlocks.CLAY_FURNACE_UNHARDENED.getRegistryName());
-  public static final Item CLAY_FURNACE_HARDENED    = GradientBlocks.CLAY_FURNACE_HARDENED.getItemBlock(GradientBlocks.CLAY_FURNACE_HARDENED).setRegistryName(GradientBlocks.CLAY_FURNACE_HARDENED.getRegistryName());
+  public static final Item CLAY_FURNACE_UNHARDENED  = new ItemBlock(GradientBlocks.CLAY_FURNACE_UNHARDENED).setRegistryName(GradientBlocks.CLAY_FURNACE_UNHARDENED.getRegistryName());
+  public static final Item CLAY_FURNACE_HARDENED    = new ItemBlock(GradientBlocks.CLAY_FURNACE_HARDENED).setRegistryName(GradientBlocks.CLAY_FURNACE_HARDENED.getRegistryName());
   public static final Item CLAY_CRUCIBLE_UNHARDENED = new ItemBlock(GradientBlocks.CLAY_CRUCIBLE_UNHARDENED).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_UNHARDENED.getRegistryName());
   public static final Item CLAY_CRUCIBLE_HARDENED   = new ItemBlock(GradientBlocks.CLAY_CRUCIBLE_HARDENED).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName());
   public static final Item CLAY_OVEN_UNHARDENED     = new ItemBlock(GradientBlocks.CLAY_OVEN_UNHARDENED).setRegistryName(GradientBlocks.CLAY_OVEN_UNHARDENED.getRegistryName());

@@ -3,14 +3,21 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientTools;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Tool extends GradientItemWorldTool {
   public final GradientTools.Type type;
@@ -20,6 +27,12 @@ public class Tool extends GradientItemWorldTool {
     super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, metal.durability);
     this.type = type;
     this.metal = metal;
+  }
+
+  @Override
+  public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
+    super.addInformation(stack, world, tooltip, flag);
+    this.type.tooltip(stack, world, tooltip, flag);
   }
 
   @Override

@@ -51,8 +51,11 @@ public class BlockClayCast extends GradientBlock {
   public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
     super.addInformation(stack, world, tooltip, flag);
 
-    if(this.hardened) {
+    if(!this.hardened) {
+      tooltip.add(I18n.format("unhardened_clay.tooltip"));
+    } else {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
+        tooltip.add(I18n.format("tile.clay_cast.hardened.tooltip"));
         final String metalName = I18n.format("fluid." + metal.name);
         final int metalAmount = this.getStateFromMeta(stack.getMetadata()).getValue(CAST).amountForMetal(metal);
         tooltip.add(I18n.format("tile.clay_cast.hardened.metal_amount", metalName, metalAmount));

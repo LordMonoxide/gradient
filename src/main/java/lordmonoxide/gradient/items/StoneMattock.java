@@ -1,6 +1,8 @@
 package lordmonoxide.gradient.items;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -16,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +27,12 @@ public class StoneMattock extends GradientItemWorldTool {
     super("stone_mattock", 0.5f, -2.4f, 4, 2, 50);
     this.setHarvestLevel("axe", 0);
     this.setHarvestLevel("shovel", 0);
+  }
+
+  @Override
+  public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<String> tooltip, final ITooltipFlag flagIn) {
+    super.addInformation(stack, worldIn, tooltip, flagIn);
+    tooltip.add(I18n.format("item.stone_mattock.tooltip"));
   }
 
   @Override

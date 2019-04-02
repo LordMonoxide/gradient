@@ -10,6 +10,8 @@ import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -28,6 +30,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
 
@@ -35,6 +40,12 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
     super("clay_crucible.hardened", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
     this.setResistance(5.0f);
     this.setHardness(1.0f);
+  }
+
+  @Override
+  public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<String> tooltip, final ITooltipFlag flagIn) {
+    super.addInformation(stack, worldIn, tooltip, flagIn);
+    tooltip.add(I18n.format("tile.clay_crucible.hardened.tooltip"));
   }
 
   @Override

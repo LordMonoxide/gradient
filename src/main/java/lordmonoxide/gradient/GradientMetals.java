@@ -1,7 +1,7 @@
 package lordmonoxide.gradient;
 
 import com.google.common.collect.ImmutableList;
-import lordmonoxide.gradient.recipes.OreDictHelper;
+import lordmonoxide.gradient.utils.OreDictUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -51,7 +51,7 @@ public final class GradientMetals {
         final Meltable meltable = addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
 
         if(meltable != INVALID_MELTABLE) {
-          meltable.metal.nugget = OreDictHelper.getFirst(oreName);
+          meltable.metal.nugget = OreDictUtils.getFirst(oreName);
         }
       } else if(oreName.startsWith("dust")) {
         addMeltable(oreName, oreName.substring(4).toLowerCase(), 1, Fluid.BUCKET_VOLUME);

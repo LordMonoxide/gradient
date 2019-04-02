@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.worldgen;
 
+import lordmonoxide.gradient.blocks.BlockPebble;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.blocks.pebble.BlockPebble;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;

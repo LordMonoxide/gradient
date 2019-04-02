@@ -3,43 +3,20 @@ package lordmonoxide.gradient.blocks;
 import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.bronzeboiler.BlockBronzeBoiler;
-import lordmonoxide.gradient.blocks.bronzeboiler.TileBronzeBoiler;
-import lordmonoxide.gradient.blocks.bronzefurnace.BlockBronzeFurnace;
-import lordmonoxide.gradient.blocks.bronzefurnace.TileBronzeFurnace;
-import lordmonoxide.gradient.blocks.bronzegrinder.BlockBronzeGrinder;
-import lordmonoxide.gradient.blocks.bronzegrinder.TileBronzeGrinder;
-import lordmonoxide.gradient.blocks.bronzeoven.BlockBronzeOven;
-import lordmonoxide.gradient.blocks.bronzeoven.TileBronzeOven;
-import lordmonoxide.gradient.blocks.claybucket.BlockClayBucket;
-import lordmonoxide.gradient.blocks.claycast.BlockClayCast;
-import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleHardened;
-import lordmonoxide.gradient.blocks.claycrucible.BlockClayCrucibleUnhardened;
-import lordmonoxide.gradient.blocks.claycrucible.TileClayCrucible;
-import lordmonoxide.gradient.blocks.clayfurnace.BlockClayFurnace;
-import lordmonoxide.gradient.blocks.clayoven.BlockClayOvenHardened;
-import lordmonoxide.gradient.blocks.clayoven.BlockClayOvenUnhardened;
-import lordmonoxide.gradient.blocks.clayoven.TileClayOven;
-import lordmonoxide.gradient.blocks.dryingrack.BlockDryingRack;
-import lordmonoxide.gradient.blocks.dryingrack.TileDryingRack;
-import lordmonoxide.gradient.blocks.firepit.BlockFirePit;
-import lordmonoxide.gradient.blocks.firepit.TileFirePit;
-import lordmonoxide.gradient.blocks.kinetic.flywheel.BlockFlywheel;
-import lordmonoxide.gradient.blocks.kinetic.flywheel.TileFlywheel;
-import lordmonoxide.gradient.blocks.kinetic.handcrank.BlockHandCrank;
-import lordmonoxide.gradient.blocks.kinetic.handcrank.TileHandCrank;
-import lordmonoxide.gradient.blocks.kinetic.woodenaxle.BlockWoodenAxle;
-import lordmonoxide.gradient.blocks.kinetic.woodenaxle.TileWoodenAxle;
-import lordmonoxide.gradient.blocks.kinetic.woodengearbox.BlockWoodenGearbox;
-import lordmonoxide.gradient.blocks.kinetic.woodengearbox.TileWoodenGearbox;
-import lordmonoxide.gradient.blocks.manualgrinder.BlockManualGrinder;
-import lordmonoxide.gradient.blocks.manualgrinder.TileManualGrinder;
-import lordmonoxide.gradient.blocks.mixingbasin.BlockMixingBasin;
-import lordmonoxide.gradient.blocks.mixingbasin.TileMixingBasin;
-import lordmonoxide.gradient.blocks.pebble.BlockPebble;
-import lordmonoxide.gradient.blocks.standingtorch.BlockStandingTorch;
-import lordmonoxide.gradient.blocks.torch.BlockTorchLit;
-import lordmonoxide.gradient.blocks.torch.BlockTorchUnlit;
+import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
+import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
+import lordmonoxide.gradient.tileentities.TileBronzeGrinder;
+import lordmonoxide.gradient.tileentities.TileBronzeOven;
+import lordmonoxide.gradient.tileentities.TileClayCrucible;
+import lordmonoxide.gradient.tileentities.TileClayOven;
+import lordmonoxide.gradient.tileentities.TileDryingRack;
+import lordmonoxide.gradient.tileentities.TileFirePit;
+import lordmonoxide.gradient.tileentities.TileFlywheel;
+import lordmonoxide.gradient.tileentities.TileHandCrank;
+import lordmonoxide.gradient.tileentities.TileManualGrinder;
+import lordmonoxide.gradient.tileentities.TileMixingBasin;
+import lordmonoxide.gradient.tileentities.TileWoodenAxle;
+import lordmonoxide.gradient.tileentities.TileWoodenGearbox;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -60,6 +37,19 @@ public final class GradientBlocks {
   public static final Material MATERIAL_BRONZE_MACHINE = new Material(MapColor.GOLD);
 
   public static final BlockPebble PEBBLE = new BlockPebble();
+
+  public static final ImmutableMap<GradientMetals.Metal, BlockPebble> METAL_PEBBLES;
+
+  static {
+    final Map<GradientMetals.Metal, BlockPebble> pebbles = new HashMap<>();
+
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      pebbles.put(metal, new BlockPebble(metal));
+    }
+
+    METAL_PEBBLES = ImmutableMap.copyOf(pebbles);
+  }
+
   public static final BlockSalt SALT_BLOCK = new BlockSalt();
 
   public static final Block STRIPPED_OAK_WOOD      = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_oak_wood")).setTranslationKey("stripped_oak_wood");
@@ -105,6 +95,18 @@ public final class GradientBlocks {
   public static final BlockBronzeOven        BRONZE_OVEN         = new BlockBronzeOven();
   public static final BlockBronzeGrinder     BRONZE_GRINDER      = new BlockBronzeGrinder();
 
+  public static final ImmutableMap<GradientMetals.Metal, Block> ORES;
+
+  static {
+    final Map<GradientMetals.Metal, Block> ores = new HashMap<>();
+
+    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      ores.put(metal, new BlockOre(metal));
+    }
+
+    ORES = ImmutableMap.copyOf(ores);
+  }
+
   public static final ImmutableMap<GradientMetals.Metal, Block> CAST_BLOCK;
 
   static {
@@ -130,15 +132,10 @@ public final class GradientBlocks {
 
     final IForgeRegistry<Block> registry = event.getRegistry();
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      registry.register(new BlockOre(metal));
-    }
+    ORES.values().forEach(registry::register);
 
     registry.register(PEBBLE);
-
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      registry.register(new BlockPebble(metal));
-    }
+    METAL_PEBBLES.values().forEach(registry::register);
 
     registry.register(SALT_BLOCK);
 

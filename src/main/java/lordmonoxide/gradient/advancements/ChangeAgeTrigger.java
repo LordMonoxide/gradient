@@ -7,7 +7,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
-import lordmonoxide.gradient.recipes.RecipeHelper;
+import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.critereon.AbstractCriterionInstance;
@@ -85,7 +85,7 @@ public class ChangeAgeTrigger implements ICriterionTrigger<ChangeAgeTrigger.Inst
     }
 
     public boolean test(final EntityPlayer player) {
-      return RecipeHelper.playerMeetsAgeRequirement(player, this.age);
+      return AgeUtils.playerMeetsAgeRequirement(player, this.age);
     }
   }
 

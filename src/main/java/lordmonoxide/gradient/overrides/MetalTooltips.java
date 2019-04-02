@@ -1,17 +1,19 @@
 package lordmonoxide.gradient.overrides;
 
 import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.GradientMod;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Side.CLIENT)
 public final class MetalTooltips {
-  public static final MetalTooltips instance = new MetalTooltips();
-
   private MetalTooltips() { }
 
   @SubscribeEvent
-  public void addMetalInfoToTooltips(final ItemTooltipEvent event) {
+  public static void addMetalInfoToTooltips(final ItemTooltipEvent event) {
     if(event.getItemStack().isEmpty() || !GradientMetals.hasMeltable(event.getItemStack())) {
       return;
     }

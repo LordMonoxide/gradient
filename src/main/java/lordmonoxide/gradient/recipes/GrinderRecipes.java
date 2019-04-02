@@ -2,6 +2,7 @@ package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.utils.OreDictUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -54,7 +55,7 @@ public class GrinderRecipes {
   }
 
   public static boolean add(final Item input, final String output) {
-    return add(input, OreDictHelper.getFirst(output));
+    return add(input, OreDictUtils.getFirst(output));
   }
 
   public static boolean add(final String input, final ItemStack output) {
@@ -68,7 +69,7 @@ public class GrinderRecipes {
   }
 
   public static boolean add(final String input, final String output) {
-    return add(input, OreDictHelper.getFirst(output));
+    return add(input, OreDictUtils.getFirst(output));
   }
 
   public static boolean remove(final ItemStack input) {

@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks.heat;
 
 import lordmonoxide.gradient.blocks.GradientBlock;
+import lordmonoxide.gradient.network.PacketUpdateHeatNeighbours;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

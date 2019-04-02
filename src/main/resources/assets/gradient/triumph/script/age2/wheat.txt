@@ -1,0 +1,10 @@
+setIcon(<minecraft:wheat>)
+setTitle("Graze It")
+setDescription("Harvest some wheat")
+addParent("gradient:age2/till")
+
+criteria1 = addCriteria("hasWheat", "minecraft:inventory_changed")
+criteria1.addItem(<minecraft:wheat>)
+
+setRequiresParents()
+setPos(222,53)

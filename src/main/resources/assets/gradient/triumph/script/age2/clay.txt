@@ -1,0 +1,10 @@
+setIcon(<minecraft:clay_ball>)
+setTitle("Pottery and Other More Useful Things")
+setDescription("Find some clay")
+addParent("gradient:age2/root")
+
+criteria1 = addCriteria("hasClay", "minecraft:inventory_changed")
+criteria1.addItem(<minecraft:clay_ball>)
+
+setRequiresParents()
+setPos(95,-62)

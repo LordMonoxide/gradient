@@ -12,9 +12,11 @@ public final class AdvancementTriggers {
   private AdvancementTriggers() { }
 
   public static final UsedHoeTrigger USED_HOE = new UsedHoeTrigger();
+  public static final ChangeAgeTrigger CHANGE_AGE = new ChangeAgeTrigger();
 
   public static void register() {
     CriteriaTriggers.register(USED_HOE);
+    CriteriaTriggers.register(CHANGE_AGE);
   }
 
   @SubscribeEvent

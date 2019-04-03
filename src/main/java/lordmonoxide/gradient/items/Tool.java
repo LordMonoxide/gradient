@@ -32,7 +32,7 @@ public class Tool extends GradientItemWorldTool {
   @Override
   public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
     super.addInformation(stack, world, tooltip, flag);
-    this.type.tooltip(stack, world, tooltip, flag);
+    this.type.tooltip(stack, world, tooltip);
   }
 
   @Override

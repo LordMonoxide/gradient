@@ -2,7 +2,6 @@ package lordmonoxide.gradient;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -62,11 +61,11 @@ public final class GradientTools {
     return Items.STONE_HOE.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
-  private static void noTooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
+  private static void noTooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip) {
 
   }
 
-  private static void mattockTooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
+  private static void mattockTooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip) {
     tooltip.add(I18n.format("item.stone_mattock.tooltip"));
   }
 
@@ -101,8 +100,8 @@ public final class GradientTools {
       return this.onItemUse.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
     }
 
-    public void tooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
-      this.tooltip.tooltip(stack, world, tooltip, flag);
+    public void tooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip) {
+      this.tooltip.tooltip(stack, world, tooltip);
     }
 
     @Override
@@ -132,7 +131,7 @@ public final class GradientTools {
 
   @FunctionalInterface
   public interface Tooltip {
-    void tooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag);
+    void tooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip);
   }
 
   public static final class ToolBuilder {

@@ -1,7 +1,7 @@
 {
   "textures": {
-    "0": "minecraft:blocks/cobblestone",
-    "particle": "minecraft:blocks/cobblestone"
+    "0": "minecraft:block/cobblestone",
+    "particle": "minecraft:block/cobblestone"
   },
   "elements": [
     {

@@ -2,8 +2,8 @@
   "credit": "Made with Blockbench",
   "parent": "minecraft:block/block",
   "textures": {
-    "0": "minecraft:blocks/hardened_clay",
-    "particle": "minecraft:blocks/hardened_clay"
+    "0": "minecraft:block/terracotta",
+    "particle": "minecraft:block/terracotta"
   },
   "elements": [
     {

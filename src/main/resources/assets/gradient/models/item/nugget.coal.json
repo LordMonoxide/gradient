@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gradient:items/nugget.coal"
+    "layer0": "gradient:item/nugget.coal"
   }
 }

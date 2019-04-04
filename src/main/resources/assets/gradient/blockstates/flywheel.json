@@ -1,8 +1,8 @@
 {
   "variants": {
-    "facing=north": { "model": "gradient:flywheel" },
-    "facing=east":  { "model": "gradient:flywheel", "y":  90 },
-    "facing=south": { "model": "gradient:flywheel", "y": 180 },
-    "facing=west":  { "model": "gradient:flywheel", "y": 270 }
+    "facing=north": { "model": "gradient:block/flywheel" },
+    "facing=east":  { "model": "gradient:block/flywheel", "y":  90 },
+    "facing=south": { "model": "gradient:block/flywheel", "y": 180 },
+    "facing=west":  { "model": "gradient:block/flywheel", "y": 270 }
   }
 }

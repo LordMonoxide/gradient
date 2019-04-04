@@ -2,11 +2,11 @@
 	"credit": "Made with Blockbench",
 	"parent": "minecraft:block/block",
 	"textures": {
-		"side": "blocks/hardened_clay",
-		"particle": "blocks/hardened_clay",
-		"front": "gradient:blocks/clay_furnace_front",
-		"top": "gradient:blocks/clay_furnace_top",
-		"inside": "gradient:blocks/clay_seared"
+		"side": "block/hardened_clay",
+		"particle": "block/hardened_clay",
+		"front": "gradient:block/clay_furnace_front",
+		"top": "gradient:block/clay_furnace_top",
+		"inside": "gradient:block/clay_seared"
 	},
 	"elements": [
 		{

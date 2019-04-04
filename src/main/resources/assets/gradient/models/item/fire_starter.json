@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gradient:items/fire_starter"
+    "layer0": "gradient:item/fire_starter"
   }
 }

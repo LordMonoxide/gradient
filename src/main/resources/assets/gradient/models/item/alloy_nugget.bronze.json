@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gradient:items/alloy_nugget.bronze"
+    "layer0": "gradient:item/alloy_nugget.bronze"
   }
 }

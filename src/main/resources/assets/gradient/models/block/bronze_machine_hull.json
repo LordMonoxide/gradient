@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "gradient:blocks/bronze_machine_hull"
+    "all": "gradient:block/bronze_machine_hull"
   }
 }

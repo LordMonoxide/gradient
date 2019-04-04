@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "gradient:salt_block" }
+    "": { "model": "gradient:block/salt_block" }
   }
 }

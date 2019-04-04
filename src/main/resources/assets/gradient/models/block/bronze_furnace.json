@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "particle": "gradient:blocks/bronze_machine_hull",
-    "down": "gradient:blocks/bronze_machine_hull",
-    "up": "gradient:blocks/bronze_machine_hull",
-    "north": "gradient:blocks/bronze_furnace",
-    "east": "gradient:blocks/bronze_machine_hull",
-    "south": "gradient:blocks/bronze_machine_hull",
-    "west": "gradient:blocks/bronze_machine_hull"
+    "particle": "gradient:block/bronze_machine_hull",
+    "down": "gradient:block/bronze_machine_hull",
+    "up": "gradient:block/bronze_machine_hull",
+    "north": "gradient:block/bronze_furnace",
+    "east": "gradient:block/bronze_machine_hull",
+    "south": "gradient:block/bronze_machine_hull",
+    "west": "gradient:block/bronze_machine_hull"
   }
 }

@@ -3,8 +3,8 @@
     "ambientocclusion": false,
     "parent": "block/block",
     "textures": {
-        "particle": "blocks/hardened_clay",
-        "0": "blocks/hardened_clay"
+        "particle": "block/terracotta",
+        "0": "block/terracotta"
     },
     "elements": [
         {

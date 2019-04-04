@@ -2,8 +2,8 @@
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "parent": "block/block",
     "textures": {
-        "particle": "blocks/clay",
-        "0": "blocks/clay"
+        "particle": "block/clay",
+        "0": "block/clay"
     },
     "elements": [
         {

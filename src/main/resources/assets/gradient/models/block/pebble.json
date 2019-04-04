@@ -2,8 +2,8 @@
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "parent": "block/block",
     "textures": {
-        "particle": "blocks/stone_andesite",
-        "0": "blocks/stone_andesite"
+        "particle": "block/andesite",
+        "0": "block/andesite"
     },
     "elements": [
         {
@@ -16,7 +16,7 @@
                 "south": { "texture": "#0", "uv": [ 8.0, 2.0, 0.0, 0.0 ] },
                 "west": { "texture": "#0", "uv": [ 0.0, 0.0, 5.0, 2.0 ] },
                 "up": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 5.0 ] },
-                "down": { "texture": "#-1", "uv": [ 0.0, 0.0, 8.0, 5.0 ] }
+                "down": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 5.0 ] }
             }
         },
         {
@@ -29,7 +29,7 @@
                 "south": { "texture": "#0", "uv": [ 0.0, 0.0, 6.0, 1.0 ] },
                 "west": { "texture": "#0", "uv": [ 0.0, 0.0, 3.0, 1.0 ] },
                 "up": { "texture": "#0", "uv": [ 0.0, 0.0, 6.0, 3.0 ] },
-                "down": { "texture": "#-1", "uv": [ 0.0, 0.0, 6.0, 3.0 ] }
+                "down": { "texture": "#0", "uv": [ 0.0, 0.0, 6.0, 3.0 ] }
             }
         },
         {
@@ -42,7 +42,7 @@
                 "south": { "texture": "#0", "uv": [ 0.0, 0.0, 6.0, 1.0 ] },
                 "west": { "texture": "#0", "uv": [ 0.0, 0.0, 7.0, 1.0 ] },
                 "up": { "texture": "#0", "uv": [ 0.0, 0.0, 6.0, 7.0 ] },
-                "down": { "texture": "#-1", "uv": [ 0.0, 0.0, 6.0, 7.0 ] }
+                "down": { "texture": "#0", "uv": [ 0.0, 0.0, 6.0, 7.0 ] }
             }
         }
     ]

@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "gradient:clay_bucket.unhardened" }
+    "": { "model": "gradient:block/clay_bucket.unhardened" }
   }
 }

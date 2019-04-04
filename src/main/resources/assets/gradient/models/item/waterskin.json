@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gradient:items/waterskin"
+    "layer0": "gradient:item/waterskin"
   }
 }

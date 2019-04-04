@@ -1,6 +1,6 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "gradient:items/hide_shirt"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gradient:item/hide_shirt"
+  }
 }

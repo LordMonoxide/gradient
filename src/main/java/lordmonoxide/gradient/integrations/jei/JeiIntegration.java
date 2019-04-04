@@ -1,30 +1,12 @@
 package lordmonoxide.gradient.integrations.jei;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.integrations.jei.crafting.CraftingRecipeCategory;
-import lordmonoxide.gradient.integrations.jei.drying.DryingRecipeCategory;
-import lordmonoxide.gradient.integrations.jei.firepit.FirePitRecipeCategory;
-import lordmonoxide.gradient.integrations.jei.fuel.FuelRecipeCategory;
-import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeCategory;
-import lordmonoxide.gradient.integrations.jei.hardening.HardeningRecipeCategory;
-import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeCategory;
-import lordmonoxide.gradient.recipes.AgeGatedShapedToolRecipe;
-import lordmonoxide.gradient.recipes.AgeGatedShapelessToolRecipe;
-import lordmonoxide.gradient.recipes.DryingRecipe;
-import lordmonoxide.gradient.recipes.FirePitRecipe;
-import lordmonoxide.gradient.recipes.FuelRecipe;
-import lordmonoxide.gradient.recipes.GrindingRecipe;
-import lordmonoxide.gradient.recipes.HardeningRecipe;
-import lordmonoxide.gradient.recipes.MixingRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IStackHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
@@ -45,6 +27,7 @@ public class JeiIntegration implements IModPlugin {
 
   @Override
   public void registerCategories(final IRecipeCategoryRegistration registry) {
+/*
     final IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
     registry.addRecipeCategories(new CraftingRecipeCategory(guiHelper));
     registry.addRecipeCategories(new FirePitRecipeCategory(guiHelper));
@@ -53,6 +36,7 @@ public class JeiIntegration implements IModPlugin {
     registry.addRecipeCategories(new HardeningRecipeCategory(guiHelper));
     registry.addRecipeCategories(new DryingRecipeCategory(guiHelper));
     registry.addRecipeCategories(new FuelRecipeCategory(guiHelper));
+*/
   }
 
   @Override
@@ -83,6 +67,7 @@ public class JeiIntegration implements IModPlugin {
     registration.handleRecipes(DryingRecipe.class, recipe -> new DryingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.DRYING);
     registration.handleRecipes(FuelRecipe.class, recipe -> new FuelRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.FUEL);
 */
+/*
     registration.addRecipes(filterRecipes(AgeGatedShapedToolRecipe.class), GradientRecipeCategoryUid.CRAFTING);
     registration.addRecipes(filterRecipes(AgeGatedShapelessToolRecipe.class), GradientRecipeCategoryUid.CRAFTING);
     registration.addRecipes(filterRecipes(FirePitRecipe.class), GradientRecipeCategoryUid.FIREPIT);
@@ -91,16 +76,19 @@ public class JeiIntegration implements IModPlugin {
     registration.addRecipes(filterRecipes(HardeningRecipe.class), GradientRecipeCategoryUid.HARDENING);
     registration.addRecipes(filterRecipes(DryingRecipe.class), GradientRecipeCategoryUid.DRYING);
     registration.addRecipes(filterRecipes(FuelRecipe.class), GradientRecipeCategoryUid.FUEL);
+*/
   }
 
   @Override
   public void registerRecipeCatalysts(final IRecipeCatalystRegistration registration) {
+/*
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.FIREPIT);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.MIXING_BASIN), GradientRecipeCategoryUid.MIXING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.MANUAL_GRINDER), GradientRecipeCategoryUid.GRINDING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.HARDENING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.DRYING_RACK), GradientRecipeCategoryUid.DRYING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.FUEL);
+*/
   }
 
   private static <T extends IRecipe> Collection<T> filterRecipes(final Class<T> recipeClass) {

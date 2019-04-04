@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "gradient:blocks/hardened_oak"
+    "all": "gradient:block/hardened_oak"
   }
 }

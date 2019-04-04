@@ -1,8 +1,8 @@
 {
   "variants": {
-    "facing=north": { "model": "gradient:mixing_basin" },
-    "facing=east":  { "model": "gradient:mixing_basin", "y":  90 },
-    "facing=south": { "model": "gradient:mixing_basin", "y": 180 },
-    "facing=west":  { "model": "gradient:mixing_basin", "y": 270 }
+    "facing=north": { "model": "gradient:block/mixing_basin" },
+    "facing=east":  { "model": "gradient:block/mixing_basin", "y":  90 },
+    "facing=south": { "model": "gradient:block/mixing_basin", "y": 180 },
+    "facing=west":  { "model": "gradient:block/mixing_basin", "y": 270 }
   }
 }

@@ -2,8 +2,8 @@
   "credit": "Made with Blockbench",
   "parent": "minecraft:block/block",
   "textures": {
-    "0": "minecraft:blocks/clay",
-    "particle": "minecraft:blocks/clay"
+    "0": "minecraft:block/clay",
+    "particle": "minecraft:block/clay"
   },
   "elements": [
     {

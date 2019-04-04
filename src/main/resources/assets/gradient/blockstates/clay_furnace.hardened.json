@@ -1,8 +1,8 @@
 {
   "variants": {
-    "facing=north": { "model": "gradient:clay_furnace.hardened" },
-    "facing=east":  { "model": "gradient:clay_furnace.hardened", "y":  90 },
-    "facing=south": { "model": "gradient:clay_furnace.hardened", "y": 180 },
-    "facing=west":  { "model": "gradient:clay_furnace.hardened", "y": 270 }
+    "facing=north": { "model": "gradient:block/clay_furnace.hardened" },
+    "facing=east":  { "model": "gradient:block/clay_furnace.hardened", "y":  90 },
+    "facing=south": { "model": "gradient:block/clay_furnace.hardened", "y": 180 },
+    "facing=west":  { "model": "gradient:block/clay_furnace.hardened", "y": 270 }
   }
 }

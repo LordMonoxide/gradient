@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "gradient:items/hardened_stick"
+    "layer0": "gradient:item/hardened_stick"
   }
 }

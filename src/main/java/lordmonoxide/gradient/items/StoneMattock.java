@@ -9,6 +9,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
@@ -31,7 +32,7 @@ public class StoneMattock extends GradientItemWorldTool {
   private Set<ToolType> toolTypes = new HashSet<>();
 
   public StoneMattock() {
-    super("stone_mattock", 0.5f, -2.4f, 4, 2, new Properties().defaultMaxDamage(50));
+    super("stone_mattock", 0.5f, -2.4f, 4, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(50));
     this.toolTypes.add(ToolType.AXE);
     this.toolTypes.add(ToolType.SHOVEL);
   }

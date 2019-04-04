@@ -1,9 +1,9 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "gradient:blocks/bronze_machine_hull",
-    "1": "gradient:blocks/bronze_boiler.glass",
-    "particle": "gradient:blocks/bronze_machine_hull"
+    "0": "gradient:block/bronze_machine_hull",
+    "1": "gradient:block/bronze_boiler.glass",
+    "particle": "gradient:block/bronze_machine_hull"
   },
   "elements": [
     {

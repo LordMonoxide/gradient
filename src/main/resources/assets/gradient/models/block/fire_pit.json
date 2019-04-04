@@ -2,9 +2,9 @@
   "credit": "Made with Blockbench",
   "parent": "block/block",
   "textures": {
-    "0": "gradient:blocks/fire_pit_log_top",
-    "1": "gradient:blocks/fire_pit_log",
-    "particle": "gradient:blocks/fire_pit_log"
+    "0": "gradient:block/fire_pit_log_top",
+    "1": "gradient:block/fire_pit_log",
+    "particle": "gradient:block/fire_pit_log"
   },
   "elements": [
     {

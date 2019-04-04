@@ -41,7 +41,7 @@ public class ItemClayBucket extends GradientItem {
   private final ItemStack empty;
 
   public ItemClayBucket() {
-    super("clay_bucket_item", new Properties().group(ItemGroup.MISC).maxStackSize(1));
+    super("clay_bucket_item", new Properties().group(ItemGroup.TOOLS).maxStackSize(1));
 
     this.empty = new ItemStack(this);
 

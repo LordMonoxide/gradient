@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "gradient:standing_torch_base" }
+    "": { "model": "gradient:block/standing_torch_base" }
   }
 }

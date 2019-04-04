@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gradient:items/leather_cord"
+    "layer0": "gradient:item/leather_cord"
   }
 }

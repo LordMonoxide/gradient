@@ -35,7 +35,7 @@ public final class GradientItems {
 
   public static final List<Item> ITEMS = new ArrayList<>();
 
-  public static final Item SALT_BLOCK = new ItemPebble(GradientBlocks.SALT_BLOCK).setRegistryName(GradientBlocks.SALT_BLOCK.getRegistryName());
+  public static final Item SALT_BLOCK = new ItemBlock(GradientBlocks.SALT_BLOCK, new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(GradientBlocks.SALT_BLOCK.getRegistryName());
   public static final Item PEBBLE = new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName());
 
   public static final ImmutableMap<GradientMetals.Metal, Item> METAL_PEBBLES;
@@ -84,23 +84,23 @@ public final class GradientItems {
   public static final HideBedding  HIDE_BEDDING = new HideBedding();
   public static final Waterskin    WATERSKIN    = new Waterskin();
 
-  public static final Item         STANDING_TORCH    = new ItemBlock(GradientBlocks.STANDING_TORCH, new Item.Properties()).setRegistryName(GradientBlocks.STANDING_TORCH.getRegistryName());
-  public static final Item         FIBRE_TORCH_UNLIT = new ItemBlock(GradientBlocks.FIBRE_TORCH_UNLIT, new Item.Properties()).setRegistryName(GradientBlocks.FIBRE_TORCH_UNLIT.getRegistryName());
-  public static final Item         FIBRE_TORCH_LIT   = new ItemBlock(GradientBlocks.FIBRE_TORCH_LIT, new Item.Properties()).setRegistryName(GradientBlocks.FIBRE_TORCH_LIT.getRegistryName());
-  public static final Item         FIRE_PIT          = new ItemBlock(GradientBlocks.FIRE_PIT, new Item.Properties()).setRegistryName(GradientBlocks.FIRE_PIT.getRegistryName());
+  public static final Item         STANDING_TORCH    = new ItemBlock(GradientBlocks.STANDING_TORCH, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(GradientBlocks.STANDING_TORCH.getRegistryName());
+  public static final Item         FIBRE_TORCH_UNLIT = new ItemBlock(GradientBlocks.FIBRE_TORCH_UNLIT, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(GradientBlocks.FIBRE_TORCH_UNLIT.getRegistryName());
+  public static final Item         FIBRE_TORCH_LIT   = new ItemBlock(GradientBlocks.FIBRE_TORCH_LIT, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(GradientBlocks.FIBRE_TORCH_LIT.getRegistryName());
+  public static final Item         FIRE_PIT          = new ItemBlock(GradientBlocks.FIRE_PIT, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.FIRE_PIT.getRegistryName());
   public static final FireStarter  FIRE_STARTER      = new FireStarter();
   public static final GradientItem IGNITER           = new GradientItem("igniter", new Item.Properties().group(ItemGroup.MATERIALS));
 
-  public static final Item MANUAL_GRINDER = new ItemBlock(GradientBlocks.MANUAL_GRINDER, new Item.Properties()).setRegistryName(GradientBlocks.MANUAL_GRINDER.getRegistryName());
-  public static final Item MIXING_BASIN   = new ItemBlock(GradientBlocks.MIXING_BASIN, new Item.Properties()).setRegistryName(GradientBlocks.MIXING_BASIN.getRegistryName());
-  public static final Item DRYING_RACK    = new ItemBlock(GradientBlocks.DRYING_RACK, new Item.Properties()).setRegistryName(GradientBlocks.DRYING_RACK.getRegistryName());
+  public static final Item MANUAL_GRINDER = new ItemBlock(GradientBlocks.MANUAL_GRINDER, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.MANUAL_GRINDER.getRegistryName());
+  public static final Item MIXING_BASIN   = new ItemBlock(GradientBlocks.MIXING_BASIN, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.MIXING_BASIN.getRegistryName());
+  public static final Item DRYING_RACK    = new ItemBlock(GradientBlocks.DRYING_RACK, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.DRYING_RACK.getRegistryName());
 
-  public static final Item CLAY_FURNACE_UNHARDENED  = new ItemBlock(GradientBlocks.CLAY_FURNACE_UNHARDENED, new Item.Properties()).setRegistryName(GradientBlocks.CLAY_FURNACE_UNHARDENED.getRegistryName());
-  public static final Item CLAY_FURNACE_HARDENED    = new ItemBlock(GradientBlocks.CLAY_FURNACE_HARDENED, new Item.Properties()).setRegistryName(GradientBlocks.CLAY_FURNACE_HARDENED.getRegistryName());
-  public static final Item CLAY_CRUCIBLE_UNHARDENED = new ItemBlock(GradientBlocks.CLAY_CRUCIBLE_UNHARDENED, new Item.Properties()).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_UNHARDENED.getRegistryName());
-  public static final Item CLAY_CRUCIBLE_HARDENED   = new ItemBlock(GradientBlocks.CLAY_CRUCIBLE_HARDENED, new Item.Properties()).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName());
-  public static final Item CLAY_OVEN_UNHARDENED     = new ItemBlock(GradientBlocks.CLAY_OVEN_UNHARDENED, new Item.Properties()).setRegistryName(GradientBlocks.CLAY_OVEN_UNHARDENED.getRegistryName());
-  public static final Item CLAY_OVEN_HARDENED       = new ItemBlock(GradientBlocks.CLAY_OVEN_HARDENED, new Item.Properties()).setRegistryName(GradientBlocks.CLAY_OVEN_HARDENED.getRegistryName());
+  public static final Item CLAY_FURNACE_UNHARDENED  = new ItemBlock(GradientBlocks.CLAY_FURNACE_UNHARDENED, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.CLAY_FURNACE_UNHARDENED.getRegistryName());
+  public static final Item CLAY_FURNACE_HARDENED    = new ItemBlock(GradientBlocks.CLAY_FURNACE_HARDENED, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.CLAY_FURNACE_HARDENED.getRegistryName());
+  public static final Item CLAY_CRUCIBLE_UNHARDENED = new ItemBlock(GradientBlocks.CLAY_CRUCIBLE_UNHARDENED, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_UNHARDENED.getRegistryName());
+  public static final Item CLAY_CRUCIBLE_HARDENED   = new ItemBlock(GradientBlocks.CLAY_CRUCIBLE_HARDENED, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName());
+  public static final Item CLAY_OVEN_UNHARDENED     = new ItemBlock(GradientBlocks.CLAY_OVEN_UNHARDENED, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.CLAY_OVEN_UNHARDENED.getRegistryName());
+  public static final Item CLAY_OVEN_HARDENED       = new ItemBlock(GradientBlocks.CLAY_OVEN_HARDENED, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.CLAY_OVEN_HARDENED.getRegistryName());
 
   public static final ImmutableMap<GradientCasts.Cast, Item> CLAY_CAST_UNHARDENED;
   public static final ImmutableMap<GradientCasts.Cast, Item> CLAY_CAST_HARDENED;
@@ -113,33 +113,33 @@ public final class GradientItems {
       final Block blockUnhardened = GradientBlocks.CLAY_CASTS_UNHARDENED.get(cast);
       final Block blockHardened = GradientBlocks.CLAY_CASTS_HARDENED.get(cast);
 
-      unhardened.put(cast, new ItemClayCastUnhardened(blockUnhardened, cast, new Item.Properties()).setRegistryName(blockUnhardened.getRegistryName()));
-      hardened.put(cast, new ItemBlock(blockHardened, new Item.Properties()).setRegistryName(blockHardened.getRegistryName()));
+      unhardened.put(cast, new ItemClayCastUnhardened(blockUnhardened, cast, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(blockUnhardened.getRegistryName()));
+      hardened.put(cast, new ItemBlock(blockHardened, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(blockHardened.getRegistryName()));
     }
 
     CLAY_CAST_UNHARDENED = unhardened.build();
     CLAY_CAST_HARDENED = hardened.build();
   }
 
-  public static final Item CLAY_BUCKET_UNHARDENED   = new ItemBlock(GradientBlocks.CLAY_BUCKET_UNHARDENED, new Item.Properties()).setRegistryName(GradientBlocks.CLAY_BUCKET_UNHARDENED.getRegistryName());
-  public static final Item CLAY_BUCKET_HARDENED     = new ItemBlock(GradientBlocks.CLAY_BUCKET_HARDENED, new Item.Properties()).setRegistryName(GradientBlocks.CLAY_BUCKET_HARDENED.getRegistryName());
+  public static final Item CLAY_BUCKET_UNHARDENED   = new ItemBlock(GradientBlocks.CLAY_BUCKET_UNHARDENED, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.CLAY_BUCKET_UNHARDENED.getRegistryName());
+  public static final Item CLAY_BUCKET_HARDENED     = new ItemBlock(GradientBlocks.CLAY_BUCKET_HARDENED, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.CLAY_BUCKET_HARDENED.getRegistryName());
 
-  public static final Item HARDENED_LOG    = new ItemBlock(GradientBlocks.HARDENED_LOG, new Item.Properties()).setRegistryName(GradientBlocks.HARDENED_LOG.getRegistryName());
-  public static final Item HARDENED_PLANKS = new ItemBlock(GradientBlocks.HARDENED_PLANKS, new Item.Properties()).setRegistryName(GradientBlocks.HARDENED_PLANKS.getRegistryName());
+  public static final Item HARDENED_LOG    = new ItemBlock(GradientBlocks.HARDENED_LOG, new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(GradientBlocks.HARDENED_LOG.getRegistryName());
+  public static final Item HARDENED_PLANKS = new ItemBlock(GradientBlocks.HARDENED_PLANKS, new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(GradientBlocks.HARDENED_PLANKS.getRegistryName());
   public static final Item HARDENED_STICK  = new GradientItem("hardened_stick", new Item.Properties().group(ItemGroup.MATERIALS));
 
   public static final Item WOODEN_GEAR = new GradientItem("wooden_gear", new Item.Properties().group(ItemGroup.MATERIALS));
-  public static final Item WOODEN_AXLE = new ItemBlock(GradientBlocks.WOODEN_AXLE, new Item.Properties()).setRegistryName(GradientBlocks.WOODEN_AXLE.getRegistryName());
-  public static final Item WOODEN_GEARBOX = new ItemBlock(GradientBlocks.WOODEN_GEARBOX, new Item.Properties()).setRegistryName(GradientBlocks.WOODEN_GEARBOX.getRegistryName());
-  public static final Item HAND_CRANK = new ItemBlock(GradientBlocks.HAND_CRANK, new Item.Properties()).setRegistryName(GradientBlocks.HAND_CRANK.getRegistryName());
+  public static final Item WOODEN_AXLE = new ItemBlock(GradientBlocks.WOODEN_AXLE, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.WOODEN_AXLE.getRegistryName());
+  public static final Item WOODEN_GEARBOX = new ItemBlock(GradientBlocks.WOODEN_GEARBOX, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.WOODEN_GEARBOX.getRegistryName());
+  public static final Item HAND_CRANK = new ItemBlock(GradientBlocks.HAND_CRANK, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.HAND_CRANK.getRegistryName());
   public static final Item FLYWHEEL = new ItemFlywheel(GradientBlocks.FLYWHEEL).setRegistryName(GradientBlocks.FLYWHEEL.getRegistryName());
 
   public static final Item GRINDING_HEAD       = new GradientItem("grinding_head", new Item.Properties().group(ItemGroup.MATERIALS));
-  public static final Item BRONZE_MACHINE_HULL = new ItemBlock(GradientBlocks.BRONZE_MACHINE_HULL, new Item.Properties()).setRegistryName(GradientBlocks.BRONZE_MACHINE_HULL.getRegistryName());
-  public static final Item BRONZE_FURNACE      = new ItemBlock(GradientBlocks.BRONZE_FURNACE, new Item.Properties()).setRegistryName(GradientBlocks.BRONZE_FURNACE.getRegistryName());
-  public static final Item BRONZE_BOILER       = new ItemBlock(GradientBlocks.BRONZE_BOILER, new Item.Properties()).setRegistryName(GradientBlocks.BRONZE_BOILER.getRegistryName());
-  public static final Item BRONZE_OVEN         = new ItemBlock(GradientBlocks.BRONZE_OVEN, new Item.Properties()).setRegistryName(GradientBlocks.BRONZE_OVEN.getRegistryName());
-  public static final Item BRONZE_GRINDER      = new ItemBlock(GradientBlocks.BRONZE_GRINDER, new Item.Properties()).setRegistryName(GradientBlocks.BRONZE_GRINDER.getRegistryName());
+  public static final Item BRONZE_MACHINE_HULL = new ItemBlock(GradientBlocks.BRONZE_MACHINE_HULL, new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(GradientBlocks.BRONZE_MACHINE_HULL.getRegistryName());
+  public static final Item BRONZE_FURNACE      = new ItemBlock(GradientBlocks.BRONZE_FURNACE, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.BRONZE_FURNACE.getRegistryName());
+  public static final Item BRONZE_BOILER       = new ItemBlock(GradientBlocks.BRONZE_BOILER, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.BRONZE_BOILER.getRegistryName());
+  public static final Item BRONZE_OVEN         = new ItemBlock(GradientBlocks.BRONZE_OVEN, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.BRONZE_OVEN.getRegistryName());
+  public static final Item BRONZE_GRINDER      = new ItemBlock(GradientBlocks.BRONZE_GRINDER, new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(GradientBlocks.BRONZE_GRINDER.getRegistryName());
 
   public static final GradientItem SUGARCANE_PASTE = new GradientItem("sugarcane_paste", new Item.Properties().group(ItemGroup.FOOD));
   public static final GradientItem SALT = new GradientItem("salt", new Item.Properties().group(ItemGroup.FOOD));
@@ -174,10 +174,10 @@ public final class GradientItems {
   static {
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final Block ore = GradientBlocks.ORES.get(metal);
-      ORE.put(metal, new ItemBlock(ore, new Item.Properties()).setRegistryName(ore.getRegistryName()));
+      ORE.put(metal, new ItemBlock(ore, new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(ore.getRegistryName()));
 
       final Block castBlock = GradientBlocks.CAST_BLOCK.get(metal);
-      CAST_BLOCK.put(metal, new ItemBlock(castBlock, new Item.Properties()).setRegistryName(castBlock.getRegistryName()));
+      CAST_BLOCK.put(metal, new ItemBlock(castBlock, new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(castBlock.getRegistryName()));
 
       if(metal.canMakeNuggets) {
         NUGGET.put(metal, new ItemMetal("nugget", metal));

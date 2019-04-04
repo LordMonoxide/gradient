@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "gradient:hardened_planks" }
+    "": { "model": "gradient:block/hardened_planks" }
   }
 }

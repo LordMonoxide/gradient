@@ -1,9 +1,9 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "blocks/clay",
-    "1": "gradient:blocks/clay_cast.mattock.unhardened",
-    "particle": "blocks/clay"
+    "0": "block/clay",
+    "1": "gradient:block/clay_cast.mattock.unhardened",
+    "particle": "block/clay"
   },
   "elements": [
     {

@@ -1,12 +1,12 @@
 {
   "parent": "block/cube_directional",
   "textures": {
-    "particle": "gradient:blocks/salt_block",
-    "down":  "gradient:blocks/salt_block",
-    "up":    "gradient:blocks/salt_block",
-    "north": "gradient:blocks/hardened_log",
-    "south": "gradient:blocks/salt_block",
-    "west":  "gradient:blocks/salt_block",
-    "east":  "gradient:blocks/salt_block"
+    "particle": "gradient:block/salt_block",
+    "down":  "gradient:block/salt_block",
+    "up":    "gradient:block/salt_block",
+    "north": "gradient:block/hardened_log",
+    "south": "gradient:block/salt_block",
+    "west":  "gradient:block/salt_block",
+    "east":  "gradient:block/salt_block"
   }
 }

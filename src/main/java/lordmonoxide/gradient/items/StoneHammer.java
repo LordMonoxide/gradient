@@ -3,6 +3,7 @@ package lordmonoxide.gradient.items;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -18,7 +19,7 @@ public class StoneHammer extends GradientItemWorldTool {
   private final Set<ToolType> toolTypes = new HashSet<>();
 
   public StoneHammer() {
-    super("stone_hammer", 0.5f, -2.4f, 2, 2, new Properties().defaultMaxDamage(20));
+    super("stone_hammer", 0.5f, -2.4f, 2, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(20));
     this.toolTypes.add(ToolType.PICKAXE);
     this.toolTypes.add(GradientToolTypes.HAMMER);
   }

@@ -1,6 +1,6 @@
 {
   "parent": "block/torch",
   "textures": {
-    "torch": "gradient:blocks/fibre_torch_unlit"
+    "torch": "gradient:block/fibre_torch_unlit"
   }
 }

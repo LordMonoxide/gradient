@@ -1,9 +1,9 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "blocks/hardened_clay",
-    "1": "gradient:blocks/clay_cast.pickaxe.hardened",
-    "particle": "blocks/hardened_clay"
+    "0": "block/terracotta",
+    "1": "gradient:block/clay_cast.pickaxe.hardened",
+    "particle": "block/terracotta"
   },
   "elements": [
     {

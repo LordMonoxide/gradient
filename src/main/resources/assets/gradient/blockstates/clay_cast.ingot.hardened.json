@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "gradient:clay_cast.ingot.hardened" }
+    "": { "model": "gradient:block/clay_cast.ingot.hardened" }
   }
 }

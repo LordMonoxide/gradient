@@ -1,9 +1,9 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "minecraft:blocks/planks_oak",
-    "end":  "minecraft:blocks/planks_oak",
-    "side": "minecraft:blocks/planks_oak"
+    "particle": "minecraft:block/oak_planks",
+    "end":  "minecraft:block/oak_planks",
+    "side": "minecraft:block/oak_planks"
   },
   "elements": [
     {

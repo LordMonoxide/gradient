@@ -2,6 +2,7 @@ package lordmonoxide.gradient.items;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ToolType;
 
@@ -13,7 +14,7 @@ public class StonePickaxe extends GradientItemWorldTool {
   private final Set<ToolType> toolTypes = new HashSet<>();
 
   public StonePickaxe() {
-    super("stone_pickaxe", 0.5f, -2.4f, 4, 2, new Properties().defaultMaxDamage(50));
+    super("stone_pickaxe", 0.5f, -2.4f, 4, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(50));
     this.toolTypes.add(ToolType.PICKAXE);
   }
 

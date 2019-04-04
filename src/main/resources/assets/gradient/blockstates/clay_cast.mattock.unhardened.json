@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "gradient:clay_cast.mattock.unhardened" }
+    "": { "model": "gradient:block/clay_cast.mattock.unhardened" }
   }
 }

@@ -1,9 +1,9 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "minecraft:blocks/beacon",
-		"1": "minecraft:blocks/bedrock",
-		"particle": "minecraft:blocks/bedrock"
+		"0": "minecraft:block/beacon",
+		"1": "minecraft:block/bedrock",
+		"particle": "minecraft:block/bedrock"
 	},
 	"elements": [
 		{

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gradient:items/hide_mule"
+    "layer0": "gradient:item/hide_mule"
   }
 }

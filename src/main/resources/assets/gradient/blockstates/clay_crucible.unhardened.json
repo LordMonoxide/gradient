@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal":  { "model": "gradient:clay_crucible.unhardened" }
+    "":  { "model": "gradient:block/clay_crucible.unhardened" }
   }
 }

@@ -1,11 +1,11 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
-import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
@@ -28,15 +28,9 @@ public class Tool extends GradientItemWorldTool {
   private final Set<ToolType> toolTypes = new HashSet<>();
 
   public Tool(final GradientTools.Type type, final GradientMetals.Metal metal) {
-    super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, new Properties().defaultMaxDamage(metal.durability));
+    super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(metal.durability));
     this.type = type;
     this.metal = metal;
-
-    GradientMod.logger.warn("-----------------------------------------------");
-    GradientMod.logger.warn(type.toolTypes);
-    GradientMod.logger.warn(GradientToolTypes.HAMMER);
-    GradientMod.logger.warn(type.toolTypes);
-
     Collections.addAll(this.toolTypes, type.toolTypes);
   }
 

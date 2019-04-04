@@ -50,10 +50,10 @@ public class BlockClayCast extends GradientBlock {
       tooltip.add(new TextComponentTranslation("unhardened_clay.tooltip"));
     } else {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
-        tooltip.add(new TextComponentTranslation("tile.clay_cast.hardened.tooltip"));
+        tooltip.add(new TextComponentTranslation("block.gradient.clay_cast.hardened.tooltip"));
         final String metalName = I18n.format("fluid." + metal.name);
         final int metalAmount = this.cast.amountForMetal(metal);
-        tooltip.add(new TextComponentTranslation("tile.clay_cast.hardened.metal_amount", metalName, metalAmount));
+        tooltip.add(new TextComponentTranslation("block.gradient.clay_cast.hardened.metal_amount", metalName, metalAmount));
       }
     }
   }

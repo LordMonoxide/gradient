@@ -45,7 +45,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   @Override
   public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
     super.addInformation(stack, world, tooltip, flag);
-    tooltip.add(new TextComponentTranslation("tile.clay_crucible.hardened.tooltip"));
+    tooltip.add(new TextComponentTranslation("block.gradient.clay_crucible.hardened.tooltip"));
   }
 
   @Override
@@ -107,7 +107,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
           final GradientCasts.Cast cast = ((BlockClayCast)((ItemBlock)stack.getItem()).getBlock()).cast;
 
           if(te.getMoltenMetal() == null) {
-            player.sendMessage(new TextComponentTranslation("tile.clay_crucible.no_metal").setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TextComponentTranslation("block.gradient.clay_crucible.no_metal").setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
 
@@ -115,12 +115,12 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
           final int amount = cast.amountForMetal(metal);
 
           if(te.getMoltenMetal().amount < amount) {
-            player.sendMessage(new TextComponentTranslation("tile.clay_crucible.not_enough_metal", amount).setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TextComponentTranslation("block.gradient.clay_crucible.not_enough_metal", amount).setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
 
           if(!cast.isValidForMetal(metal)) {
-            player.sendMessage(new TextComponentTranslation("tile.clay_crucible.metal_cant_make_tools").setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TextComponentTranslation("block.gradient.clay_crucible.metal_cant_make_tools").setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
 

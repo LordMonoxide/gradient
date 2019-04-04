@@ -44,7 +44,7 @@ public class BlockClayOvenHardened extends HeatSinkerBlock {
   @Override
   public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
     super.addInformation(stack, world, tooltip, flag);
-    tooltip.add(new TextComponentTranslation("tile.clay_oven.hardened.tooltip"));
+    tooltip.add(new TextComponentTranslation("block.gradient.clay_oven.hardened.tooltip"));
   }
 
   @Override

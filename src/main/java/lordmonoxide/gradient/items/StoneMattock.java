@@ -40,7 +40,7 @@ public class StoneMattock extends GradientItemWorldTool {
   @Override
   public void addInformation(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flagIn) {
     super.addInformation(stack, world, tooltip, flagIn);
-    tooltip.add(new TextComponentTranslation("item.stone_mattock.tooltip"));
+    tooltip.add(new TextComponentTranslation("item.gradient.stone_mattock.tooltip"));
   }
 
   @Override

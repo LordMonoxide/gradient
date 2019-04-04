@@ -47,7 +47,7 @@ public class BlockClayFurnace extends GradientBlock {
     if(!this.hardened) {
       tooltip.add(new TextComponentTranslation("unhardened_clay.tooltip"));
     } else {
-      tooltip.add(new TextComponentTranslation("tile.clay_furnace.hardened.tooltip"));
+      tooltip.add(new TextComponentTranslation("block.gradient.clay_furnace.hardened.tooltip"));
     }
   }
 

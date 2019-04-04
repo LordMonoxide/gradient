@@ -1,32 +1,14 @@
 package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.progress.Age;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistryModifiable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class RecipeRemover {
   private RecipeRemover() { }
 
+  //TODO
+/*
   private static final Container DUMMY_CONTAINER = new Container() {
     @Override
     public boolean canInteractWith(final EntityPlayer player) {
@@ -199,4 +181,5 @@ public final class RecipeRemover {
       GradientMod.logger.info("Replaced {} plank recipes!", toRemove.size());
     }
   }
+*/
 }

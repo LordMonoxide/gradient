@@ -8,19 +8,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
@@ -38,16 +34,16 @@ public class Waterskin extends ItemFluidContainer {
 
   @OnlyIn(Dist.CLIENT)
   @Override
-  public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+  public void addInformation(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
     if(stack.hasTag() && stack.getTag().contains("Fluid")) {
       final FluidStack fluid = FluidStack.loadFluidStackFromNBT(stack.getTag().getCompound("Fluid"));
 
       if(fluid != null) {
-        tooltip.add(TextFormatting.GREEN + "Contains: " + fluid.getFluid().getLocalizedName(fluid));
-        tooltip.add(TextFormatting.BLUE.toString() + fluid.amount + " mB");
+        //TODO tooltip.add(TextFormatting.GREEN + "Contains: " + fluid.getFluid().getLocalizedName(fluid));
+        //TODO tooltip.add(TextFormatting.BLUE.toString() + fluid.amount + " mB");
       }
     } else {
-      tooltip.add(TextFormatting.RED + "Empty");
+      //TODO tooltip.add(TextFormatting.RED + "Empty");
     }
   }
 
@@ -88,7 +84,7 @@ public class Waterskin extends ItemFluidContainer {
 
       if(filledResult.isSuccess()) {
         final ItemStack filledStack = filledResult.getResult().copy();
-        filledStack.setItemDamage(1);
+        //TODO filledStack.setItemDamage(1);
         return ActionResult.newResult(EnumActionResult.SUCCESS, filledStack);
       }
 
@@ -105,9 +101,9 @@ public class Waterskin extends ItemFluidContainer {
       @Override
       public ItemStack getContainer() {
         if(stack.hasTag() && stack.getTag().contains("Fluid")) {
-          this.container.setItemDamage(1);
+          //TODO this.container.setItemDamage(1);
         } else {
-          this.container.setItemDamage(0);
+          //TODO this.container.setItemDamage(0);
         }
 
         return this.container;
@@ -117,9 +113,9 @@ public class Waterskin extends ItemFluidContainer {
       protected void setContainerToEmpty() {
         if(stack.hasTag() && stack.getTag().contains("Fluid")) {
           this.container.getTag().remove("Fluid");
-          this.container.setItemDamage(0);
+          //TODO this.container.setItemDamage(0);
         } else {
-          this.container.setItemDamage(1);
+          //TODO this.container.setItemDamage(1);
         }
       }
     };
@@ -128,18 +124,8 @@ public class Waterskin extends ItemFluidContainer {
   public ItemStack getFilled(final Fluid fluid) {
     final NBTTagCompound nbt = new NBTTagCompound();
     nbt.put("Fluid", new FluidStack(fluid, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
-    final ItemStack filled = new ItemStack(this, 1, 1);
-    filled.setTagCompound(nbt);
+    final ItemStack filled = new ItemStack(this, 1);
+    //TODO filled.setTagCompound(nbt);
     return filled;
-  }
-
-  @Override
-  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
-    if(!this.isInCreativeTab(tab)) {
-      return;
-    }
-
-    subItems.add(new ItemStack(this, 1, 0));
-    subItems.add(this.getFilled(FluidRegistry.WATER));
   }
 }

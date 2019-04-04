@@ -9,36 +9,20 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.entities.EntityPebble;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,7 +113,7 @@ public final class GradientItems {
       final Block blockUnhardened = GradientBlocks.CLAY_CASTS_UNHARDENED.get(cast);
       final Block blockHardened = GradientBlocks.CLAY_CASTS_HARDENED.get(cast);
 
-      unhardened.put(cast, new ItemClayCastUnhardened(blockUnhardened).setRegistryName(blockUnhardened.getRegistryName()));
+      unhardened.put(cast, new ItemClayCastUnhardened(blockUnhardened, cast, new Item.Properties()).setRegistryName(blockUnhardened.getRegistryName()));
       hardened.put(cast, new ItemBlock(blockHardened, new Item.Properties()).setRegistryName(blockHardened.getRegistryName()));
     }
 
@@ -240,7 +224,7 @@ public final class GradientItems {
     }
   }
 
-  public static final GradientItem INFINICOAL = new GradientItem("infinicoal", , new Item.Properties().group(ItemGroup.MATERIALS));
+  public static final GradientItem INFINICOAL = new GradientItem("infinicoal", new Item.Properties().group(ItemGroup.MATERIALS));
   public static final DebugItem    DEBUG      = new DebugItem();
 
   public static final ItemClayBucket CLAY_BUCKET = new ItemClayBucket();
@@ -400,7 +384,7 @@ public final class GradientItems {
 
     registry.register(CLAY_BUCKET);
 
-    BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ItemBlock.getItemFromBlock(GradientBlocks.PEBBLE), new BehaviorProjectileDispense() {
+    BlockDispenser.registerDispenseBehavior(GradientBlocks.PEBBLE.asItem(), new BehaviorProjectileDispense() {
       @Override
       protected IProjectile getProjectileEntity(final World world, final IPosition position, final ItemStack stack) {
         return new EntityPebble(world, position.getX(), position.getY(), position.getZ());
@@ -408,6 +392,8 @@ public final class GradientItems {
     });
   }
 
+  //TODO
+/*
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public static void initOreDict(final RegistryEvent.Register<Item> event) {
     GradientMod.logger.info("Registering ore dict entries");
@@ -545,6 +531,7 @@ public final class GradientItems {
     Blocks.NETHER_BRICK_FENCE.setHarvestLevel("pickaxe", 0);
     Blocks.COBBLESTONE_WALL.setHarvestLevel("pickaxe", 0);
   }
+*/
 
   private static final class RegistrationHelper {
     private final IForgeRegistry<Item> registry;

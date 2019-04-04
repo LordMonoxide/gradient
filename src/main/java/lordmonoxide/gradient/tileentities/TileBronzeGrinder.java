@@ -24,7 +24,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
@@ -42,7 +41,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable, IInterac
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
-  private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
+  private static final Fluid STEAM = null; //TODO FluidRegistry.getFluid(FluidName.steam.getName());
 
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;

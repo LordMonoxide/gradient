@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+//TODO: see null warnings
+
 public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEnergyTransfer> {
   final Capability<STORAGE> storage;
   final Capability<TRANSFER> transfer;
@@ -59,10 +61,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       }
 
       for(final EnumFacing facing : EnumFacing.values()) {
-        if(te.hasCapability(this.storage, facing) && te.getCapability(this.storage, facing).canSink()) {
-          this.tickSinkNodes.put(te.getCapability(this.storage, facing), new Tuple<>(te.getPos(), facing));
-        } else if(te.hasCapability(this.transfer, facing)) {
-          this.tickTransferNodes.add(te.getCapability(this.transfer, facing));
+        if(te.getCapability(this.storage, facing).isPresent() && te.getCapability(this.storage, facing).orElse(null).canSink()) {
+          this.tickSinkNodes.put(te.getCapability(this.storage, facing).orElse(null), new Tuple<>(te.getPos(), facing));
+        } else if(te.getCapability(this.transfer, facing).isPresent()) {
+          this.tickTransferNodes.add(te.getCapability(this.transfer, facing).orElse(null));
         }
       }
     }
@@ -146,15 +148,15 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
 
       final EnumFacing opposite = facing.getOpposite();
 
-      if(newTe.hasCapability(this.storage, facing)) {
-        if(worldTe.hasCapability(this.storage, opposite)) {
+      if(newTe.getCapability(this.storage, facing).isPresent()) {
+        if(worldTe.getCapability(this.storage, opposite).isPresent()) {
           // New network if we can't connect to the storage's network (we can only connect if it's the only block in the network)
           if(GradientConfig.enet.enableNodeDebug) {
             GradientMod.logger.info("Both TEs are storages");
           }
 
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, added);
-        } else if(worldTe.hasCapability(this.transfer, opposite)) {
+        } else if(worldTe.getCapability(this.transfer, opposite).isPresent()) {
           // Add to network, no merge
           if(GradientConfig.enet.enableNodeDebug) {
             GradientMod.logger.info("New TE is storage, world TE is transfer");
@@ -166,8 +168,8 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
             GradientMod.logger.info("Unconnectable");
           }
         }
-      } else if(newTe.hasCapability(this.transfer, facing)) {
-        if(worldTe.hasCapability(this.storage, opposite)) {
+      } else if(newTe.getCapability(this.transfer, facing).isPresent()) {
+        if(worldTe.getCapability(this.storage, opposite).isPresent()) {
           // If worldTe is in its own network, add (may have to merge)
           // If worldTe is in an existing network, new (may have to merge)
           if(GradientConfig.enet.enableNodeDebug) {
@@ -178,7 +180,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
-        } else if(worldTe.hasCapability(this.transfer, opposite)) {
+        } else if(worldTe.getCapability(this.transfer, opposite).isPresent()) {
           // Add to network (may have to merge)
           if(GradientConfig.enet.enableNodeDebug) {
             GradientMod.logger.info("Both TEs are transfers");
@@ -318,13 +320,13 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           if(connection != null) {
             final EnumFacing opposite = side.getOpposite();
 
-            if(connection.te.hasCapability(this.storage, opposite)) {
-              if(connection.te.getCapability(this.storage, opposite).canSource()) {
+            if(connection.te.getCapability(this.storage, opposite).isPresent()) {
+              if(connection.te.getCapability(this.storage, opposite).orElse(null).canSource()) {
                 this.extractNetworks.put(network, side);
                 break;
               }
-            } else if(connection.te.hasCapability(this.transfer, opposite)) {
-              if(connection.te.getCapability(this.transfer, opposite).canSource()) {
+            } else if(connection.te.getCapability(this.transfer, opposite).isPresent()) {
+              if(connection.te.getCapability(this.transfer, opposite).orElse(null).canSource()) {
                 this.extractNetworks.put(network, side);
                 break;
               }

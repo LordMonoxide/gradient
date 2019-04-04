@@ -1,15 +1,12 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.BlockMetalFluid;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class GradientFluids {
   private GradientFluids() { }
 
@@ -21,6 +18,8 @@ public final class GradientFluids {
   }
 
   private static void registerFluidForMetal(final IForgeRegistry<Block> registry, final GradientMetals.Metal metal) {
+    //TODO
+/*
     final Fluid fluid;
 
     if(FluidRegistry.isFluidRegistered(metal.name)) {
@@ -46,5 +45,6 @@ public final class GradientFluids {
     registry.register(block);
 
     metal.fluid = fluid;
+*/
   }
 }

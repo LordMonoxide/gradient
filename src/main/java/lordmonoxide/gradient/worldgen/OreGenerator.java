@@ -21,34 +21,34 @@ import java.util.function.Function;
 
 public class OreGenerator implements IWorldGenerator {
   @ObjectHolder("gradient:ore.hematite")
-  private static final Block HEMATITE_ORE = null;
+  private static Block HEMATITE_ORE;
   @ObjectHolder("gradient:pebble.hematite")
-  private static final Block HEMATITE_PEBBLE = null;
+  private static Block HEMATITE_PEBBLE;
 
   @ObjectHolder("gradient:ore.graphite")
-  private static final Block GRAPHITE_ORE = null;
+  private static Block GRAPHITE_ORE;
   @ObjectHolder("gradient:pebble.graphite")
-  private static final Block GRAPHITE_PEBBLE = null;
+  private static Block GRAPHITE_PEBBLE;
 
   @ObjectHolder("gradient:ore.cassiterite")
-  private static final Block CASSITERITE_ORE = null;
+  private static Block CASSITERITE_ORE;
   @ObjectHolder("gradient:pebble.cassiterite")
-  private static final Block CASSITERITE_PEBBLE = null;
+  private static Block CASSITERITE_PEBBLE;
 
   @ObjectHolder("gradient:ore.copper")
-  private static final Block COPPER_ORE = null;
+  private static Block COPPER_ORE;
   @ObjectHolder("gradient:pebble.copper")
-  private static final Block COPPER_PEBBLE = null;
+  private static Block COPPER_PEBBLE;
 
   @ObjectHolder("gradient:ore.pyrite")
-  private static final Block PYRITE_ORE = null;
+  private static Block PYRITE_ORE;
   @ObjectHolder("gradient:pebble.pyrite")
-  private static final Block PYRITE_PEBBLE = null;
+  private static Block PYRITE_PEBBLE;
 
   @ObjectHolder("gradient:ore.gold")
-  private static final Block GOLD_ORE = null;
+  private static Block GOLD_ORE;
   @ObjectHolder("gradient:pebble.gold")
-  private static final Block GOLD_PEBBLE = null;
+  private static Block GOLD_PEBBLE;
 
   private final WorldOreGenerator carbon = WorldOreGenerator.create(generator -> {
     generator.minLength(25);

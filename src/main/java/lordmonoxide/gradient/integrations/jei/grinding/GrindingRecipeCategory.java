@@ -10,18 +10,25 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
 public class GrindingRecipeCategory extends JeiRecipeCategory<GrindingRecipe> {
   public GrindingRecipeCategory(final IGuiHelper guiHelper) {
-    super(GradientRecipeCategoryUid.GRINDING, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_grinding.png"), 0, 0, 166, 68));
+    //TODO
+    super(GradientRecipeCategoryUid.GRINDING, GrindingRecipe.class, null, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_grinding.png"), 0, 0, 166, 68));
   }
 
   @Override
   public String getTitle() {
-    return GradientBlocks.MANUAL_GRINDER.getLocalizedName();
+    return I18n.format(GradientBlocks.MANUAL_GRINDER.getTranslationKey());
+  }
+
+  @Override
+  public void setIngredients(final GrindingRecipe recipe, final IIngredients ingredients) {
+
   }
 
   @Override

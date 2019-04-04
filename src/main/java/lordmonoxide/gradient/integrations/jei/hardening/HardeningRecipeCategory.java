@@ -16,12 +16,18 @@ import java.util.List;
 
 public class HardeningRecipeCategory extends JeiRecipeCategory<HardeningRecipe> {
   public HardeningRecipeCategory(final IGuiHelper guiHelper) {
-    super(GradientRecipeCategoryUid.HARDENING, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_hardening.png"), 0, 0, 166, 72));
+    //TODO
+    super(GradientRecipeCategoryUid.HARDENING, HardeningRecipe.class, null, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_hardening.png"), 0, 0, 166, 72));
   }
 
   @Override
   public String getTitle() {
     return I18n.format("jei.hardening.name");
+  }
+
+  @Override
+  public void setIngredients(final HardeningRecipe recipe, final IIngredients ingredients) {
+
   }
 
   @Override

@@ -44,12 +44,12 @@ public class ClonedAtlasSprite extends TextureAtlasSprite {
     final int[][] pixels = new int[Minecraft.getInstance().gameSettings.mipmapLevels + 1][];
     pixels[0] = new int[this.width * this.height];
 
-    final int[][] sourcePixels = sprite.getFrameTextureData(0);
+    //TODO final int[][] sourcePixels = sprite.getFrameTextureData(0);
 
-    System.arraycopy(sourcePixels[0], 0, pixels[0], 0, this.width * this.height);
+    //TODO System.arraycopy(sourcePixels[0], 0, pixels[0], 0, this.width * this.height);
 
     this.clearFramesTextureData();
-    this.framesTextureData.add(pixels);
+    //TODO this.framesTextureData.add(pixels);
     return false;
   }
 }

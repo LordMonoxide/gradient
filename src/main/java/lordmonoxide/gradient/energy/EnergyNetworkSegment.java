@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+//TODO: see nullability warnings
+
 public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER extends IEnergyTransfer> {
   private final Capability<STORAGE> storage;
   private final Capability<TRANSFER> transfer;
@@ -100,9 +102,9 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
         final IEnergyNode teNode;
 
-        if(te.hasCapability(this.storage, facing)) {
+        if(te.getCapability(this.storage, facing).isPresent()) {
           // Storage nodes can't connect to other storage nodes unless it's the only one
-          if(!force && node.te.hasCapability(this.storage, facing.getOpposite()) && this.nodes.size() > 1) {
+          if(!force && node.te.getCapability(this.storage, facing.getOpposite()).isPresent() && this.nodes.size() > 1) {
             if(GradientConfig.enet.enableNodeDebug) {
               GradientMod.logger.info("Adjacent node is storage - moving on");
             }
@@ -110,11 +112,11 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
             continue;
           }
 
-          teNode = te.getCapability(this.storage, facing);
-        } else if(te.hasCapability(this.transfer, facing)) {
+          teNode = te.getCapability(this.storage, facing).orElse(null);
+        } else if(te.getCapability(this.transfer, facing).isPresent()) {
           // Networks are split by storage nodes (a transfer node can connect to a storage node if it is the only node)
           // Transfer nodes can also connect to storage nodes if the transfer node will be connecting to another transfer node
-          if(!force && node.te.hasCapability(this.storage, facing.getOpposite()) && this.nodes.size() > 1) {
+          if(!force && node.te.getCapability(this.storage, facing.getOpposite()).isPresent() && this.nodes.size() > 1) {
             if(GradientConfig.enet.enableNodeDebug) {
               GradientMod.logger.info("Adjacent node is storage - deferring");
             }
@@ -127,7 +129,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
             continue;
           }
 
-          teNode = te.getCapability(this.transfer, facing);
+          teNode = te.getCapability(this.transfer, facing).orElse(null);
         } else {
           continue;
         }
@@ -167,7 +169,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
           GradientMod.logger.info("Checking deferred connection {}", facing);
         }
 
-        if(!this.canConnect(te.getCapability(this.transfer, facing), node, facing.getOpposite())) {
+        if(!this.canConnect(te.getCapability(this.transfer, facing).orElse(null), node, facing.getOpposite())) {
           if(GradientConfig.enet.enableNodeDebug) {
             GradientMod.logger.info("Adjacent node is not connectable");
           }
@@ -262,10 +264,10 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
   private boolean canConnect(final IEnergyNode newNode, final EnergyNode existingNode, final EnumFacing facing) {
     final IEnergyNode existing;
 
-    if(existingNode.te.hasCapability(this.storage, facing)) {
-      existing = existingNode.te.getCapability(this.storage, facing);
-    } else if(existingNode.te.hasCapability(this.transfer, facing)) {
-      existing = existingNode.te.getCapability(this.transfer, facing);
+    if(existingNode.te.getCapability(this.storage, facing).isPresent()) {
+      existing = existingNode.te.getCapability(this.storage, facing).orElse(null);
+    } else if(existingNode.te.getCapability(this.transfer, facing).isPresent()) {
+      existing = existingNode.te.getCapability(this.transfer, facing).orElse(null);
     } else {
       return false;
     }
@@ -284,8 +286,8 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
     for(final EnergyNode node : this.nodes.values()) {
       for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
-        if(node.te.hasCapability(this.storage, connection.getKey())) {
-          final STORAGE storage = node.te.getCapability(this.storage, connection.getKey());
+        if(node.te.getCapability(this.storage, connection.getKey()).isPresent()) {
+          final STORAGE storage = node.te.getCapability(this.storage, connection.getKey()).orElse(null);
 
           if(storage.canSource() && connection.getValue() != null && !this.availableEnergySources.contains(storage)) {
             this.availableEnergySources.add(storage);
@@ -310,8 +312,8 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
           continue;
         }
 
-        if(node.te.hasCapability(this.storage, connection.getKey())) {
-          final STORAGE storage = node.te.getCapability(this.storage, connection.getKey());
+        if(node.te.getCapability(this.storage, connection.getKey()).isPresent()) {
+          final STORAGE storage = node.te.getCapability(this.storage, connection.getKey()).orElse(null);
 
           if(storage.canSource() && storage.getEnergy() != 0.0f && connection.getValue() != null) {
             final List<BlockPos> path = this.pathFind(sink, sinkSide, node.pos, connection.getKey());
@@ -361,8 +363,8 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
           final EnumFacing facingTo = WorldUtils.getBlockFacing(pathPos, path.get(i + 1));
           final TileEntity transferEntity = this.getNode(pathPos).te;
 
-          if(transferEntity.hasCapability(this.transfer, facingFrom)) {
-            final TRANSFER transfer = transferEntity.getCapability(this.transfer, facingFrom);
+          if(transferEntity.getCapability(this.transfer, facingFrom).isPresent()) {
+            final TRANSFER transfer = transferEntity.getCapability(this.transfer, facingFrom).orElse(null);
 
             if(GradientConfig.enet.enableNodeDebug) {
               GradientMod.logger.info("Routing {} through {}", sourced, pathPos);
@@ -473,7 +475,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     final EnumFacing opposite = side.getOpposite();
     final Tuple<BlockPos, EnumFacing> neighbourTuple = new Tuple<>(neighbour, opposite);
 
-    if(!neighbourNode.te.hasCapability(this.transfer, opposite) && !neighbourTuple.equals(goalTuple)) {
+    if(!neighbourNode.te.getCapability(this.transfer, opposite).isPresent() && !neighbourTuple.equals(goalTuple)) {
       if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("Not a transfer node, skipping");
       }

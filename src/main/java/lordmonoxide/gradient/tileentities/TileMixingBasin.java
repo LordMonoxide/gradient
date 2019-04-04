@@ -19,7 +19,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -36,7 +35,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
-  private static final Fluid WATER = FluidRegistry.getFluid("water");
+  private static final Fluid WATER = null; //TODO FluidRegistry.getFluid("water");
 
   private final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME);
   private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {

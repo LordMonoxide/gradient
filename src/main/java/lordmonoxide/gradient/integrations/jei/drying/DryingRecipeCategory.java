@@ -10,18 +10,28 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 
 public class DryingRecipeCategory extends JeiRecipeCategory<DryingRecipe> {
+  private static final ResourceLocation ICON_LOCATION = GradientMod.resource("textures/gui/recipe_grinding_icon.png");
+  private static final ResourceLocation BACKGROUND_LOCATION = GradientMod.resource("textures/gui/recipe_grinding.png");
+
   public DryingRecipeCategory(final IGuiHelper guiHelper) {
-    super(GradientRecipeCategoryUid.DRYING, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_grinding.png"), 0, 0, 166, 68));
+    super(GradientRecipeCategoryUid.DRYING, DryingRecipe.class, guiHelper.createDrawable(ICON_LOCATION, 0, 0, 16, 16), guiHelper.createDrawable(BACKGROUND_LOCATION, 0, 0, 166, 68));
   }
 
   @Override
   public String getTitle() {
-    return GradientBlocks.DRYING_RACK.getLocalizedName();
+    return I18n.format(GradientBlocks.DRYING_RACK.getTranslationKey());
+  }
+
+  @Override
+  public void setIngredients(final DryingRecipe recipe, final IIngredients ingredients) {
+
   }
 
   @Override

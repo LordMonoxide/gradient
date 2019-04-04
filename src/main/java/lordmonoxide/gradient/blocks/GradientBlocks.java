@@ -39,8 +39,8 @@ public final class GradientBlocks {
   public static final BlockSalt SALT_BLOCK = new BlockSalt();
 
   public static final BlockFirePit    FIRE_PIT          = new BlockFirePit();
-  public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f, 0.9375f);
-  public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT);
+  public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f, 0.9375f, Block.Properties.create(Material.CIRCUITS));
+  public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT, Block.Properties.create(Material.CIRCUITS));
 
   public static final BlockManualGrinder MANUAL_GRINDER = new BlockManualGrinder();
   public static final BlockMixingBasin   MIXING_BASIN   = new BlockMixingBasin();

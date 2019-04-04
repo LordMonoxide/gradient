@@ -1,9 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.progress.Age;
-import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -13,11 +11,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -27,14 +22,14 @@ public class MixingRecipe implements IRecipe {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
-  private static final Fluid WATER = FluidRegistry.getFluid("water");
+  //TODO private static final Fluid WATER = FluidRegistry.getFluid("water");
 
   private final ResourceLocation id;
   private final String group;
   public final Age age;
   public final int passes;
   public final int ticks;
-  private final FluidStack fluid = new FluidStack(WATER, Fluid.BUCKET_VOLUME);
+  private final FluidStack fluid = null; //TODO new FluidStack(WATER, Fluid.BUCKET_VOLUME);
   private final ItemStack output;
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;

@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -30,6 +31,12 @@ public class Tool extends GradientItemWorldTool {
     super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, new Properties().defaultMaxDamage(metal.durability));
     this.type = type;
     this.metal = metal;
+
+    GradientMod.logger.warn("-----------------------------------------------");
+    GradientMod.logger.warn(type.toolTypes);
+    GradientMod.logger.warn(GradientToolTypes.HAMMER);
+    GradientMod.logger.warn(type.toolTypes);
+
     Collections.addAll(this.toolTypes, type.toolTypes);
   }
 

@@ -26,10 +26,10 @@ public final class AddExtraDrops {
   private AddExtraDrops() { }
 
   @ObjectHolder("biomesoplenty:grass")
-  private static final Block BOP_GRASS = null;
+  private static Block BOP_GRASS;
 
   @ObjectHolder("biomesoplenty:dirt")
-  private static final Block BOP_DIRT = null;
+  private static Block BOP_DIRT;
 
   @SubscribeEvent
   public static void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {

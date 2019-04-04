@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import lordmonoxide.gradient.advancements.AdvancementTriggers;
 import lordmonoxide.gradient.energy.CapabilityEnergy;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
@@ -7,8 +8,14 @@ import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
+import lordmonoxide.gradient.progress.SetAgeCommand;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -16,6 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -51,6 +59,8 @@ public class GradientMod {
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupServer);
 
     ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GradientGuiHandler::openGui);
+
+    MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
   }
 
   private void init(final FMLCommonSetupEvent event) {
@@ -87,8 +97,7 @@ public class GradientMod {
   private void setupClient(final FMLClientSetupEvent event) {
     logger.info("------------------- SETUP CLIENT -------------------");
 
-    //TODO: this might not work... world?
-    this.recipeManager = event.getMinecraftSupplier().get().world.getRecipeManager();
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onWorldLoad);
 
     //TODO RenderingRegistry.registerEntityRenderingHandler(EntityPebble.class, manager -> new RenderSnowball<>(manager, ItemBlock.getItemFromBlock(GradientBlocks.PEBBLE), Minecraft.getMinecraft().getRenderItem()));
   }
@@ -96,9 +105,18 @@ public class GradientMod {
   private void setupServer(final FMLDedicatedServerSetupEvent event) {
     logger.info("------------------- SETUP SERVER -------------------");
 
-    this.recipeManager = event.getServerSupplier().get().getRecipeManager();
+    recipeManager = event.getServerSupplier().get().getRecipeManager();
+  }
 
-    //TODO event.registerServerCommand(new SetAgeCommand());
+  private void serverStarting(final FMLServerStartingEvent event) {
+    final LiteralArgumentBuilder<CommandSource> root = Commands.literal(MODID)
+      .then(SetAgeCommand.register());
+
+    event.getCommandDispatcher().register(root);
+  }
+
+  private void onWorldLoad(final WorldEvent.Load event) {
+    recipeManager = ((World)event.getWorld()).getRecipeManager();
   }
 
   public static ResourceLocation resource(final String path) {

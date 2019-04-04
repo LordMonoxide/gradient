@@ -1,62 +1,7 @@
 package lordmonoxide.gradient.client.models;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import lordmonoxide.gradient.GradientMod;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.BakedItemModel;
-import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.ItemLayerModel;
-import net.minecraftforge.client.model.ItemTextureQuadConverter;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.ModelStateComposition;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
-import net.minecraftforge.client.model.SimpleModelState;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fml.common.Mod;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.vecmath.Quat4f;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-
+//TODO
+/*
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Dist.CLIENT)
 public final class ModelClayBucket implements IUnbakedModel {
@@ -155,10 +100,12 @@ public final class ModelClayBucket implements IUnbakedModel {
     final ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
     TextureAtlasSprite particleSprite = null;
 
+    final Random rand = new Random();
+
     if(this.baseLocation != null) {
       // build base (insidest)
-      final IBakedModel model = new ItemLayerModel(ImmutableList.of(this.baseLocation)).bake(state, format, bakedTextureGetter);
-      builder.addAll(model.getQuads(null, null, 0));
+      final IBakedModel model = new ItemLayerModel(ImmutableList.of(this.baseLocation)).bake(modelGetter, bakedTextureGetter, state, uvlock, format);
+      builder.addAll(model.getQuads(null, null, rand));
       particleSprite = model.getParticleTexture();
     }
 
@@ -183,14 +130,6 @@ public final class ModelClayBucket implements IUnbakedModel {
     return new BakedClayBucket(this, builder.build(), particleSprite, format, Maps.immutableEnumMap(transformMap), Maps.newHashMap(), transform.isIdentity());
   }
 
-  /**
-   * Sets the fluid in the model.
-   * "fluid" - Name of the fluid in the fluid registry.
-   * "flipGas" - If "true" the model will be flipped upside down if the fluid is lighter than air. If "false" it won't.
-   * "applyTint" - If "true" the model will tint the fluid quads according to the fluid's base color.
-   * <p/>
-   * If the fluid can't be found, water is used.
-   */
   @Override
   public ModelClayBucket process(final ImmutableMap<String, String> customData) {
     final String fluidName = customData.get("fluid");
@@ -231,15 +170,6 @@ public final class ModelClayBucket implements IUnbakedModel {
     return new ModelClayBucket(this.baseLocation, this.liquidLocation, this.coverLocation, fluid, flip, tint);
   }
 
-  /**
-   * Allows to use different textures for the model.
-   * There are 3 layers:
-   * base - The empty bucket/container
-   * fluid - A texture representing the liquid portion. Non-transparent = liquid
-   * cover - An overlay that's put over the liquid (optional)
-   * <p/>
-   * If no liquid is given a hardcoded variant for the bucket is used.
-   */
   @Override
   public ModelClayBucket retexture(final ImmutableMap<String, String> textures) {
     final ResourceLocation base  = textures.containsKey("base")  ? new ResourceLocation(textures.get("base"))  : this.baseLocation;
@@ -271,14 +201,14 @@ public final class ModelClayBucket implements IUnbakedModel {
 
       if(getResource(GradientMod.resource("textures/items/clay_bucket_cover.png")) == null) {
         final ResourceLocation bucketCover = GradientMod.resource("items/clay_bucket_cover");
-        final BucketCoverSprite bucketCoverSprite = new BucketCoverSprite(bucketCover);
-        map.setTextureEntry(bucketCoverSprite);
+        //TODO final BucketCoverSprite bucketCoverSprite = new BucketCoverSprite(bucketCover);
+        //TODO map.setTextureEntry(bucketCoverSprite);
       }
 
       if(getResource(GradientMod.resource("textures/items/clay_bucket_base.png")) == null) {
         final ResourceLocation bucketBase = GradientMod.resource("items/clay_bucket_base");
-        final BucketBaseSprite bucketBaseSprite = new BucketBaseSprite(bucketBase);
-        map.setTextureEntry(bucketBaseSprite);
+        //TODO final BucketBaseSprite bucketBaseSprite = new BucketBaseSprite(bucketBase);
+        //TODO map.setTextureEntry(bucketBaseSprite);
       }
     }
 
@@ -297,8 +227,8 @@ public final class ModelClayBucket implements IUnbakedModel {
     private final ResourceLocation bucket = GradientMod.resource("items/clay_bucket_empty");
     private final ImmutableList<ResourceLocation> dependencies = ImmutableList.of(this.bucket);
 
-    private BucketBaseSprite(final ResourceLocation resourceLocation) {
-      super(resourceLocation.toString());
+    private BucketBaseSprite(final ResourceLocation resourceLocation, final int width, final int height) {
+      super(resourceLocation, width, height);
     }
 
     @Override
@@ -314,8 +244,6 @@ public final class ModelClayBucket implements IUnbakedModel {
     @Override
     public boolean load(@Nonnull final IResourceManager manager, @Nonnull final ResourceLocation location, @Nonnull final Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
       final TextureAtlasSprite sprite = textureGetter.apply(this.bucket);
-      this.width = sprite.getWidth();
-      this.height = sprite.getHeight();
       final int[][] pixels = sprite.getFrameTextureData(0);
       this.clearFramesTextureData();
       this.framesTextureData.add(pixels);
@@ -323,17 +251,14 @@ public final class ModelClayBucket implements IUnbakedModel {
     }
   }
 
-  /**
-   * Creates a bucket cover sprite from the vanilla resource.
-   */
   @OnlyIn(Dist.CLIENT)
   private static final class BucketCoverSprite extends TextureAtlasSprite {
     private final ResourceLocation bucket = GradientMod.resource("items/clay_bucket_empty");
     private final ResourceLocation bucketCoverMask = GradientMod.resource("items/clay_bucket_cover_mask");
     private final ImmutableList<ResourceLocation> dependencies = ImmutableList.of(this.bucket, this.bucketCoverMask);
 
-    private BucketCoverSprite(final ResourceLocation resourceLocation) {
-      super(resourceLocation.toString());
+    private BucketCoverSprite(final ResourceLocation resourceLocation, final int width, final int height) {
+      super(resourceLocation, width, height);
     }
 
     @Override
@@ -350,8 +275,6 @@ public final class ModelClayBucket implements IUnbakedModel {
     public boolean load(@Nonnull final IResourceManager manager, @Nonnull final ResourceLocation location, @Nonnull final Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
       final TextureAtlasSprite sprite = textureGetter.apply(this.bucket);
       final TextureAtlasSprite alphaMask = textureGetter.apply(this.bucketCoverMask);
-      this.width = sprite.getWidth();
-      this.height = sprite.getHeight();
       final int[][] pixels = new int[Minecraft.getInstance().gameSettings.mipmapLevels + 1][];
       pixels[0] = new int[this.width * this.height];
 
@@ -381,7 +304,7 @@ public final class ModelClayBucket implements IUnbakedModel {
 
     @Override
     public IBakedModel getModelWithOverrides(final IBakedModel originalModel, final ItemStack stack, @Nullable final World world, @Nullable final EntityLivingBase entity) {
-      final FluidStack fluidStack = FluidUtil.getFluidContained(stack);
+      final FluidStack fluidStack = null; //TODO FluidUtil.getFluidContained(stack);
 
       // not a fluid item apparently
       if(fluidStack == null) {
@@ -427,3 +350,4 @@ public final class ModelClayBucket implements IUnbakedModel {
     }
   }
 }
+*/

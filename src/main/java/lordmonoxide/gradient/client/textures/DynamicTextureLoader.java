@@ -3,24 +3,23 @@ package lordmonoxide.gradient.client.textures;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
-import lordmonoxide.gradient.client.models.ClonedAtlasSprite;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.IResource;
+import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber(value = Side.CLIENT, modid = GradientMod.MODID)
+@OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class DynamicTextureLoader {
   private DynamicTextureLoader() { }
 
@@ -79,32 +78,34 @@ public final class DynamicTextureLoader {
 
   private static void registerDynamicTextures(final TextureMap map, final DynamicAtlasSprite.TextureGenerator generator, final ResourceLocation name, final ResourceLocation... sprites) {
     if(getResource(GradientMod.resource("textures/" + name.getPath() + ".png")) == null) {
-      map.setTextureEntry(new DynamicAtlasSprite(GradientMod.resource(name.getPath()), generator, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
+      //TODO map.setTextureEntry(new DynamicAtlasSprite(GradientMod.resource(name.getPath()), generator, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
     }
   }
 
   private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final ResourceLocation source) {
     if(getResource(GradientMod.resource("textures/" + name.getPath() + ".png")) == null) {
-      map.setTextureEntry(new ClonedAtlasSprite(GradientMod.resource(name.getPath()), source));
+      //TODO map.setTextureEntry(new ClonedAtlasSprite(GradientMod.resource(name.getPath()), source));
     }
   }
 
   private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final GradientMetals.Metal metal, final ResourceLocation... sprites) {
     if(getResource(GradientMod.resource("textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
-      map.setTextureEntry(new MetalAtlasSprite(GradientMod.resource(name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
+      //TODO map.setTextureEntry(new MetalAtlasSprite(GradientMod.resource(name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
     }
   }
 
   @Nullable
   private static IResource getResource(final ResourceLocation resourceLocation) {
     try {
-      return Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation);
+      return Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
     } catch(final IOException ignored) {
       return null;
     }
   }
 
   private static void barkGenerator(final List<TextureAtlasSprite> sprites, final int[][] out) {
+    //TODO
+/*
     final int[][] cutout = sprites.get(0).getFrameTextureData(0);
     final int[][] bark = sprites.get(1).getFrameTextureData(0);
 
@@ -113,5 +114,6 @@ public final class DynamicTextureLoader {
         out[0][p] = bark[0][p];
       }
     }
+*/
   }
 }

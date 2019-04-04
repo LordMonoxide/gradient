@@ -3,7 +3,6 @@ package lordmonoxide.gradient.tileentities;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.client.gui.GuiBronzeOven;
 import lordmonoxide.gradient.containers.ContainerBronzeOven;
-import lordmonoxide.gradient.recipes.FurnaceRecipes;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -24,7 +23,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
@@ -42,7 +40,7 @@ public class TileBronzeOven extends TileEntity implements ITickable, IInteractio
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
-  private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
+  private static final Fluid STEAM = null; //TODO FluidRegistry.getFluid(FluidName.steam.getName());
 
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;
@@ -107,7 +105,7 @@ public class TileBronzeOven extends TileEntity implements ITickable, IInteractio
 
   private void cook() {
     if(!this.isCooking() && !this.getInputStack().isEmpty()) {
-      final ItemStack cooked = FurnaceRecipes.instance().getSmeltingResult(this.getInputStack()).copy();
+      final ItemStack cooked = null; //TODO FurnaceRecipes.instance().getSmeltingResult(this.getInputStack()).copy();
 
       if(this.inventory.insertItem(OUTPUT_SLOT, cooked, true).isEmpty()) {
         this.inventory.extractItem(INPUT_SLOT, 1, false);

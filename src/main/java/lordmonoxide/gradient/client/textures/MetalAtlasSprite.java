@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableList;
 import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.io.FileNotFoundException;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MetalAtlasSprite extends TextureAtlasSprite {
   private static final int COLOUR_DIFFUSE  = 0xFFFF0000;
   private static final int COLOUR_SPECULAR = 0xFF00FF00;
@@ -31,8 +31,8 @@ public class MetalAtlasSprite extends TextureAtlasSprite {
   private final GradientMetals.Metal metal;
   private final ImmutableList<ResourceLocation> dependencies;
 
-  public MetalAtlasSprite(final ResourceLocation spriteName, final GradientMetals.Metal metal, final ResourceLocation... source) {
-    super(spriteName.toString());
+  public MetalAtlasSprite(final ResourceLocation spriteName, final int width, final int height, final GradientMetals.Metal metal, final ResourceLocation... source) {
+    super(spriteName, width, height);
     this.metal = metal;
     this.dependencies = ImmutableList.copyOf(source);
   }
@@ -51,9 +51,7 @@ public class MetalAtlasSprite extends TextureAtlasSprite {
   public boolean load(@Nonnull final IResourceManager manager, @Nonnull final ResourceLocation location, @Nonnull final Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
     final List<TextureAtlasSprite> sprites = this.dependencies.stream().map(textureGetter).collect(Collectors.toList());
 
-    this.width = sprites.get(0).getIconWidth();
-    this.height = sprites.get(0).getIconHeight();
-    final int[][] pixels = new int[Minecraft.getMinecraft().gameSettings.mipmapLevels + 1][];
+    final int[][] pixels = new int[Minecraft.getInstance().gameSettings.mipmapLevels + 1][];
     pixels[0] = new int[this.width * this.height];
 
     for(final TextureAtlasSprite sprite : sprites) {
@@ -62,7 +60,7 @@ public class MetalAtlasSprite extends TextureAtlasSprite {
         throw new RuntimeException(new FileNotFoundException("Could not find base sprite " + sprite + " while generating sprite " + this));
       }
 
-      final int[][] sourcePixels = sprite.getFrameTextureData(0);
+      final int[][] sourcePixels = new int[16][16]; //TODO sprite.getFrameTextureData(0);
 
       for(int p = 0; p < this.width * this.height; p++) {
         if((sourcePixels[0][p] & ALPHA_MASK) != 0) {
@@ -104,7 +102,7 @@ public class MetalAtlasSprite extends TextureAtlasSprite {
     }
 
     this.clearFramesTextureData();
-    this.framesTextureData.add(pixels);
+    //TODO this.framesTextureData.add(pixels);
     return false;
   }
 }

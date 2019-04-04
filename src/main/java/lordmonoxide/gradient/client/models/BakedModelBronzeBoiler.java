@@ -2,25 +2,19 @@ package lordmonoxide.gradient.client.models;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.BlockBronzeBoiler;
-import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
@@ -111,6 +105,8 @@ public class BakedModelBronzeBoiler implements IBakedModel {
     return bakedFluidModels;
   }
 
+  //TODO
+/*
   @SubscribeEvent
   public static void onModelBakeEvent(final ModelBakeEvent event) {
     // generate fluid models for all registered fluids for 16 levels each
@@ -130,4 +126,5 @@ public class BakedModelBronzeBoiler implements IBakedModel {
       }
     }
   }
+*/
 }

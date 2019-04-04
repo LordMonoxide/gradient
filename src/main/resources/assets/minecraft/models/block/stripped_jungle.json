@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_column",
-  "textures": {
-    "particle": "blocks/stripped_jungle_log",
-    "side": "blocks/stripped_jungle_log",
-    "end": "blocks/stripped_jungle_log_top"
-  }
-}

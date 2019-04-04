@@ -1,33 +1,14 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.GradientTools;
-import lordmonoxide.gradient.items.GradientItems;
-import lordmonoxide.gradient.progress.Age;
-import lordmonoxide.gradient.utils.OreDictUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ExtraRecipes {
   private ExtraRecipes() { }
 
+  //TODO
+/*
   @SubscribeEvent
   public static void registerRecipes(final RegistryEvent.Register<IRecipe> event) {
     GradientMod.logger.info("Registering recipes...");
@@ -184,4 +165,5 @@ public final class ExtraRecipes {
   private static void registerExtractorRecipes() {
     Recipes.extractor.addRecipe(Recipes.inputFactory.forFluidContainer(FluidRegistry.WATER), null, false, GradientItems.SALT.getItemStack(4));
   }
+*/
 }

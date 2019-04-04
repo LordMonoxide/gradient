@@ -11,18 +11,25 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
 public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipe> {
   public MixingRecipeCategory(final IGuiHelper guiHelper) {
-    super(GradientRecipeCategoryUid.MIXING, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_mixing.png"), 0, 0, 166, 68));
+    //TODO
+    super(GradientRecipeCategoryUid.MIXING, MixingRecipe.class, null, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_mixing.png"), 0, 0, 166, 68));
   }
 
   @Override
   public String getTitle() {
-    return GradientBlocks.MIXING_BASIN.getLocalizedName();
+    return I18n.format(GradientBlocks.MIXING_BASIN.getTranslationKey());
+  }
+
+  @Override
+  public void setIngredients(final MixingRecipe recipe, final IIngredients ingredients) {
+
   }
 
   @Override

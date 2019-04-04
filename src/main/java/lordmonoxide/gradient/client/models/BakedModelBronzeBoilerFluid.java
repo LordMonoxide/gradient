@@ -16,7 +16,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -175,9 +174,15 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
 
   @Override
   public TextureAtlasSprite getParticleTexture() {
-    final String fluidTextureLoc = (this.fluid.getStill() != null ? this.fluid.getStill() : this.fluid.getFlowing() != null ? this.fluid.getFlowing() : FluidRegistry.WATER.getStill()).toString();
+    final String fluidTextureLoc = (
+      this.fluid.getStill() != null ?
+        this.fluid.getStill() :
+        this.fluid.getFlowing() != null ?
+          this.fluid.getFlowing() :
+          null //TODO FluidRegistry.WATER.getStill()
+    ).toString();
 
-    return Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(fluidTextureLoc);
+    return Minecraft.getInstance().getTextureMap().getAtlasSprite(fluidTextureLoc);
   }
 
   @SuppressWarnings("deprecation")

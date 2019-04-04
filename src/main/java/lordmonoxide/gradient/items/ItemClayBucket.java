@@ -2,7 +2,6 @@ package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -11,20 +10,20 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.DispenseFluidContainer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -32,15 +31,12 @@ import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ItemClayBucket extends GradientItem {
   private final ItemStack empty;
 
@@ -49,43 +45,9 @@ public class ItemClayBucket extends GradientItem {
 
     this.empty = new ItemStack(this);
 
-    this.setContainerItem(this);
+    //TODO this.setContainerItem(this);
 
     BlockDispenser.registerDispenseBehavior(this, DispenseFluidContainer.getInstance());
-  }
-
-  /**
-   * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
-   */
-  @Override
-  public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
-    if(!this.isInCreativeTab(tab)) {
-      return;
-    }
-
-    subItems.add(this.empty);
-    subItems.add(getFilledBucket(FluidRegistry.WATER));
-    subItems.add(getFilledBucket(FluidRegistry.LAVA));
-
-    for(final Fluid fluid : FluidRegistry.getBucketFluids()) {
-      subItems.add(getFilledBucket(fluid));
-    }
-  }
-
-  @Override
-  public String getItemStackDisplayName(final ItemStack stack) {
-    final FluidStack fluidStack = this.getFluid(stack);
-    if(fluidStack == null) {
-      return I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".empty.name").trim();
-    }
-
-    final String unloc = this.getUnlocalizedNameInefficiently(stack);
-
-    if(I18n.canTranslate(unloc + '.' + fluidStack.getFluid().getName())) {
-      return I18n.translateToLocal(unloc + '.' + fluidStack.getFluid().getName());
-    }
-
-    return I18n.translateToLocalFormatted(unloc + ".name", fluidStack.getLocalizedName());
   }
 
   public static ItemStack getFilledBucket(final Fluid fluid) {
@@ -94,14 +56,14 @@ public class ItemClayBucket extends GradientItem {
 
     final NBTTagCompound tag = new NBTTagCompound();
     fluidContents.writeToNBT(tag);
-    filledBucket.setTagCompound(tag);
+    //TODO filledBucket.setTagCompound(tag);
 
     return filledBucket;
   }
 
   @Nullable
   public FluidStack getFluid(final ItemStack container) {
-    return FluidStack.loadFluidStackFromNBT(container.getTagCompound());
+    return null; //TODO FluidStack.loadFluidStackFromNBT(container.getTagCompound());
   }
 
   @Override
@@ -209,11 +171,15 @@ public class ItemClayBucket extends GradientItem {
     }
 
     public boolean canFillFluidType(final FluidStack fluid) {
+      //TODO
+      return false;
+/*
       if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == FluidRegistry.LAVA || "milk".equals(fluid.getFluid().getName())) {
         return true;
       }
 
       return FluidRegistry.getBucketFluids().contains(fluid.getFluid());
+*/
     }
 
     @Nullable
@@ -288,18 +254,12 @@ public class ItemClayBucket extends GradientItem {
     }
 
     @Override
-    public boolean hasCapability(@Nonnull final Capability<?> capability, @Nullable final EnumFacing facing) {
-      return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
-    }
-
-    @Override
-    @Nullable
-    public <T> T getCapability(@Nonnull final Capability<T> capability, @Nullable final EnumFacing facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> capability, @Nullable final EnumFacing facing) {
       if(capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY) {
-        return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY.cast(this);
+        return LazyOptional.of(() -> (T)this);
       }
 
-      return null;
+      return LazyOptional.empty();
     }
   }
 }

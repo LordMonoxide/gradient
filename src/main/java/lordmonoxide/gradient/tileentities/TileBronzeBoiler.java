@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.tileentities;
 
-import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import lordmonoxide.gradient.client.gui.GuiBronzeBoiler;
@@ -10,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +19,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
@@ -37,8 +34,8 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   public static final int WATER_CAPACITY = 16;
   public static final int STEAM_CAPACITY = 32;
 
-  private static final Fluid WATER = FluidRegistry.getFluid("water");
-  private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
+  private static final Fluid WATER = null; //TODO FluidRegistry.getFluid("water");
+  private static final Fluid STEAM = null; //TODO FluidRegistry.getFluid(FluidName.steam.getName());
 
   public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME * WATER_CAPACITY);
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * STEAM_CAPACITY);
@@ -79,7 +76,7 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   }
 
   public void updateOutput(@Nullable final BlockPos pos) {
-    this.autoOutput = FluidUtil.getFluidHandler(this.world, pos, EnumFacing.DOWN);
+    this.autoOutput = null; //TODO FluidUtil.getFluidHandler(this.world, pos, EnumFacing.DOWN);
   }
 
   @Override

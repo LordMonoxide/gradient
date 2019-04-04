@@ -1,60 +1,49 @@
 package lordmonoxide.gradient.progress;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lordmonoxide.gradient.advancements.AdvancementTriggers;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.Entity;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class SetAgeCommand extends CommandBase {
-  @Override
-  public String getName() {
-    return "setage";
+import java.util.Collection;
+
+public final class SetAgeCommand {
+  private SetAgeCommand() { }
+
+  public static ArgumentBuilder<CommandSource, ?> register() {
+    return Commands.literal("setage")
+      .requires(ctx -> ctx.hasPermissionLevel(4))
+      .then(Commands.argument("age", IntegerArgumentType.integer(1, Age.highest().value())))
+      .then(Commands.argument("targets", EntityArgument.players())
+      .executes(ctx -> execute(ctx, Age.get(IntegerArgumentType.getInteger(ctx, "age")), EntityArgument.getPlayers(ctx, "targets"))));
   }
 
-  @Override
-  public String getUsage(final ICommandSender sender) {
-    return "commands.setage.usage";
-  }
+  private static int execute(final CommandContext<CommandSource> ctx, final Age age, final Collection<EntityPlayerMP> players) throws CommandSyntaxException {
+    final EntityPlayerMP sender = ctx.getSource().asPlayer();
 
-  @Override
-  public void execute(final MinecraftServer server, final ICommandSender sender, final String[] args) throws CommandException {
-    if(args.length < 1) {
-      throw new WrongUsageException("commands.setage.usage");
+    for(final EntityPlayerMP target : players) {
+      target
+        .getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY)
+        .ifPresent(progress -> {
+          progress.setAge(age);
+
+          AdvancementTriggers.CHANGE_AGE.trigger(target);
+
+          target.sendMessage(new TextComponentTranslation("commands.setage.set", age.getDisplayName()));
+
+          if(sender != target) {
+            sender.sendMessage(new TextComponentTranslation("commands.setage.set_other", target.getDisplayName(), age.getDisplayName()));
+          }
+        });
     }
 
-    final Age age = Age.get(CommandBase.parseInt(args[0], 1, Age.values().length));
-
-    final Entity target;
-
-    if(args.length == 2) {
-      target = CommandBase.getEntity(server, sender, args[1]);
-    } else {
-      if(sender.getCommandSenderEntity() == null) {
-        throw new WrongUsageException("commands.setage.usage");
-      }
-
-      target = sender.getCommandSenderEntity();
-    }
-
-    final PlayerProgress progress = target.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
-
-    if(progress == null) {
-      return;
-    }
-
-    progress.setAge(age);
-
-    AdvancementTriggers.CHANGE_AGE.trigger((EntityPlayerMP)target);
-
-    target.sendMessage(new TextComponentTranslation("commands.setage.set", age.getDisplayName()));
-
-    if(sender != target) {
-      sender.sendMessage(new TextComponentTranslation("commands.setage.set_other", target.getDisplayName(), age.getDisplayName()));
-    }
+    return Command.SINGLE_SUCCESS;
   }
 }

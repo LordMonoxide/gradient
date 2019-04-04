@@ -2,14 +2,12 @@ package lordmonoxide.gradient.client;
 
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.client.models.ModelClayBucket;
 import lordmonoxide.gradient.client.tesr.TileClayOvenRenderer;
 import lordmonoxide.gradient.client.tesr.TileDryingRackRenderer;
 import lordmonoxide.gradient.client.tesr.TileFirePitRenderer;
 import lordmonoxide.gradient.client.tesr.TileFlywheelRenderer;
 import lordmonoxide.gradient.client.tesr.TileManualGrinderRenderer;
 import lordmonoxide.gradient.client.tesr.TileMixingBasinRenderer;
-import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.tileentities.TileClayOven;
 import lordmonoxide.gradient.tileentities.TileDryingRack;
 import lordmonoxide.gradient.tileentities.TileFirePit;
@@ -75,6 +73,6 @@ public final class ModelManager {
   }
 
   private static void registerItemModels() {
-    ModelClayBucket.setBucketModelDefinition(GradientItems.CLAY_BUCKET);
+    //TODO ModelClayBucket.setBucketModelDefinition(GradientItems.CLAY_BUCKET);
   }
 }

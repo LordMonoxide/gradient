@@ -1,12 +1,12 @@
 package lordmonoxide.gradient;
 
 import com.google.common.collect.ImmutableList;
-import lordmonoxide.gradient.utils.OreDictUtils;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public final class GradientMetals {
   public static final List<Metal> metals = new ArrayList<>();
   public static final List<Alloy> alloys = new ArrayList<>();
 
-  private static final Map<Integer, Meltable> meltables = new HashMap<>();
+  private static final Map<Item, Meltable> meltables = new HashMap<>();
 
   public static final Metal    INVALID_METAL    = new Metal("invalid", Float.POSITIVE_INFINITY, 0.0f, 0.0f, false, false, false, 0, 0, 0, 0, 0, 0, 0);
   public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
@@ -42,22 +42,23 @@ public final class GradientMetals {
   }
 
   static void registerMeltables() {
-    for(final String oreName : OreDictionary.getOreNames()) {
-      if(oreName.startsWith("ore")) {
-        addMeltable(oreName, oreName.substring(3).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
-      } else if(oreName.startsWith("ingot")) {
-        addMeltable(oreName, oreName.substring(5).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
-      } else if(oreName.startsWith("nugget")) {
-        final Meltable meltable = addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
+    Tags.Items.ORES.getAllElements().forEach(item -> addMeltable(item, item.getRegistryName().getPath().substring(3).toLowerCase(), 1, Fluid.BUCKET_VOLUME));
+    Tags.Items.INGOTS.getAllElements().forEach(item -> addMeltable(item, item.getRegistryName().getPath().substring(5).toLowerCase(), 1, Fluid.BUCKET_VOLUME));
+    Tags.Items.DUSTS.getAllElements().forEach(item -> addMeltable(item, item.getRegistryName().getPath().substring(4).toLowerCase(), 1, Fluid.BUCKET_VOLUME));
+    Tags.Items.STORAGE_BLOCKS.getAllElements().forEach(item -> addMeltable(item, item.getRegistryName().getPath().substring(5).toLowerCase(), 8, Fluid.BUCKET_VOLUME));
+    Tags.Items.NUGGETS.getAllElements().forEach(item -> {
+      final Meltable meltable = addMeltable(item, item.getRegistryName().getPath().substring(6).toLowerCase(), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
 
-        if(meltable != INVALID_MELTABLE) {
-          meltable.metal.nugget = OreDictUtils.getFirst(oreName);
-        }
-      } else if(oreName.startsWith("dust")) {
-        addMeltable(oreName, oreName.substring(4).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
-      } else if(oreName.startsWith("block")) {
-        addMeltable(oreName, oreName.substring(5).toLowerCase(), 8, Fluid.BUCKET_VOLUME * 8);
-      } else if(oreName.startsWith("alloyNugget")) {
+      if(meltable != INVALID_MELTABLE) {
+        //TODO: only need to set the nugget once, prefer gradient
+        meltable.metal.nugget = new ItemStack(item);
+      }
+    });
+
+    //TODO
+/*
+    for(final String oreName : OreDictionary.getOreNames()) {
+      if(oreName.startsWith("alloyNugget")) {
         final Metal metal = getMetal(oreName.substring(11).toLowerCase());
 
         for(final Alloy alloy : alloys) {
@@ -80,6 +81,7 @@ public final class GradientMetals {
     addMeltable("sand",       GLASS, 8, Fluid.BUCKET_VOLUME * 8);
     addMeltable("blockGlass", GLASS, 8, Fluid.BUCKET_VOLUME * 8);
     addMeltable("paneGlass",  GLASS, 8.0f / 16.0f, Fluid.BUCKET_VOLUME * 8 / 16);
+*/
   }
 
   public static ItemStack getBucket(final GradientMetals.MetalStack metal) {
@@ -93,25 +95,25 @@ public final class GradientMetals {
     return FluidUtil.getFilledBucket(new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME));
   }
 
-  private static Meltable addMeltable(final String oreName, final String metal, final float meltModifier, final int amount) {
+  private static Meltable addMeltable(final Item item, final String metal, final float meltModifier, final int amount) {
     final Metal m = getMetal(metal);
 
     if(m != INVALID_METAL) {
-      return addMeltable(oreName, m, meltModifier, amount);
+      return addMeltable(item, m, meltModifier, amount);
     }
 
     return INVALID_MELTABLE;
   }
 
-  private static Meltable addMeltable(final String oreDict, final Metal metal, final float meltModifier, final float meltTemp, final int amount) {
+  private static Meltable addMeltable(final Item item, final Metal metal, final float meltModifier, final float meltTemp, final int amount) {
     final Meltable meltable = new Meltable(metal, meltModifier, meltTemp, amount);
-    meltables.put(OreDictionary.getOreID(oreDict), meltable);
+    meltables.put(item, meltable);
     return meltable;
   }
 
-  private static Meltable addMeltable(final String oreDict, final Metal metal, final float meltModifier, final int amount) {
+  private static Meltable addMeltable(final Item item, final Metal metal, final float meltModifier, final int amount) {
     final Meltable meltable = new Meltable(metal, meltModifier, amount);
-    meltables.put(OreDictionary.getOreID(oreDict), meltable);
+    meltables.put(item, meltable);
     return meltable;
   }
 
@@ -156,12 +158,10 @@ public final class GradientMetals {
   }
 
   public static Meltable getMeltable(final ItemStack stack) {
-    for(final int id : OreDictionary.getOreIDs(stack)) {
-      final Meltable meltable = meltables.get(id);
+    final Meltable meltable = meltables.get(stack.getItem());
 
-      if(meltable != null) {
-        return meltable;
-      }
+    if(meltable != null) {
+      return meltable;
     }
 
     return INVALID_MELTABLE;

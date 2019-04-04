@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -29,7 +30,7 @@ public class BlockHandCrank extends GradientBlock {
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
-  public static final DirectionProperty FACING = DirectionProperty.create("facing");
+  public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
   public BlockHandCrank() {
     super("hand_crank", Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));

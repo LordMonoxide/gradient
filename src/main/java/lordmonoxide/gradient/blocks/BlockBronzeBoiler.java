@@ -1,15 +1,10 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.GradientGuiHandler;
-import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,26 +19,22 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BlockBronzeBoiler extends HeatSinkerBlock {
-  public static final IUnlistedProperty<Integer> WATER_LEVEL = new Properties.PropertyAdapter<>(PropertyInteger.create("waterLevel", 0, TileBronzeBoiler.WATER_CAPACITY));
-  public static final IUnlistedProperty<Integer> STEAM_LEVEL = new Properties.PropertyAdapter<>(PropertyInteger.create("SteamLevel", 0, TileBronzeBoiler.STEAM_CAPACITY));
+  public static final IUnlistedProperty<Integer> WATER_LEVEL = null; //TODO new Properties.PropertyAdapter<>(PropertyInteger.create("waterLevel", 0, TileBronzeBoiler.WATER_CAPACITY));
+  public static final IUnlistedProperty<Integer> STEAM_LEVEL = null; //TODO new Properties.PropertyAdapter<>(PropertyInteger.create("SteamLevel", 0, TileBronzeBoiler.STEAM_CAPACITY));
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
-  private static final Fluid WATER = FluidRegistry.getFluid("water");
+  private static final Fluid WATER = null; //TODO FluidRegistry.getFluid("water");
 
   public BlockBronzeBoiler() {
     super("bronze_boiler", Properties.create(GradientBlocks.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
@@ -66,7 +57,8 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
       }
 
       if(FluidUtil.getFluidHandler(player.getHeldItem(hand)) != null) {
-        final FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand));
+        //TODO: nulls
+        final FluidStack fluid = FluidUtil.getFluidContained(player.getHeldItem(hand)).orElse(null);
 
         // Make sure the fluid handler is either empty, or contains water
         if(fluid != null && fluid.getFluid() != WATER) {
@@ -123,9 +115,11 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
 
   @Override
   protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
-    builder.add(FACING, WATER_LEVEL, STEAM_LEVEL);
+    builder.add(FACING/*, WATER_LEVEL, STEAM_LEVEL*/); //TODO
   }
 
+  //TODO
+/*
   @Override
   public IBlockState getExtendedState(final IBlockState state, final IBlockReader world, final BlockPos pos) {
     final IExtendedBlockState extendedState = (IExtendedBlockState) state;
@@ -140,6 +134,7 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
 
     return extendedState.withProperty(WATER_LEVEL, 0).with(STEAM_LEVEL, 0);
   }
+*/
 
   @SuppressWarnings("deprecation")
   @Override

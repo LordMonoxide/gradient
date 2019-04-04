@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.tileentities.TileManualGrinder;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
@@ -25,7 +26,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class BlockManualGrinder extends GradientBlock {
   @CapabilityInject(IItemHandler.class)
@@ -108,19 +108,16 @@ public class BlockManualGrinder extends GradientBlock {
   @SuppressWarnings("deprecation")
   @Override
   public void onReplaced(final IBlockState state, final World world, final BlockPos pos, final IBlockState newState, final boolean isMoving) {
-    final TileEntity tile = world.getTileEntity(pos);
+    final TileManualGrinder grinder = WorldUtils.getTileEntity(world, pos, TileManualGrinder.class);
 
-    if(!(tile instanceof TileManualGrinder)) {
-      return;
-    }
-
-    final TileManualGrinder grinder = (TileManualGrinder)tile;
-    final ItemStackHandler inv = (ItemStackHandler)grinder.getCapability(ITEM_HANDLER_CAPABILITY, null);
-
-    for(int i = 0; i < inv.getSlots(); i++) {
-      if(!inv.getStackInSlot(i).isEmpty()) {
-        world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i)));
-      }
+    if(grinder != null) {
+      grinder.getCapability(ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+        for(int i = 0; i < inv.getSlots(); i++) {
+          if(!inv.getStackInSlot(i).isEmpty()) {
+            world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i)));
+          }
+        }
+      });
     }
 
     super.onReplaced(state, world, pos, newState, isMoving);

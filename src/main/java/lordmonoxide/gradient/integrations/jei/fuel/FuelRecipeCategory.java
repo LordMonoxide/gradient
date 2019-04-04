@@ -16,12 +16,18 @@ import java.util.List;
 
 public class FuelRecipeCategory extends JeiRecipeCategory<FuelRecipe> {
   public FuelRecipeCategory(final IGuiHelper guiHelper) {
-    super(GradientRecipeCategoryUid.FUEL, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_fuel.png"), 0, 0, 166, 68));
+    //TODO
+    super(GradientRecipeCategoryUid.FUEL, FuelRecipe.class, null, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_fuel.png"), 0, 0, 166, 68));
   }
 
   @Override
   public String getTitle() {
     return I18n.format("jei.fuel.name");
+  }
+
+  @Override
+  public void setIngredients(final FuelRecipe recipe, final IIngredients ingredients) {
+
   }
 
   @Override

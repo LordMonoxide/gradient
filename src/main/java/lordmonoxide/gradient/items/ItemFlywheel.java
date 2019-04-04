@@ -1,21 +1,16 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.blocks.BlockFlywheel;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.item.ItemGroup;
 
 public class ItemFlywheel extends ItemBlock {
   public ItemFlywheel(final BlockFlywheel block) {
-    super(block);
+    super(block, new Properties().group(ItemGroup.TOOLS));
   }
 
+  //TODO
+/*
   @Override
   public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final IBlockState newState) {
     if(side == EnumFacing.UP || side == EnumFacing.DOWN) {
@@ -47,4 +42,5 @@ public class ItemFlywheel extends ItemBlock {
 
     return world.getBlockState(pos).getBlock().isReplaceable(state, useContext);
   }
+*/
 }

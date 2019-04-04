@@ -1,8 +1,8 @@
 package lordmonoxide.gradient;
 
+import net.minecraft.block.BlockLog;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -38,16 +38,6 @@ public final class GradientTools {
     return TYPES.values();
   }
 
-  public static Type getType(final String name) {
-    final Type type = TYPES.get(name);
-
-    if(type == null) {
-      return PICKAXE;
-    }
-
-    return type;
-  }
-
   private static EnumActionResult onItemUsePass(final ItemUseContext context) {
     return EnumActionResult.PASS;
   }
@@ -58,7 +48,7 @@ public final class GradientTools {
     final IBlockState state = world.getBlockState(pos);
 
     // Handled in event handler; need this here to stop from placing items in offhand (see #541)
-    if(state.getBlock() == Blocks.LOG || state.getBlock() == Blocks.LOG2) {
+    if(state.getBlock() instanceof BlockLog) {
       return EnumActionResult.SUCCESS;
     }
 
@@ -141,7 +131,7 @@ public final class GradientTools {
   public static final class ToolBuilder {
     private final GradientCasts.Cast cast;
 
-    private ToolType[] toolTypes;
+    private ToolType[] toolTypes = new ToolType[0];
 
     private double attackDamage;
     private double attackSpeed;

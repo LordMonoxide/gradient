@@ -16,6 +16,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -31,6 +32,10 @@ public class TileDryingRack extends TileEntity implements ITickable {
   private DryingRecipe recipe;
   private Age age = Age.AGE1;
   private int ticks;
+
+  public TileDryingRack() {
+    super(GradientTileEntities.DRYING_RACK);
+  }
 
   public boolean hasItem() {
     return !this.getItem().isEmpty();
@@ -52,7 +57,7 @@ public class TileDryingRack extends TileEntity implements ITickable {
     if(!this.hasItem()) {
       this.age = AgeUtils.getPlayerAge(player);
 
-      final ItemStack input = stack.splitStack(1);
+      final ItemStack input = stack.split(1);
       this.inventory.setStackInSlot(0, input);
 
       this.updateRecipe();
@@ -66,7 +71,7 @@ public class TileDryingRack extends TileEntity implements ITickable {
   }
 
   @Override
-  public void update() {
+  public void tick() {
     if(this.world.isRemote) {
       return;
     }
@@ -96,55 +101,47 @@ public class TileDryingRack extends TileEntity implements ITickable {
   }
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setTag("inventory", this.inventory.serializeNBT());
-    compound.setInteger("player_age", this.age.value());
-    compound.setInteger("ticks", this.ticks);
-    return super.writeToNBT(compound);
+  public NBTTagCompound write(final NBTTagCompound compound) {
+    compound.put("inventory", this.inventory.serializeNBT());
+    compound.putInt("player_age", this.age.value());
+    compound.putInt("ticks", this.ticks);
+    return super.write(compound);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
-    final NBTTagCompound inv = compound.getCompoundTag("inventory");
-    inv.removeTag("Size");
+  public void read(final NBTTagCompound compound) {
+    final NBTTagCompound inv = compound.getCompound("inventory");
+    inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
-    final int age = compound.getInteger("player_age");
+    final int age = compound.getInt("player_age");
 
     try {
       this.age = Age.get(age);
     } catch(final IndexOutOfBoundsException e) {
-      GradientMod.logger.warn("Invalid age in %s: %d", this, age);
+      GradientMod.logger.warn("Invalid age in {}: {}", this, age);
     }
 
-    this.ticks = compound.getInteger("ticks");
+    this.ticks = compound.getInt("ticks");
 
     this.updateRecipe();
 
-    super.readFromNBT(compound);
+    super.read(compound);
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return
-      capability == ITEM_HANDLER_CAPABILITY ||
-      super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
-      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+      return LazyOptional.of(() -> (T)this.inventory);
     }
 
     return super.getCapability(capability, facing);
   }
 
   protected void sync() {
-    if(!this.getWorld().isRemote) {
-      final IBlockState state = this.getWorld().getBlockState(this.getPos());
-      this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+    if(!this.world.isRemote) {
+      final IBlockState state = this.world.getBlockState(this.getPos());
+      this.world.notifyBlockUpdate(this.getPos(), state, state, 3);
       this.markDirty();
     }
   }
@@ -156,11 +153,11 @@ public class TileDryingRack extends TileEntity implements ITickable {
 
   @Override
   public NBTTagCompound getUpdateTag() {
-    return this.writeToNBT(new NBTTagCompound());
+    return this.write(new NBTTagCompound());
   }
 
   @Override
   public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
-    this.readFromNBT(pkt.getNbtCompound());
+    this.read(pkt.getNbtCompound());
   }
 }

@@ -2,12 +2,13 @@ package lordmonoxide.gradient.energy;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.config.GradientConfig;
-import lordmonoxide.gradient.utils.BlockPosUtils;
+import lordmonoxide.gradient.utils.WorldUtils;
 import lordmonoxide.gradient.utils.Tuple;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 
 import java.util.ArrayList;
@@ -23,14 +24,14 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
   final Capability<TRANSFER> transfer;
 
   private final List<EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new ArrayList<>();
-  public final int dimension;
-  private final IBlockAccess world;
+  public final DimensionType dimension;
+  private final IBlockReader world;
 
   private final Map<BlockPos, TileEntity> allNodes = new HashMap<>();
 
   private final EnergyNetworkState state = new EnergyNetworkState();
 
-  public EnergyNetwork(final int dimension, final IBlockAccess world, final Capability<STORAGE> storage, final Capability<TRANSFER> transfer) {
+  public EnergyNetwork(final DimensionType dimension, final IBlockReader world, final Capability<STORAGE> storage, final Capability<TRANSFER> transfer) {
     this.dimension = dimension;
     this.world = world;
     this.storage = storage;
@@ -57,7 +58,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         GradientMod.logger.info("Checking {}", te);
       }
 
-      for(final EnumFacing facing : EnumFacing.VALUES) {
+      for(final EnumFacing facing : EnumFacing.values()) {
         if(te.hasCapability(this.storage, facing) && te.getCapability(this.storage, facing).canSink()) {
           this.tickSinkNodes.put(te.getCapability(this.storage, facing), new Tuple<>(te.getPos(), facing));
         } else if(te.hasCapability(this.transfer, facing)) {
@@ -130,7 +131,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> added = new HashMap<>();
     final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> merge = new HashMap<>();
 
-    for(final EnumFacing facing : EnumFacing.VALUES) {
+    for(final EnumFacing facing : EnumFacing.values()) {
       final BlockPos networkPos = newNodePos.offset(facing);
       final TileEntity worldTe = this.world.getTileEntity(networkPos);
 
@@ -261,7 +262,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           GradientMod.logger.info("Success!");
         }
 
-        added.put(BlockPosUtils.getBlockFacing(newNodePos, networkPos), network);
+        added.put(WorldUtils.getBlockFacing(newNodePos, networkPos), network);
         connected = true;
       }
     }
@@ -277,7 +278,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       network.connect(networkPos, worldTe);
       network.connect(newNodePos, newTe);
       this.networks.add(network);
-      added.put(BlockPosUtils.getBlockFacing(newNodePos, networkPos), network);
+      added.put(WorldUtils.getBlockFacing(newNodePos, networkPos), network);
     }
   }
 
@@ -311,7 +312,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       if(network.contains(requestPosition)) {
         final EnergyNetworkSegment.EnergyNode node = network.getNode(requestPosition);
 
-        for(final EnumFacing side : EnumFacing.VALUES) {
+        for(final EnumFacing side : EnumFacing.values()) {
           final EnergyNetworkSegment.EnergyNode connection = node.connection(side);
 
           if(connection != null) {

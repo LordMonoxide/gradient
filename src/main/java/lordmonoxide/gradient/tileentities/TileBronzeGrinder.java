@@ -1,9 +1,13 @@
 package lordmonoxide.gradient.tileentities;
 
-import ic2.core.ref.FluidName;
+import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.client.gui.GuiBronzeGrinder;
+import lordmonoxide.gradient.containers.ContainerBronzeGrinder;
 import lordmonoxide.gradient.recipes.GrinderRecipes;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -13,10 +17,17 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.IItemHandler;
@@ -24,7 +35,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
-public class TileBronzeGrinder extends TileEntity implements ITickable {
+public class TileBronzeGrinder extends TileEntity implements ITickable, IInteractionObject {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -60,6 +71,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   private int workTicks;
 
   public TileBronzeGrinder() {
+    super(GradientTileEntities.BRONZE_GRINDER);
     this.tanks.addHandler(STEAM, this.tankSteam);
   }
 
@@ -73,7 +85,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   }
 
   @Override
-  public void update() {
+  public void tick() {
     this.work();
   }
 
@@ -117,50 +129,41 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   }
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setTag("inventory", this.inventory.serializeNBT());
-    compound.setTag("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
-    compound.setInteger("workTicks", this.workTicks);
-    return super.writeToNBT(compound);
+  public NBTTagCompound write(final NBTTagCompound compound) {
+    compound.put("inventory", this.inventory.serializeNBT());
+    compound.put("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
+    compound.putInt("workTicks", this.workTicks);
+    return super.write(compound);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
-    final NBTTagCompound inv = compound.getCompoundTag("inventory");
-    inv.removeTag("Size");
+  public void read(final NBTTagCompound compound) {
+    final NBTTagCompound inv = compound.getCompound("inventory");
+    inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
-    this.tankSteam.readFromNBT(compound.getCompoundTag("steam"));
-    this.workTicks = compound.getInteger("workTicks");
-    super.readFromNBT(compound);
+    this.tankSteam.readFromNBT(compound.getCompound("steam"));
+    this.workTicks = compound.getInt("workTicks");
+    super.read(compound);
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return
-      capability == ITEM_HANDLER_CAPABILITY ||
-      capability == FLUID_HANDLER_CAPABILITY ||
-      super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
-      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+      return LazyOptional.of(() -> (T)this.inventory);
     }
 
     if(capability == FLUID_HANDLER_CAPABILITY) {
-      return FLUID_HANDLER_CAPABILITY.cast(this.tanks);
+      return LazyOptional.of(() -> (T)this.tanks);
     }
 
     return super.getCapability(capability, facing);
   }
 
   private void sync() {
-    if(!this.getWorld().isRemote) {
-      final IBlockState state = this.getWorld().getBlockState(this.getPos());
-      this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+    if(!this.world.isRemote) {
+      final IBlockState state = this.world.getBlockState(this.getPos());
+      this.world.notifyBlockUpdate(this.getPos(), state, state, 3);
       this.markDirty();
     }
   }
@@ -172,11 +175,37 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
 
   @Override
   public NBTTagCompound getUpdateTag() {
-    return this.writeToNBT(new NBTTagCompound());
+    return this.write(new NBTTagCompound());
   }
 
   @Override
   public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
-    this.readFromNBT(pkt.getNbtCompound());
+    this.read(pkt.getNbtCompound());
+  }
+
+  @Override
+  public Container createContainer(final InventoryPlayer playerInventory, final EntityPlayer playerIn) {
+    return new ContainerBronzeGrinder(playerInventory, this);
+  }
+
+  @Override
+  public String getGuiID() {
+    return GuiBronzeGrinder.ID.toString();
+  }
+
+  @Override
+  public ITextComponent getName() {
+    return GradientBlocks.BRONZE_GRINDER.getNameTextComponent();
+  }
+
+  @Override
+  public boolean hasCustomName() {
+    return false;
+  }
+
+  @Nullable
+  @Override
+  public ITextComponent getCustomName() {
+    return null;
   }
 }

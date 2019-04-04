@@ -6,28 +6,30 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.BakedItemModel;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.client.model.ItemTextureQuadConverter;
 import net.minecraftforge.client.model.ModelLoader;
@@ -37,27 +39,27 @@ import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Quat4f;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Side.CLIENT)
-public final class ModelClayBucket implements IModel {
+@OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Dist.CLIENT)
+public final class ModelClayBucket implements IUnbakedModel {
   @SubscribeEvent
   public static void onTextureStitch(final TextureStitchEvent.Pre event) {
     LoaderClayBucket.INSTANCE.register(event.getMap());
@@ -81,7 +83,7 @@ public final class ModelClayBucket implements IModel {
   private static final float NORTH_Z_FLUID = 7.498f / 16.0f;
   private static final float SOUTH_Z_FLUID = 8.502f / 16.0f;
 
-  private static final IModel MODEL = new ModelClayBucket();
+  private static final IUnbakedModel MODEL = new ModelClayBucket();
 
   @Nullable
   private final ResourceLocation baseLocation;
@@ -109,7 +111,7 @@ public final class ModelClayBucket implements IModel {
   }
 
   @Override
-  public Collection<ResourceLocation> getTextures() {
+  public Collection<ResourceLocation> getTextures(final Function<ResourceLocation, IUnbakedModel> modelGetter, final Set<String> missingTextureErrors) {
     final ImmutableSet.Builder<ResourceLocation> builder = ImmutableSet.builder();
 
     if(this.baseLocation != null) {
@@ -129,7 +131,13 @@ public final class ModelClayBucket implements IModel {
   }
 
   @Override
-  public IBakedModel bake(IModelState state, final VertexFormat format, final Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+  public Collection<ResourceLocation> getDependencies() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public IBakedModel bake(final Function<ResourceLocation, IUnbakedModel> modelGetter, final Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter, IModelState state, final boolean uvlock, final VertexFormat format) {
+    //TODO
     final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transformMap = PerspectiveMapWrapper.getTransforms(state);
 
     // if the fluid is lighter than air, will manipulate the initial state to be rotated 180? to turn it upside down
@@ -249,7 +257,7 @@ public final class ModelClayBucket implements IModel {
     }
 
     @Override
-    public IModel loadModel(final ResourceLocation modelLocation) {
+    public IUnbakedModel loadModel(final ResourceLocation modelLocation) {
       return MODEL;
     }
 
@@ -277,14 +285,14 @@ public final class ModelClayBucket implements IModel {
     @Nullable
     private static IResource getResource(final ResourceLocation resourceLocation) {
       try {
-        return Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation);
+        return Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
       } catch(final IOException ignored) {
         return null;
       }
     }
   }
 
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   private static final class BucketBaseSprite extends TextureAtlasSprite {
     private final ResourceLocation bucket = GradientMod.resource("items/clay_bucket_empty");
     private final ImmutableList<ResourceLocation> dependencies = ImmutableList.of(this.bucket);
@@ -306,8 +314,8 @@ public final class ModelClayBucket implements IModel {
     @Override
     public boolean load(@Nonnull final IResourceManager manager, @Nonnull final ResourceLocation location, @Nonnull final Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
       final TextureAtlasSprite sprite = textureGetter.apply(this.bucket);
-      this.width = sprite.getIconWidth();
-      this.height = sprite.getIconHeight();
+      this.width = sprite.getWidth();
+      this.height = sprite.getHeight();
       final int[][] pixels = sprite.getFrameTextureData(0);
       this.clearFramesTextureData();
       this.framesTextureData.add(pixels);
@@ -318,7 +326,7 @@ public final class ModelClayBucket implements IModel {
   /**
    * Creates a bucket cover sprite from the vanilla resource.
    */
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   private static final class BucketCoverSprite extends TextureAtlasSprite {
     private final ResourceLocation bucket = GradientMod.resource("items/clay_bucket_empty");
     private final ResourceLocation bucketCoverMask = GradientMod.resource("items/clay_bucket_cover_mask");
@@ -342,13 +350,13 @@ public final class ModelClayBucket implements IModel {
     public boolean load(@Nonnull final IResourceManager manager, @Nonnull final ResourceLocation location, @Nonnull final Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
       final TextureAtlasSprite sprite = textureGetter.apply(this.bucket);
       final TextureAtlasSprite alphaMask = textureGetter.apply(this.bucketCoverMask);
-      this.width = sprite.getIconWidth();
-      this.height = sprite.getIconHeight();
-      final int[][] pixels = new int[Minecraft.getMinecraft().gameSettings.mipmapLevels + 1][];
+      this.width = sprite.getWidth();
+      this.height = sprite.getHeight();
+      final int[][] pixels = new int[Minecraft.getInstance().gameSettings.mipmapLevels + 1][];
       pixels[0] = new int[this.width * this.height];
 
       // use the alpha mask if it fits, otherwise leave the cover texture blank
-      if(alphaMask.getIconWidth() == this.width && alphaMask.getIconHeight() == this.height) {
+      if(alphaMask.getWidth() == this.width && alphaMask.getHeight() == this.height) {
         final int[][] oldPixels = sprite.getFrameTextureData(0);
         final int[][] alphaPixels = alphaMask.getFrameTextureData(0);
 
@@ -367,16 +375,12 @@ public final class ModelClayBucket implements IModel {
     }
   }
 
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   private static final class BakedClayBucketOverrideHandler extends ItemOverrideList {
     private static final BakedClayBucketOverrideHandler INSTANCE = new BakedClayBucketOverrideHandler();
 
-    private BakedClayBucketOverrideHandler() {
-      super(ImmutableList.of());
-    }
-
     @Override
-    public IBakedModel handleItemState(final IBakedModel originalModel, final ItemStack stack, @Nullable final World world, @Nullable final EntityLivingBase entity) {
+    public IBakedModel getModelWithOverrides(final IBakedModel originalModel, final ItemStack stack, @Nullable final World world, @Nullable final EntityLivingBase entity) {
       final FluidStack fluidStack = FluidUtil.getFluidContained(stack);
 
       // not a fluid item apparently
@@ -391,8 +395,8 @@ public final class ModelClayBucket implements IModel {
       final String name = fluid.getName();
 
       if(!model.cache.containsKey(name)) {
-        final IModel parent = model.parent.process(ImmutableMap.of("fluid", name));
-        final Function<ResourceLocation, TextureAtlasSprite> textureGetter = location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
+        final IUnbakedModel parent = model.parent.process(ImmutableMap.of("fluid", name));
+        final Function<ResourceLocation, TextureAtlasSprite> textureGetter = location -> Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(location.toString());
 
         final IBakedModel bakedModel = parent.bake(new SimpleModelState(model.getTransforms()), model.format, textureGetter);
         model.cache.put(name, bakedModel);
@@ -404,7 +408,7 @@ public final class ModelClayBucket implements IModel {
   }
 
   // the dynamic bucket is based on the empty bucket
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   private static final class BakedClayBucket extends BakedItemModel {
     private final ModelClayBucket parent;
     private final Map<String, IBakedModel> cache; // contains all the baked models since they'll never change
@@ -417,6 +421,7 @@ public final class ModelClayBucket implements IModel {
       this.cache = cache;
     }
 
+    //TODO
     private ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> getTransforms() {
       return this.transforms;
     }

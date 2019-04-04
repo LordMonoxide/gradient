@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -22,6 +23,10 @@ public class TileFlywheel extends TileEntity {
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
   private final IKineticEnergyStorage energy = new KineticEnergyStorage(10000.0f);
+
+  public TileFlywheel() {
+    super(GradientTileEntities.FLYWHEEL);
+  }
 
   @Override
   public void onLoad() {
@@ -37,30 +42,15 @@ public class TileFlywheel extends TileEntity {
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == STORAGE) {
       final IBlockState state = this.world.getBlockState(this.pos);
 
       if(state.getBlock() == GradientBlocks.FLYWHEEL) {
-        final EnumFacing myFacing = state.getValue(BlockFlywheel.FACING);
-        return facing == myFacing.rotateY() || facing == myFacing.rotateYCCW();
-      }
-    }
-
-    return super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == STORAGE) {
-      final IBlockState state = this.world.getBlockState(this.pos);
-
-      if(state.getBlock() == GradientBlocks.FLYWHEEL) {
-        final EnumFacing myFacing = state.getValue(BlockFlywheel.FACING);
+        final EnumFacing myFacing = state.get(BlockFlywheel.FACING);
 
         if(facing == myFacing.rotateY() || facing == myFacing.rotateYCCW()) {
-          return STORAGE.cast(this.energy);
+          return LazyOptional.of(() -> (T)this.energy);
         }
       }
     }

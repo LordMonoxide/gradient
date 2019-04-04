@@ -3,10 +3,12 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.blocks.BlockFlywheel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public class ItemFlywheel extends ItemBlock {
@@ -36,10 +38,13 @@ public class ItemFlywheel extends ItemBlock {
       return false;
     }
 
-    return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState.withProperty(BlockFlywheel.FACING, side.rotateY()));
+    return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState.with(BlockFlywheel.FACING, side.rotateY()));
   }
 
-  private boolean isReplaceable(final World world, final BlockPos pos) {
-    return world.getBlockState(pos).getBlock().isReplaceable(world, pos);
+  private boolean isReplaceable(final IBlockState state, final BlockItemUseContext useContext) {
+    final IWorld world = useContext.getWorld();
+    final BlockPos pos = useContext.getPos();
+
+    return world.getBlockState(pos).getBlock().isReplaceable(state, useContext);
   }
 }

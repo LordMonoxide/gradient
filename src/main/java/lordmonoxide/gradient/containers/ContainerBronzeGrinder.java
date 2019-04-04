@@ -9,17 +9,23 @@ public class ContainerBronzeGrinder extends GradientContainer {
   public static final int OUTPUT_SLOTS_X = 51;
   public static final int OUTPUT_SLOTS_Y = 34;
 
+  public final TileBronzeGrinder grinder;
+  public final InventoryPlayer playerInv;
+
   public ContainerBronzeGrinder(final InventoryPlayer inventory, final TileBronzeGrinder grinder) {
     super(grinder);
 
-    this.addSlotToContainer(new SlotGrinderInput(this.inventory, TileBronzeGrinder.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
+    this.grinder = grinder;
+    this.playerInv = inventory;
+
+    this.addSlot(new SlotGrinderInput(this.inventory, TileBronzeGrinder.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
       @Override public void onSlotChanged() {
         super.onSlotChanged();
         grinder.markDirty();
       }
     });
 
-    this.addSlotToContainer(new SlotOutput(this.inventory, TileBronzeGrinder.OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y) {
+    this.addSlot(new SlotOutput(this.inventory, TileBronzeGrinder.OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y) {
       @Override public void onSlotChanged() {
         super.onSlotChanged();
         grinder.markDirty();

@@ -3,22 +3,22 @@ package lordmonoxide.gradient.client.models;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ClonedAtlasSprite extends TextureAtlasSprite {
   private final ImmutableList<ResourceLocation> dependencies;
 
-  public ClonedAtlasSprite(final ResourceLocation spriteName, final ResourceLocation source) {
-    super(spriteName.toString());
+  public ClonedAtlasSprite(final ResourceLocation spriteName, final ResourceLocation source, final int width, final int height) {
+    super(spriteName, width, height);
     this.dependencies = ImmutableList.of(source);
   }
 
@@ -41,9 +41,7 @@ public class ClonedAtlasSprite extends TextureAtlasSprite {
       throw new RuntimeException(new FileNotFoundException("Could not find base sprite " + sprite + " while generating sprite " + this));
     }
 
-    this.width = sprite.getIconWidth();
-    this.height = sprite.getIconHeight();
-    final int[][] pixels = new int[Minecraft.getMinecraft().gameSettings.mipmapLevels + 1][];
+    final int[][] pixels = new int[Minecraft.getInstance().gameSettings.mipmapLevels + 1][];
     pixels[0] = new int[this.width * this.height];
 
     final int[][] sourcePixels = sprite.getFrameTextureData(0);

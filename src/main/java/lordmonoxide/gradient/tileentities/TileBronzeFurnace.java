@@ -1,28 +1,36 @@
 package lordmonoxide.gradient.tileentities;
 
+import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
+import lordmonoxide.gradient.client.gui.GuiBronzeFurnace;
+import lordmonoxide.gradient.containers.ContainerBronzeFurnace;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FuelRecipe;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class TileBronzeFurnace extends HeatProducer {
+public class TileBronzeFurnace extends HeatProducer implements IInteractionObject {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -36,6 +44,10 @@ public class TileBronzeFurnace extends HeatProducer {
   private final Fuel[] fuels = new Fuel[FUEL_SLOTS_COUNT];
 
   private int lastLight;
+
+  public TileBronzeFurnace() {
+    super(GradientTileEntities.BRONZE_FURNACE);
+  }
 
   public boolean isBurning() {
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
@@ -114,31 +126,31 @@ public class TileBronzeFurnace extends HeatProducer {
   private void generateParticles() {
     if(this.hasHeat()) {
       if(this.isBurning()) { // Fire
-        final double radius = this.getWorld().rand.nextDouble() * 0.25d;
-        final double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
+        final double radius = this.world.rand.nextDouble() * 0.25d;
+        final double angle  = this.world.rand.nextDouble() * Math.PI * 2;
 
         final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
         final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-        this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        this.world.addParticle(Particles.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
 
       { // Smoke
-        final double radius = this.getWorld().rand.nextDouble() * 0.35d;
-        final double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
+        final double radius = this.world.rand.nextDouble() * 0.35d;
+        final double angle  = this.world.rand.nextDouble() * Math.PI * 2;
 
         final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
         final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-        this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        this.world.addParticle(Particles.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
     }
   }
 
   private void playSounds() {
     if(this.getHeat() > 0) {
-      if(this.getWorld().rand.nextInt(40) == 0) {
-        this.getWorld().playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 0.8f + this.getWorld().rand.nextFloat(), this.getWorld().rand.nextFloat() * 0.7f + 0.3f, false);
+      if(this.world.rand.nextInt(40) == 0) {
+        this.world.playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 0.8f + this.getWorld().rand.nextFloat(), this.getWorld().rand.nextFloat() * 0.7f + 0.3f, false);
       }
     }
   }
@@ -190,8 +202,8 @@ public class TileBronzeFurnace extends HeatProducer {
   }
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setTag("inventory", this.inventory.serializeNBT());
+  public NBTTagCompound write(final NBTTagCompound compound) {
+    compound.put("inventory", this.inventory.serializeNBT());
 
     final NBTTagList fuels = new NBTTagList();
 
@@ -200,41 +212,41 @@ public class TileBronzeFurnace extends HeatProducer {
         final Fuel fuel = this.getBurningFuel(i);
 
         final NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger("slot", i);
-        tag.setString("recipe", fuel.recipe.getRegistryName().toString());
-        tag.setInteger("age", fuel.age.value());
-        tag.setInteger("ticks", fuel.burnTicks);
-        tag.setBoolean("burning", fuel.isBurning);
-        fuels.appendTag(tag);
+        tag.putInt("slot", i);
+        tag.putString("recipe", fuel.recipe.getId().toString());
+        tag.putInt("age", fuel.age.value());
+        tag.putInt("ticks", fuel.burnTicks);
+        tag.putBoolean("burning", fuel.isBurning);
+        fuels.add(tag);
       }
     }
 
-    compound.setTag("fuel", fuels);
+    compound.put("fuel", fuels);
 
-    return super.writeToNBT(compound);
+    return super.write(compound);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
+  public void read(final NBTTagCompound compound) {
     this.lastLight = -1;
 
     Arrays.fill(this.fuels, null);
 
-    final NBTTagCompound inv = compound.getCompoundTag("inventory");
-    inv.removeTag("Size");
+    final NBTTagCompound inv = compound.getCompound("inventory");
+    inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
-    final NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
+    final NBTTagList fuels = compound.getList("fuel", Constants.NBT.TAG_COMPOUND);
 
-    for(int i = 0; i < fuels.tagCount(); i++) {
-      final NBTTagCompound tag = fuels.getCompoundTagAt(i);
+    for(int i = 0; i < fuels.size(); i++) {
+      final NBTTagCompound tag = fuels.getCompound(i);
 
-      final int slot = tag.getInteger("slot");
+      final int slot = tag.getInt("slot");
 
       if(slot < FUEL_SLOTS_COUNT) {
-        final FuelRecipe recipe = (FuelRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(tag.getString("recipe")));
-        final Age age1 = Age.get(tag.getInteger("age"));
-        final int ticks = tag.getInteger("ticks");
+        final FuelRecipe recipe = (FuelRecipe)GradientMod.getRecipeManager().getRecipe(new ResourceLocation(tag.getString("recipe")));
+        final Age age1 = Age.get(tag.getInt("age"));
+        final int ticks = tag.getInt("ticks");
         final boolean burning = tag.getBoolean("burning");
 
         final Fuel fuel = new Fuel(recipe, age1);
@@ -245,24 +257,42 @@ public class TileBronzeFurnace extends HeatProducer {
       }
     }
 
-    super.readFromNBT(compound);
+    super.read(compound);
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return
-      capability == ITEM_HANDLER_CAPABILITY ||
-      super.hasCapability(capability, facing);
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+    if(capability == ITEM_HANDLER_CAPABILITY) {
+      return LazyOptional.of(() -> (T)this.inventory);
+    }
+
+    return super.getCapability(capability, facing);
+  }
+
+  @Override
+  public ContainerBronzeFurnace createContainer(final InventoryPlayer playerInventory, final EntityPlayer playerIn) {
+    return new ContainerBronzeFurnace(playerInventory, this);
+  }
+
+  @Override
+  public String getGuiID() {
+    return GuiBronzeFurnace.ID.toString();
+  }
+
+  @Override
+  public ITextComponent getName() {
+    return GradientBlocks.BRONZE_FURNACE.getNameTextComponent();
+  }
+
+  @Override
+  public boolean hasCustomName() {
+    return false;
   }
 
   @Nullable
   @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == ITEM_HANDLER_CAPABILITY) {
-      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
-    }
-
-    return super.getCapability(capability, facing);
+  public ITextComponent getCustomName() {
+    return null;
   }
 
   public static final class Fuel {

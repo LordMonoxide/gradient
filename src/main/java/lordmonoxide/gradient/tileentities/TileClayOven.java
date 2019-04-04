@@ -8,12 +8,13 @@ import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -34,6 +35,10 @@ public class TileClayOven extends HeatSinker {
   private FirePitRecipe recipe;
   private Age age = Age.AGE1;
   private int ticks;
+
+  public TileClayOven() {
+    super(GradientTileEntities.CLAY_OVEN);
+  }
 
   public boolean hasInput() {
     return !this.getInput().isEmpty();
@@ -69,7 +74,7 @@ public class TileClayOven extends HeatSinker {
     if(!this.hasInput()) {
       this.age = AgeUtils.getPlayerAge(player);
 
-      final ItemStack input = stack.splitStack(1);
+      final ItemStack input = stack.split(1);
       this.inventory.setStackInSlot(INPUT_SLOT, input);
 
       this.updateRecipe();
@@ -95,7 +100,7 @@ public class TileClayOven extends HeatSinker {
   protected void tickAfterCooldown() {
     this.cook();
 
-    if(this.getWorld().isRemote) {
+    if(this.world.isRemote) {
       this.generateParticles();
     }
   }
@@ -134,7 +139,7 @@ public class TileClayOven extends HeatSinker {
 
   private void generateParticles() {
     if(this.hasHeat()) {
-      final Random rand = this.getWorld().rand;
+      final Random rand = this.world.rand;
 
       if(rand.nextInt(10) == 0) {
         if(this.recipe != null && this.getHeat() >= this.recipe.temperature) {
@@ -144,29 +149,29 @@ public class TileClayOven extends HeatSinker {
           final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
           final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-          this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+          this.world.addParticle(Particles.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
         }
       }
     }
   }
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setTag("inventory", this.inventory.serializeNBT());
+  public NBTTagCompound write(final NBTTagCompound compound) {
+    compound.put("inventory", this.inventory.serializeNBT());
 
-    compound.setInteger("player_age", this.age.value());
-    compound.setInteger("ticks", this.ticks);
+    compound.putInt("player_age", this.age.value());
+    compound.putInt("ticks", this.ticks);
 
-    return super.writeToNBT(compound);
+    return super.write(compound);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
-    final NBTTagCompound inv = compound.getCompoundTag("inventory");
-    inv.removeTag("Size");
+  public void read(final NBTTagCompound compound) {
+    final NBTTagCompound inv = compound.getCompound("inventory");
+    inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
-    final int age = compound.getInteger("player_age");
+    final int age = compound.getInt("player_age");
 
     try {
       this.age = Age.get(age);
@@ -174,25 +179,17 @@ public class TileClayOven extends HeatSinker {
       GradientMod.logger.warn("Invalid age in {}: {}", this, age);
     }
 
-    this.ticks = compound.getInteger("ticks");
+    this.ticks = compound.getInt("ticks");
 
     this.updateRecipe();
 
-    super.readFromNBT(compound);
+    super.read(compound);
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return
-      capability == ITEM_HANDLER_CAPABILITY ||
-      super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
-      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+      return LazyOptional.of(() -> (T)this.inventory);
     }
 
     return super.getCapability(capability, facing);

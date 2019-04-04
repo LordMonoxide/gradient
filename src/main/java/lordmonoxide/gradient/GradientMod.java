@@ -6,33 +6,22 @@ import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
-import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
-import lordmonoxide.gradient.progress.SetAgeCommand;
-import lordmonoxide.gradient.recipes.RecipeRemover;
-import lordmonoxide.gradient.worldgen.DisableVanillaOre;
-import lordmonoxide.gradient.worldgen.GeneratePebbles;
-import lordmonoxide.gradient.worldgen.OreGenerator;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLConstructionEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.registries.IForgeRegistryModifiable;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,45 +33,37 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.jar.JarFile;
 
-@Mod(modid = GradientMod.MODID, name = GradientMod.NAME, version = GradientMod.VERSION, dependencies = "after:ic2")
+@Mod(GradientMod.MODID)
 public class GradientMod {
   public static final String MODID = "gradient";
-  public static final String NAME = "Gradient";
-  public static final String VERSION = "${version}";
 
-  @SuppressWarnings({"StaticNonFinalField", "NullableProblems"})
-  @Mod.Instance(MODID)
-  @Nonnull
-  public static GradientMod instance;
+  public static final Logger logger = LogManager.getLogger();
 
-  @SuppressWarnings({"StaticNonFinalField", "NullableProblems"})
-  @SidedProxy(serverSide = "lordmonoxide.gradient.init.ServerProxy", clientSide = "lordmonoxide.gradient.init.ClientProxy")
-  @Nonnull
-  public static IProxy proxy;
+  private static RecipeManager recipeManager;
 
-  @SuppressWarnings({"StaticNonFinalField", "NullableProblems"})
-  @Nonnull
-  public static Logger logger;
-
-  @Mod.EventHandler
-  public void construct(final FMLConstructionEvent event) {
-    FluidRegistry.enableUniversalBucket();
+  public static RecipeManager getRecipeManager() {
+    return recipeManager;
   }
 
-  @Mod.EventHandler
-  public void preInit(final FMLPreInitializationEvent event) throws URISyntaxException, IOException {
-    //noinspection AssignmentToStaticFieldFromInstanceMethod
-    logger = event.getModLog();
+  public GradientMod() {
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupServer);
 
-    logger.info("{} is loading!", NAME);
-    logger.info("------------------- PREINIT -------------------");
+    ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GradientGuiHandler::openGui);
+  }
 
-    this.syncTriumphAdvancements(event.getModConfigurationDirectory());
+  private void init(final FMLCommonSetupEvent event) {
+    logger.info("{} is loading!", MODID);
+
+    FluidRegistry.enableUniversalBucket();
+
+    //TODO this.syncTriumphAdvancements(event.getModConfigurationDirectory());
     AdvancementTriggers.register();
 
     CapabilityPlayerProgress.register();
 
-    MinecraftForge.ORE_GEN_BUS.register(DisableVanillaOre.class);
+    //TODO MinecraftForge.ORE_GEN_BUS.register(DisableVanillaOre.class);
 
     CapabilityEnergy.register(
       IKineticEnergyStorage.class,
@@ -91,39 +72,33 @@ public class GradientMod {
       KineticEnergyTransfer::new
     );
 
-    NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
+    //TODO NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
 
-    proxy.preInit(event);
-  }
-
-  @Mod.EventHandler
-  public void init(final FMLInitializationEvent event) {
-    logger.info("------------------- INIT -------------------");
-
-    GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
-    GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
+    //TODO GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
+    //TODO GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
 
     GradientMetals.registerMeltables();
 
     GradientNet.register();
 
-    proxy.init(event);
+    //TODO RecipeRemover.replacePlankRecipes((IForgeRegistryModifiable<IRecipe>)ForgeRegistries.RECIPES);
   }
 
-  @Mod.EventHandler
-  public void postInit(final FMLPostInitializationEvent event) {
-    logger.info("------------------- POSTINIT -------------------");
+  private void setupClient(final FMLClientSetupEvent event) {
+    logger.info("------------------- SETUP CLIENT -------------------");
 
-    proxy.postInit(event);
+    //TODO: this might not work... world?
+    this.recipeManager = event.getMinecraftSupplier().get().world.getRecipeManager();
 
-    RecipeRemover.replacePlankRecipes((IForgeRegistryModifiable<IRecipe>)ForgeRegistries.RECIPES);
+    //TODO RenderingRegistry.registerEntityRenderingHandler(EntityPebble.class, manager -> new RenderSnowball<>(manager, ItemBlock.getItemFromBlock(GradientBlocks.PEBBLE), Minecraft.getMinecraft().getRenderItem()));
   }
 
-  @Mod.EventHandler
-  public void serverStarting(final FMLServerStartingEvent event) {
-    logger.info("------------------- SERVER STARTING -------------------");
+  private void setupServer(final FMLDedicatedServerSetupEvent event) {
+    logger.info("------------------- SETUP SERVER -------------------");
 
-    event.registerServerCommand(new SetAgeCommand());
+    this.recipeManager = event.getServerSupplier().get().getRecipeManager();
+
+    //TODO event.registerServerCommand(new SetAgeCommand());
   }
 
   public static ResourceLocation resource(final String path) {

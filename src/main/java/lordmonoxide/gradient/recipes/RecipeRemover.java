@@ -15,16 +15,15 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class RecipeRemover {
   private RecipeRemover() { }
 
@@ -179,7 +178,7 @@ public final class RecipeRemover {
     }
 
     for(final IRecipe recipe : toRemove) {
-      registry.remove(recipe.getRegistryName());
+      registry.remove(recipe.getId());
     }
 
     for(final IRecipe recipe : toAdd) {
@@ -187,11 +186,12 @@ public final class RecipeRemover {
     }
 
     registry.register(new AgeGatedShapelessToolRecipe(
+      GradientMod.resource("sticks.from.planks.with.axe"),
       GradientMod.MODID,
       Age.AGE1,
       new ItemStack(Items.STICK, 2),
       NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), new IngredientOre("toolAxe"))
-    ).setRegistryName(GradientMod.resource("sticks.from.planks.with.axe")));
+    ));
 
     if(toRemove.isEmpty()) {
       GradientMod.logger.warn("Failed to replace plank recipes!");

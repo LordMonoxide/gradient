@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -20,6 +21,10 @@ public class TileWoodenGearbox extends TileEntity {
 
   private final IKineticEnergyTransfer transfer = new KineticEnergyTransfer();
 
+  public TileWoodenGearbox() {
+    super(GradientTileEntities.WOODEN_GEARBOX);
+  }
+
   @Override
   public void onLoad() {
     if(this.world.isRemote) {
@@ -30,19 +35,9 @@ public class TileWoodenGearbox extends TileEntity {
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == TRANSFER) {
-      return true;
-    }
-
-    return super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == TRANSFER) {
-      return TRANSFER.cast(this.transfer);
+      return LazyOptional.of(() -> (T)this.transfer);
     }
 
     return super.getCapability(capability, facing);

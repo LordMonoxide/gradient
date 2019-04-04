@@ -11,21 +11,21 @@ import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -65,8 +65,12 @@ public class TileFirePit extends HeatProducer {
 
   private int lastLight;
 
+  public TileFirePit() {
+    super(GradientTileEntities.FIRE_PIT);
+  }
+
   public boolean hasFurnace(final IBlockState state) {
-    return state.getValue(BlockFirePit.HAS_FURNACE);
+    return state.get(BlockFirePit.HAS_FURNACE);
   }
 
   public boolean isBurning() {
@@ -140,7 +144,7 @@ public class TileFirePit extends HeatProducer {
         final FuelRecipe recipe = RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack));
 
         if(recipe != null) {
-          final ItemStack input = stack.splitStack(1);
+          final ItemStack input = stack.split(1);
           this.setFuelSlot(slot, input);
           this.fuels[slot] = new Fuel(recipe, age);
           this.sync();
@@ -152,7 +156,7 @@ public class TileFirePit extends HeatProducer {
     if(!this.hasInput() && !this.hasFurnace(state)) {
       this.age = age;
 
-      final ItemStack input = stack.splitStack(1);
+      final ItemStack input = stack.split(1);
       this.inventory.setStackInSlot(FIRST_INPUT_SLOT, input);
 
       this.updateRecipe();
@@ -196,7 +200,7 @@ public class TileFirePit extends HeatProducer {
       return;
     }
 
-    final IBlockState state = this.getWorld().getBlockState(pos);
+    final IBlockState state = this.world.getBlockState(pos);
 
     final HardeningRecipe recipe = RecipeUtils.findRecipe(HardeningRecipe.class, r -> r.matches(state, age));
 
@@ -234,7 +238,7 @@ public class TileFirePit extends HeatProducer {
     this.cook();
     this.updateLight();
 
-    if(this.getWorld().isRemote) {
+    if(this.world.isRemote) {
       this.generateParticles();
       this.playSounds();
     } else {
@@ -286,7 +290,7 @@ public class TileFirePit extends HeatProducer {
       final Map.Entry<BlockPos, Hardening> entry = it.next();
       final BlockPos pos = entry.getKey();
       final Hardening hardening = entry.getValue();
-      final IBlockState current = this.getWorld().getBlockState(pos);
+      final IBlockState current = this.world.getBlockState(pos);
 
       if(!hardening.recipe.matches(current, hardening.age)) {
         it.remove();
@@ -296,7 +300,7 @@ public class TileFirePit extends HeatProducer {
       hardening.tick();
 
       if(hardening.isHardened()) {
-        toAdd.put(pos, hardening.recipe.getCraftingResult(current));
+        toAdd.put(pos, hardening.recipe.getCraftingResult());
         it.remove();
       }
     }
@@ -304,7 +308,7 @@ public class TileFirePit extends HeatProducer {
     this.markDirty();
 
     for(final Map.Entry<BlockPos, IBlockState> entry : toAdd.entrySet()) {
-      this.getWorld().setBlockState(entry.getKey(), entry.getValue());
+      this.world.setBlockState(entry.getKey(), entry.getValue());
     }
   }
 
@@ -312,8 +316,8 @@ public class TileFirePit extends HeatProducer {
     final int light = this.getLightLevel(this.getBlockState());
 
     if(this.lastLight != light) {
-      this.getWorld().markBlockRangeForRenderUpdate(this.pos, this.pos);
-      this.getWorld().checkLight(this.pos);
+      this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+      this.world.checkLight(this.pos);
 
       this.lastLight = light;
     }
@@ -321,7 +325,7 @@ public class TileFirePit extends HeatProducer {
 
   private void generateParticles() {
     if(this.hasHeat()) {
-      final Random rand = this.getWorld().rand;
+      final Random rand = this.world.rand;
 
       // Fire
       if(this.isBurning()) {
@@ -332,7 +336,7 @@ public class TileFirePit extends HeatProducer {
           final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
           final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-          this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+          this.world.addParticle(Particles.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
         }
       }
 
@@ -344,15 +348,15 @@ public class TileFirePit extends HeatProducer {
         final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
         final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-        this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        this.world.addParticle(Particles.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
     }
   }
 
   private void playSounds() {
     if(this.getHeat() > 0) {
-      if(this.getWorld().rand.nextInt(40) == 0) {
-        this.getWorld().playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 0.8f + this.getWorld().rand.nextFloat(), this.getWorld().rand.nextFloat() * 0.7f + 0.3f, false);
+      if(this.world.rand.nextInt(40) == 0) {
+        this.world.playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 0.8f + this.getWorld().rand.nextFloat(), this.getWorld().rand.nextFloat() * 0.7f + 0.3f, false);
       }
     }
   }
@@ -406,8 +410,8 @@ public class TileFirePit extends HeatProducer {
   }
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setTag("inventory", this.inventory.serializeNBT());
+  public NBTTagCompound write(final NBTTagCompound compound) {
+    compound.put("inventory", this.inventory.serializeNBT());
 
     final NBTTagList fuels = new NBTTagList();
 
@@ -416,57 +420,57 @@ public class TileFirePit extends HeatProducer {
         final Fuel fuel = this.getBurningFuel(i);
 
         final NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger("slot", i);
-        tag.setString("recipe", fuel.recipe.getRegistryName().toString());
-        tag.setInteger("age", fuel.age.value());
-        tag.setInteger("ticks", fuel.burnTicks);
-        tag.setBoolean("burning", fuel.isBurning);
-        fuels.appendTag(tag);
+        tag.putInt("slot", i);
+        tag.putString("recipe", fuel.recipe.getId().toString());
+        tag.putInt("age", fuel.age.value());
+        tag.putInt("ticks", fuel.burnTicks);
+        tag.putBoolean("burning", fuel.isBurning);
+        fuels.add(tag);
       }
     }
 
-    compound.setTag("fuel", fuels);
+    compound.put("fuel", fuels);
 
-    compound.setInteger("player_age", this.age.value());
-    compound.setInteger("ticks", this.ticks);
+    compound.putInt("player_age", this.age.value());
+    compound.putInt("ticks", this.ticks);
 
     final NBTTagList hardenings = new NBTTagList();
     for(final Map.Entry<BlockPos, Hardening> entry : this.hardenables.entrySet()) {
       final NBTTagCompound hardening = new NBTTagCompound();
-      hardening.setTag("pos", NBTUtil.createPosTag(entry.getKey()));
-      hardening.setString("recipe", entry.getValue().recipe.getRegistryName().toString());
-      hardening.setInteger("age", entry.getValue().age.value());
-      hardening.setInteger("ticks", entry.getValue().hardenTicks);
+      hardening.put("pos", NBTUtil.writeBlockPos(entry.getKey()));
+      hardening.putString("recipe", entry.getValue().recipe.getId().toString());
+      hardening.putInt("age", entry.getValue().age.value());
+      hardening.putInt("ticks", entry.getValue().hardenTicks);
 
-      hardenings.appendTag(hardening);
+      hardenings.add(hardening);
     }
 
-    compound.setTag("hardening", hardenings);
+    compound.put("hardening", hardenings);
 
-    return super.writeToNBT(compound);
+    return super.write(compound);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
+  public void read(final NBTTagCompound compound) {
     this.lastLight = -1;
 
     Arrays.fill(this.fuels, null);
 
-    final NBTTagCompound inv = compound.getCompoundTag("inventory");
-    inv.removeTag("Size");
+    final NBTTagCompound inv = compound.getCompound("inventory");
+    inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
-    final NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
+    final NBTTagList fuels = compound.getList("fuel", Constants.NBT.TAG_COMPOUND);
 
-    for(int i = 0; i < fuels.tagCount(); i++) {
-      final NBTTagCompound tag = fuels.getCompoundTagAt(i);
+    for(int i = 0; i < fuels.size(); i++) {
+      final NBTTagCompound tag = fuels.getCompound(i);
 
-      final int slot = tag.getInteger("slot");
+      final int slot = tag.getInt("slot");
 
       if(slot < FUEL_SLOTS_COUNT) {
-        final FuelRecipe recipe = (FuelRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(tag.getString("recipe")));
-        final Age age1 = Age.get(tag.getInteger("age"));
-        final int ticks = tag.getInteger("ticks");
+        final FuelRecipe recipe = (FuelRecipe)GradientMod.getRecipeManager().getRecipe(new ResourceLocation(tag.getString("recipe")));
+        final Age age1 = Age.get(tag.getInt("age"));
+        final int ticks = tag.getInt("ticks");
         final boolean burning = tag.getBoolean("burning");
 
         final Fuel fuel = new Fuel(recipe, age1);
@@ -477,7 +481,7 @@ public class TileFirePit extends HeatProducer {
       }
     }
 
-    final int age = compound.getInteger("player_age");
+    final int age = compound.getInt("player_age");
 
     try {
       this.age = Age.get(age);
@@ -485,17 +489,17 @@ public class TileFirePit extends HeatProducer {
       GradientMod.logger.warn("Invalid age in {}: {}", this, age);
     }
 
-    this.ticks = compound.getInteger("ticks");
+    this.ticks = compound.getInt("ticks");
 
     this.hardenables.clear();
 
-    for(final NBTBase tag : compound.getTagList("hardening", Constants.NBT.TAG_COMPOUND)) {
+    for(final INBTBase tag : compound.getList("hardening", Constants.NBT.TAG_COMPOUND)) {
       final NBTTagCompound hardeningNbt = (NBTTagCompound)tag;
 
-      final BlockPos pos = NBTUtil.getPosFromTag(hardeningNbt.getCompoundTag("pos"));
-      final HardeningRecipe recipe = (HardeningRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(hardeningNbt.getString("recipe")));
-      final Age age1 = Age.get(hardeningNbt.getInteger("age"));
-      final int ticks = hardeningNbt.getInteger("ticks");
+      final BlockPos pos = NBTUtil.readBlockPos(hardeningNbt.getCompound("pos"));
+      final HardeningRecipe recipe = (HardeningRecipe)GradientMod.getRecipeManager().getRecipe(new ResourceLocation(hardeningNbt.getString("recipe")));
+      final Age age1 = Age.get(hardeningNbt.getInt("age"));
+      final int ticks = hardeningNbt.getInt("ticks");
 
       final Hardening hardening = new Hardening(recipe, age1);
       hardening.hardenTicks = ticks;
@@ -505,21 +509,13 @@ public class TileFirePit extends HeatProducer {
 
     this.updateRecipe();
 
-    super.readFromNBT(compound);
+    super.read(compound);
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return
-      capability == ITEM_HANDLER_CAPABILITY ||
-      super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
-      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+      return LazyOptional.of(() -> (T)this.inventory);
     }
 
     return super.getCapability(capability, facing);

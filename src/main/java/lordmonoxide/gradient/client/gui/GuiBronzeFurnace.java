@@ -7,49 +7,44 @@ import lordmonoxide.gradient.containers.GradientContainer;
 import lordmonoxide.gradient.containers.GradientGuiContainer;
 import lordmonoxide.gradient.network.PacketLightBronzeFurnace;
 import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiBronzeFurnace extends GradientGuiContainer {
+  public static final ResourceLocation ID = GradientMod.resource("bronze_furnace");
+
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_furnace.png");
 
   private final TileBronzeFurnace furnace;
   private final InventoryPlayer playerInv;
 
-  public GuiBronzeFurnace(final ContainerBronzeFurnace container, final TileBronzeFurnace furnace, final InventoryPlayer playerInv) {
+  public GuiBronzeFurnace(final ContainerBronzeFurnace container) {
     super(container);
-    this.furnace = furnace;
-    this.playerInv = playerInv;
+    this.furnace = container.furnace;
+    this.playerInv = container.playerInv;
   }
 
   @Override
   public void initGui() {
     super.initGui();
 
-    this.addButton(new ItemButton(0, Items.FLINT_AND_STEEL.getDefaultInstance(), 92, 22));
-  }
-
-  @Override
-  protected void actionPerformed(final GuiButton button) {
-    if(button instanceof ItemButton) {
-      final ItemButton itemButton = (ItemButton)button;
-
-      if(itemButton.item.getItem() == Items.FLINT_AND_STEEL) {
-        PacketLightBronzeFurnace.send(this.furnace.getPos());
+    this.addButton(new ItemButton(0, Items.FLINT_AND_STEEL.getDefaultInstance(), 92, 22) {
+      @Override
+      public void onClick(final double mouseX, final double mouseY) {
+        PacketLightBronzeFurnace.send(GuiBronzeFurnace.this.furnace.getPos());
       }
-    }
+    });
   }
 
   @Override
   protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
-    GlStateManager.color(1, 1, 1, 1);
+    GlStateManager.color4f(1, 1, 1, 1);
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
     final int x = (this.width  - this.xSize) / 2;
     final int y = (this.height - this.ySize) / 2;
@@ -75,7 +70,7 @@ public class GuiBronzeFurnace extends GradientGuiContainer {
 
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(fuel, ContainerBronzeFurnace.FUEL_SLOTS_X, ContainerBronzeFurnace.FUEL_SLOTS_Y - this.fontRenderer.FONT_HEIGHT - 2, 0x404040);
-    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
+    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedComponentText(), 8, this.ySize - 94, 0x404040);
 
     this.fontRenderer.drawString(heat, 92, 47, 0x404040);
   }

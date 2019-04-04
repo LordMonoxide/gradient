@@ -1,19 +1,13 @@
 package lordmonoxide.gradient.utils;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.progress.Age;
-import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
-import lordmonoxide.gradient.progress.PlayerProgress;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -22,9 +16,19 @@ import java.util.function.Predicate;
 public final class RecipeUtils {
   private RecipeUtils() { }
 
-  private static final Field eventHandlerField = ObfuscationReflectionHelper.findField(InventoryCrafting.class, "field_70465_c");
-  private static final Field containerPlayerPlayerField = ObfuscationReflectionHelper.findField(ContainerPlayer.class, "field_82862_h");
-  private static final Field slotCraftingPlayerField = ObfuscationReflectionHelper.findField(SlotCrafting.class, "field_75238_b");
+  private static final Field eventHandlerField;
+  private static final Field containerPlayerPlayerField;
+  private static final Field slotCraftingPlayerField;
+
+  static {
+    try {
+      eventHandlerField = InventoryCrafting.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_70465_c"));
+      containerPlayerPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_82862_h"));
+      slotCraftingPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_75238_b"));
+    } catch(final NoSuchFieldException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   @Nullable
   public static <T extends Container> T getContainer(final InventoryCrafting inv, final Class<T> containerClass) {
@@ -59,7 +63,7 @@ public final class RecipeUtils {
 
   @Nullable
   public static <T extends IRecipe> T findRecipe(final Class<T> recipeClass, final Predicate<T> match) {
-    for(final IRecipe recipe : ForgeRegistries.RECIPES.getValuesCollection()) {
+    for(final IRecipe recipe : GradientMod.getRecipeManager().getRecipes()) {
       if(recipeClass.isInstance(recipe)) {
         final T cast = recipeClass.cast(recipe);
 

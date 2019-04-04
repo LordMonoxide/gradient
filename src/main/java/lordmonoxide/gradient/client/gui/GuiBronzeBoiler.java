@@ -2,18 +2,20 @@ package lordmonoxide.gradient.client.gui;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
 import lordmonoxide.gradient.containers.ContainerBronzeBoiler;
 import lordmonoxide.gradient.containers.GradientGuiContainer;
+import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiBronzeBoiler extends GradientGuiContainer {
+  public static final ResourceLocation ID = GradientMod.resource("bronze_boiler");
+
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_boiler.png");
 
   private final TileBronzeBoiler boiler;
@@ -21,17 +23,17 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
   private final FluidRenderer waterRenderer;
   private final FluidRenderer steamRenderer;
 
-  public GuiBronzeBoiler(final ContainerBronzeBoiler container, final TileBronzeBoiler boiler, final InventoryPlayer playerInv) {
+  public GuiBronzeBoiler(final ContainerBronzeBoiler container) {
     super(container);
-    this.boiler = boiler;
-    this.playerInv = playerInv;
-    this.waterRenderer = new FluidRenderer(boiler.tankWater, 124, 19, 12, 47);
-    this.steamRenderer = new FluidRenderer(boiler.tankSteam, 148, 19, 12, 47);
+    this.boiler = container.boiler;
+    this.playerInv = container.playerInv;
+    this.waterRenderer = new FluidRenderer(this.boiler.tankWater, 124, 19, 12, 47);
+    this.steamRenderer = new FluidRenderer(this.boiler.tankSteam, 148, 19, 12, 47);
   }
 
   @Override
   protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
-    GlStateManager.color(1, 1, 1, 1);
+    GlStateManager.color4f(1, 1, 1, 1);
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
     final int x = (this.width  - this.xSize) / 2;
     final int y = (this.height - this.ySize) / 2;
@@ -52,7 +54,7 @@ public class GuiBronzeBoiler extends GradientGuiContainer {
     final String heat = I18n.format(GradientBlocks.BRONZE_BOILER.getTranslationKey() + ".heat", (int)this.boiler.getHeat());
 
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
-    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
+    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedComponentText(), 8, this.ySize - 94, 0x404040);
 
     this.fontRenderer.drawString(heat, 13, 55, 0x404040);
   }

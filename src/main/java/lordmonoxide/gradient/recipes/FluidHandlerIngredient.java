@@ -1,12 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-
-import javax.annotation.Nullable;
-
+//TODO
+/*
 public class FluidHandlerIngredient extends Ingredient {
   private final FluidStack valid;
 
@@ -31,3 +26,4 @@ public class FluidHandlerIngredient extends Ingredient {
     return false;
   }
 }
+*/

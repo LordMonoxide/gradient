@@ -1,35 +1,36 @@
 package lordmonoxide.gradient.client.tesr;
 
+import lordmonoxide.gradient.blocks.BlockMixingBasin;
 import lordmonoxide.gradient.tileentities.TileMixingBasin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixingBasin> {
+@OnlyIn(Dist.CLIENT)
+public class TileMixingBasinRenderer extends TileEntityRenderer<TileMixingBasin> {
   private final ItemStack water = new ItemStack(Items.WATER_BUCKET);
 
   @Override
-  public void render(final TileMixingBasin te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
+  public void render(final TileMixingBasin te, final double x, final double y, final double z, final float partialTicks, final int destroyStage) {
     GlStateManager.pushMatrix();
-    GlStateManager.translate((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f);
+    GlStateManager.translated(x + 0.5d, y + 0.5d, z + 0.5d);
 
-    final EnumFacing facing = EnumFacing.byHorizontalIndex(te.getBlockMetadata());
+    final EnumFacing facing = te.getBlockState().get(BlockMixingBasin.FACING);
     final double facingAngle = Math.toRadians(facing.getHorizontalAngle());
 
     if(te.hasFluid()) {
       GlStateManager.pushMatrix();
 
-      GlStateManager.translate(0.0f, -0.25f, 0.0f);
-      GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
-      GlStateManager.scale(0.5f, 0.5f, 0.5f);
-      Minecraft.getMinecraft().getRenderItem().renderItem(this.water, ItemCameraTransforms.TransformType.GROUND);
+      GlStateManager.translatef(0.0f, -0.25f, 0.0f);
+      GlStateManager.rotatef(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
+      GlStateManager.scalef(0.5f, 0.5f, 0.5f);
+      Minecraft.getInstance().getItemRenderer().renderItem(this.water, ItemCameraTransforms.TransformType.GROUND);
 
       GlStateManager.popMatrix();
     }
@@ -41,13 +42,13 @@ public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixin
         GlStateManager.pushMatrix();
 
         final double angle = (6 - slot) * Math.PI / 4 + facingAngle;
-        final float inputX = (float)Math.cos(angle) * 0.25f;
-        final float inputZ = (float)Math.sin(angle) * 0.25f;
+        final double inputX = Math.cos(angle) * 0.25d;
+        final double inputZ = Math.sin(angle) * 0.25d;
 
-        GlStateManager.translate(inputX, -0.25f, inputZ);
-        GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
-        GlStateManager.scale(0.5f, 0.5f, 0.5f);
-        Minecraft.getMinecraft().getRenderItem().renderItem(input, ItemCameraTransforms.TransformType.GROUND);
+        GlStateManager.translated(inputX, -0.25d, inputZ);
+        GlStateManager.rotatef(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
+        GlStateManager.scalef(0.5f, 0.5f, 0.5f);
+        Minecraft.getInstance().getItemRenderer().renderItem(input, ItemCameraTransforms.TransformType.GROUND);
 
         GlStateManager.popMatrix();
       }
@@ -58,18 +59,18 @@ public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixin
 
       GlStateManager.pushMatrix();
 
-      final float inputX = (float)Math.cos(facingAngle) * 0.25f;
-      final float inputZ = (float)Math.sin(facingAngle) * 0.25f;
+      final double inputX = Math.cos(facingAngle) * 0.25d;
+      final double inputZ = Math.sin(facingAngle) * 0.25d;
 
-      GlStateManager.translate(inputX, -0.25f, inputZ);
+      GlStateManager.translated(inputX, -0.25d, inputZ);
 
       if(output.getCount() > 1) {
         this.drawNameplate(te, Integer.toString(output.getCount()), -0.5d, -1.05d, -0.5d, 16);
       }
 
-      GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
-      GlStateManager.scale(0.5f, 0.5f, 0.5f);
-      Minecraft.getMinecraft().getRenderItem().renderItem(output, ItemCameraTransforms.TransformType.GROUND);
+      GlStateManager.rotatef(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
+      GlStateManager.scalef(0.5f, 0.5f, 0.5f);
+      Minecraft.getInstance().getItemRenderer().renderItem(output, ItemCameraTransforms.TransformType.GROUND);
 
       GlStateManager.popMatrix();
     }

@@ -3,17 +3,18 @@ package lordmonoxide.gradient.integrations.jei.hardening;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.integrations.jei.GradientRecipeCategoryUid;
 import lordmonoxide.gradient.integrations.jei.JeiRecipeCategory;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import lordmonoxide.gradient.recipes.HardeningRecipe;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.ingredients.VanillaTypes;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public class HardeningRecipeCategory extends JeiRecipeCategory<HardeningRecipeWrapper> {
+public class HardeningRecipeCategory extends JeiRecipeCategory<HardeningRecipe> {
   public HardeningRecipeCategory(final IGuiHelper guiHelper) {
     super(GradientRecipeCategoryUid.HARDENING, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_hardening.png"), 0, 0, 166, 72));
   }
@@ -24,7 +25,7 @@ public class HardeningRecipeCategory extends JeiRecipeCategory<HardeningRecipeWr
   }
 
   @Override
-  public void setRecipe(final IRecipeLayout recipeLayout, final HardeningRecipeWrapper recipeWrapper, final IIngredients ingredients) {
+  public void setRecipe(final IRecipeLayout recipeLayout, final HardeningRecipe recipe, final IIngredients ingredients) {
     final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
     final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
 

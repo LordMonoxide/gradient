@@ -1,18 +1,16 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.tileentities.TileWoodenAxle;
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
+import lordmonoxide.gradient.tileentities.TileWoodenAxle;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -24,47 +22,30 @@ public class BlockWoodenAxle extends BlockRotatedPillar {
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
-  private static final AxisAlignedBB AABB_X = new AxisAlignedBB(0.0d, 5.0d / 16.0d, 5.0d / 16.0d, 1.0d, 11.0d / 16.0d, 11.0d / 16.0d);
-  private static final AxisAlignedBB AABB_Y = new AxisAlignedBB(5.0d / 16.0d, 0.0d, 5.0d / 16.0d, 11.0d / 16.0d, 1.0d, 11.0d / 16.0d);
-  private static final AxisAlignedBB AABB_Z = new AxisAlignedBB(5.0d / 16.0d, 5.0d / 16.0d, 0.0d, 11.0d / 16.0d, 11.0d / 16.0d, 1.0d);
+  private static final VoxelShape SHAPE_X = Block.makeCuboidShape(0.0d, 5.0d / 16.0d, 5.0d / 16.0d, 1.0d, 11.0d / 16.0d, 11.0d / 16.0d);
+  private static final VoxelShape SHAPE_Y = Block.makeCuboidShape(5.0d / 16.0d, 0.0d, 5.0d / 16.0d, 11.0d / 16.0d, 1.0d, 11.0d / 16.0d);
+  private static final VoxelShape SHAPE_Z = Block.makeCuboidShape(5.0d / 16.0d, 5.0d / 16.0d, 0.0d, 11.0d / 16.0d, 11.0d / 16.0d, 1.0d);
 
   public BlockWoodenAxle() {
-    super(Material.CIRCUITS);
+    super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
     this.setRegistryName("wooden_axle");
-    this.setTranslationKey("wooden_axle");
-    this.setCreativeTab(CreativeTabs.TOOLS);
-    this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, EnumFacing.Axis.Y));
-    this.setLightOpacity(0);
-    this.setResistance(5.0f);
-    this.setHardness(1.0f);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-    super.breakBlock(world, pos, state);
+  public void onReplaced(final IBlockState state, final World world, final BlockPos pos, final IBlockState newState, final boolean isMoving) {
+    super.onReplaced(state, world, pos, newState, isMoving);
     EnergyNetworkManager.getManager(world, STORAGE, TRANSFER).disconnect(pos);
   }
 
   @Override
-  protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, AXIS);
-  }
-
-  @Override
-  public TileWoodenAxle createTileEntity(final World world, final IBlockState state) {
+  public TileWoodenAxle createTileEntity(final IBlockState state, final IBlockReader world) {
     return new TileWoodenAxle();
   }
 
   @Override
   public boolean hasTileEntity(final IBlockState state) {
     return true;
-  }
-
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public boolean isOpaqueCube(final IBlockState state) {
-    return false;
   }
 
   @Override
@@ -77,16 +58,16 @@ public class BlockWoodenAxle extends BlockRotatedPillar {
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
-    switch(state.getValue(AXIS)) {
+  public VoxelShape getShape(final IBlockState state, final IBlockReader source, final BlockPos pos) {
+    switch(state.get(AXIS)) {
       case X:
-        return AABB_X;
+        return SHAPE_X;
 
       case Z:
-        return AABB_Z;
+        return SHAPE_Z;
     }
 
-    return AABB_Y;
+    return SHAPE_Y;
   }
 }
 

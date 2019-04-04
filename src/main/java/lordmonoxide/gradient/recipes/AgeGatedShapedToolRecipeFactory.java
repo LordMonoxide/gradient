@@ -1,24 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import lordmonoxide.gradient.progress.Age;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JsonUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IRecipeFactory;
-import net.minecraftforge.common.crafting.JsonContext;
-
-import java.util.Map;
-import java.util.Set;
-
+//TODO
+/*
 public class AgeGatedShapedToolRecipeFactory implements IRecipeFactory {
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
@@ -91,3 +74,4 @@ public class AgeGatedShapedToolRecipeFactory implements IRecipeFactory {
     return new AgeGatedShapedToolRecipe(group, age, pattern[0].length(), pattern.length, input, result);
   }
 }
+*/

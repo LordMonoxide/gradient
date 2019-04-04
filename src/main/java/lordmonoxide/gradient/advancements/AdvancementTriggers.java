@@ -4,10 +4,10 @@ import lordmonoxide.gradient.GradientMod;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AdvancementTriggers {
   private AdvancementTriggers() { }
 
@@ -21,7 +21,7 @@ public final class AdvancementTriggers {
 
   @SubscribeEvent
   public static void onUseHoe(final UseHoeEvent event) {
-    if(!event.getWorld().isRemote) {
+    if(!event.getContext().getWorld().isRemote) {
       USED_HOE.trigger((EntityPlayerMP)event.getEntityPlayer());
     }
   }

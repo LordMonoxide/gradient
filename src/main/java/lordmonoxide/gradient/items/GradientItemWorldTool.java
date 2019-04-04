@@ -3,7 +3,6 @@ package lordmonoxide.gradient.items;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockRedstoneOre;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -11,15 +10,16 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
-public class GradientItemWorldTool extends GradientItemTool {
+public class GradientItemWorldTool extends GradientItem {
   private final float harvestSpeed;
   private final float attackSpeed;
   private final int attackDamage;
   private final int attackDurabilityLost;
 
-  public GradientItemWorldTool(final String name, final float harvestSpeed, final float attackSpeed, final int attackDamage, final int attackDurabilityLost, final int maxUses) {
-    super(name, CreativeTabs.TOOLS, maxUses);
+  public GradientItemWorldTool(final String name, final float harvestSpeed, final float attackSpeed, final int attackDamage, final int attackDurabilityLost, final Properties properties) {
+    super(name, properties);
     this.harvestSpeed = harvestSpeed;
     this.attackSpeed  = attackSpeed;
     this.attackDamage = attackDamage;
@@ -27,18 +27,18 @@ public class GradientItemWorldTool extends GradientItemTool {
   }
 
   @Override
-  public boolean canHarvestBlock(final IBlockState blockIn, final ItemStack stack) {
-    if(blockIn.getBlockHardness(null, null) <= 1.0f) {
+  public boolean canHarvestBlock(final ItemStack stack, final IBlockState state) {
+    if(state.getBlockHardness(null, null) <= 1.0f) {
       return true;
     }
 
-    for(final String type : this.getToolClasses(stack)) {
-      if(blockIn.getBlock().isToolEffective(type, blockIn)) {
+    for(final ToolType type : this.getToolTypes(stack)) {
+      if(state.getBlock().isToolEffective(state, type)) {
         return true;
       }
 
       // Redstone has weird special-case handling
-      if("pickaxe".equals(type) && blockIn.getBlock() instanceof BlockRedstoneOre) {
+      if(type == ToolType.PICKAXE && state.getBlock() instanceof BlockRedstoneOre) {
         return true;
       }
     }
@@ -48,7 +48,7 @@ public class GradientItemWorldTool extends GradientItemTool {
 
   @Override
   public float getDestroySpeed(final ItemStack stack, final IBlockState state) {
-    return this.canHarvestBlock(state, stack) ? this.harvestSpeed : 0.0f;
+    return this.canHarvestBlock(stack, state) ? this.harvestSpeed : 0.0f;
   }
 
   @Override

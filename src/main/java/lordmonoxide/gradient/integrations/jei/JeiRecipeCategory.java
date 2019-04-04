@@ -1,31 +1,45 @@
 package lordmonoxide.gradient.integrations.jei;
 
-import lordmonoxide.gradient.GradientMod;
-import mezz.jei.api.gui.IDrawable;
-import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 
-public abstract class JeiRecipeCategory<WRAPPER extends IRecipeWrapper> implements IRecipeCategory<WRAPPER> {
+public abstract class JeiRecipeCategory<RECIPE extends IRecipe> implements IRecipeCategory<RECIPE> {
+  private final ResourceLocation uid;
+  private final Class<RECIPE> recipeClass;
+  private final IDrawable icon;
   private final IDrawable background;
-  private final String uid;
 
-  protected JeiRecipeCategory(final String uid, final IDrawable background) {
+  protected JeiRecipeCategory(final ResourceLocation uid, final Class<RECIPE> recipeClass, final IDrawable icon, final IDrawable background) {
     this.uid = uid;
+    this.recipeClass = recipeClass;
+    this.icon = icon;
     this.background = background;
   }
 
   @Override
-  public String getUid() {
+  public ResourceLocation getUid() {
     return this.uid;
   }
 
   @Override
-  public String getModName() {
-    return GradientMod.NAME;
+  public String getTitle() {
+    return "Gradient";
+  }
+
+  @Override
+  public IDrawable getIcon() {
+    return this.icon;
   }
 
   @Override
   public IDrawable getBackground() {
     return this.background;
+  }
+
+  @Override
+  public Class<RECIPE> getRecipeClass() {
+    return this.recipeClass;
   }
 }

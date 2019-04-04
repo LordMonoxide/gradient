@@ -1,15 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
-import com.google.gson.JsonObject;
-import lordmonoxide.gradient.progress.Age;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JsonUtils;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IRecipeFactory;
-import net.minecraftforge.common.crafting.JsonContext;
-
+//TODO
+/*
 public class HardeningRecipeFactory implements IRecipeFactory {
   @Override
   public IRecipe parse(final JsonContext context, final JsonObject json) {
@@ -24,3 +16,4 @@ public class HardeningRecipeFactory implements IRecipeFactory {
     return new HardeningRecipe(group, age, ticks, copyMeta, output, ingredient);
   }
 }
+*/

@@ -6,17 +6,18 @@ import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -33,6 +34,10 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   private Age age = Age.AGE1;
   private int passes;
   private int ticks;
+
+  public TileManualGrinder() {
+    super(GradientTileEntities.MANUAL_GRINDER);
+  }
 
   public boolean hasInput() {
     return !this.inventory.getStackInSlot(0).isEmpty();
@@ -86,7 +91,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   }
 
   @Override
-  public void update() {
+  public void tick() {
     if(this.world.isRemote) {
       return;
     }
@@ -120,7 +125,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     }
 
     if(this.ticks >= this.recipe.ticks) {
-      ((WorldServer)this.world).spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.pos.getX() + 0.5d, this.pos.getY() + 0.5d, this.pos.getZ() + 0.5d, 10, 0.1d, 0.1d, 0.1d, 0.01d);
+      ((WorldServer)this.world).spawnParticle(Particles.SMOKE, this.pos.getX() + 0.5d, this.pos.getY() + 0.5d, this.pos.getZ() + 0.5d, 10, 0.1d, 0.1d, 0.1d, 0.01d);
 
       this.ticks = 0;
       this.passes++;
@@ -134,50 +139,42 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   }
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setTag("inventory", this.inventory.serializeNBT());
-    compound.setInteger("passes", this.passes);
-    compound.setInteger("ticks", this.ticks);
-    compound.setInteger("player_age", this.age.value());
+  public NBTTagCompound write(final NBTTagCompound compound) {
+    compound.put("inventory", this.inventory.serializeNBT());
+    compound.putInt("passes", this.passes);
+    compound.putInt("ticks", this.ticks);
+    compound.putInt("player_age", this.age.value());
 
-    return super.writeToNBT(compound);
+    return super.write(compound);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
-    final NBTTagCompound inv = compound.getCompoundTag("inventory");
-    inv.removeTag("Size");
+  public void read(final NBTTagCompound compound) {
+    final NBTTagCompound inv = compound.getCompound("inventory");
+    inv.remove("Size");
     this.inventory.deserializeNBT(inv);
-    this.passes = compound.getInteger("passes");
-    this.ticks = compound.getInteger("ticks");
-    this.age = Age.get(compound.getInteger("player_age"));
+    this.passes = compound.getInt("passes");
+    this.ticks = compound.getInt("ticks");
+    this.age = Age.get(compound.getInt("player_age"));
 
     this.updateRecipe();
 
-    super.readFromNBT(compound);
+    super.read(compound);
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return
-      capability == ITEM_HANDLER_CAPABILITY ||
-        super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
-      return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+      return LazyOptional.of(() -> (T)this.inventory);
     }
 
     return super.getCapability(capability, facing);
   }
 
   private void sync() {
-    if(!this.getWorld().isRemote) {
-      final IBlockState state = this.getWorld().getBlockState(this.getPos());
-      this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+    if(!this.world.isRemote) {
+      final IBlockState state = this.world.getBlockState(this.getPos());
+      this.world.notifyBlockUpdate(this.getPos(), state, state, 3);
       this.markDirty();
     }
   }
@@ -189,11 +186,11 @@ public class TileManualGrinder extends TileEntity implements ITickable {
 
   @Override
   public NBTTagCompound getUpdateTag() {
-    return this.writeToNBT(new NBTTagCompound());
+    return this.write(new NBTTagCompound());
   }
 
   @Override
   public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
-    this.readFromNBT(pkt.getNbtCompound());
+    this.read(pkt.getNbtCompound());
   }
 }

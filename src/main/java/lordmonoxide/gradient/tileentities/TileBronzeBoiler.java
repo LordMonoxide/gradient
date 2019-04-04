@@ -1,23 +1,36 @@
 package lordmonoxide.gradient.tileentities;
 
-import ic2.core.ref.FluidName;
+import lordmonoxide.gradient.GradientGuiHandler;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
+import lordmonoxide.gradient.client.gui.GuiBronzeBoiler;
+import lordmonoxide.gradient.containers.ContainerBronzeBoiler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 
 import javax.annotation.Nullable;
 
-public class TileBronzeBoiler extends HeatSinker {
+public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
@@ -49,6 +62,8 @@ public class TileBronzeBoiler extends HeatSinker {
   private int lastSteamLevel;
 
   public TileBronzeBoiler() {
+    super(GradientTileEntities.BRONZE_BOILER);
+
     this.tankWater.setCanDrain(false);
     this.tankSteam.setCanFill(false);
 
@@ -137,39 +152,57 @@ public class TileBronzeBoiler extends HeatSinker {
   }
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setTag("water", this.tankWater.writeToNBT(new NBTTagCompound()));
-    compound.setTag("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
+  public NBTTagCompound write(final NBTTagCompound compound) {
+    compound.put("water", this.tankWater.writeToNBT(new NBTTagCompound()));
+    compound.put("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
 
-    compound.setFloat("heat", this.getHeat());
+    compound.putFloat("heat", this.getHeat());
 
-    return super.writeToNBT(compound);
+    return super.write(compound);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
-    this.tankWater.readFromNBT(compound.getCompoundTag("water"));
-    this.tankSteam.readFromNBT(compound.getCompoundTag("steam"));
+  public void read(final NBTTagCompound compound) {
+    this.tankWater.readFromNBT(compound.getCompound("water"));
+    this.tankSteam.readFromNBT(compound.getCompound("steam"));
 
     this.setHeat(compound.getFloat("heat"));
 
-    super.readFromNBT(compound);
+    super.read(compound);
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return
-      capability == FLUID_HANDLER_CAPABILITY ||
-      super.hasCapability(capability, facing);
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+    if(capability == FLUID_HANDLER_CAPABILITY) {
+      return LazyOptional.of(() -> (T)this.tanks);
+    }
+
+    return super.getCapability(capability, facing);
+  }
+
+  @Override
+  public Container createContainer(final InventoryPlayer playerInventory, final EntityPlayer playerIn) {
+    return new ContainerBronzeBoiler(playerInventory, this);
+  }
+
+  @Override
+  public String getGuiID() {
+    return GuiBronzeBoiler.ID.toString();
+  }
+
+  @Override
+  public ITextComponent getName() {
+    return GradientBlocks.BRONZE_BOILER.getNameTextComponent();
+  }
+
+  @Override
+  public boolean hasCustomName() {
+    return false;
   }
 
   @Nullable
   @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == FLUID_HANDLER_CAPABILITY) {
-      return FLUID_HANDLER_CAPABILITY.cast(this.tanks);
-    }
-
-    return super.getCapability(capability, facing);
+  public ITextComponent getCustomName() {
+    return null;
   }
 }

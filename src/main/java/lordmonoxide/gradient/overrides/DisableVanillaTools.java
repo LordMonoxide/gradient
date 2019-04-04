@@ -8,10 +8,10 @@ import net.minecraft.item.ItemTool;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class DisableVanillaTools {
   private DisableVanillaTools() { }
 
@@ -26,7 +26,7 @@ public final class DisableVanillaTools {
 
   @SubscribeEvent
   public static void onUseHoe(final UseHoeEvent event) {
-    final Item held = event.getCurrent().getItem();
+    final Item held = event.getContext().getItem().getItem();
 
     if(held instanceof ItemHoe) {
       event.setCanceled(true);

@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
@@ -19,10 +20,8 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
 
   private float heat;
 
-  private IBlockState state;
-
-  protected IBlockState getBlockState() {
-    return this.state;
+  public HeatSinker(final TileEntityType<?> tileEntityType) {
+    super(tileEntityType);
   }
 
   public boolean hasHeat() {
@@ -63,12 +62,10 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   }
 
   @Override
-  public void update() {
+  public void tick() {
     if(!this.hasHeat()) {
       return;
     }
-
-    this.state = this.getWorld().getBlockState(this.getPos());
 
     this.tickBeforeCooldown();
     this.coolDown();
@@ -107,7 +104,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
 
       if(sink.getHeat() < this.getHeat()) {
         final float mod = Math.max(1.0f, 5.0f - sink.getHeat() / this.getHeat() * 4);
-        final float heat = this.calculateHeatLoss(this.state) * sink.heatTransferEfficiency() * mod / 20.0f;
+        final float heat = this.calculateHeatLoss(this.getBlockState()) * sink.heatTransferEfficiency() * mod / 20.0f;
         this.removeHeat(heat);
         sink.addHeat(heat);
       }
@@ -118,7 +115,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   protected abstract void tickAfterCooldown();
 
   private void coolDown() {
-    this.removeHeat(this.calculateHeatLoss(this.state) / 20.0f);
+    this.removeHeat(this.calculateHeatLoss(this.getBlockState()) / 20.0f);
   }
 
   protected abstract float calculateHeatLoss(IBlockState state);
@@ -129,17 +126,17 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   protected abstract float heatTransferEfficiency();
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setFloat("heat", this.getHeat());
+  public NBTTagCompound write(final NBTTagCompound compound) {
+    compound.putFloat("heat", this.getHeat());
 
-    return super.writeToNBT(compound);
+    return super.write(compound);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
+  public void read(final NBTTagCompound compound) {
     this.setHeat(compound.getFloat("heat"));
 
-    super.readFromNBT(compound);
+    super.read(compound);
   }
 
   protected void sync() {
@@ -157,11 +154,11 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
 
   @Override
   public NBTTagCompound getUpdateTag() {
-    return this.writeToNBT(new NBTTagCompound());
+    return this.write(new NBTTagCompound());
   }
 
   @Override
   public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
-    this.readFromNBT(pkt.getNbtCompound());
+    this.read(pkt.getNbtCompound());
   }
 }

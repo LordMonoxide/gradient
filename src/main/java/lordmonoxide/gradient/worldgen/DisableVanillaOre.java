@@ -1,13 +1,11 @@
 package lordmonoxide.gradient.worldgen;
 
-import lordmonoxide.gradient.config.GradientConfig;
-import net.minecraftforge.event.terraingen.OreGenEvent;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+//TODO
 
 /**
  * Disables all vanilla ore spawning
  */
+/*
 public final class DisableVanillaOre {
   private DisableVanillaOre() { }
 
@@ -29,3 +27,4 @@ public final class DisableVanillaOre {
     }
   }
 }
+*/

@@ -2,11 +2,15 @@ package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.client.util.RecipeItemHelper;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.fluids.Fluid;
@@ -19,12 +23,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+public class MixingRecipe implements IRecipe {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
   private static final Fluid WATER = FluidRegistry.getFluid("water");
 
+  private final ResourceLocation id;
   private final String group;
   public final Age age;
   public final int passes;
@@ -34,7 +39,8 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
   private final NonNullList<Ingredient> input;
   private final boolean isSimple;
 
-  public MixingRecipe(final String group, final Age age, final int passes, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
+  public MixingRecipe(final ResourceLocation id, final String group, final Age age, final int passes, final int ticks, final ItemStack output, final NonNullList<Ingredient> input) {
+    this.id = id;
     this.group = group;
     this.age = age;
     this.passes = passes;
@@ -56,8 +62,19 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
   }
 
   @Override
+  public ResourceLocation getId() {
+    return this.id;
+  }
+
+  @Override
+  public IRecipeSerializer<?> getSerializer() {
+    //TODO
+    throw new RuntimeException("Not yet implemented");
+  }
+
+  @Override
   @Deprecated
-  public boolean matches(final InventoryCrafting inv, final World world) {
+  public boolean matches(final IInventory inv, final World world) {
     return false;
   }
 
@@ -100,7 +117,7 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
   }
 
   @Override
-  public ItemStack getCraftingResult(final InventoryCrafting inv) {
+  public ItemStack getCraftingResult(final IInventory inv) {
     return this.output.copy();
   }
 

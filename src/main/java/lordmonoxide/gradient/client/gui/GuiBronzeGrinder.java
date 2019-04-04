@@ -9,27 +9,29 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiBronzeGrinder extends GradientGuiContainer {
+  public static final ResourceLocation ID = GradientMod.resource("bronze_grinder");
+
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_grinder.png");
 
   private final TileBronzeGrinder grinder;
   private final InventoryPlayer playerInv;
   private final FluidRenderer steamRenderer;
 
-  public GuiBronzeGrinder(final ContainerBronzeGrinder container, final TileBronzeGrinder grinder, final InventoryPlayer playerInv) {
+  public GuiBronzeGrinder(final ContainerBronzeGrinder container) {
     super(container);
-    this.grinder = grinder;
-    this.playerInv = playerInv;
-    this.steamRenderer = new FluidRenderer(grinder.tankSteam, 148, 19, 12, 47);
+    this.grinder = container.grinder;
+    this.playerInv = container.playerInv;
+    this.steamRenderer = new FluidRenderer(this.grinder.tankSteam, 148, 19, 12, 47);
   }
 
   @Override
   protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
-    GlStateManager.color(1, 1, 1, 1);
+    GlStateManager.color4f(1, 1, 1, 1);
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
     final int x = (this.width  - this.xSize) / 2;
     final int y = (this.height - this.ySize) / 2;
@@ -50,7 +52,7 @@ public class GuiBronzeGrinder extends GradientGuiContainer {
     final String name = I18n.format(GradientBlocks.BRONZE_GRINDER.getTranslationKey() + ".name");
 
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
-    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
+    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedComponentText(), 8, this.ySize - 94, 0x404040);
   }
 
   @Override

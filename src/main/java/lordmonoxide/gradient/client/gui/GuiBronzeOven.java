@@ -3,33 +3,35 @@ package lordmonoxide.gradient.client.gui;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.containers.ContainerBronzeOven;
-import lordmonoxide.gradient.tileentities.TileBronzeOven;
 import lordmonoxide.gradient.containers.GradientGuiContainer;
+import lordmonoxide.gradient.tileentities.TileBronzeOven;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiBronzeOven extends GradientGuiContainer {
+  public static final ResourceLocation ID = GradientMod.resource("bronze_oven");
+
   private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_oven.png");
 
   private final TileBronzeOven oven;
   private final InventoryPlayer playerInv;
   private final FluidRenderer steamRenderer;
 
-  public GuiBronzeOven(final ContainerBronzeOven container, final TileBronzeOven oven, final InventoryPlayer playerInv) {
+  public GuiBronzeOven(final ContainerBronzeOven container) {
     super(container);
-    this.oven = oven;
-    this.playerInv = playerInv;
-    this.steamRenderer = new FluidRenderer(oven.tankSteam, 148, 19, 12, 47);
+    this.oven = container.oven;
+    this.playerInv = container.playerInv;
+    this.steamRenderer = new FluidRenderer(this.oven.tankSteam, 148, 19, 12, 47);
   }
 
   @Override
   protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY) {
-    GlStateManager.color(1, 1, 1, 1);
+    GlStateManager.color4f(1, 1, 1, 1);
     this.mc.getTextureManager().bindTexture(BG_TEXTURE);
     final int x = (this.width  - this.xSize) / 2;
     final int y = (this.height - this.ySize) / 2;
@@ -50,7 +52,7 @@ public class GuiBronzeOven extends GradientGuiContainer {
     final String name = I18n.format(GradientBlocks.BRONZE_OVEN.getTranslationKey() + ".name");
 
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
-    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
+    this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedComponentText(), 8, this.ySize - 94, 0x404040);
   }
 
   @Override

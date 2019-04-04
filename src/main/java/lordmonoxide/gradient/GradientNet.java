@@ -1,30 +1,36 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.network.PacketLightBronzeFurnace;
 import lordmonoxide.gradient.network.PacketSwitchCast;
+import lordmonoxide.gradient.network.PacketSyncEnergyNetwork;
+import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.network.PacketUpdateHeatNeighbours;
-import lordmonoxide.gradient.energy.PacketSyncEnergyNetwork;
-import lordmonoxide.gradient.progress.PacketUpdatePlayerProgress;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import lordmonoxide.gradient.network.PacketUpdatePlayerProgress;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public final class GradientNet {
   private GradientNet() { }
 
-  public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(GradientMod.MODID);
+  private static final String PROTOCOL_VERSION = "1";
+  public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
+    .named(new ResourceLocation(GradientMod.MODID, "main_channel"))
+    .clientAcceptedVersions(PROTOCOL_VERSION::equals)
+    .serverAcceptedVersions(PROTOCOL_VERSION::equals)
+    .networkProtocolVersion(() -> PROTOCOL_VERSION)
+    .simpleChannel();
 
   private static int id;
 
   static void register() {
-    CHANNEL.registerMessage(PacketUpdatePlayerProgress.Handler.class, PacketUpdatePlayerProgress.class, id++, Side.CLIENT);
+    CHANNEL.registerMessage(id++, PacketUpdatePlayerProgress.class, PacketUpdatePlayerProgress::encode, PacketUpdatePlayerProgress::decode, PacketUpdatePlayerProgress::handle);
 
-    CHANNEL.registerMessage(PacketSwitchCast.Handler.class, PacketSwitchCast.class, id++, Side.SERVER);
-    CHANNEL.registerMessage(PacketUpdateHeatNeighbours.Handler.class, PacketUpdateHeatNeighbours.class, id++, Side.CLIENT);
-    CHANNEL.registerMessage(PacketLightBronzeFurnace.Handler.class, PacketLightBronzeFurnace.class, id++, Side.SERVER);
-    CHANNEL.registerMessage(PacketUpdateBronzeBoilerSteamSink.Handler.class, PacketUpdateBronzeBoilerSteamSink.class, id++, Side.CLIENT);
+    CHANNEL.registerMessage(id++, PacketSwitchCast.class, PacketSwitchCast::encode, PacketSwitchCast::decode, PacketSwitchCast::handle);
+    CHANNEL.registerMessage(id++, PacketUpdateHeatNeighbours.class, PacketUpdateHeatNeighbours::encode, PacketUpdateHeatNeighbours::decode, PacketUpdateHeatNeighbours::handle);
+    CHANNEL.registerMessage(id++, PacketLightBronzeFurnace.class, PacketLightBronzeFurnace::encode, PacketLightBronzeFurnace::decode, PacketLightBronzeFurnace::handle);
+    CHANNEL.registerMessage(id++, PacketUpdateBronzeBoilerSteamSink.class, PacketUpdateBronzeBoilerSteamSink::encode, PacketUpdateBronzeBoilerSteamSink::decode, PacketUpdateBronzeBoilerSteamSink::handle);
 
-    CHANNEL.registerMessage(PacketSyncEnergyNetwork.Handler.class, PacketSyncEnergyNetwork.class, id++, Side.CLIENT);
+    CHANNEL.registerMessage(id++, PacketSyncEnergyNetwork.class, PacketSyncEnergyNetwork::encode, PacketSyncEnergyNetwork::decode, PacketSyncEnergyNetwork::handle);
   }
 }

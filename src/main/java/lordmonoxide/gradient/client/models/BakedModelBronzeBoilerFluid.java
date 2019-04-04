@@ -4,25 +4,26 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Random;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class BakedModelBronzeBoilerFluid implements IBakedModel {
   private static final float offset = 0.00005f;
   private static final float[] x = {0, 0, 1, 1};
@@ -149,7 +150,7 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
   }
 
   @Override
-  public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final long rand) {
+  public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final Random rand) {
     if(side != null) {
       return this.faceQuads.get(side);
     }
@@ -176,7 +177,7 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
   public TextureAtlasSprite getParticleTexture() {
     final String fluidTextureLoc = (this.fluid.getStill() != null ? this.fluid.getStill() : this.fluid.getFlowing() != null ? this.fluid.getFlowing() : FluidRegistry.WATER.getStill()).toString();
 
-    return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluidTextureLoc);
+    return Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(fluidTextureLoc);
   }
 
   @SuppressWarnings("deprecation")
@@ -187,7 +188,7 @@ public class BakedModelBronzeBoilerFluid implements IBakedModel {
 
   @Override
   public ItemOverrideList getOverrides() {
-    return ItemOverrideList.NONE;
+    return ItemOverrideList.EMPTY;
   }
 
   private void putVertex(final UnpackedBakedQuad.Builder builder, final EnumFacing side, final float x, final float y, final float z, final float u, final float v) {

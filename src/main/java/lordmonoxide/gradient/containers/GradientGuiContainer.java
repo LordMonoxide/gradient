@@ -1,20 +1,16 @@
 package lordmonoxide.gradient.containers;
 
-import ic2.core.util.Util;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 
 import java.util.ArrayList;
@@ -26,9 +22,9 @@ public abstract class GradientGuiContainer extends GuiContainer {
   }
 
   @Override
-  public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
+  public void render(final int mouseX, final int mouseY, final float partialTicks) {
     this.drawDefaultBackground();
-    super.drawScreen(mouseX, mouseY, partialTicks);
+    super.render(mouseX, mouseY, partialTicks);
     this.renderToolTips(mouseX, mouseY);
     this.renderHoveredToolTip(mouseX, mouseY);
   }
@@ -55,7 +51,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
 
 
   public void drawSprite(final double xIn, final double yIn, final double width, final double height, final TextureAtlasSprite sprite, final int color, final double scaleIn) {
-    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
     final Tessellator tessellator = Tessellator.getInstance();
     final BufferBuilder buffer = tessellator.getBuffer();
     buffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -101,8 +97,8 @@ public abstract class GradientGuiContainer extends GuiContainer {
     }
 
     @Override
-    public void drawButton(final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
-      super.drawButton(mc, mouseX, mouseY, partialTicks);
+    public void render(final int mouseX, final int mouseY, final float partialTicks) {
+      super.render(mouseX, mouseY, partialTicks);
 
       if(this.visible) {
         GradientGuiContainer.this.itemRender.renderItemAndEffectIntoGUI(this.item, this.x + 2, this.y + 2);
@@ -126,17 +122,20 @@ public abstract class GradientGuiContainer extends GuiContainer {
     }
 
     public void draw() {
+      //TODO: fluids
+/*
       if(this.tank.getFluid() == null || this.tank.getFluidAmount() == 0) {
         return;
       }
 
       final Fluid fluid = this.tank.getFluid().getFluid();
-      final TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getStill(this.tank.getFluid()).toString());
+      final TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(fluid.getStill(this.tank.getFluid()).toString());
       final double renderHeight = this.h * Util.limit(this.tank.getFluidAmount() / (double)this.tank.getCapacity(), 0.0d, 1.0d);
       final int color = fluid.getColor(this.tank.getFluid());
 
-      Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+      Minecraft.getInstance().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
       GradientGuiContainer.this.drawSprite(this.x, (this.y + this.h) - renderHeight, this.w, renderHeight, sprite, color, 1.0d);
+*/
     }
 
     public boolean isMouseOver(final int mouseX, final int mouseY) {

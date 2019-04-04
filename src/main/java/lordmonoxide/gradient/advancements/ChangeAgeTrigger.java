@@ -10,7 +10,7 @@ import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.critereon.AbstractCriterionInstance;
+import net.minecraft.advancements.criterion.AbstractCriterionInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.JsonUtils;
@@ -91,7 +91,7 @@ public class ChangeAgeTrigger implements ICriterionTrigger<ChangeAgeTrigger.Inst
 
   static class Listeners {
     private final PlayerAdvancements playerAdvancements;
-    private final Set<ICriterionTrigger.Listener<ChangeAgeTrigger.Instance>> listeners = Sets.newHashSet();
+    private final Set<Listener<Instance>> listeners = Sets.newHashSet();
 
     public Listeners(final PlayerAdvancements playerAdvancementsIn) {
       this.playerAdvancements = playerAdvancementsIn;
@@ -110,7 +110,7 @@ public class ChangeAgeTrigger implements ICriterionTrigger<ChangeAgeTrigger.Inst
     }
 
     public void trigger(final EntityPlayer player) {
-      List<ICriterionTrigger.Listener<ChangeAgeTrigger.Instance>> list = null;
+      List<Listener<Instance>> list = null;
 
       for(final ICriterionTrigger.Listener<ChangeAgeTrigger.Instance> listener : this.listeners) {
         if(listener.getCriterionInstance().test(player)) {

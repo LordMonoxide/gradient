@@ -3,18 +3,19 @@ package lordmonoxide.gradient.progress;
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.network.PacketUpdatePlayerProgress;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class PlayerProgressEvents {
-  static Int2ObjectMap<Age> deferredAgeUpdates = new Int2ObjectAVLTreeMap<>();
+  private static Int2ObjectMap<Age> deferredAgeUpdates = new Int2ObjectAVLTreeMap<>();
 
   private PlayerProgressEvents() { }
 
@@ -32,11 +33,9 @@ public final class PlayerProgressEvents {
         final Age age = deferredAgeUpdates.remove(event.getEntity().getEntityId());
 
         if(age != null) {
-          final PlayerProgress progress = event.getEntity().getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
-
-          if(progress != null) {
-            progress.setAge(age);
-          }
+          event.getEntity()
+            .getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY)
+            .ifPresent(progress -> progress.setAge(age));
         }
 
         return;
@@ -49,8 +48,9 @@ public final class PlayerProgressEvents {
   @SubscribeEvent
   public static void playerClone(final PlayerEvent.Clone event) {
     if(event.isWasDeath()) {
-      final PlayerProgress newProgress = event.getEntityPlayer().getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
-      final PlayerProgress oldProgress = event.getOriginal().getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null);
+      //TODO: nulls
+      final PlayerProgress newProgress = event.getEntityPlayer().getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null).orElse(null);
+      final PlayerProgress oldProgress = event.getOriginal().getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY, null).orElse(null);
 
       if(newProgress == null || oldProgress == null) {
         return;
@@ -58,5 +58,9 @@ public final class PlayerProgressEvents {
 
       newProgress.cloneFrom(oldProgress);
     }
+  }
+
+  public static void deferAgeUpdate(final int id, final Age age) {
+    deferredAgeUpdates.put(id, age);
   }
 }

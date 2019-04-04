@@ -1,17 +1,18 @@
 package lordmonoxide.gradient;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -24,9 +25,9 @@ public final class GradientTools {
 
   private static final Map<String, Type> TYPES = new HashMap<>();
 
-  public static final Type PICKAXE = register(GradientCasts.PICKAXE).tool("pickaxe")      .weapon(1.0d, 1.0d, 2).add();
-  public static final Type MATTOCK = register(GradientCasts.MATTOCK).tool("axe", "shovel").weapon(4.5d, 0.5d, 2).onItemUse(GradientTools::onMattockUse).tooltip(GradientTools::mattockTooltip).add();
-  public static final Type SWORD   = register(GradientCasts.SWORD)  .tool("sword")        .weapon(3.0d, 1.0f, 1).add();
+  public static final Type PICKAXE = register(GradientCasts.PICKAXE).tool(ToolType.PICKAXE)             .weapon(1.0d, 1.0d, 2).add();
+  public static final Type MATTOCK = register(GradientCasts.MATTOCK).tool(ToolType.AXE, ToolType.SHOVEL).weapon(4.5d, 0.5d, 2).onItemUse(GradientTools::onMattockUse).tooltip(GradientTools::mattockTooltip).add();
+  public static final Type SWORD   = register(GradientCasts.SWORD)                                      .weapon(3.0d, 1.0f, 1).add();
   public static final Type HAMMER  = register(GradientCasts.HAMMER).add();
 
   public static ToolBuilder register(final GradientCasts.Cast cast) {
@@ -47,11 +48,13 @@ public final class GradientTools {
     return type;
   }
 
-  private static EnumActionResult onItemUsePass(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+  private static EnumActionResult onItemUsePass(final ItemUseContext context) {
     return EnumActionResult.PASS;
   }
 
-  private static EnumActionResult onMattockUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+  private static EnumActionResult onMattockUse(final ItemUseContext context) {
+    final IWorld world = context.getWorld();
+    final BlockPos pos = context.getPos();
     final IBlockState state = world.getBlockState(pos);
 
     // Handled in event handler; need this here to stop from placing items in offhand (see #541)
@@ -59,15 +62,15 @@ public final class GradientTools {
       return EnumActionResult.SUCCESS;
     }
 
-    return Items.STONE_HOE.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    return Items.STONE_HOE.onItemUse(context);
   }
 
-  private static void noTooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
+  private static void noTooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
 
   }
 
-  private static void mattockTooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
-    tooltip.add(I18n.format("item.stone_mattock.tooltip"));
+  private static void mattockTooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+    tooltip.add(new TextComponentTranslation("item.stone_mattock.tooltip"));
   }
 
   public static class Type implements Comparable<Type> {
@@ -75,7 +78,7 @@ public final class GradientTools {
 
     public final int id;
     public final GradientCasts.Cast cast;
-    public final String[] toolClass;
+    public final ToolType[] toolTypes;
 
     public final double attackDamage;
     public final double attackSpeed;
@@ -84,10 +87,10 @@ public final class GradientTools {
     private final OnItemUse onItemUse;
     private final Tooltip tooltip;
 
-    public Type(final GradientCasts.Cast cast, final String[] toolClass, final double attackDamage, final double attackSpeed, final int attackDurabilityLost, final OnItemUse onItemUse, final Tooltip tooltip) {
+    public Type(final GradientCasts.Cast cast, final ToolType[] toolTypes, final double attackDamage, final double attackSpeed, final int attackDurabilityLost, final OnItemUse onItemUse, final Tooltip tooltip) {
       this.id = currentId++;
       this.cast = cast;
-      this.toolClass = toolClass;
+      this.toolTypes = toolTypes;
 
       this.attackDamage = attackDamage;
       this.attackSpeed  = attackSpeed;
@@ -97,11 +100,11 @@ public final class GradientTools {
       this.tooltip = tooltip;
     }
 
-    public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-      return this.onItemUse.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    public EnumActionResult onItemUse(final ItemUseContext context) {
+      return this.onItemUse.onItemUse(context);
     }
 
-    public void tooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
+    public void tooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
       this.tooltip.tooltip(stack, world, tooltip, flag);
     }
 
@@ -127,18 +130,18 @@ public final class GradientTools {
 
   @FunctionalInterface
   public interface OnItemUse {
-    EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ);
+    EnumActionResult onItemUse(final ItemUseContext context);
   }
 
   @FunctionalInterface
   public interface Tooltip {
-    void tooltip(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag);
+    void tooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag);
   }
 
   public static final class ToolBuilder {
     private final GradientCasts.Cast cast;
 
-    private String[] toolClass;
+    private ToolType[] toolTypes;
 
     private double attackDamage;
     private double attackSpeed;
@@ -151,8 +154,8 @@ public final class GradientTools {
       this.cast = cast;
     }
 
-    public ToolBuilder tool(final String... toolClass) {
-      this.toolClass = toolClass;
+    public ToolBuilder tool(final ToolType... toolTypes) {
+      this.toolTypes = toolTypes;
       return this;
     }
 
@@ -174,7 +177,7 @@ public final class GradientTools {
     }
 
     public Type add() {
-      final Type type = new Type(this.cast, this.toolClass, this.attackDamage, this.attackSpeed, this.attackDurabilityLost, this.onItemUse, this.tooltip);
+      final Type type = new Type(this.cast, this.toolTypes, this.attackDamage, this.attackSpeed, this.attackDurabilityLost, this.onItemUse, this.tooltip);
       TYPES.put(this.cast.name, type);
       return type;
     }

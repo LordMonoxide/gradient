@@ -2,11 +2,11 @@ package lordmonoxide.gradient.energy;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.config.GradientConfig;
+import lordmonoxide.gradient.network.PacketSyncEnergyNetwork;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public final class EnergyNetworkManager {
 
   public static <STORAGE extends IEnergyStorage, TRANSFER extends IEnergyTransfer> EnergyNetwork<STORAGE, TRANSFER> getManager(final World world, final Capability<STORAGE> storage, final Capability<TRANSFER> transfer) {
     if(world.isRemote) {
-      FMLLog.bigWarning("Attempted to access energy network from client");
+      GradientMod.logger.warn("Attempted to access energy network from client");
       throw new RuntimeException("Attempted to access energy network from client");
     }
 
@@ -36,7 +36,7 @@ public final class EnergyNetworkManager {
       }
     }
 
-    final EnergyNetwork<STORAGE, TRANSFER> network = new EnergyNetwork<>(world.provider.getDimension(), world, storage, transfer);
+    final EnergyNetwork<STORAGE, TRANSFER> network = new EnergyNetwork<>(world.getDimension().getType(), world, storage, transfer);
 
     if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("New manager {}", network);

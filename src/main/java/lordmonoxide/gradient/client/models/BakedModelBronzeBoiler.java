@@ -5,29 +5,33 @@ import lordmonoxide.gradient.blocks.BlockBronzeBoiler;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.registry.RegistrySimple;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
-@SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Dist.CLIENT)
 public class BakedModelBronzeBoiler implements IBakedModel {
   private static final Map<String, IBakedModel[]> FLUID_MODELS = new HashMap<>();
 
@@ -38,7 +42,7 @@ public class BakedModelBronzeBoiler implements IBakedModel {
   }
 
   @Override
-  public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final long rand) {
+  public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final Random rand) {
     // Frame
     if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.CUTOUT_MIPPED) {
       return this.baseModel.getQuads(state, side, rand);
@@ -94,7 +98,7 @@ public class BakedModelBronzeBoiler implements IBakedModel {
 
   @Override
   public ItemOverrideList getOverrides() {
-    return ItemOverrideList.NONE;
+    return ItemOverrideList.EMPTY;
   }
 
   private static IBakedModel[] getFluidModels(final Fluid fluid, final int capacity, final float yOffset, final float height) {

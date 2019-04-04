@@ -4,38 +4,23 @@ import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
-import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
-import lordmonoxide.gradient.tileentities.TileBronzeGrinder;
-import lordmonoxide.gradient.tileentities.TileBronzeOven;
-import lordmonoxide.gradient.tileentities.TileClayCrucible;
-import lordmonoxide.gradient.tileentities.TileClayOven;
-import lordmonoxide.gradient.tileentities.TileDryingRack;
-import lordmonoxide.gradient.tileentities.TileFirePit;
-import lordmonoxide.gradient.tileentities.TileFlywheel;
-import lordmonoxide.gradient.tileentities.TileHandCrank;
-import lordmonoxide.gradient.tileentities.TileManualGrinder;
-import lordmonoxide.gradient.tileentities.TileMixingBasin;
-import lordmonoxide.gradient.tileentities.TileWoodenAxle;
-import lordmonoxide.gradient.tileentities.TileWoodenGearbox;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class GradientBlocks {
-  public static final Material MATERIAL_CLAY_MACHINE   = new Material(MapColor.BROWN);
-  public static final Material MATERIAL_BRONZE_MACHINE = new Material(MapColor.GOLD);
+  public static final Material MATERIAL_CLAY_MACHINE   = new Material(MaterialColor.BROWN, false, true, true, true, false, false, false, EnumPushReaction.BLOCK);
+  public static final Material MATERIAL_BRONZE_MACHINE = new Material(MaterialColor.GOLD, false, true, true, true, false, false, false, EnumPushReaction.BLOCK);
 
   public static final BlockPebble PEBBLE = new BlockPebble();
 
@@ -52,13 +37,6 @@ public final class GradientBlocks {
   }
 
   public static final BlockSalt SALT_BLOCK = new BlockSalt();
-
-  public static final Block STRIPPED_OAK_WOOD      = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_oak_wood")).setTranslationKey("stripped_oak_wood");
-  public static final Block STRIPPED_SPRUCE_WOOD   = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_spruce_wood")).setTranslationKey("stripped_spruce_wood");
-  public static final Block STRIPPED_BIRCH_WOOD    = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_birch_wood")).setTranslationKey("stripped_birch_wood");
-  public static final Block STRIPPED_JUNGLE_WOOD   = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_jungle_wood")).setTranslationKey("stripped_jungle_wood");
-  public static final Block STRIPPED_ACACIA_WOOD   = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_acacia_wood")).setTranslationKey("stripped_acacia_wood");
-  public static final Block STRIPPED_DARK_OAK_WOOD = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_dark_oak_wood")).setTranslationKey("stripped_dark_oak_wood");
 
   public static final BlockFirePit    FIRE_PIT          = new BlockFirePit();
   public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f, 0.9375f);
@@ -155,13 +133,6 @@ public final class GradientBlocks {
 
     registry.register(SALT_BLOCK);
 
-    registry.register(STRIPPED_OAK_WOOD);
-    registry.register(STRIPPED_SPRUCE_WOOD);
-    registry.register(STRIPPED_BIRCH_WOOD);
-    registry.register(STRIPPED_JUNGLE_WOOD);
-    registry.register(STRIPPED_ACACIA_WOOD);
-    registry.register(STRIPPED_DARK_OAK_WOOD);
-
     registry.register(FIRE_PIT);
     registry.register(FIBRE_TORCH_LIT);
     registry.register(FIBRE_TORCH_UNLIT);
@@ -203,24 +174,5 @@ public final class GradientBlocks {
         registry.register(castBlock);
       }
     }
-
-    GameRegistry.registerTileEntity(TileFirePit.class,       FIRE_PIT.getRegistryName());
-    GameRegistry.registerTileEntity(TileManualGrinder.class, MANUAL_GRINDER.getRegistryName());
-    GameRegistry.registerTileEntity(TileMixingBasin.class,   MIXING_BASIN.getRegistryName());
-
-    GameRegistry.registerTileEntity(TileDryingRack.class, DRYING_RACK.getRegistryName());
-
-    GameRegistry.registerTileEntity(TileHandCrank.class,     HAND_CRANK.getRegistryName());
-    GameRegistry.registerTileEntity(TileFlywheel.class,      FLYWHEEL.getRegistryName());
-    GameRegistry.registerTileEntity(TileWoodenAxle.class,    WOODEN_AXLE.getRegistryName());
-    GameRegistry.registerTileEntity(TileWoodenGearbox.class, WOODEN_GEARBOX.getRegistryName());
-
-    GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
-    GameRegistry.registerTileEntity(TileClayOven.class,     CLAY_OVEN_HARDENED.getRegistryName());
-
-    GameRegistry.registerTileEntity(TileBronzeFurnace.class, BRONZE_FURNACE.getRegistryName());
-    GameRegistry.registerTileEntity(TileBronzeBoiler.class,  BRONZE_BOILER.getRegistryName());
-    GameRegistry.registerTileEntity(TileBronzeOven.class,    BRONZE_OVEN.getRegistryName());
-    GameRegistry.registerTileEntity(TileBronzeGrinder.class, BRONZE_GRINDER.getRegistryName());
   }
 }

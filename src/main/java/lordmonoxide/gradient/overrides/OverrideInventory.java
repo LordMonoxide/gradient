@@ -6,22 +6,22 @@ import lordmonoxide.gradient.inventory.GuiInventory3x3Crafting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class OverrideInventory {
   private OverrideInventory() { }
 
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   @SubscribeEvent
   public static void onGuiOpen(final GuiOpenEvent event) {
     if(event.getGui() != null && event.getGui().getClass() == GuiInventory.class) {
-      event.setGui(new GuiInventory3x3Crafting(Minecraft.getMinecraft().player));
+      event.setGui(new GuiInventory3x3Crafting(Minecraft.getInstance().player));
     }
   }
 

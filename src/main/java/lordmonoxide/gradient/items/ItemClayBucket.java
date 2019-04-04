@@ -1,11 +1,10 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.ModelManager;
-import lordmonoxide.gradient.client.models.ModelClayBucket;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -21,6 +20,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.DispenseFluidContainer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidActionResult;
@@ -41,18 +41,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
-public class ItemClayBucket extends GradientItem implements ModelManager.CustomModel {
+public class ItemClayBucket extends GradientItem {
   private final ItemStack empty;
 
   public ItemClayBucket() {
-    super("clay_bucket_item", CreativeTabs.MISC);
+    super("clay_bucket_item", new Properties().group(ItemGroup.MISC).maxStackSize(1));
 
     this.empty = new ItemStack(this);
 
-    this.setMaxStackSize(1);
     this.setContainerItem(this);
 
-    BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, DispenseFluidContainer.getInstance());
+    BlockDispenser.registerDispenseBehavior(this, DispenseFluidContainer.getInstance());
   }
 
   /**
@@ -126,7 +125,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
       }
     }
 
-    if(mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK) {
+    if(mop == null || mop.type != RayTraceResult.Type.BLOCK) {
       return ActionResult.newResult(EnumActionResult.PASS, itemstack);
     }
 
@@ -140,7 +139,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
       if(player.canPlayerEdit(targetPos, mop.sideHit, itemstack)) {
         // try placing liquid
         final FluidActionResult result = FluidUtil.tryPlaceFluid(player, world, targetPos, itemstack, fluidStack);
-        if(result.isSuccess() && !player.capabilities.isCreativeMode) {
+        if(result.isSuccess() && !player.isCreative()) {
           itemstack.shrink(1);
           final ItemStack drained = result.getResult();
           final ItemStack emptyStack = !drained.isEmpty() ? drained.copy() : new ItemStack(this);
@@ -176,7 +175,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
     // needs to target a block
     final RayTraceResult target = event.getTarget();
-    if(target == null || target.typeOfHit != RayTraceResult.Type.BLOCK) {
+    if(target == null || target.type != RayTraceResult.Type.BLOCK) {
       return;
     }
 
@@ -195,11 +194,6 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
       // convert it into a water/lava bucket depending on the blocks material
       event.setCanceled(true);
     }
-  }
-
-  @Override
-  public void registerCustomModels() {
-    ModelClayBucket.setBucketModelDefinition(this);
   }
 
   public class FluidBucketWrapper implements IFluidHandlerItem, ICapabilityProvider {
@@ -229,11 +223,11 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
     protected void setFluid(@Nullable final FluidStack fluidStack) {
       if(fluidStack == null) {
-        this.container.setTagCompound(new NBTTagCompound());
+        this.container.setTag(new NBTTagCompound());
       } else {
         final NBTTagCompound tag = new NBTTagCompound();
         fluidStack.writeToNBT(tag);
-        this.container.setTagCompound(tag);
+        this.container.setTag(tag);
       }
     }
 

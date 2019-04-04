@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -23,6 +24,10 @@ public class TileWoodenAxle extends TileEntity {
 
   private final IKineticEnergyTransfer transfer = new KineticEnergyTransfer();
 
+  public TileWoodenAxle() {
+    super(GradientTileEntities.WOODEN_AXLE);
+  }
+
   @Override
   public void onLoad() {
     if(this.world.isRemote) {
@@ -33,27 +38,13 @@ public class TileWoodenAxle extends TileEntity {
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == TRANSFER) {
       final IBlockState state = this.world.getBlockState(this.pos);
 
       if(state.getBlock() == GradientBlocks.WOODEN_AXLE) {
-        return facing != null && facing.getAxis() == state.getValue(BlockRotatedPillar.AXIS);
-      }
-    }
-
-    return super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == TRANSFER) {
-      final IBlockState state = this.world.getBlockState(this.pos);
-
-      if(state.getBlock() == GradientBlocks.WOODEN_AXLE) {
-        if(facing != null && facing.getAxis() == state.getValue(BlockRotatedPillar.AXIS)) {
-          return TRANSFER.cast(this.transfer);
+        if(facing != null && facing.getAxis() == state.get(BlockRotatedPillar.AXIS)) {
+          return LazyOptional.of(() -> (T)this.transfer);
         }
       }
     }

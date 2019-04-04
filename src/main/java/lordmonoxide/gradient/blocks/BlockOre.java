@@ -1,14 +1,10 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientMetals;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 
 public class BlockOre extends GradientBlock {
   public BlockOre(final GradientMetals.Metal metal) {
-    super("ore." + metal.name, CreativeTabs.MATERIALS, Material.ROCK, MapColor.GRAY); //$NON-NLS-1$
-    this.setHardness(metal.hardness);
-    this.setResistance(5.0f);
+    super("ore." + metal.name, Properties.create(Material.ROCK).hardnessAndResistance(metal.hardness, 5.0f));
   }
 }

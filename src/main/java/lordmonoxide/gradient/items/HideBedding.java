@@ -1,21 +1,22 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMod;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
+import net.minecraftforge.common.extensions.IForgeDimension;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,23 +24,31 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class HideBedding extends GradientItem {
   public HideBedding() {
-    super("hide_bedding", CreativeTabs.TOOLS);
+    super("hide_bedding", new Properties().group(ItemGroup.TOOLS));
   }
 
   @Override
-  public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos usePos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-    if(world.isRemote) {
+  public EnumActionResult onItemUse(final ItemUseContext context) {
+    final World world = context.getWorld();
+
+    if(world.isRemote()) {
+      return EnumActionResult.PASS;
+    }
+
+    final EntityPlayer player = context.getPlayer();
+
+    if(player == null) {
       return EnumActionResult.PASS;
     }
 
     final BlockPos pos = player.getPosition();
 
-    final WorldProvider.WorldSleepResult sleepResult = world.provider.canSleepAt(player, pos);
-    if(sleepResult == WorldProvider.WorldSleepResult.BED_EXPLODES) {
-      world.newExplosion(null, pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d, 5.0f, true, true);
+    final IForgeDimension.SleepResult sleepResult = world.getDimension().canSleepAt(player, pos);
+    if(sleepResult == IForgeDimension.SleepResult.BED_EXPLODES) {
+      world.createExplosion(null, DamageSource.netherBedExplosion(), pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d, 5.0f, true, true);
     }
 
-    if(sleepResult == WorldProvider.WorldSleepResult.DENY) {
+    if(sleepResult == IForgeDimension.SleepResult.DENY) {
       return EnumActionResult.SUCCESS;
     }
 
@@ -48,6 +57,7 @@ public class HideBedding extends GradientItem {
     switch(result) {
       case OK:
         sleeping.add(player);
+        final EnumHand hand = context.getPlayer().getActiveHand();
         player.setHeldItem(hand, ItemStack.EMPTY);
         break;
 

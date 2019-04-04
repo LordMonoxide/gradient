@@ -1,13 +1,26 @@
 package lordmonoxide.gradient.utils;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
-public final class BlockPosUtils {
-  private BlockPosUtils() { }
+public final class WorldUtils {
+  private WorldUtils() { }
+
+  @Nullable
+  public static <T extends TileEntity> T getTileEntity(final IBlockReader world, final BlockPos pos, final Class<T> clazz) {
+    final TileEntity te = world.getTileEntity(pos);
+
+    if(clazz.isInstance(te)) {
+      return clazz.cast(te);
+    }
+
+    return null;
+  }
 
   @Nullable
   public static EnumFacing areBlocksAdjacent(final BlockPos a, final BlockPos b) {

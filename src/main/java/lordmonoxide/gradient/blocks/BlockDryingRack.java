@@ -1,49 +1,48 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.tileentities.TileDryingRack;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nullable;
+//TODO: check if drying rack can be placed on the top of blocks
 
 public class BlockDryingRack extends GradientBlock {
-  private static final AxisAlignedBB AABB_NORTH  = new AxisAlignedBB( 0.0d,         13.0d / 16.0d,  0.0d,         1.0d,         1.0d, 2.0d / 16.0d);
-  private static final AxisAlignedBB AABB_SOUTH  = new AxisAlignedBB( 0.0d,         13.0d / 16.0d, 14.0d / 16.0d, 1.0d,         1.0d, 1.0d);
-  private static final AxisAlignedBB AABB_EAST   = new AxisAlignedBB(14.0d / 16.0d, 13.0d / 16.0d,  0.0d,         1.0d,         1.0d, 1.0d);
-  private static final AxisAlignedBB AABB_WEST   = new AxisAlignedBB( 0.0d,         13.0d / 16.0d,  0.0d,         2.0d / 16.0d, 1.0d, 1.0d);
-  private static final AxisAlignedBB AABB_DOWN_Z = new AxisAlignedBB( 0.0d,         13.0d / 16.0d,  7.0d / 16.0d, 1.0d,         1.0d, 9.0d / 16.0d);
-  private static final AxisAlignedBB AABB_DOWN_X = new AxisAlignedBB( 7.0d / 16.0d, 13.0d / 16.0d,  0.0d        , 9.0d / 16.0d, 1.0d, 1.0d);
+  private static final VoxelShape SHAPE_NORTH  = Block.makeCuboidShape( 0.0d,         13.0d / 16.0d,  0.0d,         1.0d,         1.0d, 2.0d / 16.0d);
+  private static final VoxelShape SHAPE_SOUTH  = Block.makeCuboidShape( 0.0d,         13.0d / 16.0d, 14.0d / 16.0d, 1.0d,         1.0d, 1.0d);
+  private static final VoxelShape SHAPE_EAST   = Block.makeCuboidShape(14.0d / 16.0d, 13.0d / 16.0d,  0.0d,         1.0d,         1.0d, 1.0d);
+  private static final VoxelShape SHAPE_WEST   = Block.makeCuboidShape( 0.0d,         13.0d / 16.0d,  0.0d,         2.0d / 16.0d, 1.0d, 1.0d);
+  private static final VoxelShape SHAPE_DOWN_Z = Block.makeCuboidShape( 0.0d,         13.0d / 16.0d,  7.0d / 16.0d, 1.0d,         1.0d, 9.0d / 16.0d);
+  private static final VoxelShape SHAPE_DOWN_X = Block.makeCuboidShape( 7.0d / 16.0d, 13.0d / 16.0d,  0.0d        , 9.0d / 16.0d, 1.0d, 1.0d);
 
-  public static final PropertyDirection FACING = BlockHorizontal.FACING;
-  public static final PropertyBool ROOF = PropertyBool.create("roof");
+  public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
+  public static final BooleanProperty ROOF = BooleanProperty.create("roof");
 
   public BlockDryingRack() {
-    super("drying_rack", CreativeTabs.TOOLS, Material.WOOD);
-    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ROOF, false));
-    this.setHardness(1.0f);
+    super("drying_rack", Properties.create(Material.WOOD).hardnessAndResistance(1.0f).doesNotBlockMovement());
+    this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH).with(ROOF, false));
   }
 
   @Override
-  public TileDryingRack createTileEntity(final World world, final IBlockState state) {
+  public TileDryingRack createTileEntity(final IBlockState state, final IBlockReader world) {
     return new TileDryingRack();
   }
 
@@ -52,8 +51,9 @@ public class BlockDryingRack extends GradientBlock {
     return true;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+  public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!player.isSneaking()) {
       final TileDryingRack te = (TileDryingRack)world.getTileEntity(pos);
 
@@ -82,8 +82,9 @@ public class BlockDryingRack extends GradientBlock {
     return true;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+  public void onReplaced(final IBlockState state, final World world, final BlockPos pos, final IBlockState newState, final boolean isMoving) {
     final TileDryingRack te = (TileDryingRack)world.getTileEntity(pos);
 
     if(te != null) {
@@ -92,76 +93,40 @@ public class BlockDryingRack extends GradientBlock {
       }
     }
 
-    super.breakBlock(world, pos, state);
+    super.onReplaced(state, world, pos, newState, isMoving);
   }
 
   @Override
-  public boolean canPlaceBlockOnSide(final World world, final BlockPos pos, final EnumFacing side) {
-    return this.canPlaceBlockAt(world, pos) && side != EnumFacing.UP;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
-    if(facing != EnumFacing.DOWN) {
-      return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, facing.getOpposite()).withProperty(ROOF, false);
+  public IBlockState getStateForPlacement(final BlockItemUseContext context) {
+    if(context.getFace() != EnumFacing.DOWN) {
+      return super.getStateForPlacement(context).with(FACING, context.getFace().getOpposite()).with(ROOF, false);
     }
 
-    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, placer.getHorizontalFacing()).withProperty(ROOF, true);
+    return super.getStateForPlacement(context).with(FACING, context.getPlayer().getHorizontalFacing()).with(ROOF, true);
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  @Deprecated
-  public IBlockState getStateFromMeta(final int meta) {
-    final EnumFacing facing = EnumFacing.byHorizontalIndex(meta & 0b111);
-    final boolean roof = (meta & 0b1000) != 0;
-    return this.getDefaultState().withProperty(FACING, facing).withProperty(ROOF, roof);
-  }
-
-  @Override
-  public int getMetaFromState(final IBlockState state) {
-    return state.getValue(FACING).getHorizontalIndex() | (state.getValue(ROOF) ? 0b1000 : 0);
+  public IBlockState rotate(final IBlockState state, final Rotation rot) {
+    return state.with(FACING, rot.rotate(state.get(FACING)));
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  @Deprecated
-  public IBlockState withRotation(final IBlockState state, final Rotation rot) {
-    return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  @Deprecated
-  public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
-    return state.withRotation(mirror.toRotation(state.getValue(FACING)));
+  public IBlockState mirror(final IBlockState state, final Mirror mirror) {
+    return state.rotate(mirror.toRotation(state.get(FACING)));
   }
 
   @Override
-  protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING, ROOF);
+  protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
+    builder.add(FACING, ROOF);
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
-    return false;
-  }
-
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
     return BlockFaceShape.UNDEFINED;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  @Deprecated
-  public boolean isOpaqueCube(final IBlockState state) {
-    return false;
   }
 
   @SuppressWarnings("deprecation")
@@ -174,43 +139,35 @@ public class BlockDryingRack extends GradientBlock {
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
-    final EnumFacing facing = state.getValue(FACING);
+  public VoxelShape getShape(final IBlockState state, final IBlockReader source, final BlockPos pos) {
+    final EnumFacing facing = state.get(FACING);
 
-    if(!state.getValue(ROOF)) {
+    if(!state.get(ROOF)) {
       switch(facing) {
         case NORTH:
-          return AABB_NORTH;
+          return SHAPE_NORTH;
 
         case SOUTH:
-          return AABB_SOUTH;
+          return SHAPE_SOUTH;
 
         case EAST:
-          return AABB_EAST;
+          return SHAPE_EAST;
 
         case WEST:
-          return AABB_WEST;
+          return SHAPE_WEST;
       }
     } else {
       switch(facing) {
         case NORTH:
         case SOUTH:
-          return AABB_DOWN_Z;
+          return SHAPE_DOWN_Z;
 
         case EAST:
         case WEST:
-          return AABB_DOWN_X;
+          return SHAPE_DOWN_X;
       }
     }
 
-    return AABB_DOWN_Z;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  @Deprecated
-  @Nullable
-  public AxisAlignedBB getCollisionBoundingBox(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
-    return null;
+    return SHAPE_DOWN_Z;
   }
 }

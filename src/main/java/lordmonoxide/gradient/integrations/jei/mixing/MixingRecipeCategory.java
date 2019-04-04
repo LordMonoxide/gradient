@@ -2,19 +2,20 @@ package lordmonoxide.gradient.integrations.jei.mixing;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.tileentities.TileMixingBasin;
 import lordmonoxide.gradient.integrations.jei.GradientRecipeCategoryUid;
 import lordmonoxide.gradient.integrations.jei.JeiRecipeCategory;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import lordmonoxide.gradient.recipes.MixingRecipe;
+import lordmonoxide.gradient.tileentities.TileMixingBasin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.ingredients.VanillaTypes;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipeWrapper> {
+public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipe> {
   public MixingRecipeCategory(final IGuiHelper guiHelper) {
     super(GradientRecipeCategoryUid.MIXING, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_mixing.png"), 0, 0, 166, 68));
   }
@@ -25,7 +26,7 @@ public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipeWrapper>
   }
 
   @Override
-  public void setRecipe(final IRecipeLayout recipeLayout, final MixingRecipeWrapper recipeWrapper, final IIngredients ingredients) {
+  public void setRecipe(final IRecipeLayout recipeLayout, final MixingRecipe recipe, final IIngredients ingredients) {
     final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
     final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
 

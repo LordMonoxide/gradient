@@ -4,16 +4,17 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.integrations.jei.GradientRecipeCategoryUid;
 import lordmonoxide.gradient.integrations.jei.JeiRecipeCategory;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import lordmonoxide.gradient.recipes.FirePitRecipe;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.ingredients.VanillaTypes;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public class FirePitRecipeCategory extends JeiRecipeCategory<FirePitRecipeWrapper> {
+public class FirePitRecipeCategory extends JeiRecipeCategory<FirePitRecipe> {
   public FirePitRecipeCategory(final IGuiHelper guiHelper) {
     super(GradientRecipeCategoryUid.FIREPIT, guiHelper.createDrawable(GradientMod.resource("textures/gui/recipe_grinding.png"), 0, 0, 166, 68));
   }
@@ -24,7 +25,7 @@ public class FirePitRecipeCategory extends JeiRecipeCategory<FirePitRecipeWrappe
   }
 
   @Override
-  public void setRecipe(final IRecipeLayout recipeLayout, final FirePitRecipeWrapper recipeWrapper, final IIngredients ingredients) {
+  public void setRecipe(final IRecipeLayout recipeLayout, final FirePitRecipe recipe, final IIngredients ingredients) {
     final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
     final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
 

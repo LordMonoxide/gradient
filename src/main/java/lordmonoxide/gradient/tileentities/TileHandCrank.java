@@ -12,6 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -27,6 +28,10 @@ public class TileHandCrank extends TileEntity implements ITickable {
   private int crankTicks;
   private boolean cranking;
 
+  public TileHandCrank() {
+    super(GradientTileEntities.HAND_CRANK);
+  }
+
   @Override
   public void onLoad() {
     if(this.world.isRemote) {
@@ -41,7 +46,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
   }
 
   @Override
-  public void update() {
+  public void tick() {
     if(this.world.isRemote) {
       return;
     }
@@ -59,27 +64,13 @@ public class TileHandCrank extends TileEntity implements ITickable {
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == STORAGE) {
       final IBlockState state = this.world.getBlockState(this.pos);
 
       if(state.getBlock() == GradientBlocks.HAND_CRANK) {
-        return facing == state.getValue(BlockHandCrank.FACING);
-      }
-    }
-
-    return super.hasCapability(capability, facing);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    if(capability == STORAGE) {
-      final IBlockState state = this.world.getBlockState(this.pos);
-
-      if(state.getBlock() == GradientBlocks.HAND_CRANK) {
-        if(facing == state.getValue(BlockHandCrank.FACING)) {
-          return STORAGE.cast(this.storage);
+        if(facing == state.get(BlockHandCrank.FACING)) {
+          return LazyOptional.of(() -> (T)this.storage);
         }
       }
     }

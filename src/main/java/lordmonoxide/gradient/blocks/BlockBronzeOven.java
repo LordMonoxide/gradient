@@ -1,32 +1,31 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.GradientGuiHandler;
-import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.tileentities.TileBronzeOven;
+import lordmonoxide.gradient.utils.WorldUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BlockBronzeOven extends GradientBlock {
-  public static final PropertyDirection FACING = BlockHorizontal.FACING;
+  public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   public BlockBronzeOven() {
-    super("bronze_oven", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_BRONZE_MACHINE); //$NON-NLS-1$
-    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
-    this.setResistance(5.0f);
-    this.setHardness(1.0f);
+    super("bronze_oven", Properties.create(GradientBlocks.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
+    this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
   }
 
   @Override
@@ -35,15 +34,16 @@ public class BlockBronzeOven extends GradientBlock {
   }
 
   @Override
-  public TileBronzeOven createTileEntity(final World world, final IBlockState state) {
+  public TileBronzeOven createTileEntity(final IBlockState state, final IBlockReader world) {
     return new TileBronzeOven();
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+  public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        final TileBronzeOven te = (TileBronzeOven)world.getTileEntity(pos);
+        final TileBronzeOven te = WorldUtils.getTileEntity(world, pos, TileBronzeOven.class);
 
         if(te == null) {
           return false;
@@ -53,7 +53,7 @@ public class BlockBronzeOven extends GradientBlock {
           return te.useBucket(player, hand, world, pos, side);
         }
 
-        player.openGui(GradientMod.instance, GradientGuiHandler.BRONZE_OVEN, world, pos.getX(), pos.getY(), pos.getZ());
+        NetworkHooks.openGui((EntityPlayerMP)player, te, pos);
       }
     }
 
@@ -61,37 +61,24 @@ public class BlockBronzeOven extends GradientBlock {
   }
 
   @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  public IBlockState getStateForPlacement(final BlockItemUseContext context) {
+    return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public IBlockState rotate(final IBlockState state, final Rotation rot) {
+    return state.with(FACING, rot.rotate(state.get(FACING)));
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public IBlockState mirror(final IBlockState state, final Mirror mirror) {
+    return state.rotate(mirror.toRotation(state.get(FACING)));
   }
 
   @Override
-  @Deprecated
-  public IBlockState getStateFromMeta(final int meta) {
-    final EnumFacing facing = EnumFacing.byHorizontalIndex(meta);
-
-    return this.getDefaultState().withProperty(FACING, facing);
-  }
-
-  @Override
-  public int getMetaFromState(final IBlockState state) {
-    return state.getValue(FACING).getHorizontalIndex();
-  }
-
-  @Override
-  @Deprecated
-  public IBlockState withRotation(final IBlockState state, final Rotation rot) {
-    return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-  }
-
-  @Override
-  @Deprecated
-  public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
-    return state.withRotation(mirror.toRotation(state.getValue(FACING)));
-  }
-
-  @Override
-  protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING);
+  protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
+    builder.add(FACING);
   }
 }

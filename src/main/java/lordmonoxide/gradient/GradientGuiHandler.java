@@ -1,131 +1,102 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.containers.ContainerBronzeBoiler;
 import lordmonoxide.gradient.client.gui.GuiBronzeBoiler;
-import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
-import lordmonoxide.gradient.containers.ContainerBronzeFurnace;
 import lordmonoxide.gradient.client.gui.GuiBronzeFurnace;
-import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
-import lordmonoxide.gradient.containers.ContainerBronzeGrinder;
 import lordmonoxide.gradient.client.gui.GuiBronzeGrinder;
-import lordmonoxide.gradient.tileentities.TileBronzeGrinder;
-import lordmonoxide.gradient.containers.ContainerBronzeOven;
 import lordmonoxide.gradient.client.gui.GuiBronzeOven;
-import lordmonoxide.gradient.tileentities.TileBronzeOven;
 import lordmonoxide.gradient.client.gui.GuiClayCast;
-import lordmonoxide.gradient.containers.ContainerClayCrucible;
 import lordmonoxide.gradient.client.gui.GuiClayCrucible;
-import lordmonoxide.gradient.tileentities.TileClayCrucible;
+import lordmonoxide.gradient.containers.ContainerBronzeBoiler;
+import lordmonoxide.gradient.containers.ContainerBronzeFurnace;
+import lordmonoxide.gradient.containers.ContainerBronzeGrinder;
+import lordmonoxide.gradient.containers.ContainerBronzeOven;
+import lordmonoxide.gradient.containers.ContainerClayCrucible;
+import lordmonoxide.gradient.items.ItemClayCastUnhardened;
+import lordmonoxide.gradient.utils.WorldUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraft.world.IInteractionObject;
+import net.minecraftforge.fml.network.FMLPlayMessages;
 
-public class GradientGuiHandler implements IGuiHandler {
-  public static final int CLAY_CRUCIBLE = 1;
-  public static final int CLAY_CAST = 2;
-  public static final int BRONZE_FURNACE = 3;
-  public static final int BRONZE_BOILER = 4;
-  public static final int BRONZE_OVEN = 5;
-  public static final int BRONZE_GRINDER = 6;
+import javax.annotation.Nullable;
 
-  @Override
-  public Container getServerGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
-    final TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+public final class GradientGuiHandler {
+  private GradientGuiHandler() { }
 
-    switch(id) {
-      case CLAY_CRUCIBLE:
-        if(te == null) {
-          return null;
+  @Nullable
+  public static GuiScreen openGui(final FMLPlayMessages.OpenContainer openContainer) {
+    if(openContainer.getId().equals(GuiClayCrucible.ID)) {
+      final BlockPos pos = openContainer.getAdditionalData().readBlockPos();
+      final ContainerClayCrucible container = getContainer(pos);
+
+      if(container != null) {
+        return new GuiClayCrucible(container);
+      }
+    }
+
+    //TODO: make this entirely less bad
+    if(openContainer.getId().equals(GuiClayCast.ID)) {
+      return new GuiClayCast(new Container() {
+        @Override
+        public boolean canInteractWith(final EntityPlayer playerIn) {
+          return true;
         }
+      }, (ItemClayCastUnhardened)Minecraft.getInstance().player.getHeldItemMainhand().getItem());
+    }
 
-        return new ContainerClayCrucible(player.inventory, (TileClayCrucible)te);
+    if(openContainer.getId().equals(GuiBronzeFurnace.ID)) {
+      final BlockPos pos = openContainer.getAdditionalData().readBlockPos();
+      final ContainerBronzeFurnace container = getContainer(pos);
 
-      case CLAY_CAST:
-        return new Container() {
-          @Override
-          public boolean canInteractWith(final EntityPlayer playerIn) {
-            return true;
-          }
-        };
+      if(container != null) {
+        return new GuiBronzeFurnace(container);
+      }
+    }
 
-      case BRONZE_FURNACE:
-        if(te == null) {
-          return null;
-        }
+    if(openContainer.getId().equals(GuiBronzeBoiler.ID)) {
+      final BlockPos pos = openContainer.getAdditionalData().readBlockPos();
+      final ContainerBronzeBoiler container = getContainer(pos);
 
-        return new ContainerBronzeFurnace(player.inventory, (TileBronzeFurnace)te);
+      if(container != null) {
+        return new GuiBronzeBoiler(container);
+      }
+    }
 
-      case BRONZE_BOILER:
-        if(te == null) {
-          return null;
-        }
+    if(openContainer.getId().equals(GuiBronzeOven.ID)) {
+      final BlockPos pos = openContainer.getAdditionalData().readBlockPos();
+      final ContainerBronzeOven container = getContainer(pos);
 
-        return new ContainerBronzeBoiler(player.inventory, (TileBronzeBoiler)te);
+      if(container != null) {
+        return new GuiBronzeOven(container);
+      }
+    }
 
-      case BRONZE_OVEN:
-        if(te == null) {
-          return null;
-        }
+    if(openContainer.getId().equals(GuiBronzeGrinder.ID)) {
+      final BlockPos pos = openContainer.getAdditionalData().readBlockPos();
+      final ContainerBronzeGrinder container = getContainer(pos);
 
-        return new ContainerBronzeOven(player.inventory, (TileBronzeOven)te);
-
-      case BRONZE_GRINDER:
-        if(te == null) {
-          return null;
-        }
-
-        return new ContainerBronzeGrinder(player.inventory, (TileBronzeGrinder)te);
+      if(container != null) {
+        return new GuiBronzeGrinder(container);
+      }
     }
 
     return null;
   }
 
-  @Override
-  public Object getClientGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
-    final BlockPos pos = new BlockPos(x, y, z);
-    final TileEntity te = world.getTileEntity(pos);
+  @Nullable
+  private static <T extends Container> T getContainer(final BlockPos pos) {
+    final TileEntity obj = WorldUtils.getTileEntity(Minecraft.getInstance().world, pos, TileEntity.class);
 
-    switch(id) {
-      case CLAY_CRUCIBLE:
-        if(te == null) {
-          return null;
-        }
+    if(obj instanceof IInteractionObject) {
+      final EntityPlayer player = Minecraft.getInstance().player;
+      final InventoryPlayer inventory = player.inventory;
 
-        return new GuiClayCrucible((ContainerClayCrucible)this.getServerGuiElement(id, player, world, x, y ,z), (TileClayCrucible)te, player.inventory);
-
-      case CLAY_CAST:
-        return new GuiClayCast(this.getServerGuiElement(id, player, world, x, y ,z), player.getHeldItemMainhand());
-
-      case BRONZE_FURNACE:
-        if(te == null) {
-          return null;
-        }
-
-        return new GuiBronzeFurnace((ContainerBronzeFurnace)this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeFurnace)te, player.inventory);
-
-      case BRONZE_BOILER:
-        if(te == null) {
-          return null;
-        }
-
-        return new GuiBronzeBoiler((ContainerBronzeBoiler)this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeBoiler)te, player.inventory);
-
-      case BRONZE_OVEN:
-        if(te == null) {
-          return null;
-        }
-
-        return new GuiBronzeOven((ContainerBronzeOven)this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeOven)te, player.inventory);
-
-      case BRONZE_GRINDER:
-        if(te == null) {
-          return null;
-        }
-
-        return new GuiBronzeGrinder((ContainerBronzeGrinder) this.getServerGuiElement(id, player, world, x, y ,z), (TileBronzeGrinder) te, player.inventory);
+      return (T)((IInteractionObject)obj).createContainer(inventory, player);
     }
 
     return null;

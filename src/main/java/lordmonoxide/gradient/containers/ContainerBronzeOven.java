@@ -9,20 +9,26 @@ public class ContainerBronzeOven extends GradientContainer {
   public static final int OUTPUT_SLOTS_X = 51;
   public static final int OUTPUT_SLOTS_Y = 34;
 
-  public ContainerBronzeOven(final InventoryPlayer inventory, final TileBronzeOven furnace) {
-    super(furnace);
+  public final TileBronzeOven oven;
+  public final InventoryPlayer playerInv;
 
-    this.addSlotToContainer(new SlotFurnaceInput(this.inventory, TileBronzeOven.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
+  public ContainerBronzeOven(final InventoryPlayer inventory, final TileBronzeOven oven) {
+    super(oven);
+
+    this.oven = oven;
+    this.playerInv = inventory;
+
+    this.addSlot(new SlotFurnaceInput(this.inventory, TileBronzeOven.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
       @Override public void onSlotChanged() {
         super.onSlotChanged();
-        furnace.markDirty();
+        oven.markDirty();
       }
     });
 
-    this.addSlotToContainer(new SlotOutput(this.inventory, TileBronzeOven.OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y) {
+    this.addSlot(new SlotOutput(this.inventory, TileBronzeOven.OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y) {
       @Override public void onSlotChanged() {
         super.onSlotChanged();
-        furnace.markDirty();
+        oven.markDirty();
       }
     });
 

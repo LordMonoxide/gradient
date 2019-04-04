@@ -1,16 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.GradientMetals;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JsonUtils;
-import net.minecraftforge.common.crafting.IIngredientFactory;
-import net.minecraftforge.common.crafting.JsonContext;
-
-import javax.annotation.Nonnull;
-
+//TODO
+/*
 public class IngredientCastItemFactory implements IIngredientFactory {
   @Nonnull
   @Override
@@ -28,3 +19,4 @@ public class IngredientCastItemFactory implements IIngredientFactory {
     return new IngredientCastItem(cast, metal);
   }
 }
+*/

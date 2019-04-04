@@ -18,19 +18,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.Iterator;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class OverrideEntityDrops {
   private OverrideEntityDrops() { }
 
-  @GameRegistry.ObjectHolder("quark:tallow")
+  @ObjectHolder("quark:tallow")
   private static final Item TALLOW = null;
 
   @SubscribeEvent

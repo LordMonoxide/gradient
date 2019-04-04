@@ -1,8 +1,8 @@
 package lordmonoxide.gradient.items;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -11,14 +11,20 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,19 +32,15 @@ import java.util.List;
 
 public class Waterskin extends ItemFluidContainer {
   public Waterskin() {
-    super(Fluid.BUCKET_VOLUME);
-    this.setTranslationKey("waterskin");
+    super(new Properties().group(ItemGroup.TOOLS).maxStackSize(1), Fluid.BUCKET_VOLUME);
     this.setRegistryName("waterskin");
-    this.setCreativeTab(CreativeTabs.TOOLS);
-    this.setHasSubtypes(true);
-    this.setMaxStackSize(1);
   }
 
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   @Override
-  public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
-    if(stack.hasTagCompound() && stack.getTagCompound().hasKey("Fluid")) {
-      final FluidStack fluid = FluidStack.loadFluidStackFromNBT(stack.getTagCompound().getCompoundTag("Fluid"));
+  public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+    if(stack.hasTag() && stack.getTag().contains("Fluid")) {
+      final FluidStack fluid = FluidStack.loadFluidStackFromNBT(stack.getTag().getCompound("Fluid"));
 
       if(fluid != null) {
         tooltip.add(TextFormatting.GREEN + "Contains: " + fluid.getFluid().getLocalizedName(fluid));
@@ -56,16 +58,16 @@ public class Waterskin extends ItemFluidContainer {
 
   @Override
   public ItemStack getContainerItem(final ItemStack stack) {
-    return new ItemStack(stack.getItem(), 1, 0);
+    return new ItemStack(stack.getItem());
   }
 
   @Nullable
   public static FluidStack getFluid(@Nonnull final ItemStack stack) {
-    if(stack.hasTagCompound() && stack.getTagCompound().hasKey("Fluid")) {
-      return FluidStack.loadFluidStackFromNBT(stack.getTagCompound().getCompoundTag("Fluid"));
+    if(stack.hasTag() && stack.getTag().contains("Fluid")) {
+      return FluidStack.loadFluidStackFromNBT(stack.getTag().getCompound("Fluid"));
     }
 
-    return FluidStack.loadFluidStackFromNBT(stack.getTagCompound());
+    return FluidStack.loadFluidStackFromNBT(stack.getTag());
   }
 
   @Override
@@ -77,7 +79,7 @@ public class Waterskin extends ItemFluidContainer {
     if(fluidStack == null) {
       final RayTraceResult target = this.rayTrace(world, player, true);
 
-      if(target == null || target.typeOfHit != RayTraceResult.Type.BLOCK) {
+      if(target == null || target.type != RayTraceResult.Type.BLOCK) {
         return ActionResult.newResult(EnumActionResult.PASS, itemstack);
       }
 
@@ -102,7 +104,7 @@ public class Waterskin extends ItemFluidContainer {
       @Nonnull
       @Override
       public ItemStack getContainer() {
-        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("Fluid")) {
+        if(stack.hasTag() && stack.getTag().contains("Fluid")) {
           this.container.setItemDamage(1);
         } else {
           this.container.setItemDamage(0);
@@ -113,8 +115,8 @@ public class Waterskin extends ItemFluidContainer {
 
       @Override
       protected void setContainerToEmpty() {
-        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("Fluid")) {
-          this.container.getTagCompound().removeTag("Fluid");
+        if(stack.hasTag() && stack.getTag().contains("Fluid")) {
+          this.container.getTag().remove("Fluid");
           this.container.setItemDamage(0);
         } else {
           this.container.setItemDamage(1);
@@ -125,7 +127,7 @@ public class Waterskin extends ItemFluidContainer {
 
   public ItemStack getFilled(final Fluid fluid) {
     final NBTTagCompound nbt = new NBTTagCompound();
-    nbt.setTag("Fluid", new FluidStack(fluid, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
+    nbt.put("Fluid", new FluidStack(fluid, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
     final ItemStack filled = new ItemStack(this, 1, 1);
     filled.setTagCompound(nbt);
     return filled;

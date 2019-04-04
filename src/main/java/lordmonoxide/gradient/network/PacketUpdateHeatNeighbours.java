@@ -1,70 +1,60 @@
 package lordmonoxide.gradient.network;
 
-import io.netty.buffer.ByteBuf;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
-import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
-public class PacketUpdateHeatNeighbours implements IMessage {
+public class PacketUpdateHeatNeighbours {
   public static void send(final BlockPos entityPos, final BlockPos updatePos) {
-    GradientNet.CHANNEL.sendToAll(new PacketUpdateHeatNeighbours(entityPos, updatePos));
+    GradientNet.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketUpdateHeatNeighbours(entityPos, updatePos));
   }
 
-  private BlockPos entityPos;
-  private BlockPos updatePos;
-
-  public PacketUpdateHeatNeighbours() { }
+  private final BlockPos entityPos;
+  private final BlockPos updatePos;
 
   public PacketUpdateHeatNeighbours(final BlockPos entityPos, final BlockPos updatePos) {
     this.entityPos = entityPos;
     this.updatePos = updatePos;
   }
 
-  @Override
-  public void fromBytes(final ByteBuf buf) {
+  public static void encode(final PacketUpdateHeatNeighbours packet, final PacketBuffer buffer) {
+    buffer.writeInt(packet.entityPos.getX());
+    buffer.writeInt(packet.entityPos.getY());
+    buffer.writeInt(packet.entityPos.getZ());
+    buffer.writeInt(packet.updatePos.getX());
+    buffer.writeInt(packet.updatePos.getY());
+    buffer.writeInt(packet.updatePos.getZ());
+  }
+
+  public static PacketUpdateHeatNeighbours decode(final PacketBuffer buffer) {
     try {
-      this.entityPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-      this.updatePos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+      return new PacketUpdateHeatNeighbours(
+        new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt()),
+        new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt())
+      );
     } catch(final IndexOutOfBoundsException e) {
       GradientMod.logger.info("Invalid position in PacketUpdateHeatNeighbours", e);
-      this.entityPos = BlockPos.ORIGIN;
-      this.updatePos = BlockPos.ORIGIN;
+      return new PacketUpdateHeatNeighbours(BlockPos.ORIGIN, BlockPos.ORIGIN);
     }
   }
 
-  @Override
-  public void toBytes(final ByteBuf buf) {
-    buf.writeInt(this.entityPos.getX());
-    buf.writeInt(this.entityPos.getY());
-    buf.writeInt(this.entityPos.getZ());
-    buf.writeInt(this.updatePos.getX());
-    buf.writeInt(this.updatePos.getY());
-    buf.writeInt(this.updatePos.getZ());
-  }
+  public static void handle(final PacketUpdateHeatNeighbours packet, final Supplier<NetworkEvent.Context> ctx) {
+    ctx.get().enqueueWork(() -> {
+      final TileEntity te = Minecraft.getInstance().world.getTileEntity(packet.entityPos);
 
-  public static class Handler implements IMessageHandler<PacketUpdateHeatNeighbours, IMessage> {
-    @Override
-    @Nullable
-    public IMessage onMessage(final PacketUpdateHeatNeighbours packet, final MessageContext ctx) {
-      Minecraft.getMinecraft().addScheduledTask(() -> {
-        final TileEntity te = Minecraft.getMinecraft().world.getTileEntity(packet.entityPos);
+      if(!(te instanceof HeatSinker)) {
+        return;
+      }
 
-        if(!(te instanceof HeatSinker)) {
-          return;
-        }
-
-        ((HeatSinker)te).updateSink(packet.updatePos);
-      });
-
-      return null;
-    }
+      ((HeatSinker)te).updateSink(packet.updatePos);
+    });
   }
 }

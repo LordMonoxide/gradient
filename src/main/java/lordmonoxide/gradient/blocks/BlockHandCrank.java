@@ -1,22 +1,23 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.tileentities.TileHandCrank;
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
+import lordmonoxide.gradient.tileentities.TileHandCrank;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -28,22 +29,22 @@ public class BlockHandCrank extends GradientBlock {
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
-  public static final PropertyDirection FACING = PropertyDirection.create("facing");
+  public static final DirectionProperty FACING = DirectionProperty.create("facing");
 
   public BlockHandCrank() {
-    super("hand_crank", CreativeTabs.TOOLS, Material.CIRCUITS);
-    this.setResistance(5.0f);
-    this.setHardness(1.0f);
+    super("hand_crank", Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-    super.breakBlock(world, pos, state);
+  public void onReplaced(final IBlockState state, final World world, final BlockPos pos, final IBlockState newState, final boolean isMoving) {
+    super.onReplaced(state, world, pos, newState, isMoving);
     EnergyNetworkManager.getManager(world, STORAGE, TRANSFER).disconnect(pos);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+  public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(world.isRemote) {
       return true;
     }
@@ -59,7 +60,7 @@ public class BlockHandCrank extends GradientBlock {
   }
 
   @Override
-  public TileHandCrank createTileEntity(final World world, final IBlockState state) {
+  public TileHandCrank createTileEntity(final IBlockState state, final IBlockReader world) {
     return new TileHandCrank();
   }
 
@@ -69,38 +70,24 @@ public class BlockHandCrank extends GradientBlock {
   }
 
   @Override
-  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer, final EnumHand hand) {
-    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand).withProperty(FACING, facing.getOpposite());
+  public IBlockState getStateForPlacement(final BlockItemUseContext context) {
+    return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  @Deprecated
-  public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta));
-  }
-
-  @Override
-  public int getMetaFromState(final IBlockState state) {
-    return state.getValue(FACING).getIndex();
+  public IBlockState rotate(final IBlockState state, final Rotation rot) {
+    return state.with(FACING, rot.rotate(state.get(FACING)));
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  @Deprecated
-  public IBlockState withRotation(final IBlockState state, final Rotation rot) {
-    return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  @Deprecated
-  public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
-    return state.withRotation(mirror.toRotation(state.getValue(FACING)));
+  public IBlockState mirror(final IBlockState state, final Mirror mirror) {
+    return state.rotate(mirror.toRotation(state.get(FACING)));
   }
 
   @Override
-  protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING);
+  protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
+    builder.add(FACING);
   }
 }

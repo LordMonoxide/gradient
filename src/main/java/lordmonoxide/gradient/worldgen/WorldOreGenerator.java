@@ -2,14 +2,12 @@ package lordmonoxide.gradient.worldgen;
 
 import lordmonoxide.gradient.blocks.BlockPebble;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenerator;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
@@ -22,7 +20,9 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public final class WorldOreGenerator extends WorldGenerator {
+//TODO
+
+public final class WorldOreGenerator /*extends WorldGenerator*/ {
   private static final float PI = (float)Math.PI;
 
   public static WorldOreGenerator create(final Consumer<WorldOreGeneratorBuilder> callback) {
@@ -37,7 +37,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     }
 
     if(state.getBlock() == Blocks.STONE) {
-      return state.getValue(BlockStone.VARIANT).isNatural();
+      //TODO return state.getValue(BlockStone.VARIANT).isNatural();
     }
 
     if(state.getBlock() == Blocks.GRAVEL) {
@@ -61,7 +61,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     this.maxLength = maxLength;
   }
 
-  @Override
+  //TODO @Override
   public boolean generate(final World world, final Random rand, final BlockPos start) {
     this.state.depth = start.getY();
 
@@ -165,25 +165,28 @@ public final class WorldOreGenerator extends WorldGenerator {
   private void placePebble(final Map<BlockPos, IBlockState> blocksToPlace, final World world, final IBlockState pebble, final int x, final int z) {
     final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, 128, z);
 
-    for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && (iblockstate.getBlock().isReplaceable(world, pos) || iblockstate.getBlock().isWood(world, pos)); iblockstate = world.getBlockState(pos)) {
+    //TODO
+/*
+    for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && (iblockstate.isReplaceable(world, pos) || iblockstate.getBlock().isWood(world, pos)); iblockstate = world.getBlockState(pos)) {
       pos.move(EnumFacing.DOWN);
     }
+*/
 
     pos.move(EnumFacing.UP);
 
-    if(pebble.getBlock().canPlaceBlockAt(world, pos)) {
+    if(pebble.isValidPosition(world, pos)) {
       this.placeBlock(blocksToPlace, world, pos, pebble);
     }
   }
 
   private void placeBlock(final Map<BlockPos, IBlockState> blocksToPlace, final World world, final BlockPos pos, final IBlockState ore) {
-    if(world.isOutsideBuildHeight(pos)) {
+    if(World.isOutsideBuildHeight(pos)) {
       return;
     }
 
     final ChunkPos chunkPos = new ChunkPos(pos);
 
-    if(!world.isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
+    if(!world.isChunkLoaded(chunkPos.x, chunkPos.z, false)) {
       final DeferredOreStorage deferredOres = DeferredOreStorage.get(world);
       deferredOres.get(chunkPos).put(pos.toImmutable(), ore);
       deferredOres.markDirty();
@@ -199,7 +202,7 @@ public final class WorldOreGenerator extends WorldGenerator {
     if(deferredOres.has(chunkPos)) {
       deferredOres.get(chunkPos).forEach((pos, ore) -> {
         if(ore.getBlock() instanceof BlockPebble) {
-          if(ore.getBlock().canPlaceBlockAt(world, pos)) {
+          if(ore.isValidPosition(world, pos)) {
             world.setBlockState(pos, ore);
             return;
           }

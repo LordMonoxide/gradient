@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.GradientItems;
+import lordmonoxide.gradient.items.GradientToolTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
@@ -13,27 +14,27 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.List;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AddExtraDrops {
   private AddExtraDrops() { }
 
-  @GameRegistry.ObjectHolder("biomesoplenty:grass")
+  @ObjectHolder("biomesoplenty:grass")
   private static final Block BOP_GRASS = null;
 
-  @GameRegistry.ObjectHolder("biomesoplenty:dirt")
+  @ObjectHolder("biomesoplenty:dirt")
   private static final Block BOP_DIRT = null;
 
   @SubscribeEvent
   public static void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {
     if(event.getState().getBlock() instanceof BlockLeaves) {
-      if(event.getWorld().rand.nextInt(9) < 1 + event.getFortuneLevel()) {
+      if(event.getWorld().getRandom().nextInt(9) < 1 + event.getFortuneLevel()) {
         event.getDrops().add(new ItemStack(Items.STICK));
       }
     }
@@ -44,13 +45,14 @@ public final class AddExtraDrops {
     final Block block = event.getState().getBlock();
 
     if(
-      block == Blocks.TALLGRASS ||
-      block == Blocks.DIRT ||
       block == Blocks.GRASS ||
+      block == Blocks.TALL_GRASS ||
+      block == Blocks.DIRT ||
+      block == Blocks.GRASS_BLOCK ||
       block == BOP_GRASS ||
       block == BOP_DIRT
     ) {
-      if(event.getWorld().rand.nextInt(10) < 1 + event.getFortuneLevel()) {
+      if(event.getWorld().getRandom().nextInt(10) < 1 + event.getFortuneLevel()) {
         event.getDrops().add(new ItemStack(GradientItems.FIBRE));
       }
     }
@@ -63,8 +65,8 @@ public final class AddExtraDrops {
     if(state.getBlock() == Blocks.WHEAT) {
       final BlockCrops wheat = (BlockCrops)state.getBlock();
 
-      if(state.getValue(BlockCrops.AGE) == wheat.getMaxAge()) {
-        final int amount = event.getWorld().rand.nextInt(2 + event.getFortuneLevel());
+      if(state.get(BlockCrops.AGE) == wheat.getMaxAge()) {
+        final int amount = event.getWorld().getRandom().nextInt(2 + event.getFortuneLevel());
 
         if(amount != 0) {
           event.getDrops().add(new ItemStack(GradientItems.FIBRE, amount));
@@ -79,7 +81,7 @@ public final class AddExtraDrops {
 
     if(state.getBlock() == Blocks.GRAVEL) {
       for(int i = 0; i < 3 + event.getFortuneLevel(); i++) {
-        if(event.getWorld().rand.nextInt(10) == 0) {
+        if(event.getWorld().getRandom().nextInt(10) == 0) {
           event.getDrops().add(new ItemStack(GradientBlocks.PEBBLE));
         }
       }
@@ -102,7 +104,7 @@ public final class AddExtraDrops {
       return;
     }
 
-    if(hand.getItem().getHarvestLevel(hand, "hammer", event.getHarvester(), event.getState()) != -1) {
+    if(hand.getItem().getHarvestLevel(hand, GradientToolTypes.HAMMER, event.getHarvester(), event.getState()) != -1) {
       final List<ItemStack> drops = event.getDrops();
 
       drops.clear();

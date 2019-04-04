@@ -19,11 +19,15 @@ public class GuiInventory3x3Crafting extends GuiInventory {
   public void initGui() {
     super.initGui();
 
+    //TODO
+
+/*
     final GuiButton guideBookButton = this.buttons.get(10);
     guideBookButton.x = this.guiLeft + 152;
     guideBookButton.y = this.guiTop  +  47;
 
     this.buttons.set(10, new GuideBookButton(guideBookButton));
+*/
   }
 
   @Override

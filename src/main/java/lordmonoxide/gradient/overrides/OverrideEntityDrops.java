@@ -26,7 +26,7 @@ import net.minecraftforge.registries.ObjectHolder;
 import java.util.Iterator;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public final class OverrideEntityDrops {
   private OverrideEntityDrops() { }
 

@@ -21,7 +21,7 @@ import net.minecraftforge.registries.ObjectHolder;
 import java.util.List;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public final class AddExtraDrops {
   private AddExtraDrops() { }
 

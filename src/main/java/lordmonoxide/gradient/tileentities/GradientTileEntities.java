@@ -60,6 +60,8 @@ public final class GradientTileEntities {
 
     @SubscribeEvent
     public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
+      GradientMod.logger.info("Registering tile entities");
+
       final IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
 
       //TODO: datafixer (see https://github.com/progwml6/ironchest/blob/7ecd01921cd0466b6075b78fedb81bc9d70d8207/src/main/java/com/progwml6/ironchest/common/tileentity/IronChestEntityType.java#L91)

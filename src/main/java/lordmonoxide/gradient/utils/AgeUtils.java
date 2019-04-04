@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.utils;
 
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.PlayerProgress;
@@ -19,6 +20,11 @@ public final class AgeUtils {
     for(final EntityPlayer player : entity.world.playerEntities) {
       if(entity.getDistanceSq(player) <= distanceSquared) {
         final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY).orElse(null);
+
+        if(progress == null) {
+          GradientMod.logger.warn("Player {} has null progress", player);
+          continue;
+        }
 
         if(progress.getAge().compareTo(age) > 0) {
           age = progress.getAge();

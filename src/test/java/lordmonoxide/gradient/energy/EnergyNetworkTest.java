@@ -3,8 +3,8 @@ package lordmonoxide.gradient.energy;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,15 +15,10 @@ public class EnergyNetworkTest {
   private World world;
   private EnergyNetwork<IEnergyStorage, IEnergyTransfer> manager;
 
-  @BeforeAll
-  static void setUpFirst() {
-    EnergyNetworkSegmentTest.setUpFirst();
-  }
-
   @BeforeEach
   void setUp() {
     this.world = new World();
-    this.manager = new EnergyNetwork<>(0, this.world, EnergyNetworkSegmentTest.STORAGE, EnergyNetworkSegmentTest.TRANSFER);
+    this.manager = new EnergyNetwork<>(DimensionType.OVERWORLD, this.world, EnergyNetworkSegmentTest.STORAGE, EnergyNetworkSegmentTest.TRANSFER);
   }
 
   @Test

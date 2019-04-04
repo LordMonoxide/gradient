@@ -1,14 +1,11 @@
 package lordmonoxide.gradient.energy;
 
-import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,11 +21,6 @@ class EnergyNetworkSegmentTest {
   static final Capability<IEnergyTransfer> TRANSFER = newCap("TRANSFER");
 
   private EnergyNetworkSegment<IEnergyStorage, IEnergyTransfer> net;
-
-  @BeforeAll
-  static void setUpFirst() {
-    GradientMod.logger = LogManager.getLogger(GradientMod.MODID);
-  }
 
   @BeforeEach
   void setUp() {
@@ -491,20 +483,22 @@ class EnergyNetworkSegmentTest {
   }
 
   private void verifyPath(final List<BlockPos> path) {
-    Assertions.assertTrue(this.net.getNode(path.get(0)).te.hasCapability(STORAGE, WorldUtils.getBlockFacing(path.get(0), path.get(1))), "Start node was not storage");
-    Assertions.assertTrue(this.net.getNode(path.get(path.size() - 1)).te.hasCapability(STORAGE, WorldUtils.getBlockFacing(path.get(path.size() - 1), path.get(path.size() - 2))), "End node was not storage");
+    Assertions.assertFalse(path.isEmpty(), "Path was empty");
+
+    Assertions.assertTrue(this.net.getNode(path.get(0)).te.getCapability(STORAGE, WorldUtils.getBlockFacing(path.get(0), path.get(1))).isPresent(), "Start node was not storage");
+    Assertions.assertTrue(this.net.getNode(path.get(path.size() - 1)).te.getCapability(STORAGE, WorldUtils.getBlockFacing(path.get(path.size() - 1), path.get(path.size() - 2))).isPresent(), "End node was not storage");
 
     for(int i = 0; i < path.size() - 1; i++) {
       Assertions.assertNotNull(WorldUtils.areBlocksAdjacent(path.get(i), path.get(i + 1)), "Positions were not adjacent");
     }
 
     for(int i = 1; i < path.size() - 1; i++) {
-      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, WorldUtils.getBlockFacing(path.get(i), path.get(i + 1))), "Intermediate node was not transfer");
-      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, WorldUtils.getBlockFacing(path.get(i), path.get(i - 1))), "Intermediate node was not transfer");
+      Assertions.assertTrue(this.net.getNode(path.get(i)).te.getCapability(TRANSFER, WorldUtils.getBlockFacing(path.get(i), path.get(i + 1))).isPresent(), "Intermediate node was not transfer");
+      Assertions.assertTrue(this.net.getNode(path.get(i)).te.getCapability(TRANSFER, WorldUtils.getBlockFacing(path.get(i), path.get(i - 1))).isPresent(), "Intermediate node was not transfer");
     }
   }
 
-  static <T> Capability<T> newCap(final String name) throws RuntimeException {
+  static <T> Capability<T> newCap(final String name) {
     try {
       final Constructor<Capability> constructor = Capability.class.getDeclaredConstructor(String.class, Capability.IStorage.class, Callable.class);
       constructor.setAccessible(true);

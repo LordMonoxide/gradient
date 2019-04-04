@@ -1,18 +1,16 @@
 package lordmonoxide.gradient.energy;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.WorldType;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class World implements IBlockAccess {
+public class World implements IBlockReader {
   private final Map<BlockPos, TileEntity> tes = new HashMap<>();
 
   public TileEntity addTileEntity(final BlockPos pos, final TileEntity te) {
@@ -32,37 +30,12 @@ public class World implements IBlockAccess {
   }
 
   @Override
-  public int getCombinedLight(final BlockPos pos, final int lightValue) {
-    return 0;
-  }
-
-  @Override
   public IBlockState getBlockState(final BlockPos pos) {
     return null;
   }
 
   @Override
-  public boolean isAirBlock(final BlockPos pos) {
-    return false;
-  }
-
-  @Override
-  public Biome getBiome(final BlockPos pos) {
+  public IFluidState getFluidState(final BlockPos blockPos) {
     return null;
-  }
-
-  @Override
-  public int getStrongPower(final BlockPos pos, final EnumFacing direction) {
-    return 0;
-  }
-
-  @Override
-  public WorldType getWorldType() {
-    return null;
-  }
-
-  @Override
-  public boolean isSideSolid(final BlockPos pos, final EnumFacing side, final boolean _default) {
-    return false;
   }
 }

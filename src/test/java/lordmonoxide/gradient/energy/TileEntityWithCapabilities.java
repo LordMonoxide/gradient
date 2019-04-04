@@ -3,6 +3,7 @@ package lordmonoxide.gradient.energy;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -45,7 +46,9 @@ public class TileEntityWithCapabilities extends TileEntity {
   private final Map<EnumFacing, Map<Capability, Object>> caps = new EnumMap<>(EnumFacing.class);
 
   public TileEntityWithCapabilities() {
-    for(final EnumFacing side : EnumFacing.VALUES) {
+    super(null);
+
+    for(final EnumFacing side : EnumFacing.values()) {
       this.caps.put(side, new HashMap<>());
     }
   }
@@ -59,17 +62,11 @@ public class TileEntityWithCapabilities extends TileEntity {
   }
 
   public <T> TileEntityWithCapabilities addCapability(final Capability<T> capability, final T obj) {
-    return this.addCapability(capability, obj, EnumFacing.VALUES);
+    return this.addCapability(capability, obj, EnumFacing.values());
   }
 
   @Override
-  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
-    return this.caps.get(facing).containsKey(capability);
-  }
-
-  @Nullable
-  @Override
-  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
-    return this.caps.get(facing).containsKey(capability) ? (T)this.caps.get(facing).get(capability) : super.getCapability(capability, facing);
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+    return this.caps.get(facing).containsKey(capability) ? LazyOptional.of(() -> (T)this.caps.get(facing).get(capability)) : super.getCapability(capability, facing);
   }
 }

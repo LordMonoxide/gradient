@@ -22,9 +22,9 @@ public class BlockWoodenAxle extends BlockRotatedPillar {
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
-  private static final VoxelShape SHAPE_X = Block.makeCuboidShape(0.0d, 5.0d / 16.0d, 5.0d / 16.0d, 1.0d, 11.0d / 16.0d, 11.0d / 16.0d);
-  private static final VoxelShape SHAPE_Y = Block.makeCuboidShape(5.0d / 16.0d, 0.0d, 5.0d / 16.0d, 11.0d / 16.0d, 1.0d, 11.0d / 16.0d);
-  private static final VoxelShape SHAPE_Z = Block.makeCuboidShape(5.0d / 16.0d, 5.0d / 16.0d, 0.0d, 11.0d / 16.0d, 11.0d / 16.0d, 1.0d);
+  private static final VoxelShape SHAPE_X = Block.makeCuboidShape(0.0d, 5.0d, 5.0d, 16.0d, 11.0d, 11.0d);
+  private static final VoxelShape SHAPE_Y = Block.makeCuboidShape(5.0d, 0.0d, 5.0d, 11.0d, 16.0d, 11.0d);
+  private static final VoxelShape SHAPE_Z = Block.makeCuboidShape(5.0d, 5.0d, 0.0d, 11.0d, 11.0d, 16.0d);
 
   public BlockWoodenAxle() {
     super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));

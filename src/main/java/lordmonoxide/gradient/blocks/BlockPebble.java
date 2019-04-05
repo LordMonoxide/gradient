@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class BlockPebble extends GradientBlock {
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(0.25d, 0.0d, 0.25d, 0.75d, 0.25d, 0.75d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(4.0d, 0.0d, 4.0d, 12.0d, 4.0d, 12.0d);
 
   @Nullable
   private final GradientMetals.Metal metal;

@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockClayCrucibleHardened extends HeatSinkerBlock {
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d, 0.0d, 1.0d, 15.0d, 12.0d, 15.0d);
 
   public BlockClayCrucibleHardened() {
     super("clay_crucible.hardened", Properties.create(GradientBlocks.MATERIAL_CLAY_MACHINE).hardnessAndResistance(1.0f, 5.0f));

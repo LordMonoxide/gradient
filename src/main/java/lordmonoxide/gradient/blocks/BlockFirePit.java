@@ -45,7 +45,7 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class BlockFirePit extends HeatSinkerBlock {
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0d, 0.0d, 0.0d, 1.0d, 0.25d, 1.0d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0d, 0.0d, 0.0d, 16.0d, 4.0d, 16.0d);
 
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
   public static final BooleanProperty HAS_FURNACE = BooleanProperty.create("has_furnace");

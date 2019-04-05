@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockClayBucket extends GradientBlock {
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(3.0d / 16.0d, 0.0d, 3.0d / 16.0d, 1.0d - 3.0d / 16.0d, 0.5d, 1.0d - 3.0d / 16.0d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(3.0d, 0.0d, 3.0d, 13.0d, 8.0d, 13.0d);
 
   public static BlockClayBucket hardened() {
     return new BlockClayBucket(true);

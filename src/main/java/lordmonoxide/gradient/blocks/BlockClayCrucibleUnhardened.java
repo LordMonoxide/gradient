@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockClayCrucibleUnhardened extends GradientBlock {
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d, 0.0d, 1.0d, 15.0d, 12.0d, 15.0d);
 
   public BlockClayCrucibleUnhardened() {
     super("clay_crucible.unhardened", Properties.create(Material.CLAY).hardnessAndResistance(1.0f, 2.0f));

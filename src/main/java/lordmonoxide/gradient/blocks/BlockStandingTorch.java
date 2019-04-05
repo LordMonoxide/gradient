@@ -10,7 +10,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 
 public class BlockStandingTorch extends GradientBlock {
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(6.0d / 16.0d, 0.0d, 6.0d / 16.0d, 10.0d / 16.0d, 1.0d, 10.0d / 16.0d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(6.0d, 0.0d, 6.0d, 10.0d, 16.0d, 10.0d);
 
   public BlockStandingTorch() {
     super("standing_torch", Properties.create(Material.WOOD).hardnessAndResistance(1.0f));

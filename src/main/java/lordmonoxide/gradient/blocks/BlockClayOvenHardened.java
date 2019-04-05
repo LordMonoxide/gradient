@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockClayOvenHardened extends HeatSinkerBlock {
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(2.0d / 16.0d, 0.0d, 2.0d / 16.0d, 14.0d / 16.0d, 6.0d / 16.0d, 14.0d / 16.0d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(2.0d, 0.0d, 2.0d, 14.0d, 6.0d, 14.0d);
 
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 

@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockClayCast extends GradientBlock {
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0d, 0.0d, 0.0d, 16.0d, 2.0d, 16.0d);
 
   public static BlockClayCast hardened(final GradientCasts.Cast cast) {
     return new BlockClayCast(cast, true);

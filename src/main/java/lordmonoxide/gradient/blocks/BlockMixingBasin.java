@@ -37,7 +37,7 @@ public class BlockMixingBasin extends GradientBlock {
 
   private static final Fluid WATER = null; //TODO: FluidRegistry.getFluid("water");
 
-  private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 15.0d / 16.0d, 2.0d / 16.0d, 15.0d / 16.0d);
+  private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d, 0.0d, 1.0d, 15.0d, 2.0d, 15.0d);
 
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 

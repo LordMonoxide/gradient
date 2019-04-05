@@ -26,12 +26,12 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //TODO: check if drying rack can be placed on the top of blocks
 
 public class BlockDryingRack extends GradientBlock {
-  private static final VoxelShape SHAPE_NORTH  = Block.makeCuboidShape( 0.0d,         13.0d / 16.0d,  0.0d,         1.0d,         1.0d, 2.0d / 16.0d);
-  private static final VoxelShape SHAPE_SOUTH  = Block.makeCuboidShape( 0.0d,         13.0d / 16.0d, 14.0d / 16.0d, 1.0d,         1.0d, 1.0d);
-  private static final VoxelShape SHAPE_EAST   = Block.makeCuboidShape(14.0d / 16.0d, 13.0d / 16.0d,  0.0d,         1.0d,         1.0d, 1.0d);
-  private static final VoxelShape SHAPE_WEST   = Block.makeCuboidShape( 0.0d,         13.0d / 16.0d,  0.0d,         2.0d / 16.0d, 1.0d, 1.0d);
-  private static final VoxelShape SHAPE_DOWN_Z = Block.makeCuboidShape( 0.0d,         13.0d / 16.0d,  7.0d / 16.0d, 1.0d,         1.0d, 9.0d / 16.0d);
-  private static final VoxelShape SHAPE_DOWN_X = Block.makeCuboidShape( 7.0d / 16.0d, 13.0d / 16.0d,  0.0d        , 9.0d / 16.0d, 1.0d, 1.0d);
+  private static final VoxelShape SHAPE_NORTH  = Block.makeCuboidShape( 0.0d, 13.0d,  0.0d, 16.0d, 16.0d,  2.0d);
+  private static final VoxelShape SHAPE_SOUTH  = Block.makeCuboidShape( 0.0d, 13.0d, 14.0d, 16.0d, 16.0d, 16.0d);
+  private static final VoxelShape SHAPE_EAST   = Block.makeCuboidShape(14.0d, 13.0d,  0.0d, 16.0d, 16.0d, 16.0d);
+  private static final VoxelShape SHAPE_WEST   = Block.makeCuboidShape( 0.0d, 13.0d,  0.0d,  2.0d, 16.0d, 16.0d);
+  private static final VoxelShape SHAPE_DOWN_Z = Block.makeCuboidShape( 0.0d, 13.0d,  7.0d, 16.0d, 16.0d,  9.0d);
+  private static final VoxelShape SHAPE_DOWN_X = Block.makeCuboidShape( 7.0d, 13.0d,  0.0d,  9.0d, 16.0d, 16.0d);
 
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
   public static final BooleanProperty ROOF = BooleanProperty.create("roof");

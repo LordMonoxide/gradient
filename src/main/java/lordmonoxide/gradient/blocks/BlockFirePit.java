@@ -81,6 +81,12 @@ public class BlockFirePit extends HeatSinkerBlock {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
+  @Override
+  public boolean isSolid(final IBlockState state) {
+    return false;
+  }
+
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")

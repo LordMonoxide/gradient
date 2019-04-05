@@ -69,6 +69,12 @@ public class BlockClayFurnace extends GradientBlock {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
+  @Override
+  public boolean isSolid(final IBlockState state) {
+    return false;
+  }
+
   @Override
   public IBlockState getStateForPlacement(final BlockItemUseContext context) {
     return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());

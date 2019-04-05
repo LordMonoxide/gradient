@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:shaped",
   "age": 2,
   "result": {
     "item": "gradient:clay_oven.unhardened"

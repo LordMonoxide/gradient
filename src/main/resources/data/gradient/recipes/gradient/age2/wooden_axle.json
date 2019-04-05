@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:shaped",
   "age": 2,
   "result": {
     "item": "gradient:wooden_axle"
@@ -11,8 +11,7 @@
   ],
   "key": {
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "tag": "forge:rods/wooden"
     },
     "C": {
       "item": "gradient:leather_cord"

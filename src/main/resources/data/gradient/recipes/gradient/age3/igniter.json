@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shapeless",
+  "type": "gradient:shapeless",
   "age": 3,
   "result": {
     "item": "gradient:igniter"

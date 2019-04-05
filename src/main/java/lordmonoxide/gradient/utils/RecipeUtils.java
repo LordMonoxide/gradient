@@ -24,8 +24,11 @@ public final class RecipeUtils {
   static {
     try {
       eventHandlerField = InventoryCrafting.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_70465_c"));
+      eventHandlerField.setAccessible(true);
       containerPlayerPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_82862_h"));
+      containerPlayerPlayerField.setAccessible(true);
       slotCraftingPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_75238_b"));
+      slotCraftingPlayerField.setAccessible(true);
     } catch(final NoSuchFieldException e) {
       throw new RuntimeException(e);
     }

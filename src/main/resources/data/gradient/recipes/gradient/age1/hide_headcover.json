@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:shaped",
   "age": 1,
   "result": {
     "item": "gradient:hide_headcover"
@@ -11,16 +11,13 @@
   ],
   "key": {
     "H": {
-      "type": "forge:ore_dict",
-      "ore": "hide"
+      "tag": "gradient:hides"
     },
     "A": {
-      "type": "forge:ore_dict",
-      "ore": "awl"
+      "tag": "gradient:tools/awl"
     },
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "string"
+      "tag": "gradient:strings"
     }
   }
 }

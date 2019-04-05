@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:shaped",
   "age": 1,
   "result": {
     "item": "gradient:mixing_basin"
@@ -11,12 +11,10 @@
   ],
   "key": {
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "tag": "forge:rods/wooden"
     },
     "W": {
-      "type": "forge:ore_dict",
-      "ore": "logWood"
+      "tag": "minecraft:logs"
     },
     "C": {
       "item": "minecraft:clay_ball"

@@ -5,6 +5,6 @@
   "burnTemp": 350,
   "heatPerSec": 2.16,
   "ingredient": {
-    "tag": "gradient:sticks"
+    "tag": "forge:rods/wooden"
   }
 }

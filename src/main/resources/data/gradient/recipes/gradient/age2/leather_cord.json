@@ -1,12 +1,13 @@
 {
-  "type": "gradient:age_gated_shapeless",
+  "type": "gradient:shapeless",
   "age": 2,
   "result": {
     "item": "gradient:leather_cord",
     "count": 3
   },
   "ingredients": [{
-    "item": "minecraft:leather"
+    "type": "forge:ore_dict",
+    "ore": "leather"
   }, {
     "type": "gradient:ore",
     "ore": "toolKnife"

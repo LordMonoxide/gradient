@@ -5,6 +5,6 @@
   "burnTemp": 125,
   "heatPerSec": 18.0,
   "ingredient": {
-    "tag": "gradient:fibres"
+    "item": "gradient:fibre"
   }
 }

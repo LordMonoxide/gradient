@@ -1,17 +1,14 @@
 {
-  "type": "gradient:age_gated_shapeless",
+  "type": "gradient:shapeless",
   "age": 1,
   "result": {
     "item": "gradient:fire_starter"
   },
   "ingredients": [{
-    "type": "forge:ore_dict",
-    "ore": "string"
+    "tag": "gradient:strings"
   }, {
-    "type": "forge:ore_dict",
-    "ore": "stickWood"
+    "tag": "forge:rods/wooden"
   }, {
-    "type": "forge:ore_dict",
-    "ore": "stickWood"
+    "tag": "forge:rods/wooden"
   }]
 }

@@ -1,9 +1,8 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:shaped",
   "age": 2,
   "result": {
-    "item": "gradient:clay_bucket.unhardened",
-    "data": 0
+    "item": "gradient:clay_bucket.unhardened"
   },
   "pattern": [
     "C C",

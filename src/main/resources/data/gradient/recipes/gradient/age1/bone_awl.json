@@ -1,14 +1,12 @@
 {
-  "type": "gradient:age_gated_shapeless",
+  "type": "gradient:shapeless",
   "age": 1,
   "result": {
     "item": "gradient:bone_awl"
   },
   "ingredients": [{
-    "type": "forge:ore_dict",
-    "ore": "bone"
+    "tag": "gradient:bones"
   }, {
-    "type": "gradient:ore",
-    "ore": "toolHammer"
+    "tag": "gradient:tools/hammer"
   }]
 }

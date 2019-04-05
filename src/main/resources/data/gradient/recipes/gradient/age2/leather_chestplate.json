@@ -15,12 +15,10 @@
       "ore": "leather"
     },
     "A": {
-      "type": "forge:ore_dict",
-      "ore": "awl"
+      "tag": "gradient:tools/awl"
     },
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "string"
+      "tag": "gradient:strings"
     }
   }
 }

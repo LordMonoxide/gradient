@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.recipes;
 
+import com.google.gson.JsonObject;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.inventory.IInventory;
@@ -8,7 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -20,11 +24,11 @@ import java.util.Random;
 public class AgeGatedShapedToolRecipe implements IShapedRecipe {
   private static final Random rand = new Random();
 
-  private final IShapedRecipe recipe;
+  private final ShapedRecipe recipe;
   public final Age age;
 
-  public AgeGatedShapedToolRecipe(final ResourceLocation id, final String group, final Age age, final int width, final int height, final NonNullList<Ingredient> ingredients, final ItemStack result) {
-    this.recipe = new ShapedRecipe(id, group, width, height, ingredients, result);
+  public AgeGatedShapedToolRecipe(final ShapedRecipe recipe, final Age age) {
+    this.recipe = recipe;
     this.age = age;
   }
 
@@ -40,8 +44,7 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe {
 
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    //TODO
-    throw new RuntimeException("Not yet implemented");
+    return GradientRecipeSerializers.SHAPED;
   }
 
   @Override
@@ -100,5 +103,34 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe {
   @Override
   public int getRecipeHeight() {
     return this.recipe.getRecipeHeight();
+  }
+
+  public static final class Serializer implements IRecipeSerializer<AgeGatedShapedToolRecipe> {
+    @Override
+    public AgeGatedShapedToolRecipe read(final ResourceLocation recipeId, final JsonObject json) {
+      final ShapedRecipe recipe = RecipeSerializers.CRAFTING_SHAPED.read(recipeId, json);
+      final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
+
+      return new AgeGatedShapedToolRecipe(recipe, age);
+    }
+
+    @Override
+    public AgeGatedShapedToolRecipe read(final ResourceLocation recipeId, final PacketBuffer buffer) {
+      final ShapedRecipe recipe = RecipeSerializers.CRAFTING_SHAPED.read(recipeId, buffer);
+      final Age age = Age.get(buffer.readVarInt());
+
+      return new AgeGatedShapedToolRecipe(recipe, age);
+    }
+
+    @Override
+    public void write(final PacketBuffer buffer, final AgeGatedShapedToolRecipe recipe) {
+      RecipeSerializers.CRAFTING_SHAPED.write(buffer, recipe.recipe);
+      buffer.writeVarInt(recipe.age.value());
+    }
+
+    @Override
+    public ResourceLocation getName() {
+      return GradientRecipeTypes.SHAPED.getId();
+    }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shapeless",
+  "type": "gradient:shapeless",
   "age": 2,
   "result": {
     "item": "gradient:hardened_stick",
@@ -8,7 +8,6 @@
   "ingredients": [{
     "item": "gradient:hardened_planks"
   }, {
-    "type": "gradient:ore",
-    "ore": "toolAxe"
+    "tag": "gradient:tools/axe"
   }]
 }

@@ -1,20 +1,16 @@
 {
-  "type": "gradient:age_gated_shapeless",
+  "type": "gradient:shapeless",
   "age": 1,
   "result": {
     "item": "gradient:fibre_torch_unlit"
   },
   "ingredients": [{
-    "type": "forge:ore_dict",
-    "ore": "string"
+    "tag": "gradient:strings"
   }, {
-    "type": "forge:ore_dict",
-    "ore": "string"
+    "tag": "gradient:strings"
   }, {
-    "type": "forge:ore_dict",
-    "ore": "string"
+    "tag": "gradient:strings"
   }, {
-    "type": "forge:ore_dict",
-    "ore": "stickWood"
+    "tag": "forge:rods/wooden"
   }]
 }

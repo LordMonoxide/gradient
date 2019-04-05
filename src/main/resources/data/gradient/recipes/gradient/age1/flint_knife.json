@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:shaped",
   "age": 1,
   "result": {
     "item": "gradient:flint_knife"
@@ -14,12 +14,10 @@
       "item": "minecraft:flint"
     },
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "string"
+      "tag": "gradient:strings"
     },
     "W": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "tag": "forge:rods/wooden"
     }
   }
 }

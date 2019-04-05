@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:shaped",
   "age": 2,
   "result": {
     "item": "gradient:drying_rack"
@@ -10,12 +10,10 @@
   ],
   "key": {
     "P": {
-      "type": "forge:ore_dict",
-      "ore": "plankWood"
+      "tag": "minecraft:planks"
     },
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "string"
+      "tag": "gradient:strings"
     }
   }
 }

@@ -24,10 +24,10 @@ public final class GradientTileEntities {
   @ObjectHolder("gradient:drying_rack")
   public static TileEntityType<?> DRYING_RACK;
 
-  @ObjectHolder("gradient:clay_crucible")
+  @ObjectHolder("gradient:clay_crucible.hardened")
   public static TileEntityType<?> CLAY_CRUCIBLE;
 
-  @ObjectHolder("gradient:clay_oven")
+  @ObjectHolder("gradient:clay_oven.hardened")
   public static TileEntityType<?> CLAY_OVEN;
 
   @ObjectHolder("gradient:hand_crank")

@@ -18,6 +18,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.crafting.RecipeType;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.Random;
@@ -98,6 +99,11 @@ public class AgeGatedShapelessToolRecipe implements IRecipe {
   @Override
   public IRecipeSerializer<?> getSerializer() {
     return GradientRecipeSerializers.SHAPELESS;
+  }
+
+  @Override
+  public RecipeType<? extends IRecipe> getType() {
+    return GradientRecipeTypes.SHAPELESS;
   }
 
   public static final class Serializer implements IRecipeSerializer<AgeGatedShapelessToolRecipe> {

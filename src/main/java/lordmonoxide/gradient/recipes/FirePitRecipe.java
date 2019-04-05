@@ -16,6 +16,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.RecipeType;
 import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.items.IItemHandler;
 
@@ -65,6 +66,11 @@ public class FirePitRecipe implements IRecipe {
   @Override
   public IRecipeSerializer<?> getSerializer() {
     return GradientRecipeSerializers.FIREPIT;
+  }
+
+  @Override
+  public RecipeType<? extends IRecipe> getType() {
+    return GradientRecipeTypes.FIREPIT;
   }
 
   @Override

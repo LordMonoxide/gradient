@@ -144,13 +144,15 @@ public class TileFirePit extends HeatProducer {
       if(!this.hasFuel(slot)) {
         final FuelRecipe recipe = RecipeUtils.findRecipe(GradientRecipeTypes.FUEL, r -> r.matches(stack));
 
-        if(recipe != null) {
-          final ItemStack input = stack.split(1);
-          this.setFuelSlot(slot, input);
-          this.fuels[slot] = new Fuel(recipe, age);
-          this.sync();
-          return stack;
+        if(recipe == null) {
+          break;
         }
+
+        final ItemStack input = stack.split(1);
+        this.setFuelSlot(slot, input);
+        this.fuels[slot] = new Fuel(recipe, age);
+        this.sync();
+        return stack;
       }
     }
 

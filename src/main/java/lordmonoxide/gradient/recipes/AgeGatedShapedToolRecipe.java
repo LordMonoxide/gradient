@@ -7,6 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeSerializers;
@@ -18,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraftforge.common.crafting.RecipeType;
 
 import java.util.Random;
 
@@ -45,6 +47,11 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe {
   @Override
   public IRecipeSerializer<?> getSerializer() {
     return GradientRecipeSerializers.SHAPED;
+  }
+
+  @Override
+  public RecipeType<? extends IRecipe> getType() {
+    return GradientRecipeTypes.SHAPED;
   }
 
   @Override

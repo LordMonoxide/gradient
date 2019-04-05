@@ -1,5 +1,8 @@
 package lordmonoxide.gradient.recipes;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -7,9 +10,12 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.items.IItemHandler;
 
@@ -58,8 +64,7 @@ public class FirePitRecipe implements IRecipe {
 
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    //TODO
-    throw new RuntimeException("Not yet implemented");
+    return GradientRecipeSerializers.FIREPIT;
   }
 
   @Override
@@ -120,5 +125,67 @@ public class FirePitRecipe implements IRecipe {
   @Override
   public NonNullList<Ingredient> getIngredients() {
     return this.input;
+  }
+
+  public static final class Serializer implements IRecipeSerializer<FirePitRecipe> {
+    @Override
+    public FirePitRecipe read(final ResourceLocation recipeId, final JsonObject json) {
+      final String group = JsonUtils.getString(json, "group", "");
+      final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
+      final int ticks = JsonUtils.getInt(json, "ticks");
+      final float temperature = JsonUtils.getFloat(json, "temperature");
+
+      final NonNullList<Ingredient> ingredients = NonNullList.create();
+      for(final JsonElement element : JsonUtils.getJsonArray(json, "ingredients")) {
+        ingredients.add(CraftingHelper.getIngredient(element));
+      }
+
+      if(ingredients.isEmpty()) {
+        throw new JsonParseException("No ingredients for firepit recipe");
+      }
+
+      final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), true);
+
+      return new FirePitRecipe(recipeId, group, age, ticks, temperature, output, ingredients);
+    }
+
+    @Override
+    public FirePitRecipe read(final ResourceLocation recipeId, final PacketBuffer buffer) {
+      final String group = buffer.readString(32767);
+      final Age age = Age.get(buffer.readVarInt());
+      final int ticks = buffer.readVarInt();
+      final float temperature = buffer.readFloat();
+
+      final int inputSize = buffer.readVarInt();
+      final NonNullList<Ingredient> inputs = NonNullList.withSize(inputSize, Ingredient.EMPTY);
+
+      for(int input = 0; input < inputs.size(); ++input) {
+        inputs.set(input, Ingredient.read(buffer));
+      }
+
+      final ItemStack output = buffer.readItemStack();
+
+      return new FirePitRecipe(recipeId, group, age, ticks, temperature, output, inputs);
+    }
+
+    @Override
+    public void write(final PacketBuffer buffer, final FirePitRecipe recipe) {
+      buffer.writeString(recipe.group);
+      buffer.writeVarInt(recipe.age.value());
+      buffer.writeVarInt(recipe.ticks);
+      buffer.writeFloat(recipe.temperature);
+      buffer.writeVarInt(recipe.input.size());
+
+      for(final Ingredient ingredient : recipe.input) {
+        ingredient.write(buffer);
+      }
+
+      buffer.writeItemStack(recipe.output);
+    }
+
+    @Override
+    public ResourceLocation getName() {
+      return GradientRecipeTypes.FIREPIT.getId();
+    }
   }
 }

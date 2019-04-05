@@ -9,6 +9,7 @@ import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
+import lordmonoxide.gradient.recipes.GradientRecipeSerializers;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.item.crafting.RecipeManager;
@@ -61,6 +62,8 @@ public class GradientMod {
     ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GradientGuiHandler::openGui);
 
     MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+
+    logger.info("Drying serializer {}", GradientRecipeSerializers.DRYING);
   }
 
   private void init(final FMLCommonSetupEvent event) {
@@ -97,7 +100,7 @@ public class GradientMod {
   private void setupClient(final FMLClientSetupEvent event) {
     logger.info("------------------- SETUP CLIENT -------------------");
 
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onWorldLoad);
+    MinecraftForge.EVENT_BUS.addListener(this::onWorldLoad);
 
     //TODO RenderingRegistry.registerEntityRenderingHandler(EntityPebble.class, manager -> new RenderSnowball<>(manager, ItemBlock.getItemFromBlock(GradientBlocks.PEBBLE), Minecraft.getMinecraft().getRenderItem()));
   }

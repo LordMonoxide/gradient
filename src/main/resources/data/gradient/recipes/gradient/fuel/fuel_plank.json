@@ -1,0 +1,10 @@
+{
+  "type": "gradient:fuel",
+  "duration": 600,
+  "ignitionTemp": 230,
+  "burnTemp": 750,
+  "heatPerSec": 1.04,
+  "ingredient": {
+    "tag": "minecraft:planks"
+  }
+}

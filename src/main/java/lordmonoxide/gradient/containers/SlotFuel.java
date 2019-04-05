@@ -1,6 +1,6 @@
 package lordmonoxide.gradient.containers;
 
-import lordmonoxide.gradient.recipes.FuelRecipe;
+import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -13,7 +13,7 @@ public class SlotFuel extends SlotItemHandler {
 
   @Override
   public boolean isItemValid(final ItemStack stack) {
-    return RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack)) != null && super.isItemValid(stack);
+    return RecipeUtils.findRecipe(GradientRecipeTypes.FUEL, r -> r.matches(stack)) != null && super.isItemValid(stack);
   }
 
   @Override

@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.recipes;
 
+import com.google.gson.JsonObject;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -9,9 +10,12 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.RecipeMatcher;
 
 import java.util.ArrayList;
@@ -51,8 +55,7 @@ public class HardeningRecipe implements IRecipe {
 
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    //TODO
-    throw new RuntimeException("Not yet implemented");
+    return GradientRecipeSerializers.HARDENING;
   }
 
   @Override
@@ -104,5 +107,45 @@ public class HardeningRecipe implements IRecipe {
   @Override
   public NonNullList<Ingredient> getIngredients() {
     return this.input;
+  }
+
+  public static final class Serializer implements IRecipeSerializer<HardeningRecipe> {
+    @Override
+    public HardeningRecipe read(final ResourceLocation recipeId, final JsonObject json) {
+      final String group = JsonUtils.getString(json, "group", "");
+      final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
+      final int ticks = JsonUtils.getInt(json, "ticks");
+
+      final Ingredient ingredient = CraftingHelper.getIngredient(JsonUtils.getJsonObject(json, "ingredient"));
+      final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), true);
+
+      return new HardeningRecipe(recipeId, group, age, ticks, output, ingredient);
+    }
+
+    @Override
+    public HardeningRecipe read(final ResourceLocation recipeId, final PacketBuffer buffer) {
+      final String group = buffer.readString(32767);
+      final Age age = Age.get(buffer.readVarInt());
+      final int ticks = buffer.readVarInt();
+
+      final Ingredient ingredient = Ingredient.read(buffer);
+      final ItemStack output = buffer.readItemStack();
+
+      return new HardeningRecipe(recipeId, group, age, ticks, output, ingredient);
+    }
+
+    @Override
+    public void write(final PacketBuffer buffer, final HardeningRecipe recipe) {
+      buffer.writeString(recipe.group);
+      buffer.writeVarInt(recipe.age.value());
+      buffer.writeVarInt(recipe.ticks);
+      recipe.input.get(0).write(buffer);
+      buffer.writeItemStack(recipe.output);
+    }
+
+    @Override
+    public ResourceLocation getName() {
+      return GradientRecipeTypes.HARDENING.getId();
+    }
   }
 }

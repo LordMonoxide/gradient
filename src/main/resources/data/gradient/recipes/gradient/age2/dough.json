@@ -1,0 +1,20 @@
+{
+  "type": "gradient:mixing",
+  "age": 2,
+  "passes": 3,
+  "ticks": 60,
+  "result": {
+    "item": "gradient:dough"
+  },
+  "ingredients": [{
+    "tag": "gradient:ingredients/flour"
+  }, {
+    "tag": "gradient:ingredients/flour"
+  }, {
+    "tag": "gradient:ingredients/flour"
+  }, {
+    "tag": "gradient:ingredients/salt"
+  }, {
+    "tag": "gradient:ingredients/sugar"
+  }]
+}

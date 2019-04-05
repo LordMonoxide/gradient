@@ -6,6 +6,7 @@ import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
 import lordmonoxide.gradient.recipes.FuelRecipe;
+import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import lordmonoxide.gradient.recipes.HardeningRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
@@ -141,7 +142,7 @@ public class TileFirePit extends HeatProducer {
 
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
       if(!this.hasFuel(slot)) {
-        final FuelRecipe recipe = RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack));
+        final FuelRecipe recipe = RecipeUtils.findRecipe(GradientRecipeTypes.FUEL, r -> r.matches(stack));
 
         if(recipe != null) {
           final ItemStack input = stack.split(1);
@@ -202,7 +203,7 @@ public class TileFirePit extends HeatProducer {
 
     final IBlockState state = this.world.getBlockState(pos);
 
-    final HardeningRecipe recipe = RecipeUtils.findRecipe(HardeningRecipe.class, r -> r.matches(state, age));
+    final HardeningRecipe recipe = RecipeUtils.findRecipe(GradientRecipeTypes.HARDENING, r -> r.matches(state, age));
 
     if(recipe == null) {
       this.hardenables.remove(pos);
@@ -406,7 +407,7 @@ public class TileFirePit extends HeatProducer {
   }
 
   private void updateRecipe() {
-    this.recipe = RecipeUtils.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(this.inventory, this.age, FIRST_INPUT_SLOT, FIRST_INPUT_SLOT));
+    this.recipe = RecipeUtils.findRecipe(GradientRecipeTypes.FIREPIT, recipe -> recipe.matches(this.inventory, this.age, FIRST_INPUT_SLOT, FIRST_INPUT_SLOT));
   }
 
   @Override

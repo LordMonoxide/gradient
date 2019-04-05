@@ -398,12 +398,6 @@ public final class GradientItems {
   public static void initOreDict(final RegistryEvent.Register<Item> event) {
     GradientMod.logger.info("Registering ore dict entries");
 
-    OreDictionary.registerOre("coal", Items.COAL);
-
-    OreDictionary.registerOre("fibre",  FIBRE);
-    OreDictionary.registerOre("string", TWINE);
-    OreDictionary.registerOre("string", LEATHER_CORD);
-
     OreDictionary.registerOre("barkWood", BARK_OAK);
     OreDictionary.registerOre("barkWood", BARK_SPRUCE);
     OreDictionary.registerOre("barkWood", BARK_BIRCH);
@@ -475,9 +469,6 @@ public final class GradientItems {
     OreDictionary.registerOre("dustFlint", DUST_FLINT);
 
     // Crops/food
-    OreDictionary.registerOre("ingredientFlour", FLOUR);
-    OreDictionary.registerOre("ingredientSalt", SALT);
-    OreDictionary.registerOre("ingredientSugar", Items.SUGAR);
 
     final Item naturaMaterials = Item.getByNameOrId("natura:materials");
     if(naturaMaterials != null) {
@@ -505,7 +496,6 @@ public final class GradientItems {
 
     OreDictionary.registerOre("logWood", GradientBlocks.HARDENED_LOG);
     OreDictionary.registerOre("plankWood", GradientBlocks.HARDENED_PLANKS);
-    OreDictionary.registerOre("stickWood", HARDENED_STICK);
 
     OreDictionary.registerOre("axleWood", GradientBlocks.WOODEN_AXLE);
     OreDictionary.registerOre("gearWood", WOODEN_GEAR);

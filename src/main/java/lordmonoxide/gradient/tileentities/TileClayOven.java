@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
+import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.state.IBlockState;
@@ -88,7 +89,7 @@ public class TileClayOven extends HeatSinker {
   }
 
   private void updateRecipe() {
-    this.recipe = RecipeUtils.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(this.inventory, this.age, INPUT_SLOT, INPUT_SLOT));
+    this.recipe = RecipeUtils.findRecipe(GradientRecipeTypes.FIREPIT, recipe -> recipe.matches(this.inventory, this.age, INPUT_SLOT, INPUT_SLOT));
   }
 
   @Override

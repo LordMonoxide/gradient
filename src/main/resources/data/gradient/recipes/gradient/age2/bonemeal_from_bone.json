@@ -1,0 +1,12 @@
+{
+  "type": "gradient:grinding",
+  "age": 2,
+  "passes": 5,
+  "ticks": 10,
+  "result": {
+    "item": "minecraft:bone_meal"
+  },
+  "ingredients": [{
+    "item": "minecraft:bone"
+  }]
+}

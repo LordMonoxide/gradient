@@ -1,0 +1,10 @@
+{
+  "type": "gradient:fuel",
+  "duration": 30,
+  "ignitionTemp": 100,
+  "burnTemp": 350,
+  "heatPerSec": 2.16,
+  "ingredient": {
+    "tag": "gradient:sticks"
+  }
+}

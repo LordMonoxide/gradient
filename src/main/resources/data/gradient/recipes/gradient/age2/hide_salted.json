@@ -1,0 +1,19 @@
+{
+  "type": "gradient:mixing",
+  "age": 2,
+  "passes": 3,
+  "ticks": 60,
+  "result": {
+    "item": "gradient:hide_salted",
+    "count": 3
+  },
+  "ingredients": [{
+    "item": "gradient:hide_raw"
+  }, {
+    "item": "gradient:hide_raw"
+  }, {
+    "item": "gradient:hide_raw"
+  }, {
+    "tag": "gradient:ingredients/salt"
+  }]
+}

@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.tileentities;
 
 import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
@@ -135,7 +136,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   }
 
   private void updateRecipe() {
-    this.recipe = RecipeUtils.findRecipe(GrindingRecipe.class, recipe -> recipe.matches(this.inventory, this.age, 0, 0));
+    this.recipe = RecipeUtils.findRecipe(GradientRecipeTypes.GRINDING, recipe -> recipe.matches(this.inventory, this.age, 0, 0));
   }
 
   @Override

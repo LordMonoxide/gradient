@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.tileentities;
 
 import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import lordmonoxide.gradient.recipes.MixingRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
@@ -201,7 +202,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   }
 
   private void updateRecipe() {
-    this.recipe = RecipeUtils.findRecipe(MixingRecipe.class, recipe -> recipe.matches(this.inventory, this.age, this.tank.getFluid(), 0, INPUT_SIZE - 1));
+    this.recipe = RecipeUtils.findRecipe(GradientRecipeTypes.MIXING, recipe -> recipe.matches(this.inventory, this.age, this.tank.getFluid(), 0, INPUT_SIZE - 1));
   }
 
   @Override

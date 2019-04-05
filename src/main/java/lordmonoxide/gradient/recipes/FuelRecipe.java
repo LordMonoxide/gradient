@@ -1,14 +1,18 @@
 package lordmonoxide.gradient.recipes;
 
+import com.google.gson.JsonObject;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.RecipeMatcher;
 
 import java.util.ArrayList;
@@ -50,8 +54,7 @@ public class FuelRecipe implements IRecipe {
 
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    //TODO
-    throw new RuntimeException("Not yet implemented");
+    return GradientRecipeSerializers.FUEL;
   }
 
   @Override
@@ -86,11 +89,53 @@ public class FuelRecipe implements IRecipe {
 
   @Override
   public ItemStack getRecipeOutput() {
-    return ItemStack.EMPTY;
+    //TODO: this is here temporarily to pass JEI's recipe validator
+    return this.input.get(0).getMatchingStacks()[0];
   }
 
   @Override
   public NonNullList<Ingredient> getIngredients() {
     return this.input;
+  }
+
+  public static final class Serializer implements IRecipeSerializer<FuelRecipe> {
+    @Override
+    public FuelRecipe read(final ResourceLocation recipeId, final JsonObject json) {
+      final String group = JsonUtils.getString(json, "group", "");
+      final int   duration = JsonUtils.getInt(json, "duration");
+      final float ignitionTemp = JsonUtils.getFloat(json, "ignitionTemp");
+      final float burnTemp = JsonUtils.getFloat(json, "burnTemp");
+      final float heatPerSec = JsonUtils.getFloat(json, "heatPerSec");
+      final Ingredient ingredient = CraftingHelper.getIngredient(JsonUtils.getJsonObject(json, "ingredient"));
+
+      return new FuelRecipe(recipeId, group, duration, ignitionTemp, burnTemp, heatPerSec, ingredient);
+    }
+
+    @Override
+    public FuelRecipe read(final ResourceLocation recipeId, final PacketBuffer buffer) {
+      final String group = buffer.readString(32767);
+      final int duration = buffer.readVarInt();
+      final float ignitionTemp = buffer.readFloat();
+      final float burnTemp = buffer.readFloat();
+      final float heatPerSec = buffer.readFloat();
+      final Ingredient ingredient = Ingredient.read(buffer);
+
+      return new FuelRecipe(recipeId, group, duration, ignitionTemp, burnTemp, heatPerSec, ingredient);
+    }
+
+    @Override
+    public void write(final PacketBuffer buffer, final FuelRecipe recipe) {
+      buffer.writeString(recipe.group);
+      buffer.writeVarInt(recipe.duration);
+      buffer.writeFloat(recipe.ignitionTemp);
+      buffer.writeFloat(recipe.burnTemp);
+      buffer.writeFloat(recipe.heatPerSec);
+      recipe.input.get(0).write(buffer);
+    }
+
+    @Override
+    public ResourceLocation getName() {
+      return GradientRecipeTypes.FUEL.getId();
+    }
   }
 }

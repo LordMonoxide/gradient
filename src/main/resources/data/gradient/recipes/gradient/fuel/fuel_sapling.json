@@ -1,0 +1,10 @@
+{
+  "type": "gradient:fuel",
+  "duration": 60,
+  "ignitionTemp": 150,
+  "burnTemp": 350,
+  "heatPerSec": 1.38,
+  "ingredient": {
+    "tag": "minecraft:saplings"
+  }
+}

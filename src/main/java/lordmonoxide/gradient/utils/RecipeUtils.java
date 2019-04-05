@@ -7,6 +7,7 @@ import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.crafting.RecipeType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nullable;
@@ -62,14 +63,10 @@ public final class RecipeUtils {
   }
 
   @Nullable
-  public static <T extends IRecipe> T findRecipe(final Class<T> recipeClass, final Predicate<T> match) {
-    for(final IRecipe recipe : GradientMod.getRecipeManager().getRecipes()) {
-      if(recipeClass.isInstance(recipe)) {
-        final T cast = recipeClass.cast(recipe);
-
-        if(match.test(cast)) {
-          return recipeClass.cast(recipe);
-        }
+  public static <T extends IRecipe> T findRecipe(final RecipeType<T> type, final Predicate<T> match) {
+    for(final T recipe : GradientMod.getRecipeManager().getRecipes(type)) {
+      if(match.test(recipe)) {
+        return recipe;
       }
     }
 

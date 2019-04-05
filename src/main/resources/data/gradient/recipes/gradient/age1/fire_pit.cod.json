@@ -1,0 +1,11 @@
+{
+  "type": "gradient:firepit",
+  "ticks": 2400,
+  "temperature": 200,
+  "result": {
+    "item": "minecraft:cooked_cod"
+  },
+  "ingredients": [{
+    "item": "minecraft:cod"
+  }]
+}

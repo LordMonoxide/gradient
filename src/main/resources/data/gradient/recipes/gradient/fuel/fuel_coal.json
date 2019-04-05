@@ -1,0 +1,10 @@
+{
+  "type": "gradient:fuel",
+  "duration": 1200,
+  "ignitionTemp": 700,
+  "burnTemp": 2700,
+  "heatPerSec": 1.5,
+  "ingredient": {
+    "tag": "gradient:coals"
+  }
+}

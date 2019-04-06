@@ -112,6 +112,8 @@ public class GradientMod {
   }
 
   private void serverStarting(final FMLServerStartingEvent event) {
+    logger.info("------------------- SERVER START -------------------");
+
     final LiteralArgumentBuilder<CommandSource> root = Commands.literal(MODID)
       .then(SetAgeCommand.register());
 

@@ -20,9 +20,11 @@ public final class SetAgeCommand {
   public static ArgumentBuilder<CommandSource, ?> register() {
     return Commands.literal("setage")
       .requires(ctx -> ctx.hasPermissionLevel(4))
-      .then(Commands.argument("age", IntegerArgumentType.integer(1, Age.highest().value())))
-      .then(Commands.argument("targets", EntityArgument.players())
-      .executes(ctx -> execute(ctx, Age.get(IntegerArgumentType.getInteger(ctx, "age")), EntityArgument.getPlayers(ctx, "targets"))));
+      .then(Commands.argument("age", IntegerArgumentType.integer(1, Age.highest().value()))
+        .then(Commands.argument("targets", EntityArgument.players())
+          .executes(ctx -> execute(ctx, Age.get(IntegerArgumentType.getInteger(ctx, "age")), EntityArgument.getPlayers(ctx, "targets")))
+        )
+      );
   }
 
   private static int execute(final CommandContext<CommandSource> ctx, final Age age, final Collection<EntityPlayerMP> players) throws CommandSyntaxException {
@@ -36,10 +38,10 @@ public final class SetAgeCommand {
 
           AdvancementTriggers.CHANGE_AGE.trigger(target);
 
-          target.sendMessage(new TextComponentTranslation("commands.setage.set", age.getDisplayName()));
+          target.sendMessage(new TextComponentTranslation("commands.gradient.setage.set", age.getDisplayName()));
 
           if(sender != target) {
-            sender.sendMessage(new TextComponentTranslation("commands.setage.set_other", target.getDisplayName(), age.getDisplayName()));
+            sender.sendMessage(new TextComponentTranslation("commands.gradient.setage.set_other", target.getDisplayName(), age.getDisplayName()));
           }
         });
     }

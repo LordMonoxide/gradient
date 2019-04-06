@@ -347,6 +347,10 @@
   "jei.fuel.burnTemp": "Max temperature: %d °C",
   "jei.fuel.heatPerSec": "Heat: %d °C/s",
 
+  "_comment": "Commands",
+  "commands.gradient.setage.set": "Your age is now %s",
+  "commands.gradient.setage.set_other": "%s's age is now %s",
+
   "_comment": "Debug",
   "item.gradient.infinicoal": "Infinicoal (debug)",
   "item.gradient.debug": "Debug"

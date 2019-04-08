@@ -2,7 +2,8 @@ package lordmonoxide.gradient.client.textures;
 
 import com.google.common.collect.ImmutableList;
 import lordmonoxide.gradient.GradientMetals;
-import net.minecraft.client.Minecraft;
+import lordmonoxide.gradient.GradientMod;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -49,10 +50,11 @@ public class MetalAtlasSprite extends TextureAtlasSprite {
 
   @Override
   public boolean load(@Nonnull final IResourceManager manager, @Nonnull final ResourceLocation location, @Nonnull final Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    GradientMod.logger.info("LOADING METAL ATLAS SPRITE {}", location);
+
     final List<TextureAtlasSprite> sprites = this.dependencies.stream().map(textureGetter).collect(Collectors.toList());
 
-    final int[][] pixels = new int[Minecraft.getInstance().gameSettings.mipmapLevels + 1][];
-    pixels[0] = new int[this.width * this.height];
+    final NativeImage frame = new NativeImage(this.width, this.height, true);
 
     for(final TextureAtlasSprite sprite : sprites) {
       // Can't find base texture?
@@ -60,49 +62,51 @@ public class MetalAtlasSprite extends TextureAtlasSprite {
         throw new RuntimeException(new FileNotFoundException("Could not find base sprite " + sprite + " while generating sprite " + this));
       }
 
-      final int[][] sourcePixels = new int[16][16]; //TODO sprite.getFrameTextureData(0);
+      final NativeImage source = sprite.frames[0];
 
-      for(int p = 0; p < this.width * this.height; p++) {
-        if((sourcePixels[0][p] & ALPHA_MASK) != 0) {
-          pixels[0][p] = sourcePixels[0][p];
-        }
+      for(int x = 0; x < this.width; x++) {
+        for(int y = 0; y < this.height; y++) {
+          if((source.getPixelRGBA(x, y) & ALPHA_MASK) != 0) {
+            frame.setPixelRGBA(x, y, source.getPixelRGBA(x, y));
+          }
 
-        if(pixels[0][p] == COLOUR_DIFFUSE) {
-          pixels[0][p] = this.metal.colourDiffuse;
-          continue;
-        }
+          if(frame.getPixelRGBA(x, y) == COLOUR_DIFFUSE) {
+            frame.setPixelRGBA(x, y, this.metal.colourDiffuse);
+            continue;
+          }
 
-        if(pixels[0][p] == COLOUR_SPECULAR) {
-          pixels[0][p] = this.metal.colourSpecular;
-          continue;
-        }
+          if(frame.getPixelRGBA(x, y) == COLOUR_SPECULAR) {
+            frame.setPixelRGBA(x, y, this.metal.colourSpecular);
+            continue;
+          }
 
-        if(pixels[0][p] == COLOUR_SHADOW1) {
-          pixels[0][p] = this.metal.colourShadow1;
-          continue;
-        }
+          if(frame.getPixelRGBA(x, y) == COLOUR_SHADOW1) {
+            frame.setPixelRGBA(x, y, this.metal.colourShadow1);
+            continue;
+          }
 
-        if(pixels[0][p] == COLOUR_SHADOW2) {
-          pixels[0][p] = this.metal.colourShadow2;
-          continue;
-        }
+          if(frame.getPixelRGBA(x, y) == COLOUR_SHADOW2) {
+            frame.setPixelRGBA(x, y, this.metal.colourShadow2);
+            continue;
+          }
 
-        if(pixels[0][p] == COLOUR_EDGE1) {
-          pixels[0][p] = this.metal.colourEdge1;
-        }
+          if(frame.getPixelRGBA(x, y) == COLOUR_EDGE1) {
+            frame.setPixelRGBA(x, y, this.metal.colourEdge1);
+          }
 
-        if(pixels[0][p] == COLOUR_EDGE2) {
-          pixels[0][p] = this.metal.colourEdge2;
-        }
+          if(frame.getPixelRGBA(x, y) == COLOUR_EDGE2) {
+            frame.setPixelRGBA(x, y, this.metal.colourEdge2);
+          }
 
-        if(pixels[0][p] == COLOUR_EDGE3) {
-          pixels[0][p] = this.metal.colourEdge3;
+          if(frame.getPixelRGBA(x, y) == COLOUR_EDGE3) {
+            frame.setPixelRGBA(x, y, this.metal.colourEdge3);
+          }
         }
       }
     }
 
     this.clearFramesTextureData();
-    //TODO this.framesTextureData.add(pixels);
+    this.frames = new NativeImage[] {frame};
     return false;
   }
 }

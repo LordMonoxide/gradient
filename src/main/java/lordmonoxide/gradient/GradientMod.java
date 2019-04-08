@@ -63,6 +63,7 @@ public class GradientMod {
 
     MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 
+    // Need to do this to make sure the class loads
     logger.info("Drying serializer {}", GradientRecipeSerializers.DRYING);
   }
 

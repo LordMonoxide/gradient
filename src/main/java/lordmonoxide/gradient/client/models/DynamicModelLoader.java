@@ -1,114 +1,156 @@
 package lordmonoxide.gradient.client.models;
 
 import com.google.common.collect.ImmutableMap;
-import lordmonoxide.gradient.GradientMod;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.client.model.SimpleModelState;
+import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.model.animation.IClip;
 
+import javax.vecmath.Vector3f;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GradientMod.MODID)
-public final class DynamicModelLoader {
-  private DynamicModelLoader() { }
+public class DynamicModelLoader implements ICustomModelLoader {
+  private final Predicate<ResourceLocation> matcher;
+  private final Function<ResourceLocation, ImmutableMap<String, String>> textureLoader;
+  private final ResourceLocation baseModel;
+  private final boolean isItem;
 
-  @SubscribeEvent
-  public static void registerModels(final ModelRegistryEvent event) {
-    GradientMod.logger.info("Registering dynamic models");
+  private boolean retexture = true;
 
-    registerBlock(DynamicModelLoader::acceptOres);
-    registerBlock(DynamicModelLoader::acceptPebbles, GradientMod.resource("block/pebble")).disableRetexture();
-    registerItem(DynamicModelLoader::acceptIngots);
-    registerItem(DynamicModelLoader::acceptHammers);
-    registerItem(DynamicModelLoader::acceptMattocks);
-    registerItem(DynamicModelLoader::acceptPickaxes);
-    registerItem(DynamicModelLoader::acceptSwords);
-    registerItem(DynamicModelLoader::acceptNuggets);
-    registerItem(DynamicModelLoader::acceptDusts);
-    registerItem(DynamicModelLoader::acceptCrushed);
-    registerItem(DynamicModelLoader::acceptPurified);
-    registerItem(DynamicModelLoader::acceptPlates);
-    registerItem(DynamicModelLoader::acceptTools);
+  public DynamicModelLoader(final Predicate<ResourceLocation> matcher, final Function<ResourceLocation, ImmutableMap<String, String>> textureLoader, final ResourceLocation baseModel) {
+    this(matcher, textureLoader, baseModel, false);
   }
 
-  private static DynamicModel registerBlock(final Predicate<ResourceLocation> accepts, final ResourceLocation baseModel) {
-    final DynamicModel model = new DynamicModel(accepts, DynamicModelLoader::blockTextures, baseModel);
-    ModelLoaderRegistry.registerLoader(model);
+  public DynamicModelLoader(final Predicate<ResourceLocation> matcher, final Function<ResourceLocation, ImmutableMap<String, String>> textureLoader, final ResourceLocation baseModel, final boolean isItem) {
+    this.matcher = matcher;
+    this.textureLoader = textureLoader;
+    this.baseModel = baseModel;
+    this.isItem = isItem;
+  }
+
+  public void disableRetexture() {
+    this.retexture = false;
+  }
+
+  @Override
+  public boolean accepts(final ResourceLocation modelLocation) {
+    return this.matcher.test(modelLocation);
+  }
+
+  @Override
+  public IUnbakedModel loadModel(final ResourceLocation modelLocation) throws Exception {
+    IUnbakedModel model = ModelLoaderRegistry.getModel(this.baseModel);
+
+    if(this.retexture) {
+      model = model.retexture(this.textureLoader.apply(modelLocation));
+    }
+
+    if(this.isItem) {
+      return new Model(model);
+    }
+
     return model;
   }
 
-  private static DynamicModel registerBlock(final Predicate<ResourceLocation> accepts) {
-    return registerBlock(accepts, new ResourceLocation("minecraft:block/cube_all"));
-  }
+  @Override
+  public void onResourceManagerReload(final IResourceManager resourceManager) { }
 
-  private static DynamicModel registerItem(final Predicate<ResourceLocation> accepts) {
-    final DynamicModel model = new DynamicModel(accepts, DynamicModelLoader::itemTextures, new ResourceLocation("builtin/generated"), true);
-    ModelLoaderRegistry.registerLoader(model);
-    return model;
-  }
+  private static final class Model implements IUnbakedModel {
+    private final IUnbakedModel parent;
 
-  private static boolean acceptOres(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("ore.");
-  }
+    private Model(final IUnbakedModel parent) {
+      this.parent = parent;
+    }
 
-  private static boolean acceptPebbles(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("pebble.");
-  }
+    @Override
+    public Collection<ResourceLocation> getDependencies() {
+      return this.parent.getDependencies();
+    }
 
-  private static boolean acceptIngots(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.ingot.");
-  }
+    @Override
+    public Collection<ResourceLocation> getTextures(final Function<ResourceLocation, IUnbakedModel> modelGetter, final Set<String> missingTextureErrors) {
+      return this.parent.getTextures(modelGetter, missingTextureErrors);
+    }
 
-  private static boolean acceptHammers(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.hammer.");
-  }
+    @Override
+    public IBakedModel bake(final Function<ResourceLocation, IUnbakedModel> modelGetter, final Function<ResourceLocation, TextureAtlasSprite> spriteGetter, final IModelState state, final boolean uvlock, final VertexFormat format) {
+      return this.parent.bake(modelGetter, spriteGetter, state, uvlock, format);
+    }
 
-  private static boolean acceptMattocks(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.mattock.");
-  }
+    @Override
+    public IModelState getDefaultState() {
+      //TODO: This sucks, is there any way to get this from ForgeBlockStateV1?
+      //TODO: It's copied directly from the "forge:default-item" transform
+      //TODO: Github #281
 
-  private static boolean acceptPickaxes(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.pickaxe.");
-  }
+      final Map<ItemCameraTransforms.TransformType, TRSRTransformation> map = new EnumMap<>(ItemCameraTransforms.TransformType.class);
+      final TRSRTransformation thirdperson = get(0, 3, 1, 0, 0, 0, 0.55f);
+      final TRSRTransformation firstperson = get(1.13f, 3.2f, 1.13f, 0, -90, 25, 0.68f);
+      map.put(ItemCameraTransforms.TransformType.GROUND,                  get(0, 2, 0, 0, 0, 0, 0.5f));
+      map.put(ItemCameraTransforms.TransformType.HEAD,                    get(0, 13, 7, 0, 180, 0, 1));
+      map.put(ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, thirdperson);
+      map.put(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND,  leftify(thirdperson));
+      map.put(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, firstperson);
+      map.put(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND,  leftify(firstperson));
+      map.put(ItemCameraTransforms.TransformType.FIXED,                   get(0, 0, 0, 0, 180, 0, 1));
+      return new SimpleModelState(ImmutableMap.copyOf(map));
+    }
 
-  private static boolean acceptSwords(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.sword.");
-  }
+    private static TRSRTransformation get(final float tx, final float ty, final float tz, final float ax, final float ay, final float az, final float s) {
+      return TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+        new Vector3f(tx / 16.0f, ty / 16.0f, tz / 16.0f),
+        TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
+        new Vector3f(s, s, s),
+        null));
+    }
 
-  private static boolean acceptNuggets(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("nugget.");
-  }
+    private static final TRSRTransformation flipX = new TRSRTransformation(null, null, new Vector3f(-1, 1, 1), null);
 
-  private static boolean acceptDusts(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("dust.");
-  }
+    private static TRSRTransformation leftify(final TRSRTransformation transform) {
+      return TRSRTransformation.blockCenterToCorner(flipX.compose(TRSRTransformation.blockCornerToCenter(transform)).compose(flipX));
+    }
 
-  private static boolean acceptCrushed(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("crushed.");
-  }
+    @Override
+    public Optional<? extends IClip> getClip(final String name) {
+      return this.parent.getClip(name);
+    }
 
-  private static boolean acceptPurified(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("purified.");
-  }
+    @Override
+    public IUnbakedModel process(final ImmutableMap<String, String> customData) {
+      return this.parent.process(customData);
+    }
 
-  private static boolean acceptPlates(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("plate.");
-  }
+    @Override
+    public IUnbakedModel smoothLighting(final boolean value) {
+      return this.parent.smoothLighting(value);
+    }
 
-  private static boolean acceptTools(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("tool.");
-  }
+    @Override
+    public IUnbakedModel gui3d(final boolean value) {
+      return this.parent.gui3d(value);
+    }
 
-  private static ImmutableMap<String, String> blockTextures(final ResourceLocation loc) {
-    return ImmutableMap.of("all", GradientMod.resource("blocks/" + loc.getPath()).toString());
-  }
-
-  private static ImmutableMap<String, String> itemTextures(final ResourceLocation loc) {
-    return ImmutableMap.of("layer0", GradientMod.resource("items/" + loc.getPath()).toString());
+    @Override
+    public IUnbakedModel retexture(final ImmutableMap<String, String> textures) {
+      return this.parent.retexture(textures);
+    }
   }
 }

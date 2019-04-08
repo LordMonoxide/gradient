@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.client.textures;
 
 import com.google.common.collect.ImmutableList;
+import lordmonoxide.gradient.GradientMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
@@ -38,6 +39,8 @@ public class DynamicAtlasSprite extends TextureAtlasSprite {
 
   @Override
   public boolean load(@Nonnull final IResourceManager manager, @Nonnull final ResourceLocation location, @Nonnull final Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    GradientMod.logger.info("LOADING DYNAMIC ATLAS SPRITE {}", location);
+
     final List<TextureAtlasSprite> sprites = this.dependencies.stream().map(textureGetter).collect(Collectors.toList());
 
     final int[][] pixels = new int[Minecraft.getInstance().gameSettings.mipmapLevels + 1][];

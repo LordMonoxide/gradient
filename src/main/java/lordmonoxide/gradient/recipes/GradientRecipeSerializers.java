@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.RecipeSerializers;
 

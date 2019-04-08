@@ -150,6 +150,9 @@ public class GradientMod {
       jar.stream().forEach(entry -> {
         if(!entry.isDirectory() && entry.getName().startsWith(scriptsDir)) {
           this.copyJarDirectory(jar, entry.getName(), scriptsDir, destScriptDir);
+        }
+
+        if(!entry.isDirectory() && entry.getName().startsWith(jsonDir)) {
           this.copyJarDirectory(jar, entry.getName(), jsonDir, destJsonDir);
         }
       });

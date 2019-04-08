@@ -6,10 +6,8 @@
     "count": 3
   },
   "ingredients": [{
-    "type": "forge:ore_dict",
-    "ore": "leather"
+    "tag": "forge:leathers"
   }, {
-    "type": "gradient:ore",
-    "ore": "toolKnife"
+    "tag": "gradient:tools/knife"
   }]
 }

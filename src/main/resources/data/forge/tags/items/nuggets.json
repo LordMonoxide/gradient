@@ -1,0 +1,15 @@
+{
+  "values": [
+    "#forge:nuggets/coal",
+    "#forge:nuggets/bronze",
+    "#forge:nuggets/cassiterite",
+    "#forge:nuggets/copper",
+    "#forge:nuggets/gold",
+    "#forge:nuggets/graphite",
+    "#forge:nuggets/hematite",
+    "#forge:nuggets/iron",
+    "#forge:nuggets/magnesium",
+    "#forge:nuggets/pyrite",
+    "#forge:nuggets/tin"
+  ]
+}

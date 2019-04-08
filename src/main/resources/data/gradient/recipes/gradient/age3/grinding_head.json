@@ -11,8 +11,7 @@
   ],
   "key": {
     "P": {
-      "type": "forge:ore_dict",
-      "ore": "plateBronze"
+      "tag": "forge:plates/bronze"
     },
     "F": {
       "item": "minecraft:flint"

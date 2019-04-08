@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:crushed/bronze",
+    "#forge:crushed/cassiterite",
+    "#forge:crushed/copper",
+    "#forge:crushed/gold",
+    "#forge:crushed/graphite",
+    "#forge:crushed/hematite",
+    "#forge:crushed/iron",
+    "#forge:crushed/magnesium",
+    "#forge:crushed/pyrite",
+    "#forge:crushed/tin"
+  ]
+}

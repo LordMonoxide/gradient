@@ -5,10 +5,8 @@
     "item": "gradient:igniter"
   },
   "ingredients": [{
-    "type": "forge:ore_dict",
-    "ore": "dustFlint"
+    "tag": "forge:dusts/flint"
   }, {
-    "type": "forge:ore_dict",
-    "ore": "dustMagnesium"
+    "tag": "forge:dusts/magnesium"
   }]
 }

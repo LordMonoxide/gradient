@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:purified/bronze",
+    "#forge:purified/cassiterite",
+    "#forge:purified/copper",
+    "#forge:purified/gold",
+    "#forge:purified/graphite",
+    "#forge:purified/hematite",
+    "#forge:purified/iron",
+    "#forge:purified/magnesium",
+    "#forge:purified/pyrite",
+    "#forge:purified/tin"
+  ]
+}

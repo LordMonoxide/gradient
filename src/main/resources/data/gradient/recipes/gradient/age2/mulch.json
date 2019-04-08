@@ -7,7 +7,6 @@
     "item": "gradient:mulch"
   },
   "ingredients": [{
-    "type": "forge:ore_dict",
-    "ore": "barkWood"
+    "tag": "gradient:barks"
   }]
 }

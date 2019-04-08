@@ -11,8 +11,7 @@
   ],
   "key": {
     "L": {
-      "type": "forge:ore_dict",
-      "ore": "leather"
+      "tag": "forge:leathers"
     },
     "A": {
       "tag": "gradient:tools/awl"

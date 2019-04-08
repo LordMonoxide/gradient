@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:ores/bronze",
+    "#forge:ores/cassiterite",
+    "#forge:ores/copper",
+    "#forge:ores/gold",
+    "#forge:ores/graphite",
+    "#forge:ores/hematite",
+    "#forge:ores/iron",
+    "#forge:ores/magnesium",
+    "#forge:ores/pyrite",
+    "#forge:ores/tin"
+  ]
+}

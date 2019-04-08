@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:ingots/bronze",
+    "#forge:ingots/cassiterite",
+    "#forge:ingots/copper",
+    "#forge:ingots/gold",
+    "#forge:ingots/graphite",
+    "#forge:ingots/hematite",
+    "#forge:ingots/iron",
+    "#forge:ingots/magnesium",
+    "#forge:ingots/pyrite",
+    "#forge:ingots/tin"
+  ]
+}

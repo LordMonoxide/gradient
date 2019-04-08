@@ -6,8 +6,7 @@
     "count": 2
   },
   "ingredients": [{
-    "type": "forge:ore_dict",
-    "ore": "nuggetCoal"
+    "tag": "forge:nuggets/coal"
   }, {
     "tag": "gradient:strings"
   }, {

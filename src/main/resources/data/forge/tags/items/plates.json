@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:plates/bronze",
+    "#forge:plates/copper",
+    "#forge:plates/gold",
+    "#forge:plates/graphite",
+    "#forge:plates/hematite",
+    "#forge:plates/iron",
+    "#forge:plates/magnesium",
+    "#forge:plates/tin"
+  ]
+}

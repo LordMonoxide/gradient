@@ -19,10 +19,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -393,60 +395,15 @@ public final class GradientItems {
   }
 
   //TODO
-/*
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public static void initOreDict(final RegistryEvent.Register<Item> event) {
     GradientMod.logger.info("Registering ore dict entries");
 
-    OreDictionary.registerOre("barkWood", BARK_OAK);
-    OreDictionary.registerOre("barkWood", BARK_SPRUCE);
-    OreDictionary.registerOre("barkWood", BARK_BIRCH);
-    OreDictionary.registerOre("barkWood", BARK_JUNGLE);
-    OreDictionary.registerOre("barkWood", BARK_ACACIA);
-    OreDictionary.registerOre("barkWood", BARK_DARK_OAK);
-
-    OreDictionary.registerOre("hide", HIDE_COW);
-    OreDictionary.registerOre("hide", HIDE_DONKEY);
-    OreDictionary.registerOre("hide", HIDE_HORSE);
-    OreDictionary.registerOre("hide", HIDE_LLAMA);
-    OreDictionary.registerOre("hide", HIDE_MULE);
-    OreDictionary.registerOre("hide", HIDE_OCELOT);
-    OreDictionary.registerOre("hide", HIDE_PIG);
-    OreDictionary.registerOre("hide", HIDE_POLAR_BEAR);
-    OreDictionary.registerOre("hide", HIDE_SHEEP);
-    OreDictionary.registerOre("hide", HIDE_WOLF);
-
-    // Tools
-    OreDictionary.registerOre("awl", BONE_AWL.getWildcardItemStack());
-    OreDictionary.registerOre("toolHammer", STONE_HAMMER.getWildcardItemStack());
-    OreDictionary.registerOre("toolAxe", STONE_HATCHET.getWildcardItemStack());
-    OreDictionary.registerOre("toolAxe", STONE_MATTOCK.getWildcardItemStack());
-    OreDictionary.registerOre("toolHoe", STONE_MATTOCK.getWildcardItemStack());
-    OreDictionary.registerOre("toolPickaxe", STONE_PICKAXE.getWildcardItemStack());
-    OreDictionary.registerOre("toolKnife", FLINT_KNIFE.getWildcardItemStack());
-
     // Metals/metal tools
-    OreDictionary.registerOre("nuggetCoal", NUGGET_COAL);
-
     for(final GradientMetals.Metal metal : GradientMetals.metals) {
       final String caps = StringUtils.capitalize(metal.name);
 
-      OreDictionary.registerOre("ore", GradientBlocks.ORES.get(metal));
-      OreDictionary.registerOre("ore" + caps, GradientBlocks.ORES.get(metal));
-
-      if(metal.canMakeNuggets) {
-        OreDictionary.registerOre("nugget", nugget(metal));
-        OreDictionary.registerOre("nugget" + caps, nugget(metal));
-        OreDictionary.registerOre("crushed" + caps, crushed(metal));
-        OreDictionary.registerOre("purified" + caps, purified(metal));
-      }
-
-      OreDictionary.registerOre("dust" + caps, dust(metal));
-
-      if(metal.canMakeIngots) {
-        OreDictionary.registerOre("ingot" + caps, castItem(GradientCasts.INGOT, metal, 1));
-      }
-
+/*
       OreDictionary.registerOre("block" + caps, castItem(GradientCasts.BLOCK, metal, 1));
 
       if(metal.canMakePlates) {
@@ -458,8 +415,10 @@ public final class GradientItems {
         OreDictionary.registerOre("toolAxe", stack);
         OreDictionary.registerOre("toolHoe", stack);
       }
+*/
     }
 
+/*
     for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
       final String name = StringUtils.capitalize(alloy.output.metal.name);
 
@@ -499,29 +458,8 @@ public final class GradientItems {
 
     OreDictionary.registerOre("axleWood", GradientBlocks.WOODEN_AXLE);
     OreDictionary.registerOre("gearWood", WOODEN_GEAR);
-
-    Blocks.OAK_STAIRS.setHarvestLevel("axe", 0);
-    Blocks.SPRUCE_STAIRS.setHarvestLevel("axe", 0);
-    Blocks.BIRCH_STAIRS.setHarvestLevel("axe", 0);
-    Blocks.JUNGLE_STAIRS.setHarvestLevel("axe", 0);
-    Blocks.ACACIA_STAIRS.setHarvestLevel("axe", 0);
-    Blocks.DARK_OAK_STAIRS.setHarvestLevel("axe", 0);
-
-    Blocks.STONE_STAIRS.setHarvestLevel("pickaxe", 0);
-    Blocks.BRICK_STAIRS.setHarvestLevel("pickaxe", 0);
-    Blocks.STONE_BRICK_STAIRS.setHarvestLevel("pickaxe", 0);
-    Blocks.NETHER_BRICK_STAIRS.setHarvestLevel("pickaxe", 0);
-    Blocks.SANDSTONE_STAIRS.setHarvestLevel("pickaxe", 0);
-    Blocks.QUARTZ_STAIRS.setHarvestLevel("pickaxe", 0);
-    Blocks.RED_SANDSTONE_STAIRS.setHarvestLevel("pickaxe", 0);
-    Blocks.PURPUR_STAIRS.setHarvestLevel("pickaxe", 0);
-
-    Blocks.IRON_DOOR.setHarvestLevel("pickaxe", 2);
-
-    Blocks.NETHER_BRICK_FENCE.setHarvestLevel("pickaxe", 0);
-    Blocks.COBBLESTONE_WALL.setHarvestLevel("pickaxe", 0);
-  }
 */
+  }
 
   private static final class RegistrationHelper {
     private final IForgeRegistry<Item> registry;

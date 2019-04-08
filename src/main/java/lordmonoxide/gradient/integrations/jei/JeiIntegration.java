@@ -16,6 +16,7 @@ import lordmonoxide.gradient.integrations.jei.hardening.HardeningRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.hardening.HardeningRecipeWrapper;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeWrapper;
+import lordmonoxide.gradient.inventory.ContainerPlayer3x3Crafting;
 import lordmonoxide.gradient.recipes.AgeGatedShapedToolRecipe;
 import lordmonoxide.gradient.recipes.AgeGatedShapelessToolRecipe;
 import lordmonoxide.gradient.recipes.DryingRecipe;
@@ -31,6 +32,9 @@ import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IIngredientBlacklist;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.IStackHelper;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
@@ -93,6 +97,9 @@ public class JeiIntegration implements IModPlugin {
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.HARDENING);
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.DRYING_RACK), GradientRecipeCategoryUid.DRYING);
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.FUEL);
+
+    registry.getRecipeTransferRegistry().addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(VanillaRecipeCategoryUid.CRAFTING));
+    registry.getRecipeTransferRegistry().addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(GradientRecipeCategoryUid.CRAFTING));
   }
 
   private static <T extends IRecipe> Collection<T> filterRecipes(final Class<T> recipeClass) {
@@ -105,5 +112,38 @@ public class JeiIntegration implements IModPlugin {
     }
 
     return recipes;
+  }
+
+  private static final class ContainerPlayer3x3CraftingTransferInfo implements IRecipeTransferInfo<ContainerPlayer3x3Crafting> {
+    private final String uid;
+
+    private ContainerPlayer3x3CraftingTransferInfo(final String uid) {
+      this.uid = uid;
+    }
+
+    @Override
+    public Class<ContainerPlayer3x3Crafting> getContainerClass() {
+      return ContainerPlayer3x3Crafting.class;
+    }
+
+    @Override
+    public String getRecipeCategoryUid() {
+      return this.uid;
+    }
+
+    @Override
+    public boolean canHandle(final ContainerPlayer3x3Crafting container) {
+      return true;
+    }
+
+    @Override
+    public List<Slot> getRecipeSlots(final ContainerPlayer3x3Crafting container) {
+      return container.craftingSlots;
+    }
+
+    @Override
+    public List<Slot> getInventorySlots(final ContainerPlayer3x3Crafting container) {
+      return container.invSlots;
+    }
   }
 }

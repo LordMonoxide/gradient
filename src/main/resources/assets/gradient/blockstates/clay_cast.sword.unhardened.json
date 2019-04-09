@@ -1,5 +1,8 @@
 {
   "variants": {
-    "normal": { "model": "gradient:clay_cast.sword.unhardened" }
+    "facing=north": { "model": "gradient:clay_cast.sword.unhardened" },
+    "facing=east":  { "model": "gradient:clay_cast.sword.unhardened", "y":  90 },
+    "facing=south": { "model": "gradient:clay_cast.sword.unhardened", "y": 180 },
+    "facing=west":  { "model": "gradient:clay_cast.sword.unhardened", "y": 270 }
   }
 }

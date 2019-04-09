@@ -48,7 +48,7 @@ public class BlockClayCast extends GradientBlock {
     super.addInformation(stack, world, tooltip, flag);
 
     if(!this.hardened) {
-      tooltip.add(I18n.format("unhardened_clay.tooltip"));
+      tooltip.add(I18n.format("tile.clay_cast.unhardened.tooltip"));
     } else {
       for(final GradientMetals.Metal metal : GradientMetals.metals) {
         tooltip.add(I18n.format("tile.clay_cast.hardened.tooltip"));

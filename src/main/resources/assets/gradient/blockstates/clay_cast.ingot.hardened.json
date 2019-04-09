@@ -1,5 +1,8 @@
 {
   "variants": {
-    "normal": { "model": "gradient:clay_cast.ingot.hardened" }
+    "facing=north": { "model": "gradient:clay_cast.ingot.hardened" },
+    "facing=east":  { "model": "gradient:clay_cast.ingot.hardened", "y":  90 },
+    "facing=south": { "model": "gradient:clay_cast.ingot.hardened", "y": 180 },
+    "facing=west":  { "model": "gradient:clay_cast.ingot.hardened", "y": 270 }
   }
 }

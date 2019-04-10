@@ -1,9 +1,9 @@
 package lordmonoxide.gradient.overrides;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.items.GradientItems;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
@@ -116,14 +116,13 @@ public final class AddExtraDrops {
       }
 
       final ItemStack metalStack = event.getState().getBlock().getItem(event.getWorld(), event.getPos(), event.getState());
+      final Metals.Meltable meltable = Metals.getMeltable(metalStack);
 
-      if(GradientMetals.hasMeltable(metalStack)) {
-        final GradientMetals.Meltable meltable = GradientMetals.getMeltable(metalStack);
-
+      if(meltable != Metals.INVALID_MELTABLE) {
         final int nuggetCount = rand.nextInt(meltable.amount * 4 / 1000 * (event.getFortuneLevel() + 1) + 1) + 2;
 
         for(int i = 0; i < nuggetCount; i++) {
-          drops.add(meltable.metal.getNugget());
+          drops.add(new ItemStack(GradientItems.nugget(meltable.metal)));
         }
       }
 

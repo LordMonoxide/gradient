@@ -4,20 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
-import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
-import lordmonoxide.gradient.tileentities.TileBronzeGrinder;
-import lordmonoxide.gradient.tileentities.TileBronzeOven;
-import lordmonoxide.gradient.tileentities.TileClayCrucible;
-import lordmonoxide.gradient.tileentities.TileClayOven;
-import lordmonoxide.gradient.tileentities.TileDryingRack;
-import lordmonoxide.gradient.tileentities.TileFirePit;
-import lordmonoxide.gradient.tileentities.TileFlywheel;
-import lordmonoxide.gradient.tileentities.TileHandCrank;
-import lordmonoxide.gradient.tileentities.TileManualGrinder;
-import lordmonoxide.gradient.tileentities.TileMixingBasin;
-import lordmonoxide.gradient.tileentities.TileWoodenAxle;
-import lordmonoxide.gradient.tileentities.TileWoodenGearbox;
+import lordmonoxide.gradient.science.geology.Ore;
+import lordmonoxide.gradient.science.geology.Ores;
+import lordmonoxide.gradient.tileentities.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -111,13 +100,13 @@ public final class GradientBlocks {
   public static final BlockBronzeOven        BRONZE_OVEN         = new BlockBronzeOven();
   public static final BlockBronzeGrinder     BRONZE_GRINDER      = new BlockBronzeGrinder();
 
-  public static final ImmutableMap<GradientMetals.Metal, Block> ORES;
+  public static final ImmutableMap<Ore.Metal, Block> ORES;
 
   static {
-    final Map<GradientMetals.Metal, Block> ores = new HashMap<>();
+    final Map<Ore.Metal, Block> ores = new HashMap<>();
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      ores.put(metal, new BlockOre(metal));
+    for(final Ore.Metal ore : Ores.metals()) {
+      ores.put(ore, new BlockOre(ore));
     }
 
     ORES = ImmutableMap.copyOf(ores);

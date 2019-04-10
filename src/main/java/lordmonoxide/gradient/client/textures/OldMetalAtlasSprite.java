@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.client.textures;
 
 import com.google.common.collect.ImmutableList;
-import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.GradientMetals;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.IResourceManager;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @SideOnly(Side.CLIENT)
-public class MetalAtlasSprite extends TextureAtlasSprite {
+public class OldMetalAtlasSprite extends TextureAtlasSprite {
   private static final int COLOUR_DIFFUSE  = 0xFFFF0000;
   private static final int COLOUR_SPECULAR = 0xFF00FF00;
   private static final int COLOUR_SHADOW1  = 0xFFFFFF00;
@@ -28,10 +28,10 @@ public class MetalAtlasSprite extends TextureAtlasSprite {
 
   private static final int ALPHA_MASK = 0xFF000000;
 
-  private final Metal metal;
+  private final GradientMetals.Metal metal;
   private final ImmutableList<ResourceLocation> dependencies;
 
-  public MetalAtlasSprite(final ResourceLocation spriteName, final Metal metal, final ResourceLocation... source) {
+  public OldMetalAtlasSprite(final ResourceLocation spriteName, final GradientMetals.Metal metal, final ResourceLocation... source) {
     super(spriteName.toString());
     this.metal = metal;
     this.dependencies = ImmutableList.copyOf(source);

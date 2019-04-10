@@ -7,6 +7,10 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
+import lordmonoxide.gradient.science.geology.Ore;
+import lordmonoxide.gradient.science.geology.Ores;
 import lordmonoxide.gradient.utils.OreDictUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -149,11 +153,7 @@ public final class ExtraRecipes {
   }
 
   private static void registerNuggets(final IForgeRegistry<IRecipe> registry) {
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      if(!metal.canMakeNuggets) {
-        continue;
-      }
-
+    for(final Metal metal : Metals.all()) {
       final ItemStack[] pickaxes = GradientMetals.metals.stream().filter(m -> m.canMakeTools && m.canMakeNuggets && m.hardness >= metal.hardness).map(m -> GradientItems.tool(GradientTools.PICKAXE, m).getWildcardItemStack()).toArray(ItemStack[]::new);
 
       final String recipeName = "recipe.nugget." + metal.name + ".pickaxed";
@@ -161,20 +161,22 @@ public final class ExtraRecipes {
       GradientMod.logger.info("Adding recipe {}", recipeName);
 
       registry.register(new AgeGatedShapelessToolRecipe(
-          GradientMod.MODID,
-          Age.AGE3,
-          GradientItems.nugget(metal).getItemStack(4),
-          NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(pickaxes))
+        GradientMod.MODID,
+        Age.AGE3,
+        GradientItems.nugget(metal).getItemStack(4),
+        NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(pickaxes))
       ).setRegistryName(GradientMod.resource(recipeName)));
     }
   }
 
   private static void registerOreWashingRecipes() {
-    final NBTTagCompound nbt = new NBTTagCompound();
-    nbt.setInteger("amount", 1000); // Water amount
+    for(final Ore.Metal ore : Ores.metals()) {
+      final NBTTagCompound nbt = new NBTTagCompound();
+      nbt.setInteger("amount", 1000); // Water amount
 
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedBronze"), nbt, false, OreDictUtils.getFirst("purifiedBronze"));
-    Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushedMagnesium"), nbt, false, OreDictUtils.getFirst("purifiedMagnesium"));
+      final String oreName = StringUtils.capitalize(ore.name);
+      Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushed" + oreName), nbt, false, OreDictUtils.getFirst("purified" + oreName));
+    }
   }
 
   private static void registerExtractorRecipes() {

@@ -1,7 +1,6 @@
 package lordmonoxide.gradient;
 
 import com.google.common.collect.ImmutableList;
-import lordmonoxide.gradient.utils.OreDictUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -48,11 +47,7 @@ public final class GradientMetals {
       } else if(oreName.startsWith("ingot")) {
         addMeltable(oreName, oreName.substring(5).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
       } else if(oreName.startsWith("nugget")) {
-        final Meltable meltable = addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
-
-        if(meltable != INVALID_MELTABLE) {
-          meltable.metal.nugget = OreDictUtils.getFirst(oreName);
-        }
+        addMeltable(oreName, oreName.substring(6).toLowerCase(), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
       } else if(oreName.startsWith("dust")) {
         addMeltable(oreName, oreName.substring(4).toLowerCase(), 1, Fluid.BUCKET_VOLUME);
       } else if(oreName.startsWith("block")) {
@@ -80,13 +75,6 @@ public final class GradientMetals {
     addMeltable("sand",       GLASS, 8, Fluid.BUCKET_VOLUME * 8);
     addMeltable("blockGlass", GLASS, 8, Fluid.BUCKET_VOLUME * 8);
     addMeltable("paneGlass",  GLASS, 8.0f / 16.0f, Fluid.BUCKET_VOLUME * 8 / 16);
-  }
-
-  public static ItemStack getBucket(final GradientMetals.MetalStack metal) {
-    final ItemStack stack = getBucket(metal.metal);
-    stack.grow(metal.amount - 1);
-
-    return stack;
   }
 
   public static ItemStack getBucket(final GradientMetals.Metal metal) {
@@ -135,24 +123,12 @@ public final class GradientMetals {
     return INVALID_METAL;
   }
 
-  public static Metal getMetal(final int index) {
-    return metals.get(index);
-  }
-
   private static MetalStack metalStack(final Metal metal, final int amount) {
     return new MetalStack(metal, amount);
   }
 
   private static MetalStack metalStack(final String metal, final int amount) {
     return metalStack(getMetal(metal), amount);
-  }
-
-  private static MetalStack metalStack(final Metal metal) {
-    return metalStack(metal, 1);
-  }
-
-  private static MetalStack metalStack(final String metal) {
-    return metalStack(metal, Fluid.BUCKET_VOLUME);
   }
 
   public static Meltable getMeltable(final ItemStack stack) {
@@ -165,10 +141,6 @@ public final class GradientMetals {
     }
 
     return INVALID_MELTABLE;
-  }
-
-  public static boolean hasMetal(final String name) {
-    return getMetal(name) != INVALID_METAL;
   }
 
   public static boolean hasMeltable(final ItemStack stack) {
@@ -217,7 +189,6 @@ public final class GradientMetals {
     public final int colourEdge2;
     public final int colourEdge3;
 
-    private ItemStack nugget;
     Fluid fluid;
 
     private Metal(final String name, final float meltTemp, final float hardness, final float weight, final boolean canMakeTools, final boolean canMakeNuggets, final boolean canMakeIngots, final int colourDiffuse, final int colourSpecular, final int colourShadow1, final int colourShadow2, final int colourEdge1, final int colourEdge2, final int colourEdge3) {
@@ -249,10 +220,6 @@ public final class GradientMetals {
       this.colourEdge1 = colourEdge1;
       this.colourEdge2 = colourEdge2;
       this.colourEdge3 = colourEdge3;
-    }
-
-    public ItemStack getNugget() {
-      return this.nugget.copy();
     }
 
     public Fluid getFluid() {

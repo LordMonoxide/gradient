@@ -4,6 +4,10 @@ import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.client.models.ClonedAtlasSprite;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
+import lordmonoxide.gradient.science.geology.Ore;
+import lordmonoxide.gradient.science.geology.Ores;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -48,8 +52,13 @@ public final class DynamicTextureLoader {
     final ResourceLocation plateLoc = GradientMod.resource("items/plate");
     final ResourceLocation toolHandleLoc = GradientMod.resource("items/tool_handle");
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      registerDynamicTextures(map, oreLoc, metal);
+    for(final Ore.Metal ore : Ores.metals()) {
+      registerDynamicTextures(map, oreLoc, ore.metal);
+      registerDynamicTextures(map, crushedLoc, ore.metal);
+      registerDynamicTextures(map, purifiedLoc, ore.metal);
+    }
+
+    for(final Metal metal : Metals.all()) {
       registerDynamicTextures(map, ingotLoc, metal);
       registerDynamicTextures(map, hammerLoc, metal);
       registerDynamicTextures(map, mattockLoc, metal);
@@ -57,8 +66,6 @@ public final class DynamicTextureLoader {
       registerDynamicTextures(map, swordLoc, metal);
       registerDynamicTextures(map, nuggetLoc, metal);
       registerDynamicTextures(map, dustLoc, metal);
-      registerDynamicTextures(map, crushedLoc, metal);
-      registerDynamicTextures(map, purifiedLoc, metal);
       registerDynamicTextures(map, plateLoc, metal);
 
       for(final GradientTools.Type toolType : GradientTools.types()) {
@@ -91,7 +98,13 @@ public final class DynamicTextureLoader {
 
   private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final GradientMetals.Metal metal, final ResourceLocation... sprites) {
     if(getResource(GradientMod.resource("textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
-      map.setTextureEntry(new MetalAtlasSprite(GradientMod.resource(name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
+      map.setTextureEntry(new OldMetalAtlasSprite(GradientMod.resource(name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
+    }
+  }
+
+  private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final Metal metal, final ResourceLocation... sprites) {
+    if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
+      map.setTextureEntry(new MetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
     }
   }
 

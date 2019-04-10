@@ -1,6 +1,8 @@
 package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.blocks.BlockMetalFluid;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
@@ -17,10 +19,10 @@ public final class GradientFluids {
   public static void registerBlocks(final RegistryEvent.Register<Block> event) {
     GradientMod.logger.info("Registering fluids");
 
-    GradientMetals.metals.forEach(metal -> registerFluidForMetal(event.getRegistry(), metal));
+    Metals.all().forEach(metal -> registerFluidForMetal(event.getRegistry(), metal));
   }
 
-  private static void registerFluidForMetal(final IForgeRegistry<Block> registry, final GradientMetals.Metal metal) {
+  private static void registerFluidForMetal(final IForgeRegistry<Block> registry, final Metal metal) {
     final Fluid fluid;
 
     if(FluidRegistry.isFluidRegistered(metal.name)) {
@@ -44,7 +46,5 @@ public final class GradientFluids {
     }
 
     registry.register(block);
-
-    metal.fluid = fluid;
   }
 }

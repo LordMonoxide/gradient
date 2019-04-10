@@ -22,6 +22,7 @@ public final class DynamicModelLoader {
     GradientMod.logger.info("Registering dynamic models");
 
     registerBlock(DynamicModelLoader::acceptOres);
+    registerBlock(DynamicModelLoader::acceptCastBlocks);
     registerBlock(DynamicModelLoader::acceptPebbles, GradientMod.resource("block/pebble")).disableRetexture();
     registerItem(DynamicModelLoader::acceptIngots);
     registerItem(DynamicModelLoader::acceptHammers);
@@ -29,6 +30,7 @@ public final class DynamicModelLoader {
     registerItem(DynamicModelLoader::acceptPickaxes);
     registerItem(DynamicModelLoader::acceptSwords);
     registerItem(DynamicModelLoader::acceptNuggets);
+    registerItem(DynamicModelLoader::acceptAlloyNuggets);
     registerItem(DynamicModelLoader::acceptDusts);
     registerItem(DynamicModelLoader::acceptCrushed);
     registerItem(DynamicModelLoader::acceptPurified);
@@ -54,6 +56,10 @@ public final class DynamicModelLoader {
 
   private static boolean acceptOres(final ResourceLocation loc) {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("ore.");
+  }
+
+  private static boolean acceptCastBlocks(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_block.");
   }
 
   private static boolean acceptPebbles(final ResourceLocation loc) {
@@ -82,6 +88,10 @@ public final class DynamicModelLoader {
 
   private static boolean acceptNuggets(final ResourceLocation loc) {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("nugget.");
+  }
+
+  private static boolean acceptAlloyNuggets(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("alloy_nugget.");
   }
 
   private static boolean acceptDusts(final ResourceLocation loc) {

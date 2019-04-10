@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.items;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientTools;
+import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +21,9 @@ import java.util.Set;
 
 public class Tool extends GradientItemWorldTool {
   public final GradientTools.Type type;
-  public final GradientMetals.Metal metal;
+  public final Metal metal;
 
-  public Tool(final GradientTools.Type type, final GradientMetals.Metal metal) {
+  public Tool(final GradientTools.Type type, final Metal metal) {
     super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, metal.durability);
     this.type = type;
     this.metal = metal;

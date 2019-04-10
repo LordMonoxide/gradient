@@ -2,8 +2,9 @@ package lordmonoxide.gradient.blocks;
 
 import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.science.geology.Ore;
 import lordmonoxide.gradient.science.geology.Ores;
 import lordmonoxide.gradient.tileentities.*;
@@ -28,12 +29,12 @@ public final class GradientBlocks {
 
   public static final BlockPebble PEBBLE = new BlockPebble();
 
-  public static final ImmutableMap<GradientMetals.Metal, BlockPebble> METAL_PEBBLES;
+  public static final ImmutableMap<Metal, BlockPebble> METAL_PEBBLES;
 
   static {
-    final Map<GradientMetals.Metal, BlockPebble> pebbles = new HashMap<>();
+    final Map<Metal, BlockPebble> pebbles = new HashMap<>();
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+    for(final Metal metal : Metals.all()) {
       pebbles.put(metal, new BlockPebble(metal));
     }
 
@@ -112,15 +113,15 @@ public final class GradientBlocks {
     ORES = ImmutableMap.copyOf(ores);
   }
 
-  public static final ImmutableMap<GradientMetals.Metal, Block> CAST_BLOCK;
+  public static final ImmutableMap<Metal, Block> CAST_BLOCK;
 
   static {
-    final Map<GradientMetals.Metal, Block> castBlocks = new HashMap<>();
-    castBlocks.put(GradientMetals.IRON, Blocks.IRON_BLOCK);
-    castBlocks.put(GradientMetals.GOLD, Blocks.GOLD_BLOCK);
-    castBlocks.put(GradientMetals.GLASS, Blocks.GLASS);
+    final Map<Metal, Block> castBlocks = new HashMap<>();
+    castBlocks.put(Metals.IRON, Blocks.IRON_BLOCK);
+    castBlocks.put(Metals.GOLD, Blocks.GOLD_BLOCK);
+    castBlocks.put(Metals.GLASS, Blocks.GLASS);
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+    for(final Metal metal : Metals.all()) {
       if(!castBlocks.containsKey(metal)) {
         castBlocks.put(metal, new CastBlock(metal));
       }
@@ -188,7 +189,7 @@ public final class GradientBlocks {
     registry.register(BRONZE_GRINDER);
 
     for(final Block castBlock : CAST_BLOCK.values()) {
-      if(!registry.containsKey(castBlock.getRegistryName())) {
+      if(GradientMod.MODID.equals(castBlock.getRegistryName().getNamespace())) {
         registry.register(castBlock);
       }
     }

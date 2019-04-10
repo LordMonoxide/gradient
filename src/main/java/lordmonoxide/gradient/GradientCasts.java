@@ -1,6 +1,8 @@
 package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
@@ -25,7 +27,7 @@ public final class GradientCasts {
   public static final Cast BLOCK = register("block")
     .itemOverride(metal -> new ItemStack(GradientBlocks.CAST_BLOCK.get(metal)))
     .amount(metal -> Fluid.BUCKET_VOLUME * 8)
-    .amount(GradientMetals.GLASS, Fluid.BUCKET_VOLUME)
+    .amount(Metals.GLASS, Fluid.BUCKET_VOLUME)
     .add();
 
   public static CastBuilder register(final String name) {
@@ -61,11 +63,11 @@ public final class GradientCasts {
 
     public final int id;
     public final String name;
-    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid;
-    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount;
-    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride;
+    private final Map<Metal, Function<Metal, Boolean>> isValid;
+    private final Map<Metal, Function<Metal, Integer>> amount;
+    private final Map<Metal, Function<Metal, ItemStack>> itemOverride;
 
-    public Cast(final String name, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount, final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride) {
+    public Cast(final String name, final Map<Metal, Function<Metal, Boolean>> isValid, final Map<Metal, Function<Metal, Integer>> amount, final Map<Metal, Function<Metal, ItemStack>> itemOverride) {
       this.id = currentId++;
       this.name = name;
       this.isValid = isValid;
@@ -73,19 +75,19 @@ public final class GradientCasts {
       this.itemOverride = itemOverride;
     }
 
-    public boolean isValidForMetal(final GradientMetals.Metal metal) {
-      final Function<GradientMetals.Metal, Boolean> validFn = this.isValid.get(metal);
+    public boolean isValidForMetal(final Metal metal) {
+      final Function<Metal, Boolean> validFn = this.isValid.get(metal);
       return validFn != null ? validFn.apply(metal) : false;
     }
 
-    public int amountForMetal(final GradientMetals.Metal metal) {
-      final Function<GradientMetals.Metal, Integer> amountFn = this.amount.get(metal);
+    public int amountForMetal(final Metal metal) {
+      final Function<Metal, Integer> amountFn = this.amount.get(metal);
       return amountFn != null ? amountFn.apply(metal) : 0;
     }
 
     @Nullable
-    public ItemStack itemForMetal(final GradientMetals.Metal metal) {
-      final Function<GradientMetals.Metal, ItemStack> stackFn = this.itemOverride.get(metal);
+    public ItemStack itemForMetal(final Metal metal) {
+      final Function<Metal, ItemStack> stackFn = this.itemOverride.get(metal);
       return stackFn != null ? stackFn.apply(metal) : null;
     }
 
@@ -105,9 +107,9 @@ public final class GradientCasts {
   public static final class CastBuilder {
     private final String name;
 
-    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Boolean>> isValid = new HashMap<>();
-    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, Integer>> amount = new HashMap<>();
-    private final Map<GradientMetals.Metal, Function<GradientMetals.Metal, ItemStack>> itemOverride = new HashMap<>();
+    private final Map<Metal, Function<Metal, Boolean>> isValid = new HashMap<>();
+    private final Map<Metal, Function<Metal, Integer>> amount = new HashMap<>();
+    private final Map<Metal, Function<Metal, ItemStack>> itemOverride = new HashMap<>();
 
     private CastBuilder(final String name) {
       this.name = name;
@@ -115,32 +117,32 @@ public final class GradientCasts {
       this.amount(metal -> Fluid.BUCKET_VOLUME);
     }
 
-    public CastBuilder isValid(final Function<GradientMetals.Metal, Boolean> isValid) {
-      GradientMetals.metals.forEach(metal -> this.isValid.put(metal, isValid));
+    public CastBuilder isValid(final Function<Metal, Boolean> isValid) {
+      Metals.all().forEach(metal -> this.isValid.put(metal, isValid));
       return this;
     }
 
-    public CastBuilder isValid(final GradientMetals.Metal metal, final boolean isValid) {
+    public CastBuilder isValid(final Metal metal, final boolean isValid) {
       this.isValid.put(metal, m -> isValid);
       return this;
     }
 
-    public CastBuilder amount(final Function<GradientMetals.Metal, Integer> amount) {
-      GradientMetals.metals.forEach(metal -> this.amount.put(metal, amount));
+    public CastBuilder amount(final Function<Metal, Integer> amount) {
+      Metals.all().forEach(metal -> this.amount.put(metal, amount));
       return this;
     }
 
-    public CastBuilder amount(final GradientMetals.Metal metal, final int amount) {
+    public CastBuilder amount(final Metal metal, final int amount) {
       this.amount.put(metal, m -> amount);
       return this;
     }
 
-    public CastBuilder itemOverride(final Function<GradientMetals.Metal, ItemStack> callback) {
-      GradientMetals.metals.forEach(metal -> this.itemOverride.put(metal, callback));
+    public CastBuilder itemOverride(final Function<Metal, ItemStack> callback) {
+      Metals.all().forEach(metal -> this.itemOverride.put(metal, callback));
       return this;
     }
 
-    public CastBuilder itemOverride(final GradientMetals.Metal metal, final ItemStack stack) {
+    public CastBuilder itemOverride(final Metal metal, final ItemStack stack) {
       this.itemOverride.put(metal, m -> stack);
       return this;
     }

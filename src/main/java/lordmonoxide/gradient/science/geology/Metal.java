@@ -3,6 +3,8 @@ package lordmonoxide.gradient.science.geology;
 import com.google.common.collect.ImmutableList;
 import lordmonoxide.gradient.science.chemistry.Element;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class Metal {
   public final String name;
@@ -19,10 +21,10 @@ public class Metal {
   public final double attackDamageMultiplier;
   public final double attackSpeedMultiplier;
 
-  public final boolean canMakeTools;
   public final boolean canMakeIngots;
+  public final boolean canMakeTools;
   public final boolean canMakePlates;
-  public final boolean canMakeDustWithMortar;
+  public final boolean canMakeDustWithBasicGrinder;
 
   public final int colourDiffuse;
   public final int colourSpecular;
@@ -34,7 +36,7 @@ public class Metal {
 
   public final ImmutableList<MetalElement> elements;
 
-  public Metal(final String name, final float meltTemp, final float hardness, final float weight, final boolean canMakeTools, final boolean canMakeIngots, final int colourDiffuse, final int colourSpecular, final int colourShadow1, final int colourShadow2, final int colourEdge1, final int colourEdge2, final int colourEdge3, final NonNullList<MetalElement> elements) {
+  public Metal(final String name, final float meltTemp, final float hardness, final float weight, final boolean canMakeIngots, final int colourDiffuse, final int colourSpecular, final int colourShadow1, final int colourShadow2, final int colourEdge1, final int colourEdge2, final int colourEdge3, final NonNullList<MetalElement> elements) {
     this.name = name;
     this.meltTime = Math.round(hardness * 7.5f);
     this.meltTemp = meltTemp;
@@ -49,10 +51,10 @@ public class Metal {
     this.attackDamageMultiplier = hardness / 2 * weight / 100;
     this.attackSpeedMultiplier  = 1 / weight * 100;
 
-    this.canMakeTools = canMakeTools;
     this.canMakeIngots = canMakeIngots;
+    this.canMakeTools = hardness >= 3.0f;
     this.canMakePlates = hardness <= 4.0f;
-    this.canMakeDustWithMortar = hardness <= 2.5f;
+    this.canMakeDustWithBasicGrinder = hardness <= 2.5f;
 
     this.colourDiffuse = colourDiffuse;
     this.colourSpecular = colourSpecular;
@@ -63,6 +65,10 @@ public class Metal {
     this.colourEdge3 = colourEdge3;
 
     this.elements = ImmutableList.copyOf(elements);
+  }
+
+  public Fluid getFluid() {
+    return FluidRegistry.getFluid(this.name);
   }
 
   public static class MetalElement {

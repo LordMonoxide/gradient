@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.GradientMetals;
-import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.items.GradientItems;
+import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -18,7 +18,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -27,7 +26,7 @@ public class BlockPebble extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.25d, 0.0d, 0.25d, 0.75d, 0.25d, 0.75d);
 
   @Nullable
-  private final GradientMetals.Metal metal;
+  private final Metal metal;
 
   public BlockPebble() {
     super("pebble", CreativeTabs.MATERIALS, Material.GROUND, MapColor.GRAY); //$NON-NLS-1$
@@ -37,7 +36,7 @@ public class BlockPebble extends GradientBlock {
     this.metal = null;
   }
 
-  public BlockPebble(final GradientMetals.Metal metal) {
+  public BlockPebble(final Metal metal) {
     super("pebble." + metal.name, CreativeTabs.MATERIALS, Material.GROUND, MapColor.GRAY); //$NON-NLS-1$
     this.setHardness(0.0f);
     this.setResistance(0.0f);
@@ -60,7 +59,7 @@ public class BlockPebble extends GradientBlock {
 
     if(this.metal != null) {
       if(rand.nextInt(2) == 0) {
-        drops.add(new ItemStack(ForgeRegistries.ITEMS.getValue(GradientMod.resource("nugget." + this.metal.name))));
+        drops.add(new ItemStack(GradientItems.METAL_PEBBLES.get(this.metal)));
       }
     }
   }

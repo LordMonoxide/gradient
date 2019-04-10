@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.client.textures;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.client.models.ClonedAtlasSprite;
@@ -93,12 +92,6 @@ public final class DynamicTextureLoader {
   private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final ResourceLocation source) {
     if(getResource(GradientMod.resource("textures/" + name.getPath() + ".png")) == null) {
       map.setTextureEntry(new ClonedAtlasSprite(GradientMod.resource(name.getPath()), source));
-    }
-  }
-
-  private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final GradientMetals.Metal metal, final ResourceLocation... sprites) {
-    if(getResource(GradientMod.resource("textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
-      map.setTextureEntry(new OldMetalAtlasSprite(GradientMod.resource(name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
     }
   }
 

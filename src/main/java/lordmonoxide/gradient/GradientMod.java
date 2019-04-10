@@ -104,7 +104,6 @@ public class GradientMod {
     GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
 
-    GradientMetals.registerMeltables();
     Metals.registerMeltables();
 
     GradientNet.register();

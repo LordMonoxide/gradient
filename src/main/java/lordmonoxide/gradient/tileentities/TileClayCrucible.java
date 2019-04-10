@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.tileentities;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -99,7 +99,7 @@ public class TileClayCrucible extends HeatSinker {
 
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(!this.isMelting(slot) && !this.getMetalSlot(slot).isEmpty()) {
-        final GradientMetals.Meltable meltable = GradientMetals.getMeltable(this.getMetalSlot(slot));
+        final Metals.Meltable meltable = Metals.getMeltable(this.getMetalSlot(slot));
 
         if(this.canMelt(meltable)) {
           this.melting[slot] = new MeltingMetal(meltable);
@@ -129,7 +129,7 @@ public class TileClayCrucible extends HeatSinker {
             this.melting[slot] = null;
             this.setMetalSlot(slot, ItemStack.EMPTY);
 
-            final FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), GradientMetals.getMeltable(stack).amount);
+            final FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), Metals.getMeltable(stack).amount);
 
             this.tank.fill(fluid, true);
 
@@ -152,7 +152,7 @@ public class TileClayCrucible extends HeatSinker {
     this.inventory.setStackInSlot(FIRST_METAL_SLOT + slot, stack);
   }
 
-  private boolean canMelt(final GradientMetals.Meltable meltable) {
+  private boolean canMelt(final Metals.Meltable meltable) {
     return (this.tank.getFluid() == null || this.tank.getFluid().getFluid() == meltable.metal.getFluid()) && this.getHeat() >= meltable.meltTemp;
   }
 
@@ -218,7 +218,7 @@ public class TileClayCrucible extends HeatSinker {
       final int slot = tag.getInteger("slot");
 
       if(slot < METAL_SLOTS_COUNT) {
-        this.melting[slot] = MeltingMetal.fromNbt(GradientMetals.getMeltable(this.getMetalSlot(slot)), tag);
+        this.melting[slot] = MeltingMetal.fromNbt(Metals.getMeltable(this.getMetalSlot(slot)), tag);
       }
     }
 
@@ -248,21 +248,21 @@ public class TileClayCrucible extends HeatSinker {
   }
 
   public static final class MeltingMetal {
-    public final GradientMetals.Meltable meltable;
+    public final Metals.Meltable meltable;
     private final int meltTicksTotal;
     private int meltTicks;
 
-    public static MeltingMetal fromNbt(final GradientMetals.Meltable metal, final NBTTagCompound tag) {
+    public static MeltingMetal fromNbt(final Metals.Meltable metal, final NBTTagCompound tag) {
       final MeltingMetal melting = new MeltingMetal(metal, tag.getInteger("ticksTotal"));
       melting.meltTicks = tag.getInteger("ticks");
       return melting;
     }
 
-    private MeltingMetal(final GradientMetals.Meltable meltable) {
+    private MeltingMetal(final Metals.Meltable meltable) {
       this(meltable, (int)(meltable.metal.meltTime * meltable.meltModifier * 20));
     }
 
-    private MeltingMetal(final GradientMetals.Meltable meltable, final int meltTicksTotal) {
+    private MeltingMetal(final Metals.Meltable meltable, final int meltTicksTotal) {
       this.meltable = meltable;
       this.meltTicksTotal = meltTicksTotal;
     }

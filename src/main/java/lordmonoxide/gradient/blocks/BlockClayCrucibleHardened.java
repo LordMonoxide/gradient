@@ -2,12 +2,13 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientGuiHandler;
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.items.ItemClayCastUnhardened;
-import lordmonoxide.gradient.tileentities.TileClayCrucible;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.GradientItems;
+import lordmonoxide.gradient.items.ItemClayCastUnhardened;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
+import lordmonoxide.gradient.tileentities.TileClayCrucible;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -122,7 +123,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
             return true;
           }
 
-          final GradientMetals.Metal metal = GradientMetals.getMetalForFluid(te.getMoltenMetal().getFluid());
+          final Metal metal = Metals.getMetalForFluid(te.getMoltenMetal().getFluid());
           final int amount = cast.amountForMetal(metal);
 
           if(te.getMoltenMetal().amount < amount) {
@@ -150,9 +151,9 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
 
           // Make sure the fluid handler is either empty, or contains metal
           if(fluid != null) {
-            final GradientMetals.Metal metal = GradientMetals.getMetalForFluid(fluid.getFluid());
+            final Metal metal = Metals.getMetalForFluid(fluid.getFluid());
 
-            if(metal == GradientMetals.INVALID_METAL) {
+            if(metal == Metals.INVALID_METAL) {
               return true;
             }
           }

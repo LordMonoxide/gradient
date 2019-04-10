@@ -1,7 +1,8 @@
 package lordmonoxide.gradient.overrides;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,12 +15,12 @@ public final class MetalTooltips {
 
   @SubscribeEvent
   public static void addMetalInfoToTooltips(final ItemTooltipEvent event) {
-    if(event.getItemStack().isEmpty() || !GradientMetals.hasMeltable(event.getItemStack())) {
+    if(event.getItemStack().isEmpty() || Metals.getMeltable(event.getItemStack()) == Metals.INVALID_MELTABLE) {
       return;
     }
 
-    final GradientMetals.Meltable meltable = GradientMetals.getMeltable(event.getItemStack());
-    final GradientMetals.Metal metal = meltable.metal;
+    final Metals.Meltable meltable = Metals.getMeltable(event.getItemStack());
+    final Metal metal = meltable.metal;
 
     event.getToolTip().add(I18n.format("metal.melt_temp", meltable.meltTemp));
     event.getToolTip().add(I18n.format("metal.melt_time", metal.meltTime * meltable.meltModifier));

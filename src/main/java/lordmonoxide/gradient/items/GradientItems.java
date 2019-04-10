@@ -2,7 +2,6 @@ package lordmonoxide.gradient.items;
 
 import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.blocks.GradientBlocks;
@@ -56,12 +55,12 @@ public final class GradientItems {
   public static final Item SALT_BLOCK = new ItemPebble(GradientBlocks.SALT_BLOCK).setRegistryName(GradientBlocks.SALT_BLOCK.getRegistryName());
   public static final Item PEBBLE = new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName());
 
-  public static final ImmutableMap<GradientMetals.Metal, Item> METAL_PEBBLES;
+  public static final ImmutableMap<Metal, Item> METAL_PEBBLES;
 
   static {
-    final Map<GradientMetals.Metal, Item> pebbles = new HashMap<>();
+    final Map<Metal, Item> pebbles = new HashMap<>();
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+    for(final Metal metal : Metals.all()) {
       final Block pebble = GradientBlocks.METAL_PEBBLES.get(metal);
       pebbles.put(metal, new ItemPebble(pebble).setRegistryName(pebble.getRegistryName()));
     }
@@ -182,19 +181,19 @@ public final class GradientItems {
   public static final StonePickaxe STONE_PICKAXE = new StonePickaxe();
   public static final FlintKnife   FLINT_KNIFE   = new FlintKnife();
   public static final BoneAwl      BONE_AWL      = new BoneAwl();
-  private static final Map<GradientTools.Type, Map<GradientMetals.Metal, Tool>> TOOL = new HashMap<>();
+  private static final Map<GradientTools.Type, Map<Metal, Tool>> TOOL = new HashMap<>();
 
   private static final Map<Ore.Metal, Item> ORE = new HashMap<>();
   private static final Map<Ore.Metal, ItemMetal> CRUSHED = new HashMap<>();
   private static final Map<Ore.Metal, ItemMetal> PURIFIED = new HashMap<>();
+  private static final Map<Metal, ItemMetal> DUST = new HashMap<>();
+  public static final GradientItem DUST_FLINT  = new GradientItem("dust.flint", CreativeTabs.MATERIALS);
   private static final Map<Metal, ItemMetal> NUGGET = new HashMap<>();
   public static final GradientItem NUGGET_COAL = new GradientItem("nugget.coal", CreativeTabs.MATERIALS);
-  private static final Map<GradientMetals.Metal, ItemMetalOld> DUST = new HashMap<>();
-  public static final GradientItem DUST_FLINT  = new GradientItem("dust.flint", CreativeTabs.MATERIALS);
-  private static final Map<GradientMetals.Metal, ItemMetalOld> PLATE = new HashMap<>();
-  private static final Map<GradientMetals.Alloy, ItemMetalOld> ALLOY_NUGGET = new HashMap<>();
-  private static final Map<GradientCasts.Cast, Map<GradientMetals.Metal, CastItem>> CAST_ITEM = new HashMap<>();
-  private static final Map<GradientMetals.Metal, Item> CAST_BLOCK = new HashMap<>();
+  private static final Map<Metal, ItemMetal> PLATE = new HashMap<>();
+  private static final Map<Metal, ItemMetal> ALLOY_NUGGET = new HashMap<>();
+  private static final Map<GradientCasts.Cast, Map<Metal, CastItem>> CAST_ITEM = new HashMap<>();
+  private static final Map<Metal, Item> CAST_BLOCK = new HashMap<>();
 
   static {
     for(final Ore.Metal ore : Ores.metals()) {
@@ -205,23 +204,28 @@ public final class GradientItems {
     }
 
     for(final Metal metal : Metals.all()) {
-      NUGGET.put(metal, new ItemMetal("nugget", metal));
-    }
+      DUST.put(metal, new ItemMetal("dust", metal));
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      if(metal.canMakeIngots) {
+        NUGGET.put(metal, new ItemMetal("nugget", metal));
+
+        if(metal.elements.size() > 1) {
+          ALLOY_NUGGET.put(metal, new ItemMetal("alloy_nugget", metal));
+        }
+
+        if(metal.canMakePlates) {
+          PLATE.put(metal, new ItemMetal("plate", metal));
+        }
+      }
+
       final Block castBlock = GradientBlocks.CAST_BLOCK.get(metal);
       CAST_BLOCK.put(metal, new ItemBlock(castBlock).setRegistryName(castBlock.getRegistryName()));
-      DUST.put(metal, new ItemMetalOld("dust", metal));
-
-      if(metal.canMakePlates) {
-        PLATE.put(metal, new ItemMetalOld("plate", metal));
-      }
     }
 
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
-      final Map<GradientMetals.Metal, CastItem> castItems = new HashMap<>();
+      final Map<Metal, CastItem> castItems = new HashMap<>();
 
-      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      for(final Metal metal : Metals.all()) {
         if(cast.isValidForMetal(metal) && cast.itemForMetal(metal) == null) {
           castItems.put(metal, new CastItem(cast, metal));
         }
@@ -231,19 +235,15 @@ public final class GradientItems {
     }
 
     for(final GradientTools.Type type : GradientTools.types()) {
-      final Map<GradientMetals.Metal, Tool> tools = new HashMap<>();
+      final Map<Metal, Tool> tools = new HashMap<>();
 
-      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      for(final Metal metal : Metals.all()) {
         if(metal.canMakeTools) {
           tools.put(metal, new Tool(type, metal));
         }
       }
 
       TOOL.put(type, tools);
-    }
-
-    for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
-      ALLOY_NUGGET.put(alloy, new ItemMetalOld("alloy_nugget", alloy.output.metal));
     }
   }
 
@@ -264,15 +264,15 @@ public final class GradientItems {
     return NUGGET.get(metal);
   }
 
-  public static ItemMetalOld dust(final GradientMetals.Metal metal) {
+  public static ItemMetal dust(final Metal metal) {
     return DUST.get(metal);
   }
 
-  public static ItemMetalOld plate(final GradientMetals.Metal metal) {
+  public static ItemMetal plate(final Metal metal) {
     return PLATE.get(metal);
   }
 
-  public static ItemStack castItem(final GradientCasts.Cast cast, final GradientMetals.Metal metal, final int amount) {
+  public static ItemStack castItem(final GradientCasts.Cast cast, final Metal metal, final int amount) {
     final ItemStack stack = cast.itemForMetal(metal);
 
     if(stack != null) {
@@ -282,12 +282,12 @@ public final class GradientItems {
     return CAST_ITEM.get(cast).get(metal).getItemStack(amount);
   }
 
-  public static Tool tool(final GradientTools.Type type, final GradientMetals.Metal metal) {
+  public static Tool tool(final GradientTools.Type type, final Metal metal) {
     return TOOL.get(type).get(metal);
   }
 
-  public static ItemMetalOld alloyNugget(final GradientMetals.Alloy alloy) {
-    return ALLOY_NUGGET.get(alloy);
+  public static ItemMetal alloyNugget(final Metal metal) {
+    return ALLOY_NUGGET.get(metal);
   }
 
   @SubscribeEvent
@@ -474,39 +474,28 @@ public final class GradientItems {
     for(final Metal metal : Metals.all()) {
       final String caps = StringUtils.capitalize(metal.name);
 
-      OreDictionary.registerOre("nugget", nugget(metal));
-      OreDictionary.registerOre("nugget" + caps, nugget(metal));
-    }
+      if(metal.canMakeIngots) {
+        OreDictionary.registerOre("nugget", nugget(metal));
+        OreDictionary.registerOre("nugget" + caps, nugget(metal));
+        OreDictionary.registerOre("ingot" + caps, castItem(GradientCasts.INGOT, metal, 1));
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      final String caps = StringUtils.capitalize(metal.name);
+        if(metal.elements.size() > 1) {
+          OreDictionary.registerOre("alloyNugget" + caps, alloyNugget(metal));
+        }
 
-      if(metal.canMakeNuggets) {
+        if(metal.canMakePlates) {
+          OreDictionary.registerOre("plate" + caps, plate(metal));
+        }
       }
 
       OreDictionary.registerOre("dust" + caps, dust(metal));
-
-      if(metal.canMakeIngots) {
-        OreDictionary.registerOre("ingot" + caps, castItem(GradientCasts.INGOT, metal, 1));
-      }
-
       OreDictionary.registerOre("block" + caps, castItem(GradientCasts.BLOCK, metal, 1));
-
-      if(metal.canMakePlates) {
-        OreDictionary.registerOre("plate" + caps, plate(metal));
-      }
 
       if(metal.canMakeTools) {
         final ItemStack stack = tool(GradientTools.MATTOCK, metal).getWildcardItemStack();
         OreDictionary.registerOre("toolAxe", stack);
         OreDictionary.registerOre("toolHoe", stack);
       }
-    }
-
-    for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
-      final String name = StringUtils.capitalize(alloy.output.metal.name);
-
-      OreDictionary.registerOre("alloyNugget" + name, alloyNugget(alloy));
     }
 
     OreDictionary.registerOre("dustFlint", DUST_FLINT);

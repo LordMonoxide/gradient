@@ -1,6 +1,6 @@
 package lordmonoxide.gradient.containers;
 
-import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -12,7 +12,7 @@ public class SlotMetal extends SlotItemHandler {
 
   @Override
   public boolean isItemValid(final ItemStack stack) {
-    return GradientMetals.hasMeltable(stack) && super.isItemValid(stack);
+    return Metals.getMeltable(stack) != Metals.INVALID_MELTABLE && super.isItemValid(stack);
   }
 
   @Override

@@ -18,14 +18,14 @@ public final class GradientCasts {
 
   private static final Map<String, Cast> CASTS = new LinkedHashMap<>();
 
-  public static final Cast PICKAXE = register("pickaxe").isValid(metal -> metal.canMakeTools).add();
-  public static final Cast MATTOCK = register("mattock").isValid(metal -> metal.canMakeTools).add();
-  public static final Cast SWORD   = register("sword")  .isValid(metal -> metal.canMakeTools).add();
-  public static final Cast HAMMER  = register("hammer") .isValid(metal -> metal.canMakeTools).add();
-  public static final Cast INGOT   = register("ingot")  .isValid(metal -> metal.canMakeIngots).add();
+  public static final Cast PICKAXE = register("pickaxe").isValid(m -> m.canMakeTools).add();
+  public static final Cast MATTOCK = register("mattock").isValid(m -> m.canMakeTools).add();
+  public static final Cast SWORD   = register("sword")  .isValid(m -> m.canMakeTools).add();
+  public static final Cast HAMMER  = register("hammer") .isValid(m -> m.canMakeTools).add();
+  public static final Cast INGOT   = register("ingot")  .isValid(m -> m.canMakeIngots).add();
 
   public static final Cast BLOCK = register("block")
-    .itemOverride(metal -> new ItemStack(GradientBlocks.CAST_BLOCK.get(metal)))
+    .item(metal -> new ItemStack(GradientBlocks.castBlock(metal)))
     .amount(metal -> Fluid.BUCKET_VOLUME * 8)
     .amount(Metals.GLASS, Fluid.BUCKET_VOLUME)
     .add();
@@ -65,14 +65,14 @@ public final class GradientCasts {
     public final String name;
     private final Map<Metal, Function<Metal, Boolean>> isValid;
     private final Map<Metal, Function<Metal, Integer>> amount;
-    private final Map<Metal, Function<Metal, ItemStack>> itemOverride;
+    private final Map<Metal, Function<Metal, ItemStack>> item;
 
-    public Cast(final String name, final Map<Metal, Function<Metal, Boolean>> isValid, final Map<Metal, Function<Metal, Integer>> amount, final Map<Metal, Function<Metal, ItemStack>> itemOverride) {
+    public Cast(final String name, final Map<Metal, Function<Metal, Boolean>> isValid, final Map<Metal, Function<Metal, Integer>> amount, final Map<Metal, Function<Metal, ItemStack>> item) {
       this.id = currentId++;
       this.name = name;
       this.isValid = isValid;
       this.amount = amount;
-      this.itemOverride = itemOverride;
+      this.item = item;
     }
 
     public boolean isValidForMetal(final Metal metal) {
@@ -87,7 +87,7 @@ public final class GradientCasts {
 
     @Nullable
     public ItemStack itemForMetal(final Metal metal) {
-      final Function<Metal, ItemStack> stackFn = this.itemOverride.get(metal);
+      final Function<Metal, ItemStack> stackFn = this.item.get(metal);
       return stackFn != null ? stackFn.apply(metal) : null;
     }
 
@@ -109,7 +109,7 @@ public final class GradientCasts {
 
     private final Map<Metal, Function<Metal, Boolean>> isValid = new HashMap<>();
     private final Map<Metal, Function<Metal, Integer>> amount = new HashMap<>();
-    private final Map<Metal, Function<Metal, ItemStack>> itemOverride = new HashMap<>();
+    private final Map<Metal, Function<Metal, ItemStack>> item = new HashMap<>();
 
     private CastBuilder(final String name) {
       this.name = name;
@@ -137,18 +137,18 @@ public final class GradientCasts {
       return this;
     }
 
-    public CastBuilder itemOverride(final Function<Metal, ItemStack> callback) {
-      Metals.all().forEach(metal -> this.itemOverride.put(metal, callback));
+    public CastBuilder item(final Function<Metal, ItemStack> callback) {
+      Metals.all().forEach(metal -> this.item.put(metal, callback));
       return this;
     }
 
-    public CastBuilder itemOverride(final Metal metal, final ItemStack stack) {
-      this.itemOverride.put(metal, m -> stack);
+    public CastBuilder item(final Metal metal, final ItemStack stack) {
+      this.item.put(metal, m -> stack);
       return this;
     }
 
     public Cast add() {
-      final Cast cast = new Cast(this.name, this.isValid, this.amount, this.itemOverride);
+      final Cast cast = new Cast(this.name, this.isValid, this.amount, this.item);
       CASTS.put(this.name, cast);
       return cast;
     }

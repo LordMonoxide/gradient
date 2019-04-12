@@ -62,7 +62,7 @@ public class PacketSwitchCast implements IMessage {
           return;
         }
 
-        inv.setInventorySlotContents(inv.currentItem, new ItemStack(GradientItems.CLAY_CAST_UNHARDENED.get(packet.cast), hand.getCount()));
+        inv.setInventorySlotContents(inv.currentItem, new ItemStack(GradientItems.clayCastUnhardened(packet.cast), hand.getCount()));
       });
 
       return null;

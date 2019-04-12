@@ -1,15 +1,15 @@
 package lordmonoxide.gradient.science.geology;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public final class Ores {
   private Ores() { }
 
-  private static final Map<String, Ore> ores = new HashMap<>();
-  private static final Map<String, Ore.Metal> metals = new HashMap<>();
+  private static final Map<String, Ore> ores = new LinkedHashMap<>();
+  private static final Map<String, Ore.Metal> metals = new LinkedHashMap<>();
 
   public static final Ore.Metal INVALID_ORE_METAL = new Ore.Metal("invalid", Metals.INVALID_METAL);
 

@@ -59,7 +59,7 @@ public class BlockPebble extends GradientBlock {
 
     if(this.metal != null) {
       if(rand.nextInt(2) == 0) {
-        drops.add(new ItemStack(GradientItems.METAL_PEBBLES.get(this.metal)));
+        drops.add(new ItemStack(GradientItems.pebble(this.metal)));
       }
     }
   }

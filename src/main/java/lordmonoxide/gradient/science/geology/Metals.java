@@ -1,7 +1,5 @@
 package lordmonoxide.gradient.science.geology;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import lordmonoxide.gradient.blocks.BlockOre;
 import lordmonoxide.gradient.science.chemistry.Element;
 import lordmonoxide.gradient.science.chemistry.Elements;
@@ -9,23 +7,23 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public final class Metals {
   private Metals() { }
 
-  private static final Map<String, Metal> metals = new HashMap<>();
-  private static final Int2ObjectMap<Meltable> meltables = new Int2ObjectRBTreeMap<>();
+  private static final Map<String, Metal> metals = new LinkedHashMap<>();
+  private static final Map<Meltable, Metal> meltables = new HashMap<>();
 
   public static final Metal INVALID_METAL = new Metal("invalid", Float.POSITIVE_INFINITY, 0.0f, 0.0f, false, 0, 0, 0, 0, 0, 0, 0, NonNullList.create());
-  public static final Meltable INVALID_MELTABLE = new Meltable(INVALID_METAL, 0, 0);
 
   public static final Metal AZURITE     = add("azurite",     m -> m.meltTemp(1165.00f).hardness(3.5f).weight(344.67f).colours(0xFF2E01E2, 0xFF9B81D8, 0xFF2901B9, 0xFF271770, 0xFF231C3D, 0xFF1C1630, 0xFF130F21).element(Elements.COPPER, 0.55f).element(Elements.OXYGEN, 0.37f).element(Elements.CARBON, 0.07f).element(Elements.HYDROGEN, 0.01f));
   public static final Metal BRONZE      = add("bronze",      m -> m.meltTemp( 950.00f).hardness(3.5f).weight(182.26f).colours(0xFFFFE48B, 0xFFFFEAA8, 0xFFFFC400, 0xFFDEAA00, 0xFFDB7800, 0xFF795D00, 0xFF795D00).element(Elements.COPPER, 0.75f).element(Elements.TIN, 0.25f));
@@ -55,6 +53,10 @@ public final class Metals {
     return metals.getOrDefault(name, INVALID_METAL);
   }
 
+  public static Metal get(final Element element) {
+    return metals.getOrDefault(element.name, INVALID_METAL);
+  }
+
   public static Metal get(final Block block) {
     if(!(block instanceof BlockOre)) {
       return INVALID_METAL;
@@ -64,82 +66,32 @@ public final class Metals {
     return ore.ore.metal;
   }
 
+  public static Metal get(final Fluid fluid) {
+    return metals.getOrDefault(fluid.getName(), INVALID_METAL);
+  }
+
+  public static Metal get(final Meltable meltable) {
+    return meltables.getOrDefault(meltable, INVALID_METAL);
+  }
+
   public static Collection<Metal> all() {
     return metals.values();
   }
 
-  public static Collection<Meltable> meltables() {
-    return meltables.values();
-  }
-
-  public static void registerMeltables() {
-    for(final String oreName : OreDictionary.getOreNames()) {
-      if(oreName.startsWith("ore")) {
-        final Ore.Metal ore = Ores.getMetal(oreName.substring(3).toLowerCase());
-
-        if(ore != Ores.INVALID_ORE_METAL) {
-          addMeltable(oreName, Ores.getMetal(oreName.substring(3).toLowerCase()).metal, 1, Fluid.BUCKET_VOLUME);
-        }
-      } else if(oreName.startsWith("ingot")) {
-        addMeltable(oreName, get(oreName.substring(5).toLowerCase()), 1, Fluid.BUCKET_VOLUME);
-      } else if(oreName.startsWith("nugget")) {
-        addMeltable(oreName, get(oreName.substring(6).toLowerCase()), 1.0f / 4.0f, Fluid.BUCKET_VOLUME / 4);
-      } else if(oreName.startsWith("dust")) {
-        addMeltable(oreName, get(oreName.substring(4).toLowerCase()), 1, Fluid.BUCKET_VOLUME);
-      } else if(oreName.startsWith("block")) {
-        addMeltable(oreName, get(oreName.substring(5).toLowerCase()), 8, Fluid.BUCKET_VOLUME * 8);
-      } else if(oreName.startsWith("alloyNugget")) {
-        final Metal metal = get(oreName.substring(11).toLowerCase());
-
-        float hottest = 0;
-
-/* TODO
-        for(final Metal.MetalElement component : metal.elements) {
-          if(component.element.meltTemp > hottest) {
-            hottest = component.element.meltTemp;
-          }
-        }
-
-        addMeltable(oreName, metal, metal.elements.size() / 4.0f, hottest, Fluid.BUCKET_VOLUME / 4 * alloy.output.amount);
-*/
-      }
-    }
-
-    addMeltable("oreIron", Metals.IRON, 1, Fluid.BUCKET_VOLUME);
-
-    addMeltable("sand",       GLASS, 8, Fluid.BUCKET_VOLUME * 8);
-    addMeltable("blockGlass", GLASS, 8, Fluid.BUCKET_VOLUME * 8);
-    addMeltable("paneGlass",  GLASS, 8.0f / 16.0f, Fluid.BUCKET_VOLUME * 8 / 16);
-  }
-
-  private static void addMeltable(final String oreDict, final Metal metal, final float meltModifier, final float meltTemp, final int amount) {
-    final Meltable meltable = new Meltable(metal, meltModifier, meltTemp, amount);
-    meltables.put(OreDictionary.getOreID(oreDict), meltable);
-  }
-
-  private static void addMeltable(final String oreDict, final Metal metal, final float meltModifier, final int amount) {
-    final Meltable meltable = new Meltable(metal, meltModifier, amount);
-    meltables.put(OreDictionary.getOreID(oreDict), meltable);
-  }
-
-  public static Meltable getMeltable(final ItemStack stack) {
-    for(final int id : OreDictionary.getOreIDs(stack)) {
-      final Meltable meltable = meltables.get(id);
-
-      if(meltable != null) {
-        return meltable;
-      }
-    }
-
-    return INVALID_MELTABLE;
-  }
-
   public static ItemStack getBucket(final Metal metal) {
-    return FluidUtil.getFilledBucket(new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME));
+    if(metal == INVALID_METAL) {
+      throw new IllegalStateException("Cannot get bucket for INVALID_METAL");
+    }
+
+    return FluidUtil.getFilledBucket(new FluidStack(FluidRegistry.getFluid(metal.name), Fluid.BUCKET_VOLUME));
   }
 
-  public static Metal getMetalForFluid(final Fluid fluid) {
-    return metals.getOrDefault(fluid.getName(), INVALID_METAL);
+  public static void addMeltable(final Meltable meltable, final Metal metal) {
+    if(metal == INVALID_METAL) {
+      throw new IllegalStateException("Cannot register meltable for INVALID_METAL");
+    }
+
+    meltables.put(meltable, metal);
   }
 
   public static final class MetalBuilder {
@@ -193,24 +145,6 @@ public final class Metals {
     public MetalBuilder element(final Element element, final float percentage) {
       this.elements.add(new Metal.MetalElement(element, percentage));
       return this;
-    }
-  }
-
-  public static class Meltable {
-    public final Metal metal;
-    public final float meltModifier;
-    public final float meltTemp;
-    public final int   amount;
-
-    public Meltable(final Metal metal, final float meltModifier, final float meltTemp, final int amount) {
-      this.metal        = metal;
-      this.meltModifier = meltModifier;
-      this.meltTemp     = meltTemp;
-      this.amount       = amount;
-    }
-
-    public Meltable(final Metal metal, final float meltModifier, final int amount) {
-      this(metal, meltModifier, metal.meltTemp, amount);
     }
   }
 }

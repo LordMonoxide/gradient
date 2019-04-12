@@ -7,8 +7,6 @@ import lordmonoxide.gradient.client.tesr.TileFlywheelRenderer;
 import lordmonoxide.gradient.client.tesr.TileManualGrinderRenderer;
 import lordmonoxide.gradient.client.tesr.TileMixingBasinRenderer;
 import lordmonoxide.gradient.items.GradientItems;
-import lordmonoxide.gradient.science.geology.Metal;
-import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.tileentities.TileClayOven;
 import lordmonoxide.gradient.tileentities.TileDryingRack;
 import lordmonoxide.gradient.tileentities.TileFirePit;
@@ -54,9 +52,7 @@ public final class ModelManager {
   }
 
   private static void registerFluidModels() {
-    Metals.all().stream()
-      .map(Metal::getFluid)
-      .forEach(ModelManager::registerFluidModel);
+    GradientFluids.fluids.forEach(ModelManager::registerFluidModel);
   }
 
   private static void registerFluidModel(final Fluid fluid) {

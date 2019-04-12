@@ -90,6 +90,12 @@ public final class ExtraRecipes {
   }
 
   private static void registerAlloys(final IForgeRegistry<IRecipe> registry) {
+    registry.register(new ShapelessRecipes(
+      GradientMod.MODID,
+      new ItemStack(GradientItems.alloyNugget(Metals.BRONZE)),
+      NonNullList.from(Ingredient.EMPTY, new OreIngredient("nuggetCopper"), new OreIngredient("nuggetCopper"), new OreIngredient("nuggetCopper"), new OreIngredient("nuggetTin"))
+    ).setRegistryName(GradientMod.resource("recipe.alloy_nugget.bronze.1")));
+
 /* TODO
     for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
       final ItemStack output = GradientItems.alloyNugget(alloy).getItemStack(alloy.output.amount);
@@ -121,7 +127,7 @@ public final class ExtraRecipes {
           final int amount = cast.amountForMetal(metal) / Fluid.BUCKET_VOLUME;
 
           final Ingredient[] ingredients = new Ingredient[amount + 1];
-          ingredients[amount] = Ingredient.fromItem(GradientItems.CLAY_CAST_HARDENED.get(cast));
+          ingredients[amount] = Ingredient.fromItem(GradientItems.clayCastHardened(cast));
           Arrays.fill(ingredients, 0, amount, new IngredientNBT(Metals.getBucket(metal)));
 
           final String recipeName = "cast." + cast.name + '.' + metal.name;

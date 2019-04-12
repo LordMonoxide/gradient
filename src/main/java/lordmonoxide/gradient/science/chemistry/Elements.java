@@ -1,14 +1,14 @@
 package lordmonoxide.gradient.science.chemistry;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public final class Elements {
   private Elements() { }
 
-  private static final Map<String, Element> elements = new HashMap<>();
+  private static final Map<String, Element> elements = new LinkedHashMap<>();
 
   public static final Element HYDROGEN = add("hydrogen", e -> e.number(1).weight(1.00794f));
   public static final Element HELIUM = add("helium", e -> e.number(2).weight(4.0026f));

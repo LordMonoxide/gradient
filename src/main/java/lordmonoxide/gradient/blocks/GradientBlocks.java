@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
@@ -76,24 +77,18 @@ public final class GradientBlocks {
   public static final BlockClayOvenUnhardened     CLAY_OVEN_UNHARDENED     = new BlockClayOvenUnhardened();
   public static final BlockClayOvenHardened       CLAY_OVEN_HARDENED       = new BlockClayOvenHardened();
 
-  public static final ImmutableMap<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_UNHARDENED;
-  public static final ImmutableMap<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_HARDENED;
+  private static final Map<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_UNHARDENED = new LinkedHashMap<>();
+  private static final Map<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_HARDENED   = new LinkedHashMap<>();
 
   static {
-    final ImmutableMap.Builder<GradientCasts.Cast, BlockClayCast> unhardened = ImmutableMap.builder();
-    final ImmutableMap.Builder<GradientCasts.Cast, BlockClayCast> hardened = ImmutableMap.builder();
-
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
-      unhardened.put(cast, BlockClayCast.unhardened(cast));
-      hardened.put(cast, BlockClayCast.hardened(cast));
+      CLAY_CASTS_UNHARDENED.put(cast, BlockClayCast.unhardened(cast));
+      CLAY_CASTS_HARDENED.put(cast, BlockClayCast.hardened(cast));
     }
-
-    CLAY_CASTS_UNHARDENED = unhardened.build();
-    CLAY_CASTS_HARDENED = hardened.build();
   }
 
-  public static final BlockClayBucket             CLAY_BUCKET_UNHARDENED   = BlockClayBucket.unhardened();
-  public static final BlockClayBucket             CLAY_BUCKET_HARDENED     = BlockClayBucket.hardened();
+  public static final BlockClayBucket CLAY_BUCKET_UNHARDENED = BlockClayBucket.unhardened();
+  public static final BlockClayBucket CLAY_BUCKET_HARDENED   = BlockClayBucket.hardened();
 
   public static final BlockBronzeMachineHull BRONZE_MACHINE_HULL = new BlockBronzeMachineHull();
   public static final BlockBronzeFurnace     BRONZE_FURNACE      = new BlockBronzeFurnace();
@@ -101,36 +96,43 @@ public final class GradientBlocks {
   public static final BlockBronzeOven        BRONZE_OVEN         = new BlockBronzeOven();
   public static final BlockBronzeGrinder     BRONZE_GRINDER      = new BlockBronzeGrinder();
 
-  public static final ImmutableMap<Ore.Metal, Block> ORES;
+  private static final Map<Ore.Metal, Block> ORES = new LinkedHashMap<>();
 
   static {
-    final Map<Ore.Metal, Block> ores = new HashMap<>();
-
     for(final Ore.Metal ore : Ores.metals()) {
-      ores.put(ore, new BlockOre(ore));
+      ORES.put(ore, new BlockOre(ore));
     }
-
-    ORES = ImmutableMap.copyOf(ores);
   }
 
-  public static final ImmutableMap<Metal, Block> CAST_BLOCK;
+  private static final Map<Metal, Block> CAST_BLOCK = new LinkedHashMap<>();
 
   static {
-    final Map<Metal, Block> castBlocks = new HashMap<>();
-    castBlocks.put(Metals.IRON, Blocks.IRON_BLOCK);
-    castBlocks.put(Metals.GOLD, Blocks.GOLD_BLOCK);
-    castBlocks.put(Metals.GLASS, Blocks.GLASS);
+    CAST_BLOCK.put(Metals.GLASS, Blocks.GLASS);
 
     for(final Metal metal : Metals.all()) {
-      if(!castBlocks.containsKey(metal)) {
-        castBlocks.put(metal, new CastBlock(metal));
+      if(!CAST_BLOCK.containsKey(metal)) {
+        CAST_BLOCK.put(metal, new CastBlock(metal));
       }
     }
-
-    CAST_BLOCK = ImmutableMap.copyOf(castBlocks);
   }
 
   private GradientBlocks() { }
+
+  public static Block clayCastUnhardened(final GradientCasts.Cast cast) {
+    return CLAY_CASTS_UNHARDENED.get(cast);
+  }
+
+  public static Block clayCastHardened(final GradientCasts.Cast cast) {
+    return CLAY_CASTS_HARDENED.get(cast);
+  }
+
+  public static Block ore(final Ore.Metal ore) {
+    return ORES.get(ore);
+  }
+
+  public static Block castBlock(final Metal metal) {
+    return CAST_BLOCK.get(metal);
+  }
 
   @SubscribeEvent
   public static void registerBlocks(final RegistryEvent.Register<Block> event) {

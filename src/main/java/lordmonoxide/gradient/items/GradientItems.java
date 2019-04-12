@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.items;
 
-import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
@@ -40,7 +39,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,17 +54,13 @@ public final class GradientItems {
   public static final Item SALT_BLOCK = new ItemPebble(GradientBlocks.SALT_BLOCK).setRegistryName(GradientBlocks.SALT_BLOCK.getRegistryName());
   public static final Item PEBBLE = new ItemPebble(GradientBlocks.PEBBLE).setRegistryName(GradientBlocks.PEBBLE.getRegistryName());
 
-  public static final ImmutableMap<Metal, Item> METAL_PEBBLES;
+  private static final Map<Metal, Item> METAL_PEBBLES = new LinkedHashMap<>();
 
   static {
-    final Map<Metal, Item> pebbles = new HashMap<>();
-
     for(final Metal metal : Metals.all()) {
       final Block pebble = GradientBlocks.METAL_PEBBLES.get(metal);
-      pebbles.put(metal, new ItemPebble(pebble).setRegistryName(pebble.getRegistryName()));
+      METAL_PEBBLES.put(metal, new ItemPebble(pebble).setRegistryName(pebble.getRegistryName()));
     }
-
-    METAL_PEBBLES = ImmutableMap.copyOf(pebbles);
   }
 
   public static final GradientItem FIBRE = new GradientItem("fibre", CreativeTabs.MATERIALS);
@@ -126,27 +121,21 @@ public final class GradientItems {
   public static final Item CLAY_OVEN_UNHARDENED     = new ItemBlock(GradientBlocks.CLAY_OVEN_UNHARDENED).setRegistryName(GradientBlocks.CLAY_OVEN_UNHARDENED.getRegistryName());
   public static final Item CLAY_OVEN_HARDENED       = new ItemBlock(GradientBlocks.CLAY_OVEN_HARDENED).setRegistryName(GradientBlocks.CLAY_OVEN_HARDENED.getRegistryName());
 
-  public static final ImmutableMap<GradientCasts.Cast, Item> CLAY_CAST_UNHARDENED;
-  public static final ImmutableMap<GradientCasts.Cast, Item> CLAY_CAST_HARDENED;
+  private static final Map<GradientCasts.Cast, Item> CLAY_CAST_UNHARDENED = new LinkedHashMap<>();
+  private static final Map<GradientCasts.Cast, Item> CLAY_CAST_HARDENED   = new LinkedHashMap<>();
 
   static {
-    final ImmutableMap.Builder<GradientCasts.Cast, Item> unhardened = ImmutableMap.builder();
-    final ImmutableMap.Builder<GradientCasts.Cast, Item> hardened = ImmutableMap.builder();
-
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
-      final Block blockUnhardened = GradientBlocks.CLAY_CASTS_UNHARDENED.get(cast);
-      final Block blockHardened = GradientBlocks.CLAY_CASTS_HARDENED.get(cast);
+      final Block blockUnhardened = GradientBlocks.clayCastUnhardened(cast);
+      final Block blockHardened = GradientBlocks.clayCastHardened(cast);
 
-      unhardened.put(cast, new ItemClayCastUnhardened(blockUnhardened).setRegistryName(blockUnhardened.getRegistryName()));
-      hardened.put(cast, new ItemBlock(blockHardened).setRegistryName(blockHardened.getRegistryName()));
+      CLAY_CAST_UNHARDENED.put(cast, new ItemClayCastUnhardened(blockUnhardened).setRegistryName(blockUnhardened.getRegistryName()));
+      CLAY_CAST_HARDENED.put(cast, new ItemBlock(blockHardened).setRegistryName(blockHardened.getRegistryName()));
     }
-
-    CLAY_CAST_UNHARDENED = unhardened.build();
-    CLAY_CAST_HARDENED = hardened.build();
   }
 
-  public static final Item CLAY_BUCKET_UNHARDENED   = new ItemBlock(GradientBlocks.CLAY_BUCKET_UNHARDENED).setRegistryName(GradientBlocks.CLAY_BUCKET_UNHARDENED.getRegistryName());
-  public static final Item CLAY_BUCKET_HARDENED     = new ItemBlock(GradientBlocks.CLAY_BUCKET_HARDENED).setRegistryName(GradientBlocks.CLAY_BUCKET_HARDENED.getRegistryName());
+  public static final Item CLAY_BUCKET_UNHARDENED = new ItemBlock(GradientBlocks.CLAY_BUCKET_UNHARDENED).setRegistryName(GradientBlocks.CLAY_BUCKET_UNHARDENED.getRegistryName());
+  public static final Item CLAY_BUCKET_HARDENED   = new ItemBlock(GradientBlocks.CLAY_BUCKET_HARDENED).setRegistryName(GradientBlocks.CLAY_BUCKET_HARDENED.getRegistryName());
 
   public static final Item HARDENED_LOG    = new ItemBlock(GradientBlocks.HARDENED_LOG).setRegistryName(GradientBlocks.HARDENED_LOG.getRegistryName());
   public static final Item HARDENED_PLANKS = new ItemBlock(GradientBlocks.HARDENED_PLANKS).setRegistryName(GradientBlocks.HARDENED_PLANKS.getRegistryName());
@@ -181,23 +170,25 @@ public final class GradientItems {
   public static final StonePickaxe STONE_PICKAXE = new StonePickaxe();
   public static final FlintKnife   FLINT_KNIFE   = new FlintKnife();
   public static final BoneAwl      BONE_AWL      = new BoneAwl();
-  private static final Map<GradientTools.Type, Map<Metal, Tool>> TOOL = new HashMap<>();
+  private static final Map<GradientTools.Type, Map<Metal, Tool>> TOOL = new LinkedHashMap<>();
 
-  private static final Map<Ore.Metal, Item> ORE = new HashMap<>();
-  private static final Map<Ore.Metal, ItemMetal> CRUSHED = new HashMap<>();
-  private static final Map<Ore.Metal, ItemMetal> PURIFIED = new HashMap<>();
-  private static final Map<Metal, ItemMetal> DUST = new HashMap<>();
+  private static final Map<Ore.Metal, Item> ORE = new LinkedHashMap<>();
+  private static final Map<Ore.Metal, ItemMetal> CRUSHED = new LinkedHashMap<>();
+  private static final Map<Ore.Metal, ItemMetal> PURIFIED = new LinkedHashMap<>();
+  private static final Map<Metal, ItemMetal> DUST = new LinkedHashMap<>();
   public static final GradientItem DUST_FLINT  = new GradientItem("dust.flint", CreativeTabs.MATERIALS);
-  private static final Map<Metal, ItemMetal> NUGGET = new HashMap<>();
+  private static final Map<Metal, ItemMetal> NUGGET = new LinkedHashMap<>();
   public static final GradientItem NUGGET_COAL = new GradientItem("nugget.coal", CreativeTabs.MATERIALS);
-  private static final Map<Metal, ItemMetal> PLATE = new HashMap<>();
-  private static final Map<Metal, ItemMetal> ALLOY_NUGGET = new HashMap<>();
-  private static final Map<GradientCasts.Cast, Map<Metal, CastItem>> CAST_ITEM = new HashMap<>();
-  private static final Map<Metal, Item> CAST_BLOCK = new HashMap<>();
+  private static final Map<Metal, ItemMetal> PLATE = new LinkedHashMap<>();
+  private static final Map<Metal, ItemMetal> ALLOY_NUGGET = new LinkedHashMap<>();
+  private static final Map<GradientCasts.Cast, Map<Metal, CastItem>> CAST_ITEM = new LinkedHashMap<>();
+  private static final Map<Metal, Item> CAST_BLOCK = new LinkedHashMap<>();
 
   static {
+    CAST_BLOCK.put(Metals.GLASS, ItemBlock.getItemFromBlock(Blocks.GLASS));
+
     for(final Ore.Metal ore : Ores.metals()) {
-      final Block block = GradientBlocks.ORES.get(ore);
+      final Block block = GradientBlocks.ore(ore);
       ORE.put(ore, new ItemBlock(block).setRegistryName(block.getRegistryName()));
       CRUSHED.put(ore, new ItemMetal("crushed", ore.metal));
       PURIFIED.put(ore, new ItemMetal("purified", ore.metal));
@@ -210,7 +201,18 @@ public final class GradientItems {
         NUGGET.put(metal, new ItemMetal("nugget", metal));
 
         if(metal.elements.size() > 1) {
-          ALLOY_NUGGET.put(metal, new ItemMetal("alloy_nugget", metal));
+          boolean make = true;
+
+          for(final Metal.MetalElement element : metal.elements) {
+            if(Metals.get(element.element) == Metals.INVALID_METAL) {
+              make = false;
+              break;
+            }
+          }
+
+          if(make) {
+            ALLOY_NUGGET.put(metal, new ItemMetal("alloy_nugget", metal));
+          }
         }
 
         if(metal.canMakePlates) {
@@ -218,12 +220,14 @@ public final class GradientItems {
         }
       }
 
-      final Block castBlock = GradientBlocks.CAST_BLOCK.get(metal);
-      CAST_BLOCK.put(metal, new ItemBlock(castBlock).setRegistryName(castBlock.getRegistryName()));
+      if(!CAST_BLOCK.containsKey(metal)) {
+        final Block castBlock = GradientBlocks.castBlock(metal);
+        CAST_BLOCK.put(metal, new ItemBlock(castBlock).setRegistryName(castBlock.getRegistryName()));
+      }
     }
 
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
-      final Map<Metal, CastItem> castItems = new HashMap<>();
+      final Map<Metal, CastItem> castItems = new LinkedHashMap<>();
 
       for(final Metal metal : Metals.all()) {
         if(cast.isValidForMetal(metal) && cast.itemForMetal(metal) == null) {
@@ -235,7 +239,7 @@ public final class GradientItems {
     }
 
     for(final GradientTools.Type type : GradientTools.types()) {
-      final Map<Metal, Tool> tools = new HashMap<>();
+      final Map<Metal, Tool> tools = new LinkedHashMap<>();
 
       for(final Metal metal : Metals.all()) {
         if(metal.canMakeTools) {
@@ -251,6 +255,18 @@ public final class GradientItems {
   public static final DebugItem    DEBUG      = new DebugItem();
 
   public static final ItemClayBucket CLAY_BUCKET = new ItemClayBucket();
+
+  public static Item pebble(final Metal metal) {
+    return METAL_PEBBLES.get(metal);
+  }
+
+  public static Item clayCastUnhardened(final GradientCasts.Cast cast) {
+    return CLAY_CAST_UNHARDENED.get(cast);
+  }
+
+  public static Item clayCastHardened(final GradientCasts.Cast cast) {
+    return CLAY_CAST_HARDENED.get(cast);
+  }
 
   public static ItemMetal crushed(final Ore.Metal metal) {
     return CRUSHED.get(metal);
@@ -407,7 +423,12 @@ public final class GradientItems {
     PLATE.values().forEach(registry::register);
     ALLOY_NUGGET.values().forEach(registry::register);
     CAST_ITEM.values().forEach(map -> map.values().forEach(registry::register));
-    CAST_BLOCK.values().forEach(registry::register);
+
+    for(final Item castBlock : CAST_BLOCK.values()) {
+      if(GradientMod.MODID.equals(castBlock.getRegistryName().getNamespace())) {
+        registry.register(castBlock);
+      }
+    }
 
     registry.register(INFINICOAL);
     registry.register(DEBUG);
@@ -480,7 +501,18 @@ public final class GradientItems {
         OreDictionary.registerOre("ingot" + caps, castItem(GradientCasts.INGOT, metal, 1));
 
         if(metal.elements.size() > 1) {
-          OreDictionary.registerOre("alloyNugget" + caps, alloyNugget(metal));
+          boolean make = true;
+
+          for(final Metal.MetalElement element : metal.elements) {
+            if(Metals.get(element.element) == Metals.INVALID_METAL) {
+              make = false;
+              break;
+            }
+          }
+
+          if(make) {
+            OreDictionary.registerOre("alloyNugget" + caps, alloyNugget(metal));
+          }
         }
 
         if(metal.canMakePlates) {

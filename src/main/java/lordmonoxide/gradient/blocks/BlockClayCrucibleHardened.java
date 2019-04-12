@@ -123,7 +123,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
             return true;
           }
 
-          final Metal metal = Metals.getMetalForFluid(te.getMoltenMetal().getFluid());
+          final Metal metal = Metals.get(te.getMoltenMetal().getFluid());
           final int amount = cast.amountForMetal(metal);
 
           if(te.getMoltenMetal().amount < amount) {
@@ -151,7 +151,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
 
           // Make sure the fluid handler is either empty, or contains metal
           if(fluid != null) {
-            final Metal metal = Metals.getMetalForFluid(fluid.getFluid());
+            final Metal metal = Metals.get(fluid.getFluid());
 
             if(metal == Metals.INVALID_METAL) {
               return true;

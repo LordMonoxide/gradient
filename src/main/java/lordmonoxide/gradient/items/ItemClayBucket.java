@@ -162,7 +162,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
   }
 
   @SubscribeEvent(priority = EventPriority.LOW) // low priority so other mods can handle their stuff first
-  public void onFillBucket(final FillBucketEvent event) {
+  public static void onFillBucket(final FillBucketEvent event) {
     if(event.getResult() != Event.Result.DEFAULT) {
       // event was already handled
       return;
@@ -170,7 +170,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
     // not for us to handle
     final ItemStack emptyBucket = event.getEmptyBucket();
-    if(emptyBucket.isEmpty() || !emptyBucket.isItemEqual(this.empty)) {
+    if(emptyBucket.isEmpty() || emptyBucket.getItem() != GradientItems.CLAY_BUCKET && emptyBucket.getItemDamage() != 0) {
       return;
     }
 

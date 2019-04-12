@@ -2,22 +2,12 @@ package lordmonoxide.gradient.blocks;
 
 import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
-import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
-import lordmonoxide.gradient.tileentities.TileBronzeGrinder;
-import lordmonoxide.gradient.tileentities.TileBronzeOven;
-import lordmonoxide.gradient.tileentities.TileClayCrucible;
-import lordmonoxide.gradient.tileentities.TileClayOven;
-import lordmonoxide.gradient.tileentities.TileDryingRack;
-import lordmonoxide.gradient.tileentities.TileFirePit;
-import lordmonoxide.gradient.tileentities.TileFlywheel;
-import lordmonoxide.gradient.tileentities.TileHandCrank;
-import lordmonoxide.gradient.tileentities.TileManualGrinder;
-import lordmonoxide.gradient.tileentities.TileMixingBasin;
-import lordmonoxide.gradient.tileentities.TileWoodenAxle;
-import lordmonoxide.gradient.tileentities.TileWoodenGearbox;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
+import lordmonoxide.gradient.science.geology.Ore;
+import lordmonoxide.gradient.science.geology.Ores;
+import lordmonoxide.gradient.tileentities.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -30,6 +20,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
@@ -39,12 +30,12 @@ public final class GradientBlocks {
 
   public static final BlockPebble PEBBLE = new BlockPebble();
 
-  public static final ImmutableMap<GradientMetals.Metal, BlockPebble> METAL_PEBBLES;
+  public static final ImmutableMap<Metal, BlockPebble> METAL_PEBBLES;
 
   static {
-    final Map<GradientMetals.Metal, BlockPebble> pebbles = new HashMap<>();
+    final Map<Metal, BlockPebble> pebbles = new HashMap<>();
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+    for(final Metal metal : Metals.all()) {
       pebbles.put(metal, new BlockPebble(metal));
     }
 
@@ -86,24 +77,18 @@ public final class GradientBlocks {
   public static final BlockClayOvenUnhardened     CLAY_OVEN_UNHARDENED     = new BlockClayOvenUnhardened();
   public static final BlockClayOvenHardened       CLAY_OVEN_HARDENED       = new BlockClayOvenHardened();
 
-  public static final ImmutableMap<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_UNHARDENED;
-  public static final ImmutableMap<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_HARDENED;
+  private static final Map<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_UNHARDENED = new LinkedHashMap<>();
+  private static final Map<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_HARDENED   = new LinkedHashMap<>();
 
   static {
-    final ImmutableMap.Builder<GradientCasts.Cast, BlockClayCast> unhardened = ImmutableMap.builder();
-    final ImmutableMap.Builder<GradientCasts.Cast, BlockClayCast> hardened = ImmutableMap.builder();
-
     for(final GradientCasts.Cast cast : GradientCasts.casts()) {
-      unhardened.put(cast, BlockClayCast.unhardened(cast));
-      hardened.put(cast, BlockClayCast.hardened(cast));
+      CLAY_CASTS_UNHARDENED.put(cast, BlockClayCast.unhardened(cast));
+      CLAY_CASTS_HARDENED.put(cast, BlockClayCast.hardened(cast));
     }
-
-    CLAY_CASTS_UNHARDENED = unhardened.build();
-    CLAY_CASTS_HARDENED = hardened.build();
   }
 
-  public static final BlockClayBucket             CLAY_BUCKET_UNHARDENED   = BlockClayBucket.unhardened();
-  public static final BlockClayBucket             CLAY_BUCKET_HARDENED     = BlockClayBucket.hardened();
+  public static final BlockClayBucket CLAY_BUCKET_UNHARDENED = BlockClayBucket.unhardened();
+  public static final BlockClayBucket CLAY_BUCKET_HARDENED   = BlockClayBucket.hardened();
 
   public static final BlockBronzeMachineHull BRONZE_MACHINE_HULL = new BlockBronzeMachineHull();
   public static final BlockBronzeFurnace     BRONZE_FURNACE      = new BlockBronzeFurnace();
@@ -111,36 +96,43 @@ public final class GradientBlocks {
   public static final BlockBronzeOven        BRONZE_OVEN         = new BlockBronzeOven();
   public static final BlockBronzeGrinder     BRONZE_GRINDER      = new BlockBronzeGrinder();
 
-  public static final ImmutableMap<GradientMetals.Metal, Block> ORES;
+  private static final Map<Ore.Metal, Block> ORES = new LinkedHashMap<>();
 
   static {
-    final Map<GradientMetals.Metal, Block> ores = new HashMap<>();
-
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      ores.put(metal, new BlockOre(metal));
+    for(final Ore.Metal ore : Ores.metals()) {
+      ORES.put(ore, new BlockOre(ore));
     }
-
-    ORES = ImmutableMap.copyOf(ores);
   }
 
-  public static final ImmutableMap<GradientMetals.Metal, Block> CAST_BLOCK;
+  private static final Map<Metal, Block> CAST_BLOCK = new LinkedHashMap<>();
 
   static {
-    final Map<GradientMetals.Metal, Block> castBlocks = new HashMap<>();
-    castBlocks.put(GradientMetals.IRON, Blocks.IRON_BLOCK);
-    castBlocks.put(GradientMetals.GOLD, Blocks.GOLD_BLOCK);
-    castBlocks.put(GradientMetals.GLASS, Blocks.GLASS);
+    CAST_BLOCK.put(Metals.GLASS, Blocks.GLASS);
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
-      if(!castBlocks.containsKey(metal)) {
-        castBlocks.put(metal, new CastBlock(metal));
+    for(final Metal metal : Metals.all()) {
+      if(!CAST_BLOCK.containsKey(metal)) {
+        CAST_BLOCK.put(metal, new CastBlock(metal));
       }
     }
-
-    CAST_BLOCK = ImmutableMap.copyOf(castBlocks);
   }
 
   private GradientBlocks() { }
+
+  public static Block clayCastUnhardened(final GradientCasts.Cast cast) {
+    return CLAY_CASTS_UNHARDENED.get(cast);
+  }
+
+  public static Block clayCastHardened(final GradientCasts.Cast cast) {
+    return CLAY_CASTS_HARDENED.get(cast);
+  }
+
+  public static Block ore(final Ore.Metal ore) {
+    return ORES.get(ore);
+  }
+
+  public static Block castBlock(final Metal metal) {
+    return CAST_BLOCK.get(metal);
+  }
 
   @SubscribeEvent
   public static void registerBlocks(final RegistryEvent.Register<Block> event) {
@@ -199,7 +191,7 @@ public final class GradientBlocks {
     registry.register(BRONZE_GRINDER);
 
     for(final Block castBlock : CAST_BLOCK.values()) {
-      if(!registry.containsKey(castBlock.getRegistryName())) {
+      if(GradientMod.MODID.equals(castBlock.getRegistryName().getNamespace())) {
         registry.register(castBlock);
       }
     }

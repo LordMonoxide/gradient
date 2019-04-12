@@ -52,9 +52,7 @@ public final class ModelManager {
   }
 
   private static void registerFluidModels() {
-    GradientMetals.metals.stream()
-      .map(GradientMetals.Metal::getFluid)
-      .forEach(ModelManager::registerFluidModel);
+    GradientFluids.fluids.forEach(ModelManager::registerFluidModel);
   }
 
   private static void registerFluidModel(final Fluid fluid) {

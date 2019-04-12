@@ -1,9 +1,8 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.GradientMetals;
-import lordmonoxide.gradient.tileentities.TileFirePit;
-import lordmonoxide.gradient.utils.AgeUtils;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -15,7 +14,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -62,7 +60,7 @@ public class BlockClayCast extends GradientBlock {
     if(!this.hardened) {
       tooltip.add(I18n.format("tile.clay_cast.unhardened.tooltip"));
     } else {
-      for(final GradientMetals.Metal metal : GradientMetals.metals) {
+      for(final Metal metal : Metals.all()) {
         tooltip.add(I18n.format("tile.clay_cast.hardened.tooltip"));
         final String metalName = I18n.format("fluid." + metal.name);
         final int metalAmount = this.cast.amountForMetal(metal);

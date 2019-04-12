@@ -1,7 +1,10 @@
 package lordmonoxide.gradient.tileentities;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
+import lordmonoxide.gradient.science.geology.Meltable;
+import lordmonoxide.gradient.science.geology.Meltables;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -99,10 +102,10 @@ public class TileClayCrucible extends HeatSinker {
 
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(!this.isMelting(slot) && !this.getMetalSlot(slot).isEmpty()) {
-        final GradientMetals.Meltable meltable = GradientMetals.getMeltable(this.getMetalSlot(slot));
+        final Meltable meltable = Meltables.get(this.getMetalSlot(slot));
 
         if(this.canMelt(meltable)) {
-          this.melting[slot] = new MeltingMetal(meltable);
+          this.melting[slot] = new MeltingMetal(meltable, Metals.get(meltable));
           update = true;
         }
       }
@@ -124,12 +127,10 @@ public class TileClayCrucible extends HeatSinker {
 
         if(!this.world.isRemote) {
           if(melting.isMelted()) {
-            final ItemStack stack = this.getMetalSlot(slot);
-
             this.melting[slot] = null;
             this.setMetalSlot(slot, ItemStack.EMPTY);
 
-            final FluidStack fluid = new FluidStack(melting.meltable.metal.getFluid(), GradientMetals.getMeltable(stack).amount);
+            final FluidStack fluid = new FluidStack(melting.meltable.getFluid(), melting.meltable.amount);
 
             this.tank.fill(fluid, true);
 
@@ -152,8 +153,8 @@ public class TileClayCrucible extends HeatSinker {
     this.inventory.setStackInSlot(FIRST_METAL_SLOT + slot, stack);
   }
 
-  private boolean canMelt(final GradientMetals.Meltable meltable) {
-    return (this.tank.getFluid() == null || this.tank.getFluid().getFluid() == meltable.metal.getFluid()) && this.getHeat() >= meltable.meltTemp;
+  private boolean canMelt(final Meltable meltable) {
+    return (this.tank.getFluid() == null || this.tank.getFluid().getFluid() == meltable.getFluid()) && this.getHeat() >= meltable.meltTemp;
   }
 
   @Override
@@ -218,7 +219,8 @@ public class TileClayCrucible extends HeatSinker {
       final int slot = tag.getInteger("slot");
 
       if(slot < METAL_SLOTS_COUNT) {
-        this.melting[slot] = MeltingMetal.fromNbt(GradientMetals.getMeltable(this.getMetalSlot(slot)), tag);
+        final Meltable meltable = Meltables.get(this.getMetalSlot(slot));
+        this.melting[slot] = MeltingMetal.fromNbt(meltable, Metals.get(meltable), tag);
       }
     }
 
@@ -248,22 +250,24 @@ public class TileClayCrucible extends HeatSinker {
   }
 
   public static final class MeltingMetal {
-    public final GradientMetals.Meltable meltable;
+    public final Meltable meltable;
+    public final Metal metal;
     private final int meltTicksTotal;
     private int meltTicks;
 
-    public static MeltingMetal fromNbt(final GradientMetals.Meltable metal, final NBTTagCompound tag) {
-      final MeltingMetal melting = new MeltingMetal(metal, tag.getInteger("ticksTotal"));
+    public static MeltingMetal fromNbt(final Meltable meltable, final Metal metal, final NBTTagCompound tag) {
+      final MeltingMetal melting = new MeltingMetal(meltable, metal, tag.getInteger("ticksTotal"));
       melting.meltTicks = tag.getInteger("ticks");
       return melting;
     }
 
-    private MeltingMetal(final GradientMetals.Meltable meltable) {
-      this(meltable, (int)(meltable.metal.meltTime * meltable.meltModifier * 20));
+    private MeltingMetal(final Meltable meltable, final Metal metal) {
+      this(meltable, metal, (int)(meltable.meltTime * 20));
     }
 
-    private MeltingMetal(final GradientMetals.Meltable meltable, final int meltTicksTotal) {
+    private MeltingMetal(final Meltable meltable, final Metal metal, final int meltTicksTotal) {
       this.meltable = meltable;
+      this.metal = metal;
       this.meltTicksTotal = meltTicksTotal;
     }
 

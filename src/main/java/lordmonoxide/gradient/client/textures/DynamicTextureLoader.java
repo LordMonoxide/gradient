@@ -40,6 +40,7 @@ public final class DynamicTextureLoader {
 
     final ResourceLocation oreLoc = GradientMod.resource("blocks/ore");
     final ResourceLocation castBlockLoc = GradientMod.resource("blocks/cast_block");
+    final ResourceLocation fluidLoc = GradientMod.resource("blocks/fluid");
     final ResourceLocation ingotLoc = GradientMod.resource("items/cast_item.ingot");
     final ResourceLocation hammerLoc = GradientMod.resource("items/cast_item.hammer");
     final ResourceLocation mattockLoc = GradientMod.resource("items/cast_item.mattock");
@@ -67,7 +68,8 @@ public final class DynamicTextureLoader {
       registerDynamicTextures(map, nuggetLoc, metal);
       registerDynamicTextures(map, dustLoc, metal);
       registerDynamicTextures(map, plateLoc, metal);
-      registerDynamicCastBlockTextures(map, castBlockLoc, metal);
+      registerBlendedMetalTextures(map, castBlockLoc, metal);
+      registerBlendedMetalFluidTextures(map, fluidLoc, metal);
 
       for(final GradientTools.Type toolType : GradientTools.types()) {
         final ResourceLocation handleLoc = GradientMod.resource("items/tool_handle." + toolType.cast.name);
@@ -103,14 +105,24 @@ public final class DynamicTextureLoader {
     }
   }
 
-  private static void registerDynamicCastBlockTextures(final TextureMap map, final ResourceLocation name, final Metal metal, final ResourceLocation... sprites) {
+  private static void registerBlendedMetalTextures(final TextureMap map, final ResourceLocation name, final Metal metal) {
     if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
-      map.setTextureEntry(new BlendedMetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
+      map.setTextureEntry(new BlendedMetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '.' + metal.name), metal, BlendedMetalAtlasSprite::enhance, name));
+    }
+  }
+
+  private static void registerBlendedMetalFluidTextures(final TextureMap map, final ResourceLocation name, final Metal metal) {
+    if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '_' + metal.name + ".png")) == null) {
+      map.setTextureEntry(new BlendedMetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '_' + metal.name), metal, BlendedMetalAtlasSprite::identity, name));
+    }
+
+    if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '_' + metal.name + "_flowing.png")) == null) {
+      map.setTextureEntry(new BlendedMetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '_' + metal.name + "_flowing"), metal, BlendedMetalAtlasSprite::identity, new ResourceLocation(name.getNamespace(), name.getPath() + "_flowing")));
     }
   }
 
   @Nullable
-  private static IResource getResource(final ResourceLocation resourceLocation) {
+  public static IResource getResource(final ResourceLocation resourceLocation) {
     try {
       return Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation);
     } catch(final IOException ignored) {

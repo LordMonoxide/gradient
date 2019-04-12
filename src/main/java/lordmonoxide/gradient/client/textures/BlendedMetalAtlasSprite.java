@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.client.textures;
 
 import com.google.common.collect.ImmutableList;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -10,11 +11,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.io.FileNotFoundException;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @SideOnly(Side.CLIENT)
 public class BlendedMetalAtlasSprite extends TextureAtlasSprite {
@@ -23,12 +21,14 @@ public class BlendedMetalAtlasSprite extends TextureAtlasSprite {
   private static final float COLOUR_DIVISOR = 0xFFFFFF;
 
   private final Metal metal;
+  private final Function<Float, Float> mix;
   private final ImmutableList<ResourceLocation> dependencies;
 
-  public BlendedMetalAtlasSprite(final ResourceLocation spriteName, final Metal metal, final ResourceLocation... source) {
+  public BlendedMetalAtlasSprite(final ResourceLocation spriteName, final Metal metal, final Function<Float, Float> mix, final ResourceLocation source) {
     super(spriteName.toString());
     this.metal = metal;
-    this.dependencies = ImmutableList.copyOf(source);
+    this.mix = mix;
+    this.dependencies = ImmutableList.of(source);
   }
 
   @Override
@@ -43,37 +43,43 @@ public class BlendedMetalAtlasSprite extends TextureAtlasSprite {
 
   @Override
   public boolean load(@Nonnull final IResourceManager manager, @Nonnull final ResourceLocation location, @Nonnull final Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-    final List<TextureAtlasSprite> sprites = this.dependencies.stream().map(textureGetter).collect(Collectors.toList());
+    final ResourceLocation source = this.dependencies.get(0);
+    final TextureAtlasSprite sprite = textureGetter.apply(source);
 
-    this.width = sprites.get(0).getIconWidth();
-    this.height = sprites.get(0).getIconHeight();
-    final int[][] pixels = new int[Minecraft.getMinecraft().gameSettings.mipmapLevels + 1][];
-    pixels[0] = new int[this.width * this.height];
+    this.width = sprite.getIconWidth();
+    this.height = sprite.getIconHeight();
 
-    for(final TextureAtlasSprite sprite : sprites) {
-      // Can't find base texture?
-      if(sprite.getFrameCount() == 0) {
-        throw new RuntimeException(new FileNotFoundException("Could not find blend sprite " + sprite + " while generating sprite " + this));
-      }
+    this.clearFramesTextureData();
 
-      final int[][] sourcePixels = sprite.getFrameTextureData(0);
+    try {
+      // This is a hack to force it to load the animation data
+      this.loadSpriteFrames(DynamicTextureLoader.getResource(new ResourceLocation(source.getNamespace(), "textures/" + source.getPath() + ".png")), Minecraft.getMinecraft().gameSettings.mipmapLevels + 1);
+    } catch(final Exception e) {
+      GradientMod.logger.warn(e);
+    }
+
+    for(int frame = 0; frame < sprite.getFrameCount(); frame++) {
+      final int[][] pixels = new int[Minecraft.getMinecraft().gameSettings.mipmapLevels + 1][];
+      pixels[0] = new int[this.width * this.height];
+
+      final int[][] sourcePixels = sprite.getFrameTextureData(frame);
 
       for(int p = 0; p < this.width * this.height; p++) {
         pixels[0][p] = this.mix(this.metal.colourDiffuse, sourcePixels[0][p]);
       }
+
+      this.framesTextureData.set(frame, pixels);
     }
 
-    this.clearFramesTextureData();
-    this.framesTextureData.add(pixels);
     return false;
   }
 
   private int mix(final int source, final int mix) {
     final int sourceAlpha = source & ALPHA_MASK;
     final int sourceColour = source & COLOUR_MASK;
-    final float mixPercent = (mix & COLOUR_MASK) / COLOUR_DIVISOR;
+    final float ratio = (mix & COLOUR_MASK) / COLOUR_DIVISOR;
 
-    return sourceAlpha | this.blend(0, sourceColour, Math.min(1.0f, (mixPercent - 0.7f) * 2.0f + 0.5f));
+    return sourceAlpha | this.blend(0, sourceColour, this.mix.apply(ratio));
   }
 
   private int blend(final int c1, final int c2, final float ratio) {
@@ -92,5 +98,13 @@ public class BlendedMetalAtlasSprite extends TextureAtlasSprite {
     final int b = (int)(b1 * iRatio + b2 * ratio);
 
     return r << 16 | g << 8 | b;
+  }
+
+  public static float identity(final float ratio) {
+    return ratio;
+  }
+
+  public static float enhance(final float ratio) {
+    return Math.max(0.0f, Math.min(1.0f, (ratio - 0.7f) * 2.0f + 0.5f));
   }
 }

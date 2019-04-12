@@ -39,6 +39,7 @@ public final class DynamicTextureLoader {
     registerDynamicTextures(map, DynamicTextureLoader::barkGenerator, GradientMod.resource("items/bark_dark_oak"), GradientMod.resource("items/bark_cutout"), new ResourceLocation("minecraft", "blocks/log_big_oak"));
 
     final ResourceLocation oreLoc = GradientMod.resource("blocks/ore");
+    final ResourceLocation castBlockLoc = GradientMod.resource("blocks/cast_block");
     final ResourceLocation ingotLoc = GradientMod.resource("items/cast_item.ingot");
     final ResourceLocation hammerLoc = GradientMod.resource("items/cast_item.hammer");
     final ResourceLocation mattockLoc = GradientMod.resource("items/cast_item.mattock");
@@ -66,6 +67,7 @@ public final class DynamicTextureLoader {
       registerDynamicTextures(map, nuggetLoc, metal);
       registerDynamicTextures(map, dustLoc, metal);
       registerDynamicTextures(map, plateLoc, metal);
+      registerDynamicCastBlockTextures(map, castBlockLoc, metal);
 
       for(final GradientTools.Type toolType : GradientTools.types()) {
         final ResourceLocation handleLoc = GradientMod.resource("items/tool_handle." + toolType.cast.name);
@@ -98,6 +100,12 @@ public final class DynamicTextureLoader {
   private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final Metal metal, final ResourceLocation... sprites) {
     if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
       map.setTextureEntry(new MetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
+    }
+  }
+
+  private static void registerDynamicCastBlockTextures(final TextureMap map, final ResourceLocation name, final Metal metal, final ResourceLocation... sprites) {
+    if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
+      map.setTextureEntry(new BlendedMetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
     }
   }
 

@@ -56,6 +56,27 @@ public final class Meltables {
           final Meltable meltable = add(oreName, metal.meltTime * 8.0f, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME * 8);
           Metals.addMeltable(meltable, metal);
         }
+      } else if(oreName.startsWith("crushed")) {
+        final Metal metal = Metals.get(oreName.substring(7).toLowerCase());
+
+        if(metal != Metals.INVALID_METAL) {
+          final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
+          Metals.addMeltable(meltable, metal);
+        }
+      } else if(oreName.startsWith("purified")) {
+        final Metal metal = Metals.get(oreName.substring(8).toLowerCase());
+
+        if(metal != Metals.INVALID_METAL) {
+          final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
+          Metals.addMeltable(meltable, metal);
+        }
+      } else if(oreName.startsWith("plate")) {
+        final Metal metal = Metals.get(oreName.substring(5).toLowerCase());
+
+        if(metal != Metals.INVALID_METAL) {
+          final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
+          Metals.addMeltable(meltable, metal);
+        }
       } else if(oreName.startsWith("alloyNugget")) {
         //TODO
 /*

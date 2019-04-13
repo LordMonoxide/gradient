@@ -6,6 +6,7 @@ import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
+import lordmonoxide.gradient.hacks.FixToolBreakingNotFiringHarvestDropEvents;
 import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
@@ -82,6 +83,7 @@ public class GradientMod {
     AdvancementTriggers.register();
 
     CapabilityPlayerProgress.register();
+    FixToolBreakingNotFiringHarvestDropEvents.CapabilityPlayerItem.register();
 
     MinecraftForge.ORE_GEN_BUS.register(DisableVanillaOre.class);
 

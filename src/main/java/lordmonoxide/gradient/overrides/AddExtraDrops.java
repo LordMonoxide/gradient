@@ -2,6 +2,7 @@ package lordmonoxide.gradient.overrides;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.hacks.FixToolBreakingNotFiringHarvestDropEvents;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.science.geology.Meltable;
 import lordmonoxide.gradient.science.geology.Meltables;
@@ -12,6 +13,7 @@ import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -99,7 +101,10 @@ public final class AddExtraDrops {
       return;
     }
 
-    final ItemStack hand = event.getHarvester().getHeldItemMainhand();
+    final EntityPlayer player = event.getHarvester();
+
+    final FixToolBreakingNotFiringHarvestDropEvents.IPlayerItem cap = player.getCapability(FixToolBreakingNotFiringHarvestDropEvents.CapabilityPlayerItem.CAPABILITY, null);
+    final ItemStack hand = cap != null ? cap.getStack() : player.getHeldItemMainhand();
 
     if(hand.isEmpty()) {
       return;

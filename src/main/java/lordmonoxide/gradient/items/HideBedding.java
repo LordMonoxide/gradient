@@ -3,7 +3,6 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -24,6 +23,7 @@ import java.util.List;
 public class HideBedding extends GradientItem {
   public HideBedding() {
     super("hide_bedding", CreativeTabs.TOOLS);
+    this.setMaxDamage(4);
   }
 
   @Override
@@ -48,7 +48,7 @@ public class HideBedding extends GradientItem {
     switch(result) {
       case OK:
         sleeping.add(player);
-        player.setHeldItem(hand, ItemStack.EMPTY);
+        player.getHeldItem(hand).damageItem(1, player);
         break;
 
       case NOT_POSSIBLE_NOW:

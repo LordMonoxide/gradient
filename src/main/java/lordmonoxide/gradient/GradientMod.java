@@ -44,6 +44,7 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 @Mod(modid = GradientMod.MODID, name = GradientMod.NAME, version = GradientMod.VERSION, dependencies = "after:ic2")
@@ -134,40 +135,34 @@ public class GradientMod {
   }
 
   private void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
-    final Path destScriptDir = configDir.toPath().resolve("triumph/script/" + MODID);
-    final Path destJsonDir = configDir.toPath().resolve("triumph/json/" + MODID);
+    final Path destDir = configDir.toPath().resolve("triumph");
 
     logger.info("Copying triumphs");
 
-    FileUtils.deleteDirectory(destScriptDir.toFile());
-    FileUtils.deleteDirectory(destJsonDir.toFile());
+    FileUtils.deleteDirectory(destDir.toFile());
 
     final URLConnection connection = this.getClass().getResource("").openConnection();
 
     if(connection instanceof JarURLConnection) {
       final JarFile jar = ((JarURLConnection)connection).getJarFile();
 
-      final String scriptsDir = "assets/" + MODID + "/triumph/script/";
-      final String jsonDir = "assets/" + MODID + "/triumph/json/";
+      final String dir = "assets/" + MODID + "/triumph/";
 
       jar.stream().forEach(entry -> {
-        if(!entry.isDirectory() && entry.getName().startsWith(scriptsDir)) {
-          this.copyJarDirectory(jar, entry.getName(), scriptsDir, destScriptDir);
-        }
-
-        if(!entry.isDirectory() && entry.getName().startsWith(jsonDir)) {
-          this.copyJarDirectory(jar, entry.getName(), jsonDir, destJsonDir);
+        if(!entry.isDirectory()) {
+          if(entry.getName().startsWith(dir)) {
+            this.copyJarDirectory(jar, entry, dir, destDir);
+          }
         }
       });
     } else {
-      this.copyDevDirectory("../../assets/" + MODID + "/triumph/script", destScriptDir);
-      this.copyDevDirectory("../../assets/" + MODID + "/triumph/json", destJsonDir);
+      this.copyDevDirectory("../../assets/" + MODID + "/triumph", destDir);
     }
   }
 
-  private void copyJarDirectory(final JarFile jar, final String fileName, final String sourceDir, final Path destDir) {
-    try(final InputStream stream = jar.getInputStream(jar.getEntry(fileName))) {
-      final Path path = destDir.resolve(fileName.substring(sourceDir.length()));
+  private void copyJarDirectory(final JarFile jar, final JarEntry entry, final String sourceDir, final Path destDir) {
+    try(final InputStream stream = jar.getInputStream(entry)) {
+      final Path path = destDir.resolve(entry.getName().substring(sourceDir.length()));
       Files.createDirectories(path.getParent());
       IOUtils.copy(stream, Files.newOutputStream(path));
     } catch(final IOException e) {

@@ -23,16 +23,20 @@ import java.util.EnumMap;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class BakedModelBronzeBoilerFluid implements IBakedModel {
+public class BakedModelFluid implements IBakedModel {
   private static final float offset = 0.00005f;
-  private static final float[] x = {0, 0, 1, 1};
-  private static final float[] z = {0, 1, 1, 0};
+  private static final float[] x = {0.0f, 0.0f, 1.0f, 1.0f};
+  private static final float[] z = {0.0f, 1.0f, 1.0f, 0.0f};
 
   private final Fluid fluid;
   private final VertexFormat format;
   private final EnumMap<EnumFacing, List<BakedQuad>> faceQuads;
 
-  public BakedModelBronzeBoilerFluid(final Fluid fluid, final int capacity, final int level, final float yOffset, final float height) {
+  public BakedModelFluid(final Fluid fluid, final int capacity, final int level, final float yOffset, final float height) {
+    this(fluid, capacity, level, yOffset, height, x, z);
+  }
+
+  public BakedModelFluid(final Fluid fluid, final int capacity, final int level, final float yOffset, final float height, final float[] x, final float[] z) {
     this.fluid = fluid;
 
     this.format = DefaultVertexFormats.ITEM;

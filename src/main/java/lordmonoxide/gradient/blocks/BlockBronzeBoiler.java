@@ -88,6 +88,7 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
@@ -108,6 +109,7 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     }
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
@@ -120,12 +122,14 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     return state.getValue(FACING).getHorizontalIndex();
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState withRotation(final IBlockState state, final Rotation rot) {
     return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
@@ -155,12 +159,14 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     return extendedState.withProperty(WATER_LEVEL, 0).withProperty(STEAM_LEVEL, 0);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public boolean isFullCube(final IBlockState state) {

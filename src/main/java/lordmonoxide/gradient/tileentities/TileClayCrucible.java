@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -35,13 +37,15 @@ public class TileClayCrucible extends HeatSinker {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
+  public static final int FLUID_CAPACITY = 8;
+
   public static final int METAL_SLOTS_COUNT = 1;
   public static final int TOTAL_SLOTS_COUNT = METAL_SLOTS_COUNT;
 
   public static final int FIRST_METAL_SLOT = 0;
 
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
-  public final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * 8);
+  public final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * FLUID_CAPACITY);
 
   private final MeltingMetal[] melting = new MeltingMetal[METAL_SLOTS_COUNT];
 
@@ -131,7 +135,6 @@ public class TileClayCrucible extends HeatSinker {
             this.setMetalSlot(slot, ItemStack.EMPTY);
 
             final FluidStack fluid = new FluidStack(melting.meltable.getFluid(), melting.meltable.amount);
-
             this.tank.fill(fluid, true);
 
             update = true;
@@ -225,6 +228,13 @@ public class TileClayCrucible extends HeatSinker {
     }
 
     super.readFromNBT(compound);
+  }
+
+  @Override
+  public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
+    final IBlockState oldState = this.world.getBlockState(this.pos);
+    super.onDataPacket(net, pkt);
+    this.world.notifyBlockUpdate(this.pos, oldState, this.world.getBlockState(this.pos), 2);
   }
 
   @Override

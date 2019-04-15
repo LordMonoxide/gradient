@@ -10,6 +10,7 @@ import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.tileentities.TileClayCrucible;
 import net.minecraft.block.state.BlockFaceShape;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -27,15 +29,41 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockClayCrucibleHardened extends HeatSinkerBlock {
-  private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 1.0d - 1.0d / 16.0d, 0.75d, 1.0d - 1.0d / 16.0d);
+  public static final IUnlistedProperty<FluidStack> FLUID = new IUnlistedProperty<FluidStack>() {
+    @Override
+    public String getName() {
+      return "fluid";
+    }
+
+    @Override
+    public boolean isValid(final FluidStack value) {
+      return true;
+    }
+
+    @Override
+    public Class<FluidStack> getType() {
+      return FluidStack.class;
+    }
+
+    @Override
+    public String valueToString(final FluidStack value) {
+      return value.getFluid().getName();
+    }
+  };
+
+  private static final AxisAlignedBB AABB = new AxisAlignedBB(1.0d / 16.0d, 0.0d, 1.0d / 16.0d, 15.0d / 16.0d, 15.0d / 16.0d, 15.0d / 16.0d);
 
   public BlockClayCrucibleHardened() {
     super("clay_crucible.hardened", CreativeTabs.TOOLS, GradientBlocks.MATERIAL_CLAY_MACHINE);
@@ -63,18 +91,21 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
     return BlockFaceShape.UNDEFINED;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public boolean isFullCube(final IBlockState state) {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
@@ -168,5 +199,34 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
     }
 
     return true;
+  }
+
+  @Override
+  protected BlockStateContainer createBlockState() {
+    return new BlockStateContainer.Builder(this).add(FLUID).build();
+  }
+
+  @Override
+  public IBlockState getExtendedState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+    final IExtendedBlockState extendedState = (IExtendedBlockState)state;
+
+    final TileEntity te = world.getTileEntity(pos);
+
+    if(te instanceof TileClayCrucible) {
+      return extendedState.withProperty(FLUID, ((TileClayCrucible)te).tank.getFluid());
+    }
+
+    return extendedState;
+  }
+
+  @SideOnly(Side.CLIENT)
+  @Override
+  public BlockRenderLayer getRenderLayer() {
+    return BlockRenderLayer.TRANSLUCENT;
+  }
+
+  @Override
+  public boolean canRenderInLayer(final IBlockState state, final BlockRenderLayer layer) {
+    return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
   }
 }

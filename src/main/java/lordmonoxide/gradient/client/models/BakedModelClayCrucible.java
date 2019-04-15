@@ -1,11 +1,15 @@
 package lordmonoxide.gradient.client.models;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.BlockBronzeBoiler;
+import lordmonoxide.gradient.blocks.BlockClayCrucibleHardened;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
+import lordmonoxide.gradient.tileentities.TileClayCrucible;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -15,6 +19,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,39 +33,30 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 @Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Side.CLIENT)
-public class BakedModelBronzeBoiler implements IBakedModel {
+public class BakedModelClayCrucible implements IBakedModel {
   private static final Map<String, IBakedModel[]> FLUID_MODELS = new HashMap<>();
 
   private final IBakedModel baseModel;
 
-  public BakedModelBronzeBoiler(final IBakedModel baseModel) {
+  public BakedModelClayCrucible(final IBakedModel baseModel) {
     this.baseModel = baseModel;
   }
 
   @Override
   public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final long rand) {
     // Frame
-    if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.CUTOUT_MIPPED) {
+    if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.SOLID) {
       return this.baseModel.getQuads(state, side, rand);
     }
 
     // Fluid
     if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
       final IExtendedBlockState exState = (IExtendedBlockState)state;
-      final int waterLevel = exState.getValue(BlockBronzeBoiler.WATER_LEVEL);
-      final int steamLevel = exState.getValue(BlockBronzeBoiler.STEAM_LEVEL);
+      final FluidStack fluid = exState.getValue(BlockClayCrucibleHardened.FLUID);
 
-      final List<BakedQuad> quads = new ArrayList<>();
-
-      if(waterLevel > 0) {
-        quads.addAll(FLUID_MODELS.get("water")[waterLevel - 1].getQuads(null, side, rand));
+      if(fluid != null && fluid.amount > 0) {
+        return FLUID_MODELS.get(fluid.getFluid().getName())[Math.floorDiv(fluid.amount, Fluid.BUCKET_VOLUME) - 1].getQuads(null, side, rand);
       }
-
-      if(steamLevel > 0) {
-        quads.addAll(FLUID_MODELS.get("ic2steam")[steamLevel - 1].getQuads(null, side, rand));
-      }
-
-      return quads;
     }
 
     return new ArrayList<>();
@@ -100,8 +96,12 @@ public class BakedModelBronzeBoiler implements IBakedModel {
   private static IBakedModel[] getFluidModels(final Fluid fluid, final int capacity, final float yOffset, final float height) {
     final IBakedModel[] bakedFluidModels = new IBakedModel[capacity];
 
-    for(int x = 0; x < capacity; x++) {
-      bakedFluidModels[x] = new BakedModelFluid(fluid, capacity, x + 1, yOffset, height);
+    final float offset = 3.0f / 16.0f;
+    final float[] x = {offset, offset, 1.0f - offset, 1.0f - offset};
+    final float[] z = {offset, 1.0f - offset, 1.0f - offset, offset};
+
+    for(int y = 0; y < capacity; y++) {
+      bakedFluidModels[y] = new BakedModelFluid(fluid, capacity, y + 1, yOffset, height, x, z);
     }
 
     return bakedFluidModels;
@@ -111,17 +111,18 @@ public class BakedModelBronzeBoiler implements IBakedModel {
   public static void onModelBakeEvent(final ModelBakeEvent event) {
     // generate fluid models for all registered fluids for 16 levels each
 
-    FLUID_MODELS.put("water", getFluidModels(FluidRegistry.WATER, TileBronzeBoiler.WATER_CAPACITY, 1.0f / 16.0f, 6.0f / 16.0f));
-    FLUID_MODELS.put("ic2steam", getFluidModels(FluidRegistry.getFluid("ic2steam"), TileBronzeBoiler.STEAM_CAPACITY, 9.0f / 16.0f, 6.0f / 16.0f));
+    for(final Fluid fluid : FluidRegistry.getBucketFluids()) {
+      FLUID_MODELS.put(fluid.getName(), getFluidModels(fluid, TileClayCrucible.FLUID_CAPACITY, 1.0f / 16.0f, 11.0f / 16.0f));
+    }
 
     // get ModelResourceLocations of all tank block variants from the registry except "inventory"
 
     final RegistrySimple<ModelResourceLocation, IBakedModel> registry = (RegistrySimple<ModelResourceLocation, IBakedModel>) event.getModelRegistry();
 
     for(final ModelResourceLocation loc : registry.getKeys()) {
-      if(loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().equals(GradientBlocks.BRONZE_BOILER.getRegistryName().getPath()) && !"inventory".equals(loc.getVariant())) {
+      if(loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().equals(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName().getPath()) && !"inventory".equals(loc.getVariant())) {
         final IBakedModel registeredModel = event.getModelRegistry().getObject(loc);
-        final IBakedModel replacementModel = new BakedModelBronzeBoiler(registeredModel);
+        final IBakedModel replacementModel = new BakedModelClayCrucible(registeredModel);
         event.getModelRegistry().putObject(loc, replacementModel);
       }
     }

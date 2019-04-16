@@ -44,7 +44,7 @@ public final class AgeUtils {
       return progress.meetsAgeRequirement(age);
     }
 
-    return true;
+    return false;
   }
 
   public static boolean playerMeetsAgeRequirement(final InventoryCrafting inv, final Age age) {
@@ -54,6 +54,6 @@ public final class AgeUtils {
       return playerMeetsAgeRequirement(player, age);
     }
 
-    return true;
+    return false;
   }
 }

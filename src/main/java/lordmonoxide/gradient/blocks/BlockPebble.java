@@ -10,7 +10,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -53,13 +52,13 @@ public class BlockPebble extends GradientBlock {
       if(rand.nextInt(6) == 0) {
         drops.add(new ItemStack(Items.FLINT));
       } else {
-        drops.add(new ItemStack(Item.getItemFromBlock(this)));
+        drops.add(new ItemStack(GradientItems.PEBBLE));
       }
     }
 
     if(this.metal != null) {
       if(rand.nextInt(2) == 0) {
-        drops.add(new ItemStack(GradientItems.pebble(this.metal)));
+        drops.add(new ItemStack(GradientItems.nugget(this.metal)));
       }
     }
   }

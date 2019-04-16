@@ -1,10 +1,10 @@
-setIcon(<gradient:clay_cast.hardened>)
+setIcon(<gradient:clay_cast.pickaxe.hardened>)
 setTitle("Casting Call")
 setDescription("Make a clay cast to cast your molten metal")
 addParent("gradient:age2/clay_crucible")
 
 criteria1 = addCriteria("hasCast", "minecraft:inventory_changed")
-criteria1.addItem(<gradient:clay_cast.hardened>)
+criteria1.addItem(<gradient:clay_cast.pickaxe.hardened>)
 
 setRequiresParents()
 setPos(288,-62)

@@ -50,6 +50,7 @@ public class SetAgeCommand extends CommandBase {
     progress.setAge(age);
 
     AdvancementTriggers.CHANGE_AGE.trigger((EntityPlayerMP)target);
+    PacketUpdatePlayerProgress.send((EntityPlayerMP)target);
 
     target.sendMessage(new TextComponentTranslation("commands.setage.set", age.getDisplayName()));
 

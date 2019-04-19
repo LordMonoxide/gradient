@@ -35,7 +35,10 @@ public class BlockBellows extends Block {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
   private static final IUnlistedProperty<IModelState> ANIMATION = Properties.AnimationProperty;
 
-  private static final AxisAlignedBB AABB = new AxisAlignedBB(2.0d / 16.0d, 2.0d / 16.0d, 0.0d, 14.0d / 16.0d, 14.0d / 16.0d, 1.0d);
+  private static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(2.0d / 16.0d, 2.0d / 16.0d, 0.0d, 14.0d / 16.0d, 14.0d / 16.0d, 13.0d / 16.0d);
+  private static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(2.0d / 16.0d, 2.0d / 16.0d, 3.0d / 16.0d, 14 / 16.0d, 14.0d / 16.0d, 1.0d);
+  private static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(3.0d / 16.0d, 2.0d / 16.0d, 2.0d / 16.0d, 1.0d, 14.0d / 16.0d, 14.0d / 16.0d);
+  private static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.0d, 2.0d / 16.0d, 2.0d / 16.0d, 13.0d / 16.0d, 14.0d / 16.0d, 14.0d / 16.0d);
 
   public BlockBellows() {
     super(Material.WOOD);
@@ -43,6 +46,9 @@ public class BlockBellows extends Block {
     this.setTranslationKey("bellows");
     this.setCreativeTab(CreativeTabs.TOOLS);
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+    this.setLightOpacity(0);
+    this.setResistance(5.0f);
+    this.setHardness(1.0f);
   }
 
   @Override
@@ -95,6 +101,24 @@ public class BlockBellows extends Block {
   @Deprecated
   public boolean isFullCube(final IBlockState state) {
     return false;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
+    switch(state.getValue(FACING)) {
+      case NORTH:
+        return AABB_NORTH;
+      case SOUTH:
+        return AABB_SOUTH;
+      case EAST:
+        return AABB_EAST;
+      case WEST:
+        return AABB_WEST;
+    }
+
+    return AABB_NORTH;
   }
 
   @SuppressWarnings("deprecation")

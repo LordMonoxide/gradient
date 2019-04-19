@@ -2,7 +2,7 @@
   "credit": "Made with Blockbench",
   "parent": "minecraft:block/block",
   "textures": {
-    "bag": "minecraft:blocks/door_spruce_upper",
+    "bag": "gradient:blocks/bellows_bag",
     "wood": "minecraft:blocks/planks_oak",
     "particle": "minecraft:blocks/planks_oak",
     "nozzle": "minecraft:blocks/log_oak"
@@ -40,10 +40,10 @@
       "to": [13, 13, 12],
       "faces": {
         "north": {"uv": [0, 0, 10, 10], "texture": "#missing"},
-        "east": {"uv": [4, 3, 12, 13], "texture": "#bag"},
+        "east": {"uv": [4, 3, 12, 13], "rotation": 180, "texture": "#bag"},
         "south": {"uv": [0, 0, 10, 10], "texture": "#missing"},
         "west": {"uv": [4, 3, 12, 13], "texture": "#bag"},
-        "up": {"uv": [4, 3, 12, 13], "rotation": 270, "texture": "#bag"},
+        "up": {"uv": [4, 3, 12, 13], "rotation": 90, "texture": "#bag"},
         "down": {"uv": [4, 3, 12, 13], "rotation": 270, "texture": "#bag"}
       }
     },

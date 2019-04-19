@@ -7,4 +7,4 @@ criteria1 = addCriteria("hasOven", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:clay_oven.hardened>)
 
 setRequiresParents()
-setPos(144,-93)
+setPos(144,-96)

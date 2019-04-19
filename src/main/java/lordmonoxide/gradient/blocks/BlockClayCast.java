@@ -145,5 +145,4 @@ public class BlockClayCast extends GradientBlock {
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer.Builder(this).add(FACING).build();
   }
-
 }

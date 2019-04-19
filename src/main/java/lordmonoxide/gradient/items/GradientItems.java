@@ -107,6 +107,7 @@ public final class GradientItems {
   public static final Item         FIBRE_TORCH_UNLIT = new ItemBlock(GradientBlocks.FIBRE_TORCH_UNLIT).setRegistryName(GradientBlocks.FIBRE_TORCH_UNLIT.getRegistryName());
   public static final Item         FIBRE_TORCH_LIT   = new ItemBlock(GradientBlocks.FIBRE_TORCH_LIT).setRegistryName(GradientBlocks.FIBRE_TORCH_LIT.getRegistryName());
   public static final Item         FIRE_PIT          = new ItemBlock(GradientBlocks.FIRE_PIT).setRegistryName(GradientBlocks.FIRE_PIT.getRegistryName());
+  public static final Item         BELLOWS           = new ItemBlock(GradientBlocks.BELLOWS).setRegistryName(GradientBlocks.BELLOWS.getRegistryName());
   public static final FireStarter  FIRE_STARTER      = new FireStarter();
   public static final GradientItem IGNITER           = new GradientItem("igniter", CreativeTabs.MATERIALS);
 
@@ -360,6 +361,7 @@ public final class GradientItems {
     registry.register(FIBRE_TORCH_UNLIT);
     registry.register(FIBRE_TORCH_LIT);
     registry.register(FIRE_PIT);
+    registry.register(BELLOWS);
     registry.register(FIRE_STARTER);
     registry.register(IGNITER);
 

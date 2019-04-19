@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.tileentities;
 
+import lordmonoxide.gradient.GradientFluids;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.BlockFirePit;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
@@ -25,6 +26,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -45,6 +50,9 @@ public class TileFirePit extends HeatProducer {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
+  @CapabilityInject(IFluidHandler.class)
+  private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
+
   public static final int FUEL_SLOTS_COUNT = 3;
   public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + 2;
 
@@ -52,7 +60,22 @@ public class TileFirePit extends HeatProducer {
   public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
   public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + 1;
 
+  private static int FLUID_CAPACITY = 100;
+
+  private final Fluid air = GradientFluids.AIR;
+
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
+  public final FluidTank tank = new FluidTank(FLUID_CAPACITY) {
+    @Override
+    public boolean canFillFluidType(final FluidStack fluid) {
+      return fluid.getFluid() == TileFirePit.this.air && super.canFillFluidType(fluid);
+    }
+
+    @Override
+    protected void onContentsChanged() {
+      TileFirePit.this.sync();
+    }
+  };
 
   @Nullable
   private FirePitRecipe recipe;
@@ -64,6 +87,10 @@ public class TileFirePit extends HeatProducer {
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
 
   private int lastLight;
+
+  public TileFirePit() {
+    this.tank.setCanDrain(false);
+  }
 
   public boolean hasFurnace(final IBlockState state) {
     return state.getValue(BlockFirePit.HAS_FURNACE);
@@ -319,39 +346,51 @@ public class TileFirePit extends HeatProducer {
     }
   }
 
+  private float getHeatRatio() {
+    return (float)this.tank.getFluidAmount() / this.tank.getCapacity();
+  }
+
   private void generateParticles() {
     if(this.hasHeat()) {
       final Random rand = this.getWorld().rand;
 
-      // Fire
-      if(this.isBurning()) {
-        if(this.getHeat() >= 200 || rand.nextInt(600) >= 400 - this.getHeat() * 2) {
-          final double radius = rand.nextDouble() * 0.25d;
-          final double angle  = rand.nextDouble() * Math.PI * 2;
+      final int amount = 1 + (int)(this.getHeatRatio() / 10.0f);
+
+      for(int i = 0; i < amount; i++) {
+        // Fire
+        if(this.isBurning()) {
+          if(this.getHeat() >= 200 || rand.nextInt(600) >= 400 - this.getHeat() * 2) {
+            final double radius = rand.nextDouble() * 0.25d;
+            final double angle = rand.nextDouble() * Math.PI * 2;
+
+            final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
+            final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
+
+            this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+          }
+
+          if(this.tank.getFluidAmount() > 0) {
+
+          }
+        }
+
+        // Smoke
+        if(this.getHeat() >= 200 || !this.isBurning()) {
+          final double radius = rand.nextDouble() * 0.35d;
+          final double angle = rand.nextDouble() * Math.PI * 2;
 
           final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
           final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-          this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+          this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
         }
-      }
-
-      // Smoke
-      if(this.getHeat() >= 200 || !this.isBurning()) {
-        final double radius = rand.nextDouble() * 0.35d;
-        final double angle  = rand.nextDouble() * Math.PI * 2;
-
-        final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
-        final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
-
-        this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
     }
   }
 
   private void playSounds() {
     if(this.getHeat() > 0) {
-      if(this.getWorld().rand.nextInt(40) == 0) {
+      if(this.getWorld().rand.nextInt(40 - (int)(this.getHeatRatio() / 8.0f)) == 0) {
         this.getWorld().playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 0.8f + this.getWorld().rand.nextFloat(), this.getWorld().rand.nextFloat() * 0.7f + 0.3f, false);
       }
     }
@@ -360,6 +399,9 @@ public class TileFirePit extends HeatProducer {
   @Override
   protected float calculateHeatGain() {
     float temperatureChange = 0;
+
+    final float airBonus = 1.0f + this.getHeatRatio() / 3.0f;
+    this.tank.drainInternal(2, true);
 
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
       if(this.isBurning(slot)) {
@@ -373,7 +415,7 @@ public class TileFirePit extends HeatProducer {
         }
 
         if(fuel.recipe.burnTemp > this.getHeat()) {
-          temperatureChange += fuel.recipe.heatPerSec;
+          temperatureChange += fuel.recipe.heatPerSec * airBonus;
         }
       }
     }
@@ -408,6 +450,7 @@ public class TileFirePit extends HeatProducer {
   @Override
   public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
     compound.setTag("inventory", this.inventory.serializeNBT());
+    this.tank.writeToNBT(compound);
 
     final NBTTagList fuels = new NBTTagList();
 
@@ -455,6 +498,8 @@ public class TileFirePit extends HeatProducer {
     final NBTTagCompound inv = compound.getCompoundTag("inventory");
     inv.removeTag("Size");
     this.inventory.deserializeNBT(inv);
+
+    this.tank.readFromNBT(compound);
 
     final NBTTagList fuels = compound.getTagList("fuel", Constants.NBT.TAG_COMPOUND);
 
@@ -512,6 +557,7 @@ public class TileFirePit extends HeatProducer {
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     return
       capability == ITEM_HANDLER_CAPABILITY ||
+      capability == FLUID_HANDLER_CAPABILITY ||
       super.hasCapability(capability, facing);
   }
 
@@ -520,6 +566,10 @@ public class TileFirePit extends HeatProducer {
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
+    }
+
+    if(capability == FLUID_HANDLER_CAPABILITY) {
+      return FLUID_HANDLER_CAPABILITY.cast(this.tank);
     }
 
     return super.getCapability(capability, facing);

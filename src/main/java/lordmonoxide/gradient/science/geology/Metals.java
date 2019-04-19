@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.science.geology;
 
+import lordmonoxide.gradient.GradientFluids;
 import lordmonoxide.gradient.blocks.BlockOre;
 import lordmonoxide.gradient.science.chemistry.Element;
 import lordmonoxide.gradient.science.chemistry.Elements;
@@ -7,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -83,7 +83,7 @@ public final class Metals {
       throw new IllegalStateException("Cannot get bucket for INVALID_METAL");
     }
 
-    return FluidUtil.getFilledBucket(new FluidStack(FluidRegistry.getFluid(metal.name), Fluid.BUCKET_VOLUME));
+    return FluidUtil.getFilledBucket(new FluidStack(GradientFluids.METALS.get(metal), Fluid.BUCKET_VOLUME));
   }
 
   public static void addMeltable(final Meltable meltable, final Metal metal) {

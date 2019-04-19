@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.config.GradientConfig;
-import lordmonoxide.gradient.utils.BlockPosUtils;
+import lordmonoxide.gradient.utils.WorldUtils;
 import lordmonoxide.gradient.utils.Tuple;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -91,7 +91,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
       final BlockPos nodePos = entry.getKey();
       final EnergyNode node = entry.getValue();
 
-      final EnumFacing facing = BlockPosUtils.areBlocksAdjacent(newNodePos, nodePos);
+      final EnumFacing facing = WorldUtils.areBlocksAdjacent(newNodePos, nodePos);
 
       if(facing != null) {
         if(GradientConfig.enet.enableNodeDebug) {
@@ -357,8 +357,8 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
         for(int i = 1; i < path.size() - 1; i++) {
           final BlockPos pathPos = path.get(i);
-          final EnumFacing facingFrom = BlockPosUtils.getBlockFacing(pathPos, path.get(i - 1));
-          final EnumFacing facingTo = BlockPosUtils.getBlockFacing(pathPos, path.get(i + 1));
+          final EnumFacing facingFrom = WorldUtils.getBlockFacing(pathPos, path.get(i - 1));
+          final EnumFacing facingTo = WorldUtils.getBlockFacing(pathPos, path.get(i + 1));
           final TileEntity transferEntity = this.getNode(pathPos).te;
 
           if(transferEntity.hasCapability(this.transfer, facingFrom)) {

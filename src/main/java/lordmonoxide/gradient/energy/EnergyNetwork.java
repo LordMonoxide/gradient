@@ -2,7 +2,7 @@ package lordmonoxide.gradient.energy;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.config.GradientConfig;
-import lordmonoxide.gradient.utils.BlockPosUtils;
+import lordmonoxide.gradient.utils.WorldUtils;
 import lordmonoxide.gradient.utils.Tuple;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -261,7 +261,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           GradientMod.logger.info("Success!");
         }
 
-        added.put(BlockPosUtils.getBlockFacing(newNodePos, networkPos), network);
+        added.put(WorldUtils.getBlockFacing(newNodePos, networkPos), network);
         connected = true;
       }
     }
@@ -277,7 +277,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       network.connect(networkPos, worldTe);
       network.connect(newNodePos, newTe);
       this.networks.add(network);
-      added.put(BlockPosUtils.getBlockFacing(newNodePos, networkPos), network);
+      added.put(WorldUtils.getBlockFacing(newNodePos, networkPos), network);
     }
   }
 

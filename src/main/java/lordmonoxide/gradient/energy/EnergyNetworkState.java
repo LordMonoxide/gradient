@@ -3,7 +3,7 @@ package lordmonoxide.gradient.energy;
 import it.unimi.dsi.fastutil.longs.Long2FloatMap;
 import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import lordmonoxide.gradient.utils.BlockPosUtils;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,7 +27,7 @@ public class EnergyNetworkState {
   }
 
   void add(final BlockPos pos, final EnumFacing facing, final float energy) {
-    this.storages.put(BlockPosUtils.serializeBlockPosAndFacing(pos, facing), energy);
+    this.storages.put(WorldUtils.serializeBlockPosAndFacing(pos, facing), energy);
   }
 
   void add(final long serialized, final float energy) {

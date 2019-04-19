@@ -73,6 +73,11 @@
       "custom": {
         "fluid": "glass"
       }
+    }],
+    "air": [{
+      "custom": {
+        "fluid": "air"
+      }
     }]
   }
 }

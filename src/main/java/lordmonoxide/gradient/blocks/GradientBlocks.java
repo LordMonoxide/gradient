@@ -52,6 +52,7 @@ public final class GradientBlocks {
   public static final Block STRIPPED_DARK_OAK_WOOD = new BlockLog().setRegistryName(new ResourceLocation("minecraft", "stripped_dark_oak_wood")).setTranslationKey("stripped_dark_oak_wood");
 
   public static final BlockFirePit    FIRE_PIT          = new BlockFirePit();
+  public static final BlockBellows    BELLOWS           = new BlockBellows();
   public static final BlockTorchLit   FIBRE_TORCH_LIT   = new BlockTorchLit("fibre_torch_lit", 0.67f, 0.9375f);
   public static final BlockTorchUnlit FIBRE_TORCH_UNLIT = new BlockTorchUnlit("fibre_torch_unlit", FIBRE_TORCH_LIT);
 
@@ -155,6 +156,7 @@ public final class GradientBlocks {
     registry.register(STRIPPED_DARK_OAK_WOOD);
 
     registry.register(FIRE_PIT);
+    registry.register(BELLOWS);
     registry.register(FIBRE_TORCH_LIT);
     registry.register(FIBRE_TORCH_UNLIT);
 
@@ -197,6 +199,7 @@ public final class GradientBlocks {
     }
 
     GameRegistry.registerTileEntity(TileFirePit.class,       FIRE_PIT.getRegistryName());
+    GameRegistry.registerTileEntity(TileBellows.class,       BELLOWS.getRegistryName());
     GameRegistry.registerTileEntity(TileManualGrinder.class, MANUAL_GRINDER.getRegistryName());
     GameRegistry.registerTileEntity(TileMixingBasin.class,   MIXING_BASIN.getRegistryName());
 

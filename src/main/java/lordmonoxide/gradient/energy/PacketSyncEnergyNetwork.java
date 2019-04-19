@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2FloatMap;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
-import lordmonoxide.gradient.utils.BlockPosUtils;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -82,7 +82,7 @@ public class PacketSyncEnergyNetwork implements IMessage {
           final long serialized = entry.getLongKey();
           final float energy = entry.getFloatValue();
 
-          final BlockPos pos = BlockPosUtils.getBlockPosFromSerialized(serialized);
+          final BlockPos pos = WorldUtils.getBlockPosFromSerialized(serialized);
 
           final World world = GradientMod.proxy.getWorld();
 
@@ -90,7 +90,7 @@ public class PacketSyncEnergyNetwork implements IMessage {
             final TileEntity te = world.getTileEntity(pos);
 
             if(te != null) {
-              final EnumFacing facing = BlockPosUtils.getFacingFromSerialized(serialized);
+              final EnumFacing facing = WorldUtils.getFacingFromSerialized(serialized);
 
               if(te.hasCapability(message.state.getStorageCapability(), facing)) {
                 final IEnergyStorage storage = te.getCapability(message.state.getStorageCapability(), facing);

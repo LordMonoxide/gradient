@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.energy;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.utils.BlockPosUtils;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -491,16 +491,16 @@ class EnergyNetworkSegmentTest {
   }
 
   private void verifyPath(final List<BlockPos> path) {
-    Assertions.assertTrue(this.net.getNode(path.get(0)).te.hasCapability(STORAGE, BlockPosUtils.getBlockFacing(path.get(0), path.get(1))), "Start node was not storage");
-    Assertions.assertTrue(this.net.getNode(path.get(path.size() - 1)).te.hasCapability(STORAGE, BlockPosUtils.getBlockFacing(path.get(path.size() - 1), path.get(path.size() - 2))), "End node was not storage");
+    Assertions.assertTrue(this.net.getNode(path.get(0)).te.hasCapability(STORAGE, WorldUtils.getBlockFacing(path.get(0), path.get(1))), "Start node was not storage");
+    Assertions.assertTrue(this.net.getNode(path.get(path.size() - 1)).te.hasCapability(STORAGE, WorldUtils.getBlockFacing(path.get(path.size() - 1), path.get(path.size() - 2))), "End node was not storage");
 
     for(int i = 0; i < path.size() - 1; i++) {
-      Assertions.assertNotNull(BlockPosUtils.areBlocksAdjacent(path.get(i), path.get(i + 1)), "Positions were not adjacent");
+      Assertions.assertNotNull(WorldUtils.areBlocksAdjacent(path.get(i), path.get(i + 1)), "Positions were not adjacent");
     }
 
     for(int i = 1; i < path.size() - 1; i++) {
-      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, BlockPosUtils.getBlockFacing(path.get(i), path.get(i + 1))), "Intermediate node was not transfer");
-      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, BlockPosUtils.getBlockFacing(path.get(i), path.get(i - 1))), "Intermediate node was not transfer");
+      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, WorldUtils.getBlockFacing(path.get(i), path.get(i + 1))), "Intermediate node was not transfer");
+      Assertions.assertTrue(this.net.getNode(path.get(i)).te.hasCapability(TRANSFER, WorldUtils.getBlockFacing(path.get(i), path.get(i - 1))), "Intermediate node was not transfer");
     }
   }
 

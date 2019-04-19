@@ -1,8 +1,8 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.science.geology.Metal;
-import lordmonoxide.gradient.science.geology.Metals;
+import lordmonoxide.gradient.tileentities.TileBellows;
+import lordmonoxide.gradient.utils.WorldUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -13,77 +13,65 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockClayCast extends GradientBlock {
-  private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 2.0d / 16.0d, 1.0d);
-
+public class BlockBellows extends Block {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
-  public static BlockClayCast hardened(final GradientCasts.Cast cast) {
-    return new BlockClayCast(cast, true);
-  }
-
-  public static BlockClayCast unhardened(final GradientCasts.Cast cast) {
-    return new BlockClayCast(cast, false);
-  }
-
-  public final GradientCasts.Cast cast;
-  private final boolean hardened;
-
-  private BlockClayCast(final GradientCasts.Cast cast, final boolean hardened) {
-    super("clay_cast" + '.' + cast.name + '.' + (hardened ? "hardened" : "unhardened"), CreativeTabs.TOOLS, hardened ? GradientBlocks.MATERIAL_CLAY_MACHINE : Material.CLAY);
+  public BlockBellows() {
+    super(Material.WOOD);
+    this.setRegistryName("bellows");
+    this.setTranslationKey("bellows");
+    this.setCreativeTab(CreativeTabs.TOOLS);
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
-    this.setResistance(hardened ? 5.0f : 2.0f);
-    this.setHardness(1.0f);
-    this.cast = cast;
-    this.hardened = hardened;
   }
 
   @Override
-  @SideOnly(Side.CLIENT)
-  public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
-    super.addInformation(stack, world, tooltip, flag);
+  public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<String> tooltip, final ITooltipFlag flagIn) {
+    super.addInformation(stack, worldIn, tooltip, flagIn);
+    tooltip.add(I18n.format("tile.bellows.tooltip"));
+  }
 
-    if(!this.hardened) {
-      tooltip.add(I18n.format("tile.clay_cast.unhardened.tooltip"));
-    } else {
-      for(final Metal metal : Metals.all()) {
-        tooltip.add(I18n.format("tile.clay_cast.hardened.tooltip"));
-        final String metalName = I18n.format("fluid." + metal.name);
-        final int metalAmount = this.cast.amountForMetal(metal);
-        tooltip.add(I18n.format("tile.clay_cast.hardened.metal_amount", metalName, metalAmount));
+  @Override
+  public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+    if(!world.isRemote) {
+      final TileBellows bellows = WorldUtils.getTileEntity(world, pos, TileBellows.class);
+
+      if(bellows == null) {
+        return false;
+      }
+
+      if(!player.isSneaking()) {
+        bellows.activate();
+        return true;
       }
     }
+
+    return true;
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
   public boolean isSideSolid(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
-    return side == EnumFacing.DOWN;
+    return false;
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
   public BlockFaceShape getBlockFaceShape(final IBlockAccess world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
-    if(face == EnumFacing.DOWN) {
-      return BlockFaceShape.SOLID;
-    }
-
     return BlockFaceShape.UNDEFINED;
   }
 
@@ -104,13 +92,8 @@ public class BlockClayCast extends GradientBlock {
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
-  public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
-    return AABB;
-  }
-
-  @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, facing.getOpposite());
   }
 
   @Override
@@ -118,7 +101,6 @@ public class BlockClayCast extends GradientBlock {
   @SuppressWarnings("deprecation")
   public IBlockState getStateFromMeta(final int meta) {
     final EnumFacing facing = EnumFacing.byHorizontalIndex(meta & 0b11);
-
     return this.getDefaultState().withProperty(FACING, facing);
   }
 
@@ -144,5 +126,15 @@ public class BlockClayCast extends GradientBlock {
   @Override
   protected BlockStateContainer createBlockState() {
     return new BlockStateContainer.Builder(this).add(FACING).build();
+  }
+
+  @Override
+  public TileBellows createTileEntity(final World world, final IBlockState state) {
+    return new TileBellows();
+  }
+
+  @Override
+  public boolean hasTileEntity(final IBlockState state) {
+    return true;
   }
 }

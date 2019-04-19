@@ -226,6 +226,7 @@ fluid.sphalerite=Molten Sphalerite
 fluid.tin=Molten Tin
 fluid.zinc=Molten Zinc
 fluid.glass=Molten Glass
+fluid.air=Air
 
 # Blocks
 tile.ore.azurite.name=Azurite Ore
@@ -242,6 +243,8 @@ tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
 tile.fire_pit.heat=Heat: %d °C
+tile.bellows.name=Bellows
+tile.bellows.tooltip=Place next to a fire pit or furnace and right click repeatedly to use
 tile.fibre_torch_lit.name=Lit Fibre Torch
 tile.fibre_torch_unlit.name=Unlit Fibre Torch
 tile.fibre_torch_unlit.tooltip=Light on a fire pit or with another torch

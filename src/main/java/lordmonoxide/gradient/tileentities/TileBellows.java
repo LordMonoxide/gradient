@@ -1,6 +1,8 @@
 package lordmonoxide.gradient.tileentities;
 
+import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientFluids;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientSounds;
 import lordmonoxide.gradient.blocks.BlockBellows;
 import lordmonoxide.gradient.utils.WorldUtils;
@@ -13,10 +15,23 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.animation.TimeValues;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.model.animation.IAnimationStateMachine;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nullable;
+
 public class TileBellows extends TileEntity implements ITickable {
+  @CapabilityInject(IAnimationStateMachine.class)
+  private static Capability<IAnimationStateMachine> ANIMATION_CAPABILITY;
+
   private static final int CYCLE_TICKS = 80;
+
+  @Nullable
+  private final IAnimationStateMachine asm;
+  private final TimeValues.VariableValue ticksValue = new TimeValues.VariableValue(0.0f);
 
   private final FluidStack air = new FluidStack(GradientFluids.AIR, 3);
 
@@ -24,6 +39,10 @@ public class TileBellows extends TileEntity implements ITickable {
   private int ticks;
 
   private BlockPos facingPos;
+
+  public TileBellows() {
+    this.asm = GradientMod.proxy.loadAsm(GradientMod.resource("asms/block/bellows.json"), ImmutableMap.of("blowing_cycle", this.ticksValue));
+  }
 
   @Override
   public void onLoad() {
@@ -53,13 +72,22 @@ public class TileBellows extends TileEntity implements ITickable {
 
       if(this.world.isRemote && this.ticks == 0) {
         this.world.playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, GradientSounds.BELLOWS_BLOW, SoundCategory.BLOCKS, 0.8f + this.world.rand.nextFloat(), this.world.rand.nextFloat() * 0.7f + 0.3f, false);
+        this.asm.transition("blowing");
       }
 
       this.ticks++;
 
+      if(this.world.isRemote) {
+        this.ticksValue.setValue((float)this.ticks / CYCLE_TICKS);
+      }
+
       if(this.ticks >= CYCLE_TICKS) {
         this.active = false;
         this.ticks = 0;
+
+        if(this.world.isRemote) {
+          this.asm.transition("idle");
+        }
       }
 
       this.markDirty();
@@ -80,6 +108,23 @@ public class TileBellows extends TileEntity implements ITickable {
     this.ticks = compound.getInteger("ticks");
 
     super.readFromNBT(compound);
+  }
+
+  @Override
+  public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+    return
+      capability == ANIMATION_CAPABILITY ||
+      super.hasCapability(capability, facing);
+  }
+
+  @Nullable
+  @Override
+  public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+    if(capability == ANIMATION_CAPABILITY) {
+      return ANIMATION_CAPABILITY.cast(this.asm);
+    }
+
+    return super.getCapability(capability, facing);
   }
 
   protected void sync() {

@@ -15,19 +15,27 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.common.property.Properties;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockBellows extends Block {
   public static final PropertyDirection FACING = BlockHorizontal.FACING;
+  private static final IUnlistedProperty<IModelState> ANIMATION = Properties.AnimationProperty;
+
+  private static final AxisAlignedBB AABB = new AxisAlignedBB(2.0d / 16.0d, 2.0d / 16.0d, 0.0d, 14.0d / 16.0d, 14.0d / 16.0d, 1.0d);
 
   public BlockBellows() {
     super(Material.WOOD);
@@ -129,7 +137,7 @@ public class BlockBellows extends Block {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer.Builder(this).add(FACING).build();
+    return new BlockStateContainer.Builder(this).add(FACING).add(ANIMATION).build();
   }
 
   @Override
@@ -140,5 +148,12 @@ public class BlockBellows extends Block {
   @Override
   public boolean hasTileEntity(final IBlockState state) {
     return true;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  public EnumBlockRenderType getRenderType(final IBlockState state) {
+    return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
   }
 }

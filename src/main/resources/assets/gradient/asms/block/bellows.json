@@ -1,0 +1,17 @@
+{
+  "parameters": {
+  },
+  "clips": {
+    "idle": "#identity",
+    "blowing": ["apply", "gradient:block/bellows@blowing", "#blowing_cycle"]
+  },
+  "states": [
+    "idle",
+    "blowing"
+  ],
+  "start_state": "idle",
+  "transitions": {
+    "idle": "blowing",
+    "blowing": ["idle", "blowing"]
+  }
+}

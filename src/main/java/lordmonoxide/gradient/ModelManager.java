@@ -7,6 +7,7 @@ import lordmonoxide.gradient.client.tesr.TileFlywheelRenderer;
 import lordmonoxide.gradient.client.tesr.TileManualGrinderRenderer;
 import lordmonoxide.gradient.client.tesr.TileMixingBasinRenderer;
 import lordmonoxide.gradient.items.GradientItems;
+import lordmonoxide.gradient.tileentities.TileBellows;
 import lordmonoxide.gradient.tileentities.TileClayOven;
 import lordmonoxide.gradient.tileentities.TileDryingRack;
 import lordmonoxide.gradient.tileentities.TileFirePit;
@@ -23,6 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.animation.AnimationTESR;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -75,6 +77,7 @@ public final class ModelManager {
 
   private static void registerBlockModels() {
     ClientRegistry.bindTileEntitySpecialRenderer(TileFirePit.class, new TileFirePitRenderer());
+    ClientRegistry.bindTileEntitySpecialRenderer(TileBellows.class, new AnimationTESR<>());
     ClientRegistry.bindTileEntitySpecialRenderer(TileClayOven.class, new TileClayOvenRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileManualGrinder.class, new TileManualGrinderRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileMixingBasin.class, new TileMixingBasinRenderer());

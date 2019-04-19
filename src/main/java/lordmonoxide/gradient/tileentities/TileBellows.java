@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.tileentities;
 
 import lordmonoxide.gradient.GradientFluids;
+import lordmonoxide.gradient.GradientSounds;
 import lordmonoxide.gradient.blocks.BlockBellows;
 import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.state.IBlockState;
@@ -10,6 +11,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -47,6 +49,10 @@ public class TileBellows extends TileEntity implements ITickable {
         if(firepit != null) {
           firepit.tank.fill(this.air, true);
         }
+      }
+
+      if(this.world.isRemote && this.ticks == 0) {
+        this.world.playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, GradientSounds.BELLOWS_BLOW, SoundCategory.BLOCKS, 0.8f + this.world.rand.nextFloat(), this.world.rand.nextFloat() * 0.7f + 0.3f, false);
       }
 
       this.ticks++;

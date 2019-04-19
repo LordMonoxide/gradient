@@ -93,6 +93,10 @@ public class BlockBellows extends Block {
   @Override
   @Deprecated
   public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+    if(facing.getAxis() == EnumFacing.Axis.Y) {
+      return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+    }
+
     return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, facing.getOpposite());
   }
 

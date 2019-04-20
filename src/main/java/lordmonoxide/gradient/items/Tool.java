@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -38,6 +39,11 @@ public class Tool extends GradientItemWorldTool {
   @Override
   public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
     return this.type.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+  }
+
+  @Override
+  public boolean itemInteractionForEntity(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+    return this.type.onEntityInteract(itemstack, player, entity, hand);
   }
 
   @Override

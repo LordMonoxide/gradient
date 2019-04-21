@@ -11,21 +11,21 @@ public final class Ores {
   private static final Map<String, Ore> ores = new LinkedHashMap<>();
   private static final Map<String, Ore.Metal> metals = new LinkedHashMap<>();
 
-  public static final Ore.Metal INVALID_ORE_METAL = new Ore.Metal("invalid", Metals.INVALID_METAL);
+  public static final Ore.Metal INVALID_ORE_METAL = new Ore.Metal("invalid", Metals.INVALID_METAL, Metals.INVALID_METAL);
 
-  public static final Ore.Metal AZURITE     = addOre("azurite", o -> o.metal(Metals.AZURITE));
-  public static final Ore.Metal CASSITERITE = addOre("cassiterite", o -> o.metal(Metals.CASSITERITE));
+  public static final Ore.Metal AZURITE     = addOre("azurite", o -> o.metal(Metals.AZURITE).basic(Metals.COPPER));
+  public static final Ore.Metal CASSITERITE = addOre("cassiterite", o -> o.metal(Metals.CASSITERITE).basic(Metals.TIN));
   public static final Ore.Metal COPPER      = addOre("copper", o -> o.metal(Metals.COPPER));
   public static final Ore.Metal GOLD        = addOre("gold", o -> o.metal(Metals.GOLD));
   public static final Ore.Metal GRAPHITE    = addOre("graphite", o -> o.metal(Metals.GRAPHITE));
-  public static final Ore.Metal HEMATITE    = addOre("hematite", o -> o.metal(Metals.HEMATITE));
+  public static final Ore.Metal HEMATITE    = addOre("hematite", o -> o.metal(Metals.HEMATITE).basic(Metals.IRON));
   public static final Ore.Metal PYRITE      = addOre("pyrite", o -> o.metal(Metals.PYRITE));
-  public static final Ore.Metal SPHALERITE  = addOre("sphalerite", o -> o.metal(Metals.SPHALERITE));
+  public static final Ore.Metal SPHALERITE  = addOre("sphalerite", o -> o.metal(Metals.SPHALERITE).basic(Metals.ZINC));
 
   public static Ore.Metal addOre(final String name, final Consumer<MetalOreBuilder> builder) {
     final MetalOreBuilder mb = new MetalOreBuilder();
     builder.accept(mb);
-    final Ore.Metal ore = new Ore.Metal(name, mb.metal);
+    final Ore.Metal ore = new Ore.Metal(name, mb.metal, mb.basic);
     ores.put(name, ore);
     metals.put(name, ore);
     return ore;
@@ -49,9 +49,20 @@ public final class Ores {
 
   private static class MetalOreBuilder {
     private Metal metal;
+    private Metal basic;
 
     public MetalOreBuilder metal(final Metal metal) {
       this.metal = metal;
+
+      if(this.basic == null) {
+        this.basic = metal;
+      }
+
+      return this;
+    }
+
+    public MetalOreBuilder basic(final Metal basic) {
+      this.basic = basic;
       return this;
     }
   }

@@ -4,8 +4,11 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Side.CLIENT)
 public final class GradientSounds {
   private GradientSounds() { }
 

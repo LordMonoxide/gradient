@@ -3,11 +3,11 @@
   "age": 3,
   "result": {
     "item": "minecraft:torch",
-    "count": 5
+    "count": 2
   },
   "ingredients": [{
     "type": "forge:ore_dict",
-    "ore": "coal"
+    "ore": "nuggetCoal"
   }, {
     "type": "forge:ore_dict",
     "ore": "string"

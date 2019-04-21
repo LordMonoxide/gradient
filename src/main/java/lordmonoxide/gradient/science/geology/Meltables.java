@@ -25,8 +25,8 @@ public final class Meltables {
         final Ore.Metal ore = Ores.getMetal(oreName.substring(3).toLowerCase());
 
         if(ore != Ores.INVALID_ORE_METAL) {
-          final Meltable meltable = add(oreName, ore.metal.meltTime, ore.metal.meltTemp, ore.metal.name, Fluid.BUCKET_VOLUME);
-          Metals.addMeltable(meltable, ore.metal);
+          final Meltable meltable = add(oreName, ore.basic.meltTime, ore.basic.meltTemp, ore.basic.name, Fluid.BUCKET_VOLUME);
+          Metals.addMeltable(meltable, ore.basic);
         }
       } else if(oreName.startsWith("ingot")) {
         final Metal metal = Metals.get(oreName.substring(5).toLowerCase());

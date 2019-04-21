@@ -1,5 +1,6 @@
 package lordmonoxide.gradient;
 
+import lordmonoxide.gradient.blocks.BlockLog;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -60,7 +61,7 @@ public final class GradientTools {
     final IBlockState state = world.getBlockState(pos);
 
     // Handled in event handler; need this here to stop from placing items in offhand (see #541)
-    if(state.getBlock() == Blocks.LOG || state.getBlock() == Blocks.LOG2) {
+    if(state.getBlock() == Blocks.LOG || state.getBlock() == Blocks.LOG2 || state.getBlock() instanceof BlockLog) {
       return EnumActionResult.SUCCESS;
     }
 

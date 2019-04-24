@@ -23,17 +23,6 @@ public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixin
     final EnumFacing facing = EnumFacing.byHorizontalIndex(te.getBlockMetadata());
     final double facingAngle = Math.toRadians(facing.getHorizontalAngle());
 
-    if(te.hasFluid()) {
-      GlStateManager.pushMatrix();
-
-      GlStateManager.translate(0.0f, -0.25f, 0.0f);
-      GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
-      GlStateManager.scale(0.5f, 0.5f, 0.5f);
-      Minecraft.getMinecraft().getRenderItem().renderItem(this.water, ItemCameraTransforms.TransformType.GROUND);
-
-      GlStateManager.popMatrix();
-    }
-
     for(int slot = 0; slot < TileMixingBasin.INPUT_SIZE; slot++) {
       if(te.hasInput(slot)) {
         final ItemStack input = te.getInput(slot);
@@ -41,10 +30,10 @@ public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixin
         GlStateManager.pushMatrix();
 
         final double angle = (6 - slot) * Math.PI / 4 + facingAngle;
-        final float inputX = (float)Math.cos(angle) * 0.25f;
-        final float inputZ = (float)Math.sin(angle) * 0.25f;
+        final float inputX = (float)Math.cos(angle) * 0.2f;
+        final float inputZ = (float)Math.sin(angle) * 0.2f;
 
-        GlStateManager.translate(inputX, -0.25f, inputZ);
+        GlStateManager.translate(inputX, -0.15f, inputZ);
         GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
         GlStateManager.scale(0.5f, 0.5f, 0.5f);
         Minecraft.getMinecraft().getRenderItem().renderItem(input, ItemCameraTransforms.TransformType.GROUND);
@@ -58,10 +47,10 @@ public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixin
 
       GlStateManager.pushMatrix();
 
-      final float inputX = (float)Math.cos(facingAngle) * 0.25f;
-      final float inputZ = (float)Math.sin(facingAngle) * 0.25f;
+      final float inputX = (float)Math.cos(facingAngle) * 0.2f;
+      final float inputZ = (float)Math.sin(facingAngle) * 0.2f;
 
-      GlStateManager.translate(inputX, -0.25f, inputZ);
+      GlStateManager.translate(inputX, -0.15f, inputZ);
 
       if(output.getCount() > 1) {
         this.drawNameplate(te, Integer.toString(output.getCount()), -0.5d, -1.05d, -0.5d, 16);

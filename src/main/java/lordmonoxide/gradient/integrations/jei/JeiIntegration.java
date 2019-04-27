@@ -1,12 +1,15 @@
 package lordmonoxide.gradient.integrations.jei;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.inventory.ContainerPlayer3x3Crafting;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.recipe.IStackHelper;
+import mezz.jei.api.helpers.IStackHelper;
+import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
@@ -89,6 +92,9 @@ public class JeiIntegration implements IModPlugin {
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.DRYING_RACK), GradientRecipeCategoryUid.DRYING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.FUEL);
 */
+
+    //registry.getRecipeTransferRegistry().addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(VanillaRecipeCategoryUid.CRAFTING));
+    //registry.getRecipeTransferRegistry().addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(GradientRecipeCategoryUid.CRAFTING));
   }
 
   private static <T extends IRecipe> Collection<T> filterRecipes(final Class<T> recipeClass) {
@@ -101,5 +107,38 @@ public class JeiIntegration implements IModPlugin {
     }
 
     return recipes;
+  }
+
+  private static final class ContainerPlayer3x3CraftingTransferInfo implements IRecipeTransferInfo<ContainerPlayer3x3Crafting> {
+    private final ResourceLocation uid;
+
+    private ContainerPlayer3x3CraftingTransferInfo(final ResourceLocation uid) {
+      this.uid = uid;
+    }
+
+    @Override
+    public Class<ContainerPlayer3x3Crafting> getContainerClass() {
+      return ContainerPlayer3x3Crafting.class;
+    }
+
+    @Override
+    public ResourceLocation getRecipeCategoryUid() {
+      return this.uid;
+    }
+
+    @Override
+    public boolean canHandle(final ContainerPlayer3x3Crafting container) {
+      return true;
+    }
+
+    @Override
+    public List<Slot> getRecipeSlots(final ContainerPlayer3x3Crafting container) {
+      return container.craftingSlots;
+    }
+
+    @Override
+    public List<Slot> getInventorySlots(final ContainerPlayer3x3Crafting container) {
+      return container.invSlots;
+    }
   }
 }

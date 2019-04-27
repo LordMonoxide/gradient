@@ -65,6 +65,7 @@ public final class ModelManager {
 
   private static void registerBlockModels() {
     ClientRegistry.bindTileEntitySpecialRenderer(TileFirePit.class, new TileFirePitRenderer());
+    //TODO ClientRegistry.bindTileEntitySpecialRenderer(TileBellows.class, new AnimationTESR<>());
     ClientRegistry.bindTileEntitySpecialRenderer(TileClayOven.class, new TileClayOvenRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileManualGrinder.class, new TileManualGrinderRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileMixingBasin.class, new TileMixingBasinRenderer());

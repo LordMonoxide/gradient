@@ -1,0 +1,15 @@
+{
+  "type": "gradient:age_gated_shapeless",
+  "age": 3,
+  "result": {
+    "item": "minecraft:torch",
+    "count": 2
+  },
+  "ingredients": [{
+    "tag": "forge:nuggets/coal"
+  }, {
+    "tag": "gradient:strings"
+  }, {
+    "tag": "forge:rods/wooden"
+  }]
+}

@@ -18,7 +18,7 @@ public final class CapabilityPlayerProgress {
   public static Capability<PlayerProgress> PLAYER_PROGRESS_CAPABILITY;
 
   public static void register() {
-    CapabilityManager.INSTANCE.register(PlayerProgress.class, new Capability.IStorage<PlayerProgress>() {
+    CapabilityManager.INSTANCE.register(PlayerProgress.class, new Capability.IStorage<>() {
       @Override
       public INBTBase writeNBT(final Capability<PlayerProgress> capability, final PlayerProgress instance, final EnumFacing side) {
         final NBTTagCompound tags = new NBTTagCompound();

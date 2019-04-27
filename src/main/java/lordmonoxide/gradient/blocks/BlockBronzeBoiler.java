@@ -3,6 +3,7 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
@@ -23,6 +24,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -81,6 +83,7 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     world.setBlockState(pos, state.with(FACING, placer.getHorizontalFacing().getOpposite()), 2);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
@@ -119,27 +122,33 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
   }
 
   //TODO
-/*
   @Override
   public IBlockState getExtendedState(final IBlockState state, final IBlockReader world, final BlockPos pos) {
-    final IExtendedBlockState extendedState = (IExtendedBlockState) state;
+    final IExtendedBlockState extendedState = (IExtendedBlockState)state;
 
-    final TileEntity te = world.getTileEntity(pos);
+    final TileBronzeBoiler te = WorldUtils.getTileEntity(world, pos, TileBronzeBoiler.class);
 
-    if(te instanceof TileBronzeBoiler) {
+/*
+    if(te != null) {
       return extendedState
-        .with(WATER_LEVEL, ((TileBronzeBoiler)te).getWaterLevel())
-        .with(STEAM_LEVEL, ((TileBronzeBoiler)te).getSteamLevel());
+        .with(WATER_LEVEL, te.getWaterLevel())
+        .with(STEAM_LEVEL, te.getSteamLevel());
     }
-
-    return extendedState.withProperty(WATER_LEVEL, 0).with(STEAM_LEVEL, 0);
-  }
 */
+
+    return extendedState;//.with(WATER_LEVEL, 0).with(STEAM_LEVEL, 0);
+  }
+
+  @Override
+  @Deprecated
+  @SuppressWarnings("deprecation")
+  public boolean isFullCube(final IBlockState state) {
+    return false;
+  }
 
   @SuppressWarnings("deprecation")
   @Override
-  @Deprecated
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isSolid(final IBlockState state) {
     return false;
   }
 

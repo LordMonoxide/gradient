@@ -1,6 +1,6 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.GradientMetals;
+import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.ToolType;
@@ -8,7 +8,7 @@ import net.minecraftforge.common.ToolType;
 import javax.annotation.Nullable;
 
 public class CastBlock extends GradientBlock {
-  public CastBlock(final GradientMetals.Metal metal) {
+  public CastBlock(final Metal metal) {
     super("cast_block." + metal.name, Properties.create(Material.IRON).hardnessAndResistance(10.0f, 5.0f));
   }
 

@@ -1,0 +1,367 @@
+# Items
+item.fibre.name=Fibre
+item.twine.name=Twine
+item.bark_oak.name=Oak Bark
+item.bark_spruce.name=Spruce Bark
+item.bark_birch.name=Birch Bark
+item.bark_jungle.name=Jungle Bark
+item.bark_acacia.name=Acacia Bark
+item.bark_dark_oak.name=Dark Oak Bark
+item.mulch.name=Mulch
+item.hide_cow.name=Cow Hide
+item.hide_donkey.name=Donkey Hide
+item.hide_horse.name=Horse Hide
+item.hide_llama.name=Llama Hide
+item.hide_mule.name=Mule Hide
+item.hide_ocelot.name=Ocelot Hide
+item.hide_pig.name=Pig Hide
+item.hide_polar_bear.name=Polar Bear Hide
+item.hide_sheep.name=Sheep Hide
+item.hide_wolf.name=Wolf Hide
+
+item.hide_raw.name=Raw Hide
+item.hide_salted.name=Salted Hide
+item.hide_preserved.name=Preserved Hide
+item.hide_tanned.name=Tanned Hide
+
+item.hide_boots.name=Hide Boots
+item.hide_pants.name=Hide Pants
+item.hide_shirt.name=Hide Shirt
+item.hide_headcover.name=Hide Headcover
+
+item.hide_bedding.name=Hide Bedding
+item.waterskin.name=Waterskin
+item.leather_cord.name=Leather Cord
+
+# Tools
+item.bone_awl.name=Bone Awl
+item.stone_hammer.name=Stone Hammer
+item.stone_hammer.tooltip=Use on ores to get metal nuggets
+item.stone_hatchet.name=Stone Hatchet
+item.stone_mattock.name=Stone Mattock
+item.stone_mattock.tooltip=Right click to till soil, strip logs, or shear animals
+item.stone_pickaxe.name=Stone Pickaxe
+item.fire_starter.name=Fire Starter
+item.flint_knife.name=Flint Knife
+item.tool.pickaxe.azurite.name=Azurite Pickaxe
+item.tool.pickaxe.bronze.name=Bronze Pickaxe
+item.tool.pickaxe.cassiterite.name=Cassiterite Pickaxe
+item.tool.pickaxe.copper.name=Copper Pickaxe
+item.tool.pickaxe.hematite.name=Hematite Pickaxe
+item.tool.pickaxe.iron.name=Iron Pickaxe
+item.tool.pickaxe.pyrite.name=Pyrite Pickaxe
+item.tool.pickaxe.sphalerite.name=Sphalerite Pickaxe
+item.tool.mattock.azurite.name=Azurite Mattock
+item.tool.mattock.bronze.name=Bronze Mattock
+item.tool.mattock.cassiterite.name=Cassiterite Mattock
+item.tool.mattock.copper.name=Copper Mattock
+item.tool.mattock.hematite.name=Hematite Mattock
+item.tool.mattock.iron.name=Iron Mattock
+item.tool.mattock.pyrite.name=Pyrite Mattock
+item.tool.mattock.sphalerite.name=Sphalerite Mattock
+item.tool.sword.azurite.name=Azurite Sword
+item.tool.sword.bronze.name=Bronze Sword
+item.tool.sword.cassiterite.name=Cassiterite Sword
+item.tool.sword.copper.name=Copper Sword
+item.tool.sword.hematite.name=Hematite Sword
+item.tool.sword.iron.name=Iron Sword
+item.tool.sword.pyrite.name=Pyrite Sword
+item.tool.sword.sphalerite.name=Sphalerite Sword
+item.tool.hammer.azurite.name=Azurite Forge Hammer
+item.tool.hammer.bronze.name=Bronze Forge Hammer
+item.tool.hammer.cassiterite.name=Cassiterite Forge Hammer
+item.tool.hammer.copper.name=Copper Forge Hammer
+item.tool.hammer.hematite.name=Hematite Forge Hammer
+item.tool.hammer.iron.name=Iron Forge Hammer
+item.tool.hammer.pyrite.name=Pyrite Forge Hammer
+item.tool.hammer.sphalerite.name=Sphalerite Forge Hammer
+
+# Cast items
+item.cast_item.pickaxe.azurite.name=Azurite Pickaxe Head
+item.cast_item.pickaxe.bronze.name=Bronze Pickaxe Head
+item.cast_item.pickaxe.cassiterite.name=Cassiterite Pickaxe Head
+item.cast_item.pickaxe.copper.name=Copper Pickaxe Head
+item.cast_item.pickaxe.hematite.name=Hematite Pickaxe Head
+item.cast_item.pickaxe.iron.name=Iron Pickaxe Head
+item.cast_item.pickaxe.pyrite.name=Pyrite Pickaxe Head
+item.cast_item.pickaxe.sphalerite.name=Sphalerite Pickaxe Head
+item.cast_item.mattock.azurite.name=Azurite Mattock Head
+item.cast_item.mattock.bronze.name=Bronze Mattock Head
+item.cast_item.mattock.cassiterite.name=Cassiterite Mattock Head
+item.cast_item.mattock.copper.name=Copper Mattock Head
+item.cast_item.mattock.hematite.name=Hematite Mattock Head
+item.cast_item.mattock.iron.name=Iron Mattock Head
+item.cast_item.mattock.pyrite.name=Pyrite Mattock Head
+item.cast_item.mattock.sphalerite.name=Sphalerite Mattock Head
+item.cast_item.sword.azurite.name=Azurite Sword Blade
+item.cast_item.sword.bronze.name=Bronze Sword Blade
+item.cast_item.sword.cassiterite.name=Cassiterite Sword Blade
+item.cast_item.sword.copper.name=Copper Sword Blade
+item.cast_item.sword.hematite.name=Hematite Sword Blade
+item.cast_item.sword.iron.name=Iron Sword Blade
+item.cast_item.sword.pyrite.name=Pyrite Sword Blade
+item.cast_item.sword.sphalerite.name=Sphalerite Sword Blade
+item.cast_item.hammer.azurite.name=Azurite Hammer Head
+item.cast_item.hammer.bronze.name=Bronze Hammer Head
+item.cast_item.hammer.cassiterite.name=Cassiterite Hammer Head
+item.cast_item.hammer.copper.name=Copper Hammer Head
+item.cast_item.hammer.hematite.name=Hematite Hammer Head
+item.cast_item.hammer.iron.name=Iron Hammer Head
+item.cast_item.hammer.pyrite.name=Pyrite Hammer Head
+item.cast_item.hammer.sphalerite.name=Sphalerite Hammer Head
+item.cast_item.ingot.azurite.name=Azurite Ingot
+item.cast_item.ingot.bronze.name=Bronze Ingot
+item.cast_item.ingot.cassiterite.name=Cassiterite Ingot
+item.cast_item.ingot.copper.name=Copper Ingot
+item.cast_item.ingot.gold.name=Gold Ingot
+item.cast_item.ingot.graphite.name=Graphite Ingot
+item.cast_item.ingot.hematite.name=Hematite Ingot
+item.cast_item.ingot.iron.name=Iron Ingot
+item.cast_item.ingot.magnesium.name=Magnesium Ingot
+item.cast_item.ingot.pyrite.name=Pyrite Ingot
+item.cast_item.ingot.sphalerite.name=Sphalerite Ingot
+item.cast_item.ingot.tin.name=Tin Ingot
+item.cast_item.ingot.zinc.name=Zinc Ingot
+tile.cast_block.azurite.name=Block of Azurite
+tile.cast_block.bronze.name=Block of Bronze
+tile.cast_block.cassiterite.name=Block of Cassiterite
+tile.cast_block.copper.name=Block of Copper
+tile.cast_block.gold.name=Block of Gold
+tile.cast_block.graphite.name=Block of Graphite
+tile.cast_block.hematite.name=Block of Hematite
+tile.cast_block.iron.name=Block of Iron
+tile.cast_block.magnesium.name=Block of Magnesium
+tile.cast_block.pyrite.name=Block of Pyrite
+tile.cast_block.sphalerite.name=Block of Sphalerite
+tile.cast_block.tin.name=Block of Tin
+tile.cast_block.zinc.name=Block of Zinc
+
+# Metals
+item.nugget.azurite.name=Azurite Nugget
+item.nugget.bronze.name=Bronze Nugget
+item.nugget.cassiterite.name=Cassiterite Nugget
+item.nugget.copper.name=Copper Nugget
+item.nugget.gold.name=Gold Nugget
+item.nugget.graphite.name=Graphite Nugget
+item.nugget.hematite.name=Hematite Nugget
+item.nugget.iron.name=Iron Nugget
+item.nugget.magnesium.name=Magnesium Nugget
+item.nugget.pyrite.name=Pyrite Nugget
+item.nugget.sphalerite.name=Sphalerite Nugget
+item.nugget.tin.name=Tin Nugget
+item.nugget.zinc.name=Zinc Nugget
+item.nugget.coal.name=Coal Nugget
+item.alloy_nugget.bronze.name=Bronze Alloy Nugget
+item.dust.azurite.name=Azurite Dust
+item.dust.bronze.name=Bronze Dust
+item.dust.cassiterite.name=Cassiterite Dust
+item.dust.copper.name=Copper Dust
+item.dust.gold.name=Gold Dust
+item.dust.graphite.name=Graphite Dust
+item.dust.hematite.name=Hematite Dust
+item.dust.iron.name=Iron Dust
+item.dust.magnesium.name=Magnesium Dust
+item.dust.pyrite.name=Pyrite Dust
+item.dust.sphalerite.name=Sphalerite Dust
+item.dust.tin.name=Tin Dust
+item.dust.zinc.name=Zinc Dust
+item.dust.flint.name=Flint Dust
+item.dust.glass.name=Glass Dust
+item.crushed.azurite.name=Crushed Azurite Ore
+item.crushed.bronze.name=Crushed Bronze Ore
+item.crushed.cassiterite.name=Crushed Cassiterite Ore
+item.crushed.copper.name=Crushed Copper Ore
+item.crushed.gold.name=Crushed Gold Ore
+item.crushed.graphite.name=Crushed Graphite Ore
+item.crushed.hematite.name=Crushed Hematite Ore
+item.crushed.iron.name=Crushed Iron Ore
+item.crushed.magnesium.name=Crushed Magnesium Ore
+item.crushed.pyrite.name=Crushed Pyrite Ore
+item.crushed.sphalerite.name=Crushed Sphalerite Ore
+item.crushed.tin.name=Crushed Tin Ore
+item.crushed.zinc.name=Crushed Zinc Ore
+item.purified.azurite.name=Purified Crushed Azurite Ore
+item.purified.bronze.name=Purified Crushed Bronze Ore
+item.purified.cassiterite.name=Purified Crushed Cassiterite Ore
+item.purified.copper.name=Purified Crushed Copper Ore
+item.purified.gold.name=Purified Crushed Gold Ore
+item.purified.graphite.name=Purified Crushed Graphite Ore
+item.purified.hematite.name=Purified Crushed Hematite Ore
+item.purified.iron.name=Purified Crushed Iron Ore
+item.purified.magnesium.name=Purified Crushed Magnesium Ore
+item.purified.pyrite.name=Purified Crushed Pyrite Ore
+item.purified.sphalerite.name=Purified Crushed Sphalerite Ore
+item.purified.tin.name=Purified Crushed Tin Ore
+item.purified.zinc.name=Purified Crushed Zinc Ore
+item.plate.azurite.name=Azurite Plate
+item.plate.bronze.name=Bronze Plate
+item.plate.cassiterite.name=Cassiterite Plate
+item.plate.copper.name=Copper Plate
+item.plate.gold.name=Gold Plate
+item.plate.graphite.name=Graphite Plate
+item.plate.hematite.name=Hematite Plate
+item.plate.iron.name=Iron Plate
+item.plate.magnesium.name=Magnesium Plate
+item.plate.pyrite.name=Pyrite Plate
+item.plate.sphalerite.name=Sphalerite Plate
+item.plate.tin.name=Tin Plate
+item.plate.zinc.name=Zinc Plate
+
+# Machine parts
+item.igniter.name=Ignition Powder
+item.grinding_head.name=Grinding Head
+
+# Fluids
+fluid.azurite=Molten Azurite
+fluid.bronze=Molten Bronze
+fluid.cassiterite=Molten Cassiterite
+fluid.copper=Molten Copper
+fluid.gold=Molten Gold
+fluid.graphite=Molten Graphite
+fluid.hematite=Molten Hematite
+fluid.iron=Molten Iron
+fluid.magnesium=Molten Magnesium
+fluid.pyrite=Molten Pyrite
+fluid.sphalerite=Molten Sphalerite
+fluid.tin=Molten Tin
+fluid.zinc=Molten Zinc
+fluid.glass=Molten Glass
+fluid.air=Air
+
+# Blocks
+tile.ore.azurite.name=Azurite Ore
+tile.ore.cassiterite.name=Cassiterite Ore
+tile.ore.copper.name=Copper Ore
+tile.ore.gold.name=Gold Ore
+tile.ore.graphite.name=Graphite Ore
+tile.ore.hematite.name=Hematite Ore
+tile.ore.pyrite.name=Pyrite Ore
+tile.ore.sphalerite.name=Sphalerite Ore
+tile.salt_block.name=Salt Block
+tile.pebble.name=Pebble
+tile.fire_pit.name=Fire Pit
+tile.fire_pit.fuel=Fuel
+tile.fire_pit.input=Food
+tile.fire_pit.heat=Heat: %d °C
+tile.bellows.name=Bellows
+tile.bellows.tooltip=Place next to a fire pit or furnace and right click repeatedly to use
+tile.fibre_torch_lit.name=Lit Fibre Torch
+tile.fibre_torch_unlit.name=Unlit Fibre Torch
+tile.fibre_torch_unlit.tooltip=Light on a fire pit or with another torch
+
+tile.hardened_log.name=Hardened Log
+tile.hardened_planks.name=Hardened Planks
+item.hardened_stick.name=Hardened Stick
+
+tile.standing_torch.name=Torch Stand
+
+unhardened_clay.tooltip=Place next to a fire pit to dry
+tile.clay_bucket.unhardened.name=Unhardened Clay Bucket
+tile.clay_bucket.hardened.name=Clay Bucket
+item.clay_bucket_item.name=Clay Bucket of %s
+item.clay_bucket_item.empty.name=Empty Clay Bucket
+tile.clay_furnace.unhardened.name=Unhardened Clay Furnace
+tile.clay_furnace.hardened.name=Clay Furnace
+tile.clay_furnace.hardened.tooltip=Right click on a fire pit to attach
+tile.clay_oven.unhardened.name=Unhardened Clay Oven
+tile.clay_oven.hardened.name=Clay Oven
+tile.clay_oven.hardened.tooltip=Place on top of a furnace to use its heat
+tile.clay_crucible.unhardened.name=Unhardened Clay Crucible
+tile.clay_crucible.hardened.name=Clay Crucible
+tile.clay_crucible.hardened.tooltip=Place on top of a furnace to use its heat
+tile.clay_crucible.molten=%s: %f
+tile.clay_crucible.no_metal=The crucible is empty
+tile.clay_crucible.not_enough_metal=This cast requires %d mB
+tile.clay_crucible.metal_cant_make_tools=This metal can't be used to make tools
+tile.clay_cast.unhardened.tooltip=Right click to switch cast. Place next to a fire pit to dry.
+tile.clay_cast.pickaxe.unhardened.name=Unhardened Clay Cast (Pickaxe)
+tile.clay_cast.mattock.unhardened.name=Unhardened Clay Cast (Mattock)
+tile.clay_cast.sword.unhardened.name=Unhardened Clay Cast (Sword)
+tile.clay_cast.hammer.unhardened.name=Unhardened Clay Cast (Hammer)
+tile.clay_cast.ingot.unhardened.name=Unhardened Clay Cast (Ingot)
+tile.clay_cast.block.unhardened.name=Unhardened Clay Cast (Block)
+tile.clay_cast.pickaxe.hardened.name=Clay Cast (Pickaxe)
+tile.clay_cast.mattock.hardened.name=Clay Cast (Mattock)
+tile.clay_cast.sword.hardened.name=Clay Cast (Sword)
+tile.clay_cast.hammer.hardened.name=Clay Cast (Hammer)
+tile.clay_cast.ingot.hardened.name=Clay Cast (Ingot)
+tile.clay_cast.block.hardened.name=Clay Cast (Block)
+tile.clay_cast.hardened.tooltip=Right click on a crucible to cast
+tile.clay_cast.hardened.metal_amount=%s → %d mB
+
+tile.manual_grinder.name=Grindstone
+tile.mixing_basin.name=Mixing Basin
+tile.drying_rack.name=Drying Rack
+
+tile.bronze_machine_hull.name=Bronze Machine Hull
+tile.bronze_furnace.name=Bronze Furnace
+tile.bronze_furnace.fuel=Fuel
+tile.bronze_furnace.heat=Heat: %d °C
+tile.bronze_boiler.name=Bronze Boiler
+tile.bronze_boiler.heat=Heat: %d °C
+tile.bronze_boiler.fluid_amount=%d/%d mB
+tile.bronze_boiler.fluid_empty=Empty
+tile.bronze_oven.name=Bronze Oven
+tile.bronze_grinder.name=Bronze Grinder
+
+# Fuel
+fuel.ignition_temp=Ignition Temperature: %f °C
+fuel.burn_temp=Burn Temperature: %f °C
+fuel.duration=Burn Duration: %d sec
+
+# Food
+food.cook_temp=Cook Temperature: %f °C
+food.duration=Cook Duration: %d sec
+food.cooked=Cooked: %dx %s
+
+item.mushroom_stew.name=Mushroom Stew
+item.sugarcane_paste.name=Sugarcane Paste
+item.salt.name=Salt
+item.flour.name=Flour
+item.dough.name=Dough
+
+tile.wooden_axle.name=Wooden Axle
+item.wooden_gear.name=Wooden Gear
+tile.wooden_gearbox.name=Wooden Gearbox
+
+# Meltables
+meltable.melt_temp=Melting Point: %f °C
+meltable.melt_time=Melting Time: %d sec
+meltable.amount=Amount: %d mB
+meltable.fluid=Fluid: %s
+
+# JEI integration
+jei.requirement.age=Requires %s
+
+jei.age.1=Nomadic (Age 1)
+jei.age.2=Agricultural (Age 2)
+jei.age.3=Bronze (Age 3)
+jei.age.4=Industrial (Age 4)
+
+jei.firepit.temperature=%f °C
+jei.firepit.ticks=%d ticks
+
+jei.mixer.passes=%d stirs
+jei.mixer.ticks=%d ticks
+
+jei.grinder.passes=%d grinds
+jei.grinder.ticks=%d ticks
+
+jei.hardening.name=Hardening
+jei.hardening.ticks=%d ticks
+jei.hardening.instructions=Place next to a firepit
+
+jei.fuel.name=Fuel
+jei.fuel.duration=Burn time: %d seconds
+jei.fuel.ignitionTemp=Ignition temperature: %d °C
+jei.fuel.burnTemp=Max temperature: %d °C
+jei.fuel.heatPerSec=Heat: %d °C/s
+
+# Commands
+commands.setage.usage=/setage <age> [<player>]
+commands.setage.set=Your age is now %s
+commands.setage.set_other=%s's age is now %s
+
+# Debug
+item.infinicoal.name=Infinicoal (debug)
+item.debug.name=Debug

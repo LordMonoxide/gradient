@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lordmonoxide.gradient.advancements.AdvancementTriggers;
+import lordmonoxide.gradient.network.PacketUpdatePlayerProgress;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -37,6 +38,7 @@ public final class SetAgeCommand {
           progress.setAge(age);
 
           AdvancementTriggers.CHANGE_AGE.trigger(target);
+          PacketUpdatePlayerProgress.send(target);
 
           target.sendMessage(new TextComponentTranslation("commands.gradient.setage.set", age.getDisplayName()));
 

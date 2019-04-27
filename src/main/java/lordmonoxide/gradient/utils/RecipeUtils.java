@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.utils;
 
+import cpw.mods.modlauncher.api.INameMappingService;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -23,11 +24,11 @@ public final class RecipeUtils {
 
   static {
     try {
-      eventHandlerField = InventoryCrafting.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_70465_c"));
+      eventHandlerField = InventoryCrafting.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_70465_c"));
       eventHandlerField.setAccessible(true);
-      containerPlayerPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_82862_h"));
+      containerPlayerPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_82862_h"));
       containerPlayerPlayerField.setAccessible(true);
-      slotCraftingPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_75238_b"));
+      slotCraftingPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_75238_b"));
       slotCraftingPlayerField.setAccessible(true);
     } catch(final NoSuchFieldException e) {
       throw new RuntimeException(e);

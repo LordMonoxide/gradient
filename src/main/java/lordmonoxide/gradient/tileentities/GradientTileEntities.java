@@ -15,6 +15,9 @@ public final class GradientTileEntities {
   @ObjectHolder("gradient:fire_pit")
   public static TileEntityType<?> FIRE_PIT;
 
+  @ObjectHolder("gradient:bellows")
+  public static TileEntityType<?> BELLOWS;
+
   @ObjectHolder("gradient:manual_grinder")
   public static TileEntityType<?> MANUAL_GRINDER;
 
@@ -67,6 +70,7 @@ public final class GradientTileEntities {
       //TODO: datafixer (see https://github.com/progwml6/ironchest/blob/7ecd01921cd0466b6075b78fedb81bc9d70d8207/src/main/java/com/progwml6/ironchest/common/tileentity/IronChestEntityType.java#L91)
 
       registry.register(TileEntityType.Builder.create(TileFirePit::new).build(null).setRegistryName(GradientBlocks.FIRE_PIT.getRegistryName()));
+      registry.register(TileEntityType.Builder.create(TileBellows::new).build(null).setRegistryName(GradientBlocks.BELLOWS.getRegistryName()));
       registry.register(TileEntityType.Builder.create(TileManualGrinder::new).build(null).setRegistryName(GradientBlocks.MANUAL_GRINDER.getRegistryName()));
       registry.register(TileEntityType.Builder.create(TileMixingBasin::new).build(null).setRegistryName(GradientBlocks.MIXING_BASIN.getRegistryName()));
       registry.register(TileEntityType.Builder.create(TileDryingRack::new).build(null).setRegistryName(GradientBlocks.DRYING_RACK.getRegistryName()));

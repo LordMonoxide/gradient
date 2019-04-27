@@ -7,6 +7,7 @@ import lordmonoxide.gradient.containers.GradientGuiContainer;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.ItemClayCastUnhardened;
 import lordmonoxide.gradient.network.PacketSwitchCast;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
@@ -49,7 +50,7 @@ public class GuiClayCast extends GradientGuiContainer {
   }
 
   private GuiButton addButtonForTool(final GradientCasts.Cast cast, final int x, final int y) {
-    return this.addButton(new ItemButton(cast.id, GradientItems.castItem(cast, GradientMetals.COPPER, 1), x, y) {
+    return this.addButton(new ItemButton(cast.id, GradientItems.castItem(cast, Metals.COPPER, 1), x, y) {
       @Override
       public void onClick(final double mouseX, final double mouseY) {
         GuiClayCast.this.selectedCast.enabled = true;

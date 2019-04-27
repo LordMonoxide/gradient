@@ -1,13 +1,12 @@
 {
-  "type": "gradient:shapeless",
+  "type": "gradient:grinding",
   "age": 3,
+  "passes": 3,
+  "ticks": 50,
   "result": {
     "item": "gradient:dust.flint"
   },
   "ingredients": [{
     "item": "minecraft:flint"
-  }, {
-    "type": "gradient:ore",
-    "ore": "toolMortar"
   }]
 }

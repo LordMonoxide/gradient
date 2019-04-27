@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.items.GradientItems;
+import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -13,7 +13,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
@@ -24,15 +23,15 @@ public class BlockPebble extends GradientBlock {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(4.0d, 0.0d, 4.0d, 12.0d, 4.0d, 12.0d);
 
   @Nullable
-  private final GradientMetals.Metal metal;
+  private final Metal metal;
 
   public BlockPebble() {
     super("pebble", Properties.create(Material.GROUND, MaterialColor.GRAY));
     this.metal = null;
   }
 
-  public BlockPebble(final GradientMetals.Metal metal) {
-    super("pebble." + metal.name, Properties.create(Material.GROUND, MaterialColor.GRAY));
+  public BlockPebble(final Metal metal) {
+    super("pebble." + metal.name, Properties.create(Material.GROUND, MaterialColor.GRAY).hardnessAndResistance(0.0f).doesNotBlockMovement());
     this.metal = metal;
   }
 
@@ -42,7 +41,7 @@ public class BlockPebble extends GradientBlock {
       if(world.rand.nextInt(6) == 0) {
         drops.add(new ItemStack(Items.FLINT));
       } else {
-        drops.add(new ItemStack(this));
+        drops.add(new ItemStack(GradientItems.PEBBLE));
       }
     }
 
@@ -71,12 +70,7 @@ public class BlockPebble extends GradientBlock {
     return SHAPE;
   }
 
-  @Override
   @SuppressWarnings("deprecation")
-  public VoxelShape getCollisionShape(final IBlockState blockState, final IBlockReader world, final BlockPos pos) {
-    return VoxelShapes.empty();
-  }
-
   @Override
   public boolean isValidPosition(final IBlockState state, final IWorldReaderBase world, final BlockPos pos) {
     final IBlockState down = world.getBlockState(pos.down());

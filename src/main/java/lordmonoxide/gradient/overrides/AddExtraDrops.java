@@ -1,15 +1,20 @@
 package lordmonoxide.gradient.overrides;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.hacks.FixToolBreakingNotFiringHarvestDropEvents;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.GradientToolTypes;
+import lordmonoxide.gradient.science.geology.Meltable;
+import lordmonoxide.gradient.science.geology.Meltables;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -47,6 +52,8 @@ public final class AddExtraDrops {
     if(
       block == Blocks.GRASS ||
       block == Blocks.TALL_GRASS ||
+      block == Blocks.FERN ||
+      block == Blocks.LARGE_FERN ||
       block == Blocks.DIRT ||
       block == Blocks.GRASS_BLOCK ||
       block == BOP_GRASS ||
@@ -98,7 +105,12 @@ public final class AddExtraDrops {
       return;
     }
 
-    final ItemStack hand = event.getHarvester().getHeldItemMainhand();
+    final EntityPlayer player = event.getHarvester();
+
+    //TODO: null
+    final FixToolBreakingNotFiringHarvestDropEvents.IPlayerItem cap = player.getCapability(FixToolBreakingNotFiringHarvestDropEvents.CapabilityPlayerItem.CAPABILITY, null).orElse(null);
+
+    final ItemStack hand = cap != null ? cap.getStack() : player.getHeldItemMainhand();
 
     if(hand.isEmpty()) {
       return;
@@ -118,14 +130,14 @@ public final class AddExtraDrops {
       }
 
       final ItemStack metalStack = event.getState().getBlock().getItem(event.getWorld(), event.getPos(), event.getState());
+      final Meltable meltable = Meltables.get(metalStack);
 
-      if(GradientMetals.hasMeltable(metalStack)) {
-        final GradientMetals.Meltable meltable = GradientMetals.getMeltable(metalStack);
-
+      if(meltable != Meltables.INVALID_MELTABLE) {
+        final Metal metal = Metals.get(meltable);
         final int nuggetCount = rand.nextInt(meltable.amount * 4 / 1000 * (event.getFortuneLevel() + 1) + 1) + 2;
 
         for(int i = 0; i < nuggetCount; i++) {
-          drops.add(meltable.metal.getNugget());
+          drops.add(new ItemStack(GradientItems.nugget(metal)));
         }
       }
 

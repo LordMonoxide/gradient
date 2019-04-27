@@ -1,8 +1,8 @@
 package lordmonoxide.gradient.client.textures;
 
 import com.google.common.collect.ImmutableList;
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
@@ -29,10 +29,10 @@ public class MetalAtlasSprite extends TextureAtlasSprite {
 
   private static final int ALPHA_MASK = 0xFF000000;
 
-  private final GradientMetals.Metal metal;
+  private final Metal metal;
   private final ImmutableList<ResourceLocation> dependencies;
 
-  public MetalAtlasSprite(final ResourceLocation spriteName, final int width, final int height, final GradientMetals.Metal metal, final ResourceLocation... source) {
+  public MetalAtlasSprite(final ResourceLocation spriteName, final int width, final int height, final Metal metal, final ResourceLocation... source) {
     super(spriteName, width, height);
     this.metal = metal;
     this.dependencies = ImmutableList.copyOf(source);

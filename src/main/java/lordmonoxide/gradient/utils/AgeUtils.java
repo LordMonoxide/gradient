@@ -35,7 +35,7 @@ public final class AgeUtils {
     return age;
   }
 
-  public static Age getPlayerAge(final EntityLivingBase player) {
+  public static Age getPlayerAge(final Entity player) {
     final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY).orElse(null);
 
     if(progress != null) {
@@ -45,14 +45,14 @@ public final class AgeUtils {
     return Age.AGE1;
   }
 
-  public static boolean playerMeetsAgeRequirement(final EntityLivingBase player, final Age age) {
+  public static boolean playerMeetsAgeRequirement(final Entity player, final Age age) {
     final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY).orElse(null);
 
     if(progress != null) {
       return progress.meetsAgeRequirement(age);
     }
 
-    return true;
+    return false;
   }
 
   public static boolean playerMeetsAgeRequirement(final InventoryCrafting inv, final Age age) {
@@ -62,6 +62,6 @@ public final class AgeUtils {
       return playerMeetsAgeRequirement(player, age);
     }
 
-    return true;
+    return false;
   }
 }

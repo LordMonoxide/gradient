@@ -2,16 +2,22 @@ package lordmonoxide.gradient;
 
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
@@ -19,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public final class GradientTools {
   private GradientTools() { }
@@ -26,9 +33,8 @@ public final class GradientTools {
   private static final Map<String, Type> TYPES = new HashMap<>();
 
   public static final Type PICKAXE = register(GradientCasts.PICKAXE).tool(ToolType.PICKAXE)             .weapon(1.0d, 1.0d, 2).add();
-  public static final Type MATTOCK = register(GradientCasts.MATTOCK).tool(ToolType.AXE, ToolType.SHOVEL).weapon(4.5d, 0.5d, 2).onItemUse(GradientTools::onMattockUse).tooltip(GradientTools::mattockTooltip).add();
+  public static final Type MATTOCK = register(GradientCasts.MATTOCK).tool(ToolType.AXE, ToolType.SHOVEL).weapon(4.5d, 0.5d, 2).onItemUse(GradientTools::onMattockUse).onEntityInteract(GradientTools::onEntityInteractShear).tooltip(GradientTools::mattockTooltip).add();
   public static final Type SWORD   = register(GradientCasts.SWORD)                                      .weapon(3.0d, 1.0f, 1).add();
-  public static final Type HAMMER  = register(GradientCasts.HAMMER).add();
 
   public static ToolBuilder register(final GradientCasts.Cast cast) {
     return new ToolBuilder(cast);
@@ -55,11 +61,50 @@ public final class GradientTools {
     return Items.STONE_HOE.onItemUse(context);
   }
 
-  private static void noTooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+  private static void noTooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip) {
 
   }
 
-  private static void mattockTooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+  public static boolean onEntityInteractPass(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+    return false;
+  }
+
+  public static boolean onEntityInteractShear(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+    if(entity.world.isRemote) {
+      return false;
+    }
+
+    if(entity instanceof IShearable) {
+      final IShearable target = (IShearable)entity;
+      final BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
+
+      if(target.isShearable(itemstack, entity.world, pos)) {
+        itemstack.damageItem(1, entity);
+
+        final List<ItemStack> drops = target.onSheared(itemstack, entity.world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, itemstack));
+
+        if(drops.isEmpty()) {
+          return true;
+        }
+
+        final Random rand = new Random();
+
+        // Get one random drop from the list
+        final ItemStack stack = drops.get(rand.nextInt(drops.size()));
+
+        final EntityItem ent = entity.entityDropItem(stack, 1.0f);
+        ent.motionY += rand.nextFloat() * 0.05F;
+        ent.motionX += (rand.nextFloat() - rand.nextFloat()) * 0.1f;
+        ent.motionZ += (rand.nextFloat() - rand.nextFloat()) * 0.1f;
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
+  private static void mattockTooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip) {
     tooltip.add(new TextComponentTranslation("item.stone_mattock.tooltip"));
   }
 
@@ -75,9 +120,10 @@ public final class GradientTools {
     public final int attackDurabilityLost;
 
     private final OnItemUse onItemUse;
+    private final OnEntityInteract onEntityInteract;
     private final Tooltip tooltip;
 
-    public Type(final GradientCasts.Cast cast, final ToolType[] toolTypes, final double attackDamage, final double attackSpeed, final int attackDurabilityLost, final OnItemUse onItemUse, final Tooltip tooltip) {
+    public Type(final GradientCasts.Cast cast, final ToolType[] toolTypes, final double attackDamage, final double attackSpeed, final int attackDurabilityLost, final OnItemUse onItemUse, final OnEntityInteract onEntityInteract, final Tooltip tooltip) {
       this.id = currentId++;
       this.cast = cast;
       this.toolTypes = toolTypes;
@@ -87,6 +133,7 @@ public final class GradientTools {
       this.attackDurabilityLost = attackDurabilityLost;
 
       this.onItemUse = onItemUse;
+      this.onEntityInteract = onEntityInteract;
       this.tooltip = tooltip;
     }
 
@@ -94,8 +141,12 @@ public final class GradientTools {
       return this.onItemUse.onItemUse(context);
     }
 
-    public void tooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
-      this.tooltip.tooltip(stack, world, tooltip, flag);
+    public boolean onEntityInteract(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+      return this.onEntityInteract.onEntityInteract(itemstack, player, entity, hand);
+    }
+
+    public void tooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip) {
+      this.tooltip.tooltip(stack, world, tooltip);
     }
 
     @Override
@@ -124,8 +175,13 @@ public final class GradientTools {
   }
 
   @FunctionalInterface
+  public interface OnEntityInteract {
+    boolean onEntityInteract(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand);
+  }
+
+  @FunctionalInterface
   public interface Tooltip {
-    void tooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag);
+    void tooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip);
   }
 
   public static final class ToolBuilder {
@@ -138,6 +194,7 @@ public final class GradientTools {
     private int attackDurabilityLost;
 
     private OnItemUse onItemUse = GradientTools::onItemUsePass;
+    private OnEntityInteract onEntityInteract = GradientTools::onEntityInteractPass;
     private Tooltip tooltip = GradientTools::noTooltip;
 
     private ToolBuilder(final GradientCasts.Cast cast) {
@@ -161,13 +218,18 @@ public final class GradientTools {
       return this;
     }
 
+    public ToolBuilder onEntityInteract(final OnEntityInteract onEntityInteract) {
+      this.onEntityInteract = onEntityInteract;
+      return this;
+    }
+
     public ToolBuilder tooltip(final Tooltip tooltip) {
       this.tooltip = tooltip;
       return this;
     }
 
     public Type add() {
-      final Type type = new Type(this.cast, this.toolTypes, this.attackDamage, this.attackSpeed, this.attackDurabilityLost, this.onItemUse, this.tooltip);
+      final Type type = new Type(this.cast, this.toolTypes, this.attackDamage, this.attackSpeed, this.attackDurabilityLost, this.onItemUse, this.onEntityInteract, this.tooltip);
       TYPES.put(this.cast.name, type);
       return type;
     }

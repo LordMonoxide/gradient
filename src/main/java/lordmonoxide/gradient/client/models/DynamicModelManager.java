@@ -22,6 +22,7 @@ public final class DynamicModelManager {
     GradientMod.logger.info("Registering dynamic models");
 
     registerBlock(DynamicModelManager::acceptOres);
+    registerBlock(DynamicModelManager::acceptCastBlocks);
     registerBlock(DynamicModelManager::acceptPebbles, GradientMod.resource("block/pebble")).disableRetexture();
     registerItem(DynamicModelManager::acceptIngots);
     registerItem(DynamicModelManager::acceptHammers);
@@ -29,11 +30,13 @@ public final class DynamicModelManager {
     registerItem(DynamicModelManager::acceptPickaxes);
     registerItem(DynamicModelManager::acceptSwords);
     registerItem(DynamicModelManager::acceptNuggets);
+    registerItem(DynamicModelManager::acceptAlloyNuggets);
     registerItem(DynamicModelManager::acceptDusts);
     registerItem(DynamicModelManager::acceptCrushed);
     registerItem(DynamicModelManager::acceptPurified);
     registerItem(DynamicModelManager::acceptPlates);
     registerItem(DynamicModelManager::acceptTools);
+    registerItem(DynamicModelManager::acceptBark);
   }
 
   private static DynamicModelLoader registerBlock(final Predicate<ResourceLocation> accepts, final ResourceLocation baseModel) {
@@ -54,6 +57,10 @@ public final class DynamicModelManager {
 
   private static boolean acceptOres(final ResourceLocation loc) {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("ore.");
+  }
+
+  private static boolean acceptCastBlocks(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_block.");
   }
 
   private static boolean acceptPebbles(final ResourceLocation loc) {
@@ -84,6 +91,10 @@ public final class DynamicModelManager {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("nugget.");
   }
 
+  private static boolean acceptAlloyNuggets(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("alloy_nugget.");
+  }
+
   private static boolean acceptDusts(final ResourceLocation loc) {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("dust.");
   }
@@ -104,11 +115,15 @@ public final class DynamicModelManager {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("tool.");
   }
 
+  private static boolean acceptBark(final ResourceLocation loc) {
+    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("bark_");
+  }
+
   private static ImmutableMap<String, String> blockTextures(final ResourceLocation loc) {
-    return ImmutableMap.of("all", GradientMod.resource("blocks/" + loc.getPath()).toString());
+    return ImmutableMap.of("all", GradientMod.resource("block/" + loc.getPath()).toString());
   }
 
   private static ImmutableMap<String, String> itemTextures(final ResourceLocation loc) {
-    return ImmutableMap.of("layer0", GradientMod.resource("items/" + loc.getPath()).toString());
+    return ImmutableMap.of("layer0", GradientMod.resource("item/" + loc.getPath()).toString());
   }
 }

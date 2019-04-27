@@ -7,9 +7,14 @@ import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
+import lordmonoxide.gradient.hacks.FixToolBreakingNotFiringHarvestDropEvents;
+import lordmonoxide.gradient.init.ClientProxy;
+import lordmonoxide.gradient.init.IProxy;
+import lordmonoxide.gradient.init.ServerProxy;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.recipes.GradientRecipeSerializers;
+import lordmonoxide.gradient.science.geology.Meltables;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.item.crafting.RecipeManager;
@@ -18,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -40,6 +46,7 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 @Mod(GradientMod.MODID)
@@ -47,6 +54,7 @@ public class GradientMod {
   public static final String MODID = "gradient";
 
   public static final Logger logger = LogManager.getLogger();
+  public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
   private static RecipeManager recipeManager;
 
@@ -76,6 +84,7 @@ public class GradientMod {
     AdvancementTriggers.register();
 
     CapabilityPlayerProgress.register();
+    FixToolBreakingNotFiringHarvestDropEvents.CapabilityPlayerItem.register();
 
     //TODO MinecraftForge.ORE_GEN_BUS.register(DisableVanillaOre.class);
 
@@ -91,7 +100,7 @@ public class GradientMod {
     //TODO GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     //TODO GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
 
-    GradientMetals.registerMeltables();
+    Meltables.registerMeltables();
 
     GradientNet.register();
 
@@ -130,37 +139,34 @@ public class GradientMod {
   }
 
   private void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
-    final Path destScriptDir = configDir.toPath().resolve("triumph/script/" + MODID);
-    final Path destJsonDir = configDir.toPath().resolve("triumph/json/" + MODID);
+    final Path destDir = configDir.toPath().resolve("triumph");
 
     logger.info("Copying triumphs");
 
-    FileUtils.deleteDirectory(destScriptDir.toFile());
-    FileUtils.deleteDirectory(destJsonDir.toFile());
+    FileUtils.deleteDirectory(destDir.toFile());
 
     final URLConnection connection = this.getClass().getResource("").openConnection();
 
     if(connection instanceof JarURLConnection) {
       final JarFile jar = ((JarURLConnection)connection).getJarFile();
 
-      final String scriptsDir = "assets/" + MODID + "/triumph/script/";
-      final String jsonDir = "assets/" + MODID + "/triumph/json/";
+      final String dir = "assets/" + MODID + "/triumph/";
 
       jar.stream().forEach(entry -> {
-        if(!entry.isDirectory() && entry.getName().startsWith(scriptsDir)) {
-          this.copyJarDirectory(jar, entry.getName(), scriptsDir, destScriptDir);
-          this.copyJarDirectory(jar, entry.getName(), jsonDir, destJsonDir);
+        if(!entry.isDirectory()) {
+          if(entry.getName().startsWith(dir)) {
+            this.copyJarDirectory(jar, entry, dir, destDir);
+          }
         }
       });
     } else {
-      this.copyDevDirectory("../../assets/" + MODID + "/triumph/script", destScriptDir);
-      this.copyDevDirectory("../../assets/" + MODID + "/triumph/json", destJsonDir);
+      this.copyDevDirectory("../../assets/" + MODID + "/triumph", destDir);
     }
   }
 
-  private void copyJarDirectory(final JarFile jar, final String fileName, final String sourceDir, final Path destDir) {
-    try(final InputStream stream = jar.getInputStream(jar.getEntry(fileName))) {
-      final Path path = destDir.resolve(fileName.substring(sourceDir.length()));
+  private void copyJarDirectory(final JarFile jar, final JarEntry entry, final String sourceDir, final Path destDir) {
+    try(final InputStream stream = jar.getInputStream(entry)) {
+      final Path path = destDir.resolve(entry.getName().substring(sourceDir.length()));
       Files.createDirectories(path.getParent());
       IOUtils.copy(stream, Files.newOutputStream(path));
     } catch(final IOException e) {

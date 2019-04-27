@@ -1,5 +1,8 @@
 {
   "variants": {
-    "": { "model": "gradient:block/clay_cast.sword.hardened" }
+    "facing=north": { "model": "gradient:block/clay_cast.sword.hardened" },
+    "facing=east":  { "model": "gradient:block/clay_cast.sword.hardened", "y":  90 },
+    "facing=south": { "model": "gradient:block/clay_cast.sword.hardened", "y": 180 },
+    "facing=west":  { "model": "gradient:block/clay_cast.sword.hardened", "y": 270 }
   }
 }

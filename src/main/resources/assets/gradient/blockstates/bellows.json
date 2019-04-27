@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "gradient:block/bellows" },
+    "facing=east":  { "model": "gradient:block/bellows", "y":  90 },
+    "facing=south": { "model": "gradient:block/bellows", "y": 180 },
+    "facing=west":  { "model": "gradient:block/bellows", "y": 270 }
+  }
+}

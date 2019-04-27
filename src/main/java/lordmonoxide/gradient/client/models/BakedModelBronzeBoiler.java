@@ -99,7 +99,7 @@ public class BakedModelBronzeBoiler implements IBakedModel {
     final IBakedModel[] bakedFluidModels = new IBakedModel[capacity];
 
     for(int x = 0; x < capacity; x++) {
-      bakedFluidModels[x] = new BakedModelBronzeBoilerFluid(fluid, capacity, x + 1, yOffset, height);
+      bakedFluidModels[x] = new BakedModelFluid(fluid, capacity, x + 1, yOffset, height);
     }
 
     return bakedFluidModels;

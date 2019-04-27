@@ -4,54 +4,80 @@
     "model": "forge:fluid"
   },
   "variants": {
-    "copper": [
-      {
-        "custom": {
-          "fluid": "copper"
-        }
+    "azurite": [{
+      "custom": {
+        "fluid": "azurite"
       }
-    ],
-    "tin": [
-      {
-        "custom": {
-          "fluid": "tin"
-        }
+    }],
+    "bronze": [{
+      "custom": {
+        "fluid": "bronze"
       }
-    ],
-    "iron": [
-      {
-        "custom": {
-          "fluid": "iron"
-        }
+    }],
+    "cassiterite": [{
+      "custom": {
+        "fluid": "cassiterite"
       }
-    ],
-    "gold": [
-      {
-        "custom": {
-          "fluid": "gold"
-        }
+    }],
+    "copper": [{
+      "custom": {
+        "fluid": "copper"
       }
-    ],
-    "bronze": [
-      {
-        "custom": {
-          "fluid": "bronze"
-        }
+    }],
+    "gold": [{
+      "custom": {
+        "fluid": "gold"
       }
-    ],
-    "magnesium": [
-      {
-        "custom": {
-          "fluid": "magnesium"
-        }
+    }],
+    "graphite": [{
+      "custom": {
+        "fluid": "graphite"
       }
-    ],
-    "glass": [
-      {
-        "custom": {
-          "fluid": "glass"
-        }
+    }],
+    "hematite": [{
+      "custom": {
+        "fluid": "hematite"
       }
-    ]
+    }],
+    "iron": [{
+      "custom": {
+        "fluid": "iron"
+      }
+    }],
+    "magnesium": [{
+      "custom": {
+        "fluid": "magnesium"
+      }
+    }],
+    "pyrite": [{
+      "custom": {
+        "fluid": "pyrite"
+      }
+    }],
+    "sphalerite": [{
+      "custom": {
+        "fluid": "sphalerite"
+      }
+    }],
+    "tin": [{
+      "custom": {
+        "fluid": "tin"
+      }
+    }],
+    "zinc": [{
+      "custom": {
+        "fluid": "zinc"
+      }
+    }],
+    "glass": [{
+      "custom": {
+        "fluid": "glass"
+      }
+    }],
+    "air": [{
+      "custom": {
+        "fluid": "air"
+      }
+    }]
   }
 }

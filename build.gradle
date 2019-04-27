@@ -95,22 +95,21 @@ repositories {
   maven {
     // JEI
     name = "Progwml6 maven"
-    url = "http://dvs1.progwml6.com/files/maven/"
+    url = "https://dvs1.progwml6.com/files/maven/"
   }
 }
 
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.13.2-25.0.107'
+  minecraft 'net.minecraftforge:forge:1.13.2-25.0.191'
 
   //deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.111-ex112'
 
   //deobfCompile 'com.mod-buildcraft:buildcraft-all:7.99.23'
 
   // compile against the JEI API but do not include it at runtime
-  //deobf 'mezz.jei:jei_1.13.2:5.0.0.12:api'
-  deobf "mezz.jei:jei-1.13.2:5.0.0.12:api"
+  compileOnly fg.deobf("mezz.jei:jei-1.13.2:5.0.0.20:api")
   // at runtime, use the full JEI jar
-  //runtime 'mezz.jei:jei_1.13.2:5.0.0.12'
+  runtimeOnly fg.deobf("mezz.jei:jei-1.13.2:5.0.0.20")
 
   compile "org.joml:joml:1.9.9"
 

@@ -14,12 +14,7 @@ public final class WorldUtils {
   @Nullable
   public static <T extends TileEntity> T getTileEntity(final IBlockReader world, final BlockPos pos, final Class<T> clazz) {
     final TileEntity te = world.getTileEntity(pos);
-
-    if(clazz.isInstance(te)) {
-      return clazz.cast(te);
-    }
-
-    return null;
+    return clazz.isInstance(te) ? clazz.cast(te) : null;
   }
 
   @Nullable

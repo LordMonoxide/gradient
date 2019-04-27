@@ -1,5 +1,17 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "model": "gradient:clay_crucible",
+    "textures": {
+      "hardened": "minecraft:blocks/clay",
+      "particle": "minecraft:blocks/clay",
+      "seared": "minecraft:blocks/clay",
+      "seared_gradient": "minecraft:blocks/clay",
+      "seared_gradient_light": "minecraft:blocks/clay"
+    }
+  },
   "variants": {
-    "":  { "model": "gradient:block/clay_crucible.unhardened" }
+    "normal": [{}],
+    "inventory": [{}]
   }
 }

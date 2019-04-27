@@ -215,11 +215,11 @@ public class BlockFirePit extends HeatSinkerBlock {
   private static final BlockPos.MutableBlockPos blockPlacedPos = new BlockPos.MutableBlockPos();
 
   @SubscribeEvent
-  public static void blockPlacedHandler(final BlockEvent.PlaceEvent event) {
+  public static void blockPlacedHandler(final BlockEvent.EntityPlaceEvent event) {
     final IWorld world = event.getWorld();
     final BlockPos pos = event.getPos();
 
-    final Age age = AgeUtils.getPlayerAge(event.getPlayer());
+    final Age age = AgeUtils.getPlayerAge(event.getEntity());
 
     blockPlacedPos.setPos(pos);
     updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);

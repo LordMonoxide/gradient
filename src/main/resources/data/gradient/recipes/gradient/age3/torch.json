@@ -3,10 +3,10 @@
   "age": 3,
   "result": {
     "item": "minecraft:torch",
-    "count": 2
+    "count": 5
   },
   "ingredients": [{
-    "tag": "forge:nuggets/coal"
+    "tag": "gradient:coals"
   }, {
     "tag": "gradient:strings"
   }, {

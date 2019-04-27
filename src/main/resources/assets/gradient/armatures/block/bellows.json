@@ -1,0 +1,35 @@
+{
+  "joints": {
+    "bag":  {"2": [1.0]},
+    "back": {"3": [1.0]}
+  },
+  "clips": {
+    "blowing": {
+      "joint_clips": {
+        "bag": [
+          {
+            "variable": "scale_z",
+            "type": "uniform",
+            "interpolation": "linear",
+            "samples": [1.0, 0.0, 1.0]
+          },
+          {
+            "variable": "offset_z",
+            "type": "uniform",
+            "interpolation": "linear",
+            "samples": [0.0, -0.25, 0.0]
+          }
+        ],
+        "back": [
+          {
+            "variable": "offset_z",
+            "type": "uniform",
+            "interpolation": "linear",
+            "samples": [0.0, -0.5, 0.0]
+          }
+        ]
+      },
+      "events": {}
+    }
+  }
+}

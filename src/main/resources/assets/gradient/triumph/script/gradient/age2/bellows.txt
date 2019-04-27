@@ -1,0 +1,10 @@
+setIcon(<gradient:bellows>)
+setTitle("Can This Thing Go Any Faster?")
+setDescription("Make bellows to help heat up your furnace")
+addParent("gradient:age2/clay_furnace")
+
+criteria1 = addCriteria("hasBellows", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:bellows>)
+
+setRequiresParents()
+setPos(171,-79)

@@ -20,7 +20,7 @@ public final class GrinderRecipes {
     add(Items.FLINT, "dustFlint");
     add("coal", "dustCoal");
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+    for(final Metal metal : Metals.all()) {
       final String name = StringUtils.capitalize(metal.name);
 
       final String crushedName = "crushed" + name;

@@ -1,17 +1,27 @@
 package lordmonoxide.gradient.inventory;
 
 import com.google.common.collect.Lists;
+import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.network.play.server.SPacketSetSlot;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.crafting.RecipeType;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,5 +118,35 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
     }
 
     this.craftResult.clear();
+  }
+
+  @Override
+  protected void slotChangedCraftingGrid(final World world, final EntityPlayer player, final IInventory craftMatrix, final InventoryCraftResult craftResult) {
+    if(!world.isRemote) {
+      ItemStack stack = this.getCraftingResult(world, craftMatrix, craftResult, (EntityPlayerMP)player, GradientRecipeTypes.SHAPED);
+
+      if(stack == null) {
+        stack = this.getCraftingResult(world, craftMatrix, craftResult, (EntityPlayerMP)player, GradientRecipeTypes.SHAPELESS);
+      }
+
+      if(stack != null) {
+        craftResult.setInventorySlotContents(0, stack);
+        ((EntityPlayerMP)player).connection.sendPacket(new SPacketSetSlot(this.windowId, 0, stack));
+        return;
+      }
+    }
+
+    super.slotChangedCraftingGrid(world, player, craftMatrix, craftResult);
+  }
+
+  @Nullable
+  private ItemStack getCraftingResult(final World world, final IInventory craftMatrix, final InventoryCraftResult craftResult, final EntityPlayerMP player, final RecipeType<? extends IRecipe> type) {
+    final IRecipe irecipe = world.getServer().getRecipeManager().getRecipe(craftMatrix, world, type);
+
+    if(craftResult.canUseRecipe(world, player, irecipe) && irecipe != null) {
+      return irecipe.getCraftingResult(craftMatrix);
+    }
+
+    return null;
   }
 }

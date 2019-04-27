@@ -90,7 +90,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
       @Override
       @OnlyIn(Dist.CLIENT)
       public String getSlotTexture() {
-        return "minecraft:items/empty_armor_slot_shield";
+        return "minecraft:item/empty_armor_slot_shield";
       }
     });
 

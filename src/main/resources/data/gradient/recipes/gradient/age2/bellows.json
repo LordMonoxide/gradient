@@ -1,5 +1,5 @@
 {
-  "type": "gradient:age_gated_shaped",
+  "type": "gradient:shaped",
   "age": 2,
   "result": {
     "item": "gradient:bellows"
@@ -11,16 +11,13 @@
   ],
   "key": {
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "tag": "forge:rods/wooden"
     },
     "P": {
-      "type": "forge:ore_dict",
-      "ore": "slabWood"
+      "tag": "minecraft:wooden_slabs"
     },
     "L": {
-      "type": "forge:ore_dict",
-      "ore": "leather"
+      "tag": "forge:leathers"
     }
   }
 }

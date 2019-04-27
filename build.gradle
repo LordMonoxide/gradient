@@ -36,7 +36,7 @@ minecraft {
   // stable_#            stables are built at the discretion of the MCP team.
   // Use non-default mappings at your own risk. they may not allways work.
   // simply re-run your setup task after changing the mappings to update your workspace.
-  mappings channel: 'snapshot', version: '20190402-1.13.2'
+  mappings channel: 'snapshot', version: '20190427-1.13.2'
   // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
   //TODO: this is only necessary until Forge fixes other mods' ATs not being run
@@ -87,10 +87,10 @@ repositories {
     url = "http://maven.ic2.player.to/"
   }
 
-  maven {
-    name = "BuildCraft"
-    url = "http://www.mod-buildcraft.com/maven"
-  }
+  //maven {
+  //  name = "BuildCraft"
+  //  url = "http://www.mod-buildcraft.com/maven"
+  //}
 
   maven {
     // JEI

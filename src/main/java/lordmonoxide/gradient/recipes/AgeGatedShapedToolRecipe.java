@@ -23,7 +23,7 @@ import net.minecraftforge.common.crafting.RecipeType;
 
 import java.util.Random;
 
-public class AgeGatedShapedToolRecipe implements IShapedRecipe {
+public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
   private static final Random rand = new Random();
 
   private final ShapedRecipe recipe;

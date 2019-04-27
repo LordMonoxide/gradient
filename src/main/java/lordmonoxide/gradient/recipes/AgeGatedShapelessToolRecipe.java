@@ -23,7 +23,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.Random;
 
-public class AgeGatedShapelessToolRecipe implements IRecipe {
+public class AgeGatedShapelessToolRecipe implements IRecipe, GradientRecipe {
   private static final Random rand = new Random();
 
   private final ShapelessRecipe recipe;
@@ -56,7 +56,7 @@ public class AgeGatedShapelessToolRecipe implements IRecipe {
 
   @Override
   public NonNullList<ItemStack> getRemainingItems(final IInventory inv) {
-    final NonNullList<ItemStack> remaining = IRecipe.super.getRemainingItems(inv);
+    final NonNullList<ItemStack> remaining = GradientRecipe.super.getRemainingItems(inv);
 
     for(int i = 0; i < remaining.size(); ++i) {
       final ItemStack stack = inv.getStackInSlot(i);

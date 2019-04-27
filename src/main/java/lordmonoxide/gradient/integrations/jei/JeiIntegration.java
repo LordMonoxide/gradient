@@ -1,15 +1,35 @@
 package lordmonoxide.gradient.integrations.jei;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.blocks.GradientBlocks;
+import lordmonoxide.gradient.integrations.jei.crafting.CraftingRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.drying.DryingRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.firepit.FirePitRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.fuel.FuelRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.hardening.HardeningRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeCategory;
 import lordmonoxide.gradient.inventory.ContainerPlayer3x3Crafting;
+import lordmonoxide.gradient.recipes.AgeGatedShapedToolRecipe;
+import lordmonoxide.gradient.recipes.AgeGatedShapelessToolRecipe;
+import lordmonoxide.gradient.recipes.DryingRecipe;
+import lordmonoxide.gradient.recipes.FirePitRecipe;
+import lordmonoxide.gradient.recipes.FuelRecipe;
+import lordmonoxide.gradient.recipes.GrindingRecipe;
+import lordmonoxide.gradient.recipes.HardeningRecipe;
+import lordmonoxide.gradient.recipes.MixingRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
@@ -29,17 +49,15 @@ public class JeiIntegration implements IModPlugin {
   }
 
   @Override
-  public void registerCategories(final IRecipeCategoryRegistration registry) {
-/*
-    final IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
-    registry.addRecipeCategories(new CraftingRecipeCategory(guiHelper));
-    registry.addRecipeCategories(new FirePitRecipeCategory(guiHelper));
-    registry.addRecipeCategories(new MixingRecipeCategory(guiHelper));
-    registry.addRecipeCategories(new GrindingRecipeCategory(guiHelper));
-    registry.addRecipeCategories(new HardeningRecipeCategory(guiHelper));
-    registry.addRecipeCategories(new DryingRecipeCategory(guiHelper));
-    registry.addRecipeCategories(new FuelRecipeCategory(guiHelper));
-*/
+  public void registerCategories(final IRecipeCategoryRegistration registration) {
+    final IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
+    registration.addRecipeCategories(new CraftingRecipeCategory(guiHelper));
+    registration.addRecipeCategories(new FirePitRecipeCategory(guiHelper));
+    registration.addRecipeCategories(new MixingRecipeCategory(guiHelper));
+    registration.addRecipeCategories(new GrindingRecipeCategory(guiHelper));
+    registration.addRecipeCategories(new HardeningRecipeCategory(guiHelper));
+    registration.addRecipeCategories(new DryingRecipeCategory(guiHelper));
+    registration.addRecipeCategories(new FuelRecipeCategory(guiHelper));
   }
 
   @Override
@@ -61,8 +79,6 @@ public class JeiIntegration implements IModPlugin {
 
     //TODO
 /*
-    registration.handleRecipes(AgeGatedShapedToolRecipe.class, recipe -> new ShapedRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.CRAFTING);
-    registration.handleRecipes(AgeGatedShapelessToolRecipe.class, recipe -> new ShapelessRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.CRAFTING);
     registration.handleRecipes(FirePitRecipe.class, recipe -> new FirePitRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.FIREPIT);
     registration.handleRecipes(MixingRecipe.class, recipe -> new MixingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.MIXING);
     registration.handleRecipes(GrindingRecipe.class, recipe -> new GrindingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.GRINDING);
@@ -70,7 +86,6 @@ public class JeiIntegration implements IModPlugin {
     registration.handleRecipes(DryingRecipe.class, recipe -> new DryingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.DRYING);
     registration.handleRecipes(FuelRecipe.class, recipe -> new FuelRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.FUEL);
 */
-/*
     registration.addRecipes(filterRecipes(AgeGatedShapedToolRecipe.class), GradientRecipeCategoryUid.CRAFTING);
     registration.addRecipes(filterRecipes(AgeGatedShapelessToolRecipe.class), GradientRecipeCategoryUid.CRAFTING);
     registration.addRecipes(filterRecipes(FirePitRecipe.class), GradientRecipeCategoryUid.FIREPIT);
@@ -79,22 +94,22 @@ public class JeiIntegration implements IModPlugin {
     registration.addRecipes(filterRecipes(HardeningRecipe.class), GradientRecipeCategoryUid.HARDENING);
     registration.addRecipes(filterRecipes(DryingRecipe.class), GradientRecipeCategoryUid.DRYING);
     registration.addRecipes(filterRecipes(FuelRecipe.class), GradientRecipeCategoryUid.FUEL);
-*/
   }
 
   @Override
   public void registerRecipeCatalysts(final IRecipeCatalystRegistration registration) {
-/*
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.FIREPIT);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.MIXING_BASIN), GradientRecipeCategoryUid.MIXING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.MANUAL_GRINDER), GradientRecipeCategoryUid.GRINDING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.HARDENING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.DRYING_RACK), GradientRecipeCategoryUid.DRYING);
     registration.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.FUEL);
-*/
+  }
 
-    //registry.getRecipeTransferRegistry().addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(VanillaRecipeCategoryUid.CRAFTING));
-    //registry.getRecipeTransferRegistry().addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(GradientRecipeCategoryUid.CRAFTING));
+  @Override
+  public void registerRecipeTransferHandlers(final IRecipeTransferRegistration registration) {
+    registration.addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(VanillaRecipeCategoryUid.CRAFTING));
+    registration.addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(GradientRecipeCategoryUid.CRAFTING));
   }
 
   private static <T extends IRecipe> Collection<T> filterRecipes(final Class<T> recipeClass) {

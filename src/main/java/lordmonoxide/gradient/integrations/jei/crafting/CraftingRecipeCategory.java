@@ -3,6 +3,7 @@ package lordmonoxide.gradient.integrations.jei.crafting;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.integrations.jei.GradientRecipeCategoryUid;
 import lordmonoxide.gradient.integrations.jei.JeiRecipeCategory;
+import lordmonoxide.gradient.recipes.GradientRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
@@ -11,13 +12,12 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import java.util.List;
 
-public class CraftingRecipeCategory extends JeiRecipeCategory<IRecipe> {
+public class CraftingRecipeCategory extends JeiRecipeCategory<GradientRecipe> {
   private static final ResourceLocation ICON_LOCATION = GradientMod.resource("textures/gui/crafting_icon.png");
   private static final ResourceLocation BACKGROUND_LOCATION = new ResourceLocation("jei", "textures/gui/gui_vanilla.png");
 
@@ -27,7 +27,7 @@ public class CraftingRecipeCategory extends JeiRecipeCategory<IRecipe> {
   private final ICraftingGridHelper craftingGridHelper;
 
   public CraftingRecipeCategory(final IGuiHelper guiHelper) {
-    super(GradientRecipeCategoryUid.CRAFTING, IRecipe.class, guiHelper.createDrawable(ICON_LOCATION, 0, 0, 16, 16), guiHelper.createDrawable(BACKGROUND_LOCATION, 0, 60, 116, 54));
+    super(GradientRecipeCategoryUid.CRAFTING, GradientRecipe.class, guiHelper.createDrawable(ICON_LOCATION, 0, 0, 16, 16), guiHelper.createDrawable(BACKGROUND_LOCATION, 0, 60, 116, 54));
     this.craftingGridHelper = guiHelper.createCraftingGridHelper(craftInputSlot1);
   }
 
@@ -37,12 +37,12 @@ public class CraftingRecipeCategory extends JeiRecipeCategory<IRecipe> {
   }
 
   @Override
-  public void setIngredients(final IRecipe recipe, final IIngredients ingredients) {
+  public void setIngredients(final GradientRecipe recipe, final IIngredients ingredients) {
 
   }
 
   @Override
-  public void setRecipe(final IRecipeLayout recipeLayout, final IRecipe recipe, final IIngredients ingredients) {
+  public void setRecipe(final IRecipeLayout recipeLayout, final GradientRecipe recipe, final IIngredients ingredients) {
     final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
     guiItemStacks.init(craftOutputSlot, false, 94, 18);

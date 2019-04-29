@@ -337,11 +337,11 @@
   "jei.grinder.passes": "%d grinds",
   "jei.grinder.ticks": "%d ticks",
 
-  "jei.hardening": "Hardening",
+  "jei.hardening.name": "Hardening",
   "jei.hardening.ticks": "%d ticks",
   "jei.hardening.instructions": "Place next to a firepit",
 
-  "jei.fuel": "Fuel",
+  "jei.fuel.name": "Fuel",
   "jei.fuel.duration": "Burn time: %d seconds",
   "jei.fuel.ignitionTemp": "Ignition temperature: %d °C",
   "jei.fuel.burnTemp": "Max temperature: %d °C",

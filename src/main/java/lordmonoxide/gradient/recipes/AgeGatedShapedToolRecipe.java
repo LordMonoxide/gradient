@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
 import com.google.gson.JsonObject;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.inventory.IInventory;
@@ -20,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.common.crafting.RecipeType;
+import net.minecraftforge.common.crafting.VanillaRecipeTypes;
 
 import java.util.Random;
 
@@ -51,7 +53,7 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
 
   @Override
   public RecipeType<? extends IRecipe> getType() {
-    return GradientRecipeTypes.SHAPED;
+    return VanillaRecipeTypes.CRAFTING;
   }
 
   @Override
@@ -112,7 +114,14 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
     return this.recipe.getRecipeHeight();
   }
 
+  @Override
+  public Age getAge() {
+    return this.age;
+  }
+
   public static final class Serializer implements IRecipeSerializer<AgeGatedShapedToolRecipe> {
+    private static final ResourceLocation id = GradientMod.resource("shaped");
+
     @Override
     public AgeGatedShapedToolRecipe read(final ResourceLocation recipeId, final JsonObject json) {
       final ShapedRecipe recipe = RecipeSerializers.CRAFTING_SHAPED.read(recipeId, json);
@@ -137,7 +146,7 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
 
     @Override
     public ResourceLocation getName() {
-      return GradientRecipeTypes.SHAPED.getId();
+      return id;
     }
   }
 }

@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.recipes;
 
 import com.google.gson.JsonObject;
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.inventory.IInventory;
@@ -19,11 +20,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.RecipeType;
+import net.minecraftforge.common.crafting.VanillaRecipeTypes;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.Random;
 
-public class AgeGatedShapelessToolRecipe implements IRecipe, GradientRecipe {
+public class AgeGatedShapelessToolRecipe implements GradientRecipe {
   private static final Random rand = new Random();
 
   private final ShapelessRecipe recipe;
@@ -103,10 +105,17 @@ public class AgeGatedShapelessToolRecipe implements IRecipe, GradientRecipe {
 
   @Override
   public RecipeType<? extends IRecipe> getType() {
-    return GradientRecipeTypes.SHAPELESS;
+    return VanillaRecipeTypes.CRAFTING;
+  }
+
+  @Override
+  public Age getAge() {
+    return this.age;
   }
 
   public static final class Serializer implements IRecipeSerializer<AgeGatedShapelessToolRecipe> {
+    private static final ResourceLocation id = GradientMod.resource("shapeless");
+
     @Override
     public AgeGatedShapelessToolRecipe read(final ResourceLocation recipeId, final JsonObject json) {
       final ShapelessRecipe recipe = RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, json);
@@ -131,7 +140,7 @@ public class AgeGatedShapelessToolRecipe implements IRecipe, GradientRecipe {
 
     @Override
     public ResourceLocation getName() {
-      return GradientRecipeTypes.SHAPELESS.getId();
+      return id;
     }
   }
 }

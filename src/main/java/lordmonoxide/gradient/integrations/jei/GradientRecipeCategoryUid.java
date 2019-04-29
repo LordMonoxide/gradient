@@ -6,7 +6,6 @@ import net.minecraft.util.ResourceLocation;
 public final class GradientRecipeCategoryUid {
   private GradientRecipeCategoryUid() { }
 
-  public static final ResourceLocation CRAFTING  = GradientMod.resource("crafting");
   public static final ResourceLocation FIREPIT   = GradientMod.resource("firepit");
   public static final ResourceLocation MIXING    = GradientMod.resource("mixing");
   public static final ResourceLocation GRINDING  = GradientMod.resource("grinding");

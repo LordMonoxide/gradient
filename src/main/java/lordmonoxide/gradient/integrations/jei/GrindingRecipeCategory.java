@@ -21,12 +21,12 @@ public class GrindingRecipeCategory extends JeiRecipeCategory<GrindingRecipe> {
   private static final ResourceLocation BACKGROUND_LOCATION = GradientMod.resource("textures/gui/recipe_grinding.png");
 
   public GrindingRecipeCategory(final IGuiHelper guiHelper) {
-    super(GradientRecipeCategoryUid.GRINDING, GrindingRecipe.class, guiHelper.createDrawableIngredient(new ItemStack(GradientItems.MANUAL_GRINDER)), guiHelper.createDrawable(BACKGROUND_LOCATION, 0, 0, 166, 68));
+    super(GradientRecipeCategoryUid.GRINDING, GrindingRecipe.class, guiHelper.createDrawableIngredient(new ItemStack(GradientItems.GRINDSTONE)), guiHelper.createDrawable(BACKGROUND_LOCATION, 0, 0, 166, 68));
   }
 
   @Override
   public String getTitle() {
-    return I18n.format(GradientBlocks.MANUAL_GRINDER.getTranslationKey());
+    return I18n.format(GradientBlocks.GRINDSTONE.getTranslationKey());
   }
 
   @Override

@@ -3,9 +3,9 @@
   "age": 2,
   "ticks": 3600,
   "result": {
-    "item": "gradient:clay_furnace.hardened"
+    "item": "gradient:clay_furnace_hardened"
   },
   "ingredient": {
-    "item": "gradient:clay_furnace.unhardened"
+    "item": "gradient:clay_furnace_unhardened"
   }
 }

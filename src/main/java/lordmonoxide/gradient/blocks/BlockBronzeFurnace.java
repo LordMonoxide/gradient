@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
 import lordmonoxide.gradient.utils.WorldUtils;
@@ -26,7 +27,7 @@ public class BlockBronzeFurnace extends HeatSinkerBlock {
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   public BlockBronzeFurnace() {
-    super("bronze_furnace", Properties.create(GradientBlocks.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(GradientMaterials.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
   }
 

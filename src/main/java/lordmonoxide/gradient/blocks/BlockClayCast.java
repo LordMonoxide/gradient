@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientCasts;
+import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.Block;
@@ -29,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public final class BlockClayCast extends GradientBlock {
+public final class BlockClayCast extends Block {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0d, 0.0d, 0.0d, 16.0d, 2.0d, 16.0d);
 
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
@@ -46,7 +47,7 @@ public final class BlockClayCast extends GradientBlock {
   private final boolean hardened;
 
   private BlockClayCast(final GradientCasts.Cast cast, final boolean hardened) {
-    super("clay_cast" + '.' + cast.name + '.' + (hardened ? "hardened" : "unhardened"), Properties.create(hardened ? GradientBlocks.MATERIAL_CLAY_MACHINE : Material.CLAY).hardnessAndResistance(1.0f, hardened ? 5.0f : 2.0f));
+    super(Properties.create(hardened ? GradientMaterials.MATERIAL_CLAY_MACHINE : Material.CLAY).hardnessAndResistance(1.0f, hardened ? 5.0f : 2.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
     this.cast = cast;
     this.hardened = hardened;

@@ -4,6 +4,7 @@ import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
@@ -12,9 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IWorld;
 
-public class DebugItem extends GradientItem {
+public class DebugItem extends Item {
   public DebugItem() {
-    super("debug", new Properties().group(ItemGroup.TOOLS));
+    super(new Properties().group(ItemGroup.TOOLS));
   }
 
   @Override

@@ -28,7 +28,6 @@ public class BlockWoodenAxle extends BlockRotatedPillar {
 
   public BlockWoodenAxle() {
     super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
-    this.setRegistryName("wooden_axle");
   }
 
   @SuppressWarnings("deprecation")

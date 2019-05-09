@@ -37,7 +37,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   private int ticks;
 
   public TileManualGrinder() {
-    super(GradientTileEntities.MANUAL_GRINDER);
+    super(GradientTileEntities.GRINDSTONE);
   }
 
   public boolean hasInput() {

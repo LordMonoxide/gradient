@@ -1,5 +1,5 @@
 {
-  "parent": "gradient:block/manual_grinder",
+  "parent": "gradient:block/clay_furnace_unhardened",
   "display": {
     "thirdperson": {
       "rotation": [ -90, 0, 0 ],

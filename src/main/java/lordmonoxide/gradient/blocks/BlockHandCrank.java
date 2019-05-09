@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-public class BlockHandCrank extends GradientBlock {
+public class BlockHandCrank extends Block {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
@@ -33,7 +33,7 @@ public class BlockHandCrank extends GradientBlock {
   public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
   public BlockHandCrank() {
-    super("hand_crank", Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
   }
 
   @SuppressWarnings("deprecation")

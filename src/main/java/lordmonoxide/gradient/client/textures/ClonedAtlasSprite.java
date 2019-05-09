@@ -1,4 +1,4 @@
-package lordmonoxide.gradient.client.models;
+package lordmonoxide.gradient.client.textures;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;

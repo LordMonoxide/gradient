@@ -7,19 +7,20 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
-public class GradientItemWorldTool extends GradientItem {
+public class GradientItemWorldTool extends Item {
   private final float harvestSpeed;
   private final float attackSpeed;
   private final int attackDamage;
   private final int attackDurabilityLost;
 
-  public GradientItemWorldTool(final String name, final float harvestSpeed, final float attackSpeed, final int attackDamage, final int attackDurabilityLost, final Properties properties) {
-    super(name, properties);
+  public GradientItemWorldTool(final float harvestSpeed, final float attackSpeed, final int attackDamage, final int attackDurabilityLost, final Properties properties) {
+    super(properties);
     this.harvestSpeed = harvestSpeed;
     this.attackSpeed  = attackSpeed;
     this.attackDamage = attackDamage;

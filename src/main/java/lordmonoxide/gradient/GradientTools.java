@@ -105,7 +105,7 @@ public final class GradientTools {
   }
 
   private static void mattockTooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip) {
-    tooltip.add(new TextComponentTranslation("item.stone_mattock.tooltip"));
+    tooltip.add(new TextComponentTranslation("item.gradient.stone_mattock.tooltip"));
   }
 
   public static class Type implements Comparable<Type> {

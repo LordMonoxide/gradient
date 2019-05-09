@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.items;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBoneMeal;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -11,9 +12,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class Mulch extends GradientItem {
+public class Mulch extends Item {
   public Mulch() {
-    super("mulch", new Properties().group(ItemGroup.MATERIALS));
+    super(new Properties().group(ItemGroup.MATERIALS));
   }
 
   @Override

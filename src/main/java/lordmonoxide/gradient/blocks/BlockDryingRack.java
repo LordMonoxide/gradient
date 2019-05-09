@@ -25,7 +25,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: check if drying rack can be placed on the top of blocks
 
-public class BlockDryingRack extends GradientBlock {
+public class BlockDryingRack extends Block {
   private static final VoxelShape SHAPE_NORTH  = Block.makeCuboidShape( 0.0d, 13.0d,  0.0d, 16.0d, 16.0d,  2.0d);
   private static final VoxelShape SHAPE_SOUTH  = Block.makeCuboidShape( 0.0d, 13.0d, 14.0d, 16.0d, 16.0d, 16.0d);
   private static final VoxelShape SHAPE_EAST   = Block.makeCuboidShape(14.0d, 13.0d,  0.0d, 16.0d, 16.0d, 16.0d);
@@ -37,7 +37,7 @@ public class BlockDryingRack extends GradientBlock {
   public static final BooleanProperty ROOF = BooleanProperty.create("roof");
 
   public BlockDryingRack() {
-    super("drying_rack", Properties.create(Material.WOOD).hardnessAndResistance(1.0f).doesNotBlockMovement());
+    super(Properties.create(Material.WOOD).hardnessAndResistance(1.0f).doesNotBlockMovement());
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH).with(ROOF, false));
   }
 

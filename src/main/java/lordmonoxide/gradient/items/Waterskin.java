@@ -29,7 +29,6 @@ import java.util.List;
 public class Waterskin extends ItemFluidContainer {
   public Waterskin() {
     super(new Properties().group(ItemGroup.TOOLS).maxStackSize(1), Fluid.BUCKET_VOLUME);
-    this.setRegistryName("waterskin");
   }
 
   @OnlyIn(Dist.CLIENT)

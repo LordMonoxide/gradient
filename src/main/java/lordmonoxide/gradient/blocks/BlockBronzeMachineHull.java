@@ -1,7 +1,10 @@
 package lordmonoxide.gradient.blocks;
 
-public class BlockBronzeMachineHull extends GradientBlock {
+import lordmonoxide.gradient.GradientMaterials;
+import net.minecraft.block.Block;
+
+public class BlockBronzeMachineHull extends Block {
   public BlockBronzeMachineHull() {
-    super("bronze_machine_hull", Properties.create(GradientBlocks.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(0.1f, 0.5f));
+    super(Properties.create(GradientMaterials.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(0.1f, 0.5f));
   }
 }

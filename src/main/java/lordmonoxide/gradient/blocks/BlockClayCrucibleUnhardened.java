@@ -16,11 +16,11 @@ import net.minecraft.world.IBlockReader;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockClayCrucibleUnhardened extends GradientBlock {
+public class BlockClayCrucibleUnhardened extends Block {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d, 0.0d, 1.0d, 15.0d, 12.0d, 15.0d);
 
   public BlockClayCrucibleUnhardened() {
-    super("clay_crucible.unhardened", Properties.create(Material.CLAY).hardnessAndResistance(1.0f, 2.0f));
+    super(Properties.create(Material.CLAY).hardnessAndResistance(1.0f, 2.0f));
   }
 
   @Override

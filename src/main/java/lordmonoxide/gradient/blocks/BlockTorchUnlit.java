@@ -21,14 +21,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class BlockTorchUnlit extends BlockTorch {
-  public final Block lit;
+  public final Supplier<Block> lit;
 
-  public BlockTorchUnlit(final String name, final Block lit, final Properties properties) {
+  public BlockTorchUnlit(final Supplier<Block> lit, final Properties properties) {
     super(properties.sound(SoundType.WOOD));
-    this.setRegistryName(name);
-
     this.lit = lit;
   }
 
@@ -49,7 +48,7 @@ public class BlockTorchUnlit extends BlockTorch {
   public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote || !player.isSneaking()) {
       if(this.isLitTorch(player.getHeldItemMainhand()) || this.isLitTorch(player.getHeldItemOffhand())) {
-        world.setBlockState(pos, this.lit.getDefaultState());
+        world.setBlockState(pos, this.lit.get().getDefaultState());
         return true;
       }
     }

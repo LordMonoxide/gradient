@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.science.geology.Ore;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -14,7 +13,6 @@ public class BlockOre extends Block {
 
   public BlockOre(final Ore.Metal ore) {
     super(Properties.create(Material.ROCK).hardnessAndResistance(ore.metal.hardness, 5.0f));
-    this.setRegistryName(GradientMod.resource("ore." + ore.name));
     this.ore = ore;
   }
 

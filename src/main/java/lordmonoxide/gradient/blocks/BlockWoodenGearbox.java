@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-public class BlockWoodenGearbox extends GradientBlock {
+public class BlockWoodenGearbox extends Block {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
@@ -29,7 +29,7 @@ public class BlockWoodenGearbox extends GradientBlock {
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   public BlockWoodenGearbox() {
-    super("wooden_gearbox", Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
   }
 
   @SuppressWarnings("deprecation")

@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.blocks.heat;
 
-import lordmonoxide.gradient.blocks.GradientBlock;
 import lordmonoxide.gradient.network.PacketUpdateHeatNeighbours;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -9,9 +8,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public abstract class HeatSinkerBlock extends GradientBlock {
-  protected HeatSinkerBlock(final String name, final Block.Properties properties) {
-    super(name, properties);
+public abstract class HeatSinkerBlock extends Block {
+  protected HeatSinkerBlock(final Block.Properties properties) {
+    super(properties);
   }
 
   @Override

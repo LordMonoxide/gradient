@@ -2,6 +2,7 @@ package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.DamageSource;
@@ -20,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
-public class HideBedding extends GradientItem {
+public class HideBedding extends Item {
   public HideBedding() {
-    super("hide_bedding", new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(4));
+    super(new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(4));
   }
 
   @Override

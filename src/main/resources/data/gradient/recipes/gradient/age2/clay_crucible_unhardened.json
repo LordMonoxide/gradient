@@ -2,7 +2,7 @@
   "type": "gradient:shaped",
   "age": 2,
   "result": {
-    "item": "gradient:clay_crucible.unhardened"
+    "item": "gradient:clay_crucible_unhardened"
   },
   "pattern": [
     "C C",

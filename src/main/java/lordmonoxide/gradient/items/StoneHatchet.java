@@ -19,7 +19,7 @@ public class StoneHatchet extends GradientItemWorldTool {
   private final Set<ToolType> toolTypes = new HashSet<>();
 
   public StoneHatchet() {
-    super("stone_hatchet", 0.5f, -2.4f, 4, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(20));
+    super(0.5f, -2.4f, 4, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(20));
     this.toolTypes.add(ToolType.AXE);
   }
 

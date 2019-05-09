@@ -1,9 +1,10 @@
 package lordmonoxide.gradient.items;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 
-public class BoneAwl extends GradientItem {
+public class BoneAwl extends Item {
   public BoneAwl() {
-    super("bone_awl", new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(20));
+    super(new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(20));
   }
 }

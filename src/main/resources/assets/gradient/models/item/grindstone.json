@@ -1,5 +1,5 @@
 {
-  "parent": "gradient:block/clay_oven.hardened",
+  "parent": "gradient:block/grindstone",
   "display": {
     "thirdperson": {
       "rotation": [ -90, 0, 0 ],

@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
@@ -39,7 +40,7 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
   private static final Fluid WATER = null; //TODO FluidRegistry.getFluid("water");
 
   public BlockBronzeBoiler() {
-    super("bronze_boiler", Properties.create(GradientBlocks.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(GradientMaterials.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
   }
 

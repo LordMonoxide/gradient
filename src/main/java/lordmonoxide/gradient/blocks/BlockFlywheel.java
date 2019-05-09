@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-public class BlockFlywheel extends GradientBlock {
+public class BlockFlywheel extends Block {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
@@ -28,7 +28,7 @@ public class BlockFlywheel extends GradientBlock {
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   public BlockFlywheel() {
-    super("flywheel", Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
   }
 
   @SuppressWarnings("deprecation")

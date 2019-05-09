@@ -9,11 +9,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 
-public class BlockStandingTorch extends GradientBlock {
+public class BlockTorchStand extends Block {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(6.0d, 0.0d, 6.0d, 10.0d, 16.0d, 10.0d);
 
-  public BlockStandingTorch() {
-    super("standing_torch", Properties.create(Material.WOOD).hardnessAndResistance(1.0f));
+  public BlockTorchStand() {
+    super(Properties.create(Material.WOOD).hardnessAndResistance(1.0f));
   }
 
   @Override

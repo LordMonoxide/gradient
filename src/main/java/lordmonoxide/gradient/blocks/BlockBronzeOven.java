@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.tileentities.TileBronzeOven;
 import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
@@ -20,11 +21,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockBronzeOven extends GradientBlock {
+public class BlockBronzeOven extends Block {
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   public BlockBronzeOven() {
-    super("bronze_oven", Properties.create(GradientBlocks.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(GradientMaterials.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
   }
 

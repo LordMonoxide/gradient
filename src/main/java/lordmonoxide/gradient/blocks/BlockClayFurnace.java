@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.GradientMaterials;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
@@ -21,7 +22,7 @@ import net.minecraft.world.IBlockReader;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockClayFurnace extends GradientBlock {
+public class BlockClayFurnace extends Block {
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   public static BlockClayFurnace hardened() {
@@ -35,7 +36,7 @@ public class BlockClayFurnace extends GradientBlock {
   private final boolean hardened;
 
   protected BlockClayFurnace(final boolean hardened) {
-    super("clay_furnace" + '.' + (hardened ? "hardened" : "unhardened"), Properties.create(hardened ? GradientBlocks.MATERIAL_CLAY_MACHINE : Material.CLAY).hardnessAndResistance(1.0f, hardened ? 5.0f : 2.0f));
+    super(Properties.create(hardened ? GradientMaterials.MATERIAL_CLAY_MACHINE : Material.CLAY).hardnessAndResistance(1.0f, hardened ? 5.0f : 2.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
     this.hardened = hardened;
   }
@@ -47,7 +48,7 @@ public class BlockClayFurnace extends GradientBlock {
     if(!this.hardened) {
       tooltip.add(new TextComponentTranslation("unhardened_clay.tooltip"));
     } else {
-      tooltip.add(new TextComponentTranslation("block.gradient.clay_furnace.hardened.tooltip"));
+      tooltip.add(new TextComponentTranslation("block.gradient.clay_furnace_hardened.tooltip"));
     }
   }
 

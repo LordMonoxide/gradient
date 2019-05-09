@@ -31,7 +31,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class BlockMixingBasin extends GradientBlock {
+public class BlockMixingBasin extends Block {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -42,7 +42,7 @@ public class BlockMixingBasin extends GradientBlock {
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   public BlockMixingBasin() {
-    super("mixing_basin", Properties.create(Material.ROCK).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.ROCK).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
   }
 

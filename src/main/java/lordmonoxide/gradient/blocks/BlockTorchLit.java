@@ -20,9 +20,8 @@ public class BlockTorchLit extends BlockTorch {
   private final int light;
   private final int lightOnStand;
 
-  public BlockTorchLit(final String name, final float light, final float lightOnStand, final Properties properties) {
+  public BlockTorchLit(final float light, final float lightOnStand, final Properties properties) {
     super(properties.sound(SoundType.WOOD));
-    this.setRegistryName(name);
     this.light = (int)(15.0f * light);
     this.lightOnStand = (int)(15.0f * lightOnStand);
     this.setDefaultState(this.stateContainer.getBaseState().with(STAND, false));
@@ -68,7 +67,7 @@ public class BlockTorchLit extends BlockTorch {
     final IBlockState state = super.getStateForPlacement(context);
 
     if(context.getFace() == EnumFacing.UP) {
-      if(context.getWorld().getBlockState(context.getPos().down()).getBlock() == GradientBlocks.STANDING_TORCH) {
+      if(context.getWorld().getBlockState(context.getPos().down()).getBlock() == GradientBlocks.TORCH_STAND) {
         return state.with(STAND, true);
       }
     }

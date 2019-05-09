@@ -19,19 +19,19 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class BlockPebble extends GradientBlock {
+public class BlockPebble extends Block {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(4.0d, 0.0d, 4.0d, 12.0d, 4.0d, 12.0d);
 
   @Nullable
   private final Metal metal;
 
   public BlockPebble() {
-    super("pebble", Properties.create(Material.GROUND, MaterialColor.GRAY));
+    super(Properties.create(Material.GROUND, MaterialColor.GRAY));
     this.metal = null;
   }
 
   public BlockPebble(final Metal metal) {
-    super("pebble." + metal.name, Properties.create(Material.GROUND, MaterialColor.GRAY).hardnessAndResistance(0.0f).doesNotBlockMovement());
+    super(Properties.create(Material.GROUND, MaterialColor.GRAY).hardnessAndResistance(0.0f).doesNotBlockMovement());
     this.metal = metal;
   }
 

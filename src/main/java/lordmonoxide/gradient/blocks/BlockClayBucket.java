@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockClayBucket extends GradientBlock {
+public class BlockClayBucket extends Block {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(3.0d, 0.0d, 3.0d, 13.0d, 8.0d, 13.0d);
 
   public static BlockClayBucket hardened() {
@@ -35,7 +36,7 @@ public class BlockClayBucket extends GradientBlock {
   private final boolean hardened;
 
   protected BlockClayBucket(final boolean hardened) {
-    super("clay_bucket" + '.' + (hardened ? "hardened" : "unhardened"), Properties.create(hardened ? GradientBlocks.MATERIAL_CLAY_MACHINE : Material.CLAY).hardnessAndResistance(1.0f, hardened ? 5.0f : 2.0f));
+    super(Properties.create(hardened ? GradientMaterials.MATERIAL_CLAY_MACHINE : Material.CLAY).hardnessAndResistance(1.0f, hardened ? 5.0f : 2.0f));
     this.hardened = hardened;
   }
 
@@ -56,7 +57,7 @@ public class BlockClayBucket extends GradientBlock {
       return;
     }
 
-    drops.add(GradientItems.CLAY_BUCKET.getItemStack());
+    drops.add(new ItemStack(GradientItems.CLAY_BUCKET));
   }
 
   @SuppressWarnings("deprecation")

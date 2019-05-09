@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "gradient:block/torch_stand" }
+  }
+}

@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.tileentities.TileClayOven;
 import lordmonoxide.gradient.tileentities.TileFirePit;
@@ -37,14 +38,14 @@ public class BlockClayOvenHardened extends HeatSinkerBlock {
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   public BlockClayOvenHardened() {
-    super("clay_oven.hardened", Properties.create(GradientBlocks.MATERIAL_CLAY_MACHINE).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(GradientMaterials.MATERIAL_CLAY_MACHINE).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
   }
 
   @Override
   public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
     super.addInformation(stack, world, tooltip, flag);
-    tooltip.add(new TextComponentTranslation("block.gradient.clay_oven.hardened.tooltip"));
+    tooltip.add(new TextComponentTranslation("block.gradient.clay_oven_hardened.tooltip"));
   }
 
   @Override

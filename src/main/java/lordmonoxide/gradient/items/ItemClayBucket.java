@@ -3,6 +3,7 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,11 +38,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
-public class ItemClayBucket extends GradientItem {
+public class ItemClayBucket extends Item {
   private final ItemStack empty;
 
   public ItemClayBucket() {
-    super("clay_bucket_item", new Properties().group(ItemGroup.TOOLS).maxStackSize(1));
+    super(new Properties().group(ItemGroup.TOOLS).maxStackSize(1));
 
     this.empty = new ItemStack(this);
 

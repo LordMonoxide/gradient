@@ -16,11 +16,6 @@ public class BlockLog extends BlockRotatedPillar {
     this.setDefaultState(this.stateContainer.getBaseState().with(AXIS, EnumFacing.Axis.Y));
   }
 
-  public BlockLog(final String name) {
-    this();
-    this.setRegistryName(name);
-  }
-
   @Override
   protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
     builder.add(AXIS);

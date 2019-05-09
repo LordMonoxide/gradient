@@ -19,7 +19,7 @@ public class StoneHammer extends GradientItemWorldTool {
   private final Set<ToolType> toolTypes = new HashSet<>();
 
   public StoneHammer() {
-    super("stone_hammer", 0.5f, -2.4f, 2, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(20));
+    super(0.5f, -2.4f, 2, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(20));
     this.toolTypes.add(ToolType.PICKAXE);
     this.toolTypes.add(GradientToolTypes.HAMMER);
   }

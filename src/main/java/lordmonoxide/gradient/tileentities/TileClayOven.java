@@ -38,7 +38,7 @@ public class TileClayOven extends HeatSinker {
   private int ticks;
 
   public TileClayOven() {
-    super(GradientTileEntities.CLAY_OVEN);
+    super(GradientTileEntities.CLAY_OVEN_HARDENED);
   }
 
   public boolean hasInput() {

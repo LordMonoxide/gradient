@@ -2,7 +2,7 @@
   "type": "gradient:shaped",
   "age": 2,
   "result": {
-    "item": "gradient:clay_furnace.unhardened"
+    "item": "gradient:clay_furnace_unhardened"
   },
   "pattern": [
     "CCC",

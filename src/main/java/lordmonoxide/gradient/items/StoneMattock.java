@@ -24,7 +24,7 @@ public class StoneMattock extends GradientItemWorldTool {
   private final Set<ToolType> toolTypes = new HashSet<>();
 
   public StoneMattock() {
-    super("stone_mattock", 0.5f, -2.4f, 4, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(50));
+    super(0.5f, -2.4f, 4, 2, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(50));
     this.toolTypes.add(ToolType.AXE);
     this.toolTypes.add(ToolType.SHOVEL);
   }

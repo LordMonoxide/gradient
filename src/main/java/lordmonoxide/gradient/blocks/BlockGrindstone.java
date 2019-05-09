@@ -27,7 +27,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class BlockManualGrinder extends GradientBlock {
+public class BlockGrindstone extends Block {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -35,8 +35,8 @@ public class BlockManualGrinder extends GradientBlock {
 
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
-  public BlockManualGrinder() {
-    super("manual_grinder", Properties.create(Material.ROCK).hardnessAndResistance(1.0f, 5.0f));
+  public BlockGrindstone() {
+    super(Properties.create(Material.ROCK).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
   }
 

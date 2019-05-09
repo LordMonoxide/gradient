@@ -30,7 +30,7 @@ public class Tool extends GradientItemWorldTool {
   private final Set<ToolType> toolTypes = new HashSet<>();
 
   public Tool(final GradientTools.Type type, final Metal metal) {
-    super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(metal.durability));
+    super(metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(metal.durability));
     this.type = type;
     this.metal = metal;
     Collections.addAll(this.toolTypes, type.toolTypes);

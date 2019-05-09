@@ -1,12 +1,12 @@
-setIcon(<gradient:manual_grinder>)
+setIcon(<gradient:grindstone>)
 setTitle("Dust to Dust")
 setDescription("Craft a grindstone")
 addParent("gradient:age1/planks")
 
 setFrameType("GOAL")
 
-criteria1 = addCriteria("hasManualGrinder", "minecraft:inventory_changed")
-criteria1.addItem(<gradient:manual_grinder>)
+criteria1 = addCriteria("hasGrindstone", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:grindstone>)
 
 setRequiresParents()
 setPos(160,40)

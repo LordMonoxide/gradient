@@ -41,7 +41,6 @@ public class BlockBellows extends Block {
 
   public BlockBellows() {
     super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
-    this.setRegistryName("bellows");
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
   }
 
@@ -49,7 +48,7 @@ public class BlockBellows extends Block {
   @OnlyIn(Dist.CLIENT)
   public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
     super.addInformation(stack, world, tooltip, flag);
-    tooltip.add(new TextComponentTranslation("tile.bellows.tooltip"));
+    tooltip.add(new TextComponentTranslation("block.gradient.bellows.tooltip"));
   }
 
   @SuppressWarnings("deprecation")

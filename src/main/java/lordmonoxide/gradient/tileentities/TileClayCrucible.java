@@ -59,7 +59,7 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
   private int lastLight;
 
   public TileClayCrucible() {
-    super(GradientTileEntities.CLAY_CRUCIBLE);
+    super(GradientTileEntities.CLAY_CRUCIBLE_HARDENED);
   }
 
   public boolean isMelting(final int slot) {

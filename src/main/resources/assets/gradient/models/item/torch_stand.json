@@ -1,5 +1,5 @@
 {
-  "parent": "gradient:block/clay_oven.unhardened",
+  "parent": "gradient:block/torch_stand",
   "display": {
     "thirdperson": {
       "rotation": [ -90, 0, 0 ],

@@ -1,6 +1,5 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.entities.EntityPebble;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.event.RegistryEvent;
@@ -19,6 +18,6 @@ public final class GradientEntities {
   public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
     GradientMod.logger.info("Registering entities");
 
-    event.getRegistry().register(EntityType.Builder.create(EntityPebble.class, EntityPebble::new).build(GradientBlocks.PEBBLE.getRegistryName().toString()).setRegistryName(GradientBlocks.PEBBLE.getRegistryName()));
+    event.getRegistry().register(EntityType.Builder.create(EntityPebble.class, EntityPebble::new).build(GradientMod.resource(GradientIds.PEBBLE).toString()).setRegistryName(GradientIds.PEBBLE));
   }
 }

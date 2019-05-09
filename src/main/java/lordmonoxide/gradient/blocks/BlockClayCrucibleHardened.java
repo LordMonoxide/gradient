@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientCasts;
+import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.ItemClayCastUnhardened;
@@ -68,13 +69,13 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   };
 
   public BlockClayCrucibleHardened() {
-    super("clay_crucible.hardened", Properties.create(GradientBlocks.MATERIAL_CLAY_MACHINE).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(GradientMaterials.MATERIAL_CLAY_MACHINE).hardnessAndResistance(1.0f, 5.0f));
   }
 
   @Override
   public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
     super.addInformation(stack, world, tooltip, flag);
-    tooltip.add(new TextComponentTranslation("block.gradient.clay_crucible.hardened.tooltip"));
+    tooltip.add(new TextComponentTranslation("block.gradient.clay_crucible_hardened.tooltip"));
   }
 
   @Override

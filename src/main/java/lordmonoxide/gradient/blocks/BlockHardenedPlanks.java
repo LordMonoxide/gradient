@@ -1,14 +1,15 @@
 package lordmonoxide.gradient.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
-public class BlockHardenedPlanks extends GradientBlock {
+public class BlockHardenedPlanks extends Block {
   public BlockHardenedPlanks() {
-    super("hardened_planks", Properties.create(Material.WOOD).hardnessAndResistance(2.0f));
+    super(Properties.create(Material.WOOD).hardnessAndResistance(2.0f));
   }
 
   @Nullable

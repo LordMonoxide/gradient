@@ -3,9 +3,9 @@
   "age": 2,
   "ticks": 1200,
   "result": {
-    "item": "gradient:clay_bucket.hardened"
+    "item": "gradient:clay_bucket_hardened"
   },
   "ingredient": {
-    "item": "gradient:clay_bucket.unhardened"
+    "item": "gradient:clay_bucket_unhardened"
   }
 }

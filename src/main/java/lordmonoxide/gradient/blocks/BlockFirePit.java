@@ -3,6 +3,7 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
+import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.tileentities.TileFirePit;
 import lordmonoxide.gradient.utils.AgeUtils;
@@ -51,7 +52,7 @@ public class BlockFirePit extends HeatSinkerBlock {
   public static final BooleanProperty HAS_FURNACE = BooleanProperty.create("has_furnace");
 
   public BlockFirePit() {
-    super("fire_pit", Properties.create(Material.WOOD, MaterialColor.RED).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.WOOD, MaterialColor.RED).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH).with(HAS_FURNACE, false));
   }
 
@@ -145,12 +146,12 @@ public class BlockFirePit extends HeatSinkerBlock {
 
         if(Block.getBlockFromItem(held.getItem()) instanceof BlockTorchUnlit) {
           if(firepit.isBurning()) {
-            player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)held.getItem()).getBlock()).lit, held.getCount()));
+            player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)held.getItem()).getBlock()).lit.get(), held.getCount()));
             return true;
           }
         }
 
-        if(Block.getBlockFromItem(held.getItem()) == GradientBlocks.CLAY_FURNACE_HARDENED) {
+        if(held.getItem() == GradientItems.CLAY_FURNACE_HARDENED) {
           if(!state.get(HAS_FURNACE)) {
             world.setBlockState(pos, state.with(HAS_FURNACE, true));
 

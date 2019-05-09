@@ -1,7 +1,7 @@
 setIcon(<minecraft:wheat>)
 setTitle("Settle Down")
 setDescription("Age 1 complete!")
-addParent("gradient:age1/manual_grinder")
+addParent("gradient:age1/grindstone")
 addParent("gradient:age1/mixing_basin")
 addParent("gradient:age1/fibre_torch")
 addParent("gradient:age1/waterskin")

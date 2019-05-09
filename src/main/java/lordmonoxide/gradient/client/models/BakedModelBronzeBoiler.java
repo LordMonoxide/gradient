@@ -13,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.Mod;
@@ -26,18 +27,13 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Dist.CLIENT)
-public class BakedModelBronzeBoiler implements IBakedModel {
+public class BakedModelBronzeBoiler implements IDynamicBakedModel {
   private static final Map<String, IBakedModel[]> FLUID_MODELS = new HashMap<>();
 
   private final IBakedModel baseModel;
 
   public BakedModelBronzeBoiler(final IBakedModel baseModel) {
     this.baseModel = baseModel;
-  }
-
-  @Override //TODO: this has to be implemented, but it *should* never get called
-  public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final Random rand) {
-    return null;
   }
 
   @Override

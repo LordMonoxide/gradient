@@ -36,7 +36,7 @@ minecraft {
   // stable_#            stables are built at the discretion of the MCP team.
   // Use non-default mappings at your own risk. they may not allways work.
   // simply re-run your setup task after changing the mappings to update your workspace.
-  mappings channel: 'snapshot', version: '20190427-1.13.2'
+  mappings channel: 'snapshot', version: '20190509-1.13.2'
   // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
   //TODO: this is only necessary until Forge fixes other mods' ATs not being run
@@ -51,7 +51,7 @@ minecraft {
       // recommended logging data for a userdev environment
       properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
       // recommended logging level for the console
-      properties 'forge.logging.console.level': 'debug'
+      properties 'forge.logging.console.level': 'info'
 
       properties 'forge.logging.noansi': 'false'
 
@@ -100,7 +100,7 @@ repositories {
 }
 
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.13.2-25.0.191'
+  minecraft 'net.minecraftforge:forge:1.13.2-25.0.193'
 
   //deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.111-ex112'
 

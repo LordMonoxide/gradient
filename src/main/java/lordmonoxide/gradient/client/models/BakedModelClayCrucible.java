@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.client.models;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.BlockClayCrucibleHardened;
+import lordmonoxide.gradient.tileentities.TileClayCrucible;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
@@ -36,17 +36,21 @@ public class BakedModelClayCrucible implements IBakedModel {
     this.baseModel = baseModel;
   }
 
-  @Override
+  @Override //TODO: this has to be implemented, but it *should* never get called
   public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final Random rand) {
+    return null;
+  }
+
+  @Override
+  public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final Random rand, final IModelData tileData) {
     // Frame
     if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.SOLID) {
-      return this.baseModel.getQuads(state, side, rand);
+      return this.baseModel.getQuads(state, side, rand, tileData);
     }
 
     // Fluid
     if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
-      final IExtendedBlockState exState = (IExtendedBlockState)state;
-      final FluidStack fluid = exState.getValue(BlockClayCrucibleHardened.FLUID);
+      final FluidStack fluid = tileData.getData(TileClayCrucible.FLUID);
 
       if(fluid != null && fluid.amount > 0) {
         return FLUID_MODELS.get(fluid.getFluid().getName())[Math.floorDiv(fluid.amount, Fluid.BUCKET_VOLUME) - 1].getQuads(null, side, rand);

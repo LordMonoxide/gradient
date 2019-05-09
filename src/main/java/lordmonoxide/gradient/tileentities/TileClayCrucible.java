@@ -22,6 +22,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelDataManager;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
@@ -34,6 +38,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
@@ -44,6 +49,8 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
+  public static final ModelProperty<FluidStack> FLUID = new ModelProperty<>();
+
   public static final int FLUID_CAPACITY = 8;
 
   public static final int METAL_SLOTS_COUNT = 1;
@@ -52,7 +59,13 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
   public static final int FIRST_METAL_SLOT = 0;
 
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
-  public final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * FLUID_CAPACITY);
+  public final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * FLUID_CAPACITY) {
+    @Override
+    protected void onContentsChanged() {
+      super.onContentsChanged();
+      ModelDataManager.requestModelDataRefresh(TileClayCrucible.this);
+    }
+  };
 
   private final MeltingMetal[] melting = new MeltingMetal[METAL_SLOTS_COUNT];
 
@@ -60,6 +73,12 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
 
   public TileClayCrucible() {
     super(GradientTileEntities.CLAY_CRUCIBLE_HARDENED);
+  }
+
+  @Nonnull
+  @Override
+  public IModelData getModelData() {
+    return new ModelDataMap.Builder().withInitial(FLUID, this.tank.getFluid()).build();
   }
 
   public boolean isMelting(final int slot) {

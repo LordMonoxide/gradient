@@ -4,7 +4,6 @@ import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
-import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
@@ -25,16 +24,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BlockBronzeBoiler extends HeatSinkerBlock {
-  public static final IUnlistedProperty<Integer> WATER_LEVEL = null; //TODO new Properties.PropertyAdapter<>(PropertyInteger.create("waterLevel", 0, TileBronzeBoiler.WATER_CAPACITY));
-  public static final IUnlistedProperty<Integer> STEAM_LEVEL = null; //TODO new Properties.PropertyAdapter<>(PropertyInteger.create("SteamLevel", 0, TileBronzeBoiler.STEAM_CAPACITY));
   public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
 
   private static final Fluid WATER = null; //TODO FluidRegistry.getFluid("water");
@@ -119,25 +114,7 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
 
   @Override
   protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
-    builder.add(FACING/*, WATER_LEVEL, STEAM_LEVEL*/); //TODO
-  }
-
-  //TODO
-  @Override
-  public IBlockState getExtendedState(final IBlockState state, final IBlockReader world, final BlockPos pos) {
-    final IExtendedBlockState extendedState = (IExtendedBlockState)state;
-
-    final TileBronzeBoiler te = WorldUtils.getTileEntity(world, pos, TileBronzeBoiler.class);
-
-/*
-    if(te != null) {
-      return extendedState
-        .with(WATER_LEVEL, te.getWaterLevel())
-        .with(STEAM_LEVEL, te.getSteamLevel());
-    }
-*/
-
-    return extendedState;//.with(WATER_LEVEL, 0).with(STEAM_LEVEL, 0);
+    builder.add(FACING);
   }
 
   @Override

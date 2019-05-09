@@ -15,6 +15,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelDataManager;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
@@ -25,11 +29,15 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
+
+  public static final ModelProperty<Integer> WATER_LEVEL = new ModelProperty<>();
+  public static final ModelProperty<Integer> STEAM_LEVEL = new ModelProperty<>();
 
   public static final int WATER_CAPACITY = 16;
   public static final int STEAM_CAPACITY = 32;
@@ -37,8 +45,20 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   private static final Fluid WATER = null; //TODO FluidRegistry.getFluid("water");
   private static final Fluid STEAM = null; //TODO FluidRegistry.getFluid(FluidName.steam.getName());
 
-  public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME * WATER_CAPACITY);
-  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * STEAM_CAPACITY);
+  public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME * WATER_CAPACITY) {
+    @Override
+    protected void onContentsChanged() {
+      super.onContentsChanged();
+      ModelDataManager.requestModelDataRefresh(TileBronzeBoiler.this);
+    }
+  };
+  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * STEAM_CAPACITY) {
+    @Override
+    protected void onContentsChanged() {
+      super.onContentsChanged();
+      ModelDataManager.requestModelDataRefresh(TileBronzeBoiler.this);
+    }
+  };
   private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
     @Override
     public int fill(final FluidStack resource, final boolean doFill) {
@@ -66,6 +86,15 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
 
     this.tanks.addHandler(WATER, this.tankWater);
     this.tanks.addHandler(STEAM, this.tankSteam);
+  }
+
+  @Nonnull
+  @Override
+  public IModelData getModelData() {
+    return new ModelDataMap.Builder()
+      .withInitial(WATER_LEVEL, this.tankWater.getFluidAmount())
+      .withInitial(STEAM_LEVEL, this.tankSteam.getFluidAmount())
+      .build();
   }
 
   public void useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {

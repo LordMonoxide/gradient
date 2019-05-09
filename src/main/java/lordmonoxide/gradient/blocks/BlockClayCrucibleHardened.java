@@ -8,7 +8,6 @@ import lordmonoxide.gradient.items.ItemClayCastUnhardened;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.tileentities.TileClayCrucible;
-import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
@@ -17,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -33,8 +31,6 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -46,27 +42,6 @@ import java.util.List;
 
 public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d, 0.0d, 1.0d, 15.0d, 15.0d, 15.0d);
-  public static final IUnlistedProperty<FluidStack> FLUID = new IUnlistedProperty<>() {
-    @Override
-    public String getName() {
-      return "fluid";
-    }
-
-    @Override
-    public boolean isValid(final FluidStack value) {
-      return true;
-    }
-
-    @Override
-    public Class<FluidStack> getType() {
-      return FluidStack.class;
-    }
-
-    @Override
-    public String valueToString(final FluidStack value) {
-      return value.getFluid().getName();
-    }
-  };
 
   public BlockClayCrucibleHardened() {
     super(Properties.create(GradientMaterials.MATERIAL_CLAY_MACHINE).hardnessAndResistance(1.0f, 5.0f));
@@ -193,24 +168,6 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
     }
 
     return true;
-  }
-
-  @Override
-  protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
-    //TODO builder.add(FLUID);
-  }
-
-  @Override
-  public IBlockState getExtendedState(final IBlockState state, final IBlockReader world, final BlockPos pos) {
-    final IExtendedBlockState extendedState = (IExtendedBlockState)state;
-
-    final TileClayCrucible te = WorldUtils.getTileEntity(world, pos, TileClayCrucible.class);
-
-    if(te != null) {
-      return extendedState.withProperty(FLUID, te.tank.getFluid());
-    }
-
-    return extendedState;
   }
 
   @OnlyIn(Dist.CLIENT)

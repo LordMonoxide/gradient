@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.client.models;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.BlockBronzeBoiler;
+import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.Mod;
 
@@ -35,18 +35,22 @@ public class BakedModelBronzeBoiler implements IBakedModel {
     this.baseModel = baseModel;
   }
 
-  @Override
+  @Override //TODO: this has to be implemented, but it *should* never get called
   public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final Random rand) {
+    return null;
+  }
+
+  @Override
+  public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final Random rand, final IModelData tileData) {
     // Frame
     if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.CUTOUT_MIPPED) {
-      return this.baseModel.getQuads(state, side, rand);
+      return this.baseModel.getQuads(state, side, rand, tileData);
     }
 
     // Fluid
     if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
-      final IExtendedBlockState exState = (IExtendedBlockState)state;
-      final int waterLevel = exState.getValue(BlockBronzeBoiler.WATER_LEVEL);
-      final int steamLevel = exState.getValue(BlockBronzeBoiler.STEAM_LEVEL);
+      final int waterLevel = tileData.getData(TileBronzeBoiler.WATER_LEVEL);
+      final int steamLevel = tileData.getData(TileBronzeBoiler.STEAM_LEVEL);
 
       final List<BakedQuad> quads = new ArrayList<>();
 

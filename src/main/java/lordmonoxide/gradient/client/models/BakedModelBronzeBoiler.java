@@ -51,11 +51,11 @@ public class BakedModelBronzeBoiler implements IDynamicBakedModel {
       final List<BakedQuad> quads = new ArrayList<>();
 
       if(waterLevel > 0) {
-        quads.addAll(FLUID_MODELS.get("water")[waterLevel - 1].getQuads(null, side, rand));
+        quads.addAll(FLUID_MODELS.get("water")[waterLevel - 1].getQuads(null, side, rand, tileData));
       }
 
       if(steamLevel > 0) {
-        quads.addAll(FLUID_MODELS.get("ic2steam")[steamLevel - 1].getQuads(null, side, rand));
+        quads.addAll(FLUID_MODELS.get("ic2steam")[steamLevel - 1].getQuads(null, side, rand, tileData));
       }
 
       return quads;

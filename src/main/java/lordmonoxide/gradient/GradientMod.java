@@ -15,6 +15,7 @@ import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.recipes.GradientRecipeSerializers;
 import lordmonoxide.gradient.science.geology.Meltables;
+import lordmonoxide.gradient.worldgen.OreGenerator;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.item.crafting.RecipeManager;
@@ -49,9 +50,9 @@ import java.nio.file.Paths;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-@Mod(GradientMod.MODID)
+@Mod(GradientMod.MOD_ID)
 public class GradientMod {
-  public static final String MODID = "gradient";
+  public static final String MOD_ID = "gradient";
 
   public static final Logger logger = LogManager.getLogger();
   public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
@@ -63,7 +64,7 @@ public class GradientMod {
   }
 
   public GradientMod() {
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupServer);
 
@@ -75,8 +76,8 @@ public class GradientMod {
     logger.info("Drying serializer {}", GradientRecipeSerializers.DRYING);
   }
 
-  private void init(final FMLCommonSetupEvent event) {
-    logger.info("{} is loading!", MODID);
+  private void setup(final FMLCommonSetupEvent event) {
+    logger.info("{} is loading!", MOD_ID);
 
     FluidRegistry.enableUniversalBucket();
 
@@ -98,7 +99,7 @@ public class GradientMod {
     //TODO NetworkRegistry.INSTANCE.registerGuiHandler(GradientMod.instance, new GradientGuiHandler());
 
     //TODO GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
-    //TODO GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
+    OreGenerator.registerGenerators();
 
     Meltables.registerMeltables();
 
@@ -124,7 +125,7 @@ public class GradientMod {
   private void serverStarting(final FMLServerStartingEvent event) {
     logger.info("------------------- SERVER START -------------------");
 
-    final LiteralArgumentBuilder<CommandSource> root = Commands.literal(MODID)
+    final LiteralArgumentBuilder<CommandSource> root = Commands.literal(MOD_ID)
       .then(SetAgeCommand.register());
 
     event.getCommandDispatcher().register(root);
@@ -135,7 +136,7 @@ public class GradientMod {
   }
 
   public static ResourceLocation resource(final String path) {
-    return new ResourceLocation(MODID, path);
+    return new ResourceLocation(MOD_ID, path);
   }
 
   private void syncTriumphAdvancements(final File configDir) throws URISyntaxException, IOException {
@@ -150,7 +151,7 @@ public class GradientMod {
     if(connection instanceof JarURLConnection) {
       final JarFile jar = ((JarURLConnection)connection).getJarFile();
 
-      final String dir = "assets/" + MODID + "/triumph/";
+      final String dir = "assets/" + MOD_ID + "/triumph/";
 
       jar.stream().forEach(entry -> {
         if(!entry.isDirectory()) {
@@ -160,7 +161,7 @@ public class GradientMod {
         }
       });
     } else {
-      this.copyDevDirectory("../../assets/" + MODID + "/triumph", destDir);
+      this.copyDevDirectory("../../assets/" + MOD_ID + "/triumph", destDir);
     }
   }
 

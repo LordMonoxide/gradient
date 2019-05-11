@@ -8,7 +8,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = GradientMod.MOD_ID, value = Dist.CLIENT)
 public final class GradientSounds {
   private GradientSounds() { }
 

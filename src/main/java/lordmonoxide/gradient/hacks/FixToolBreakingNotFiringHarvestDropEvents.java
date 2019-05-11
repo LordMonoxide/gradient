@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 // A very big thanks to alcatrazEscapee (No Tree Punching, https://github.com/alcatrazEscapee/no-tree-punching)
 // This code is used with permission.
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MOD_ID)
 public final class FixToolBreakingNotFiringHarvestDropEvents {
   private FixToolBreakingNotFiringHarvestDropEvents() { }
 

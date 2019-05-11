@@ -23,7 +23,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GradientMod.MOD_ID)
 public final class ModelManager {
   private ModelManager() { }
 

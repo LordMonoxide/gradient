@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiBronzeGrinder extends GradientGuiContainer {
   public static final ResourceLocation ID = GradientMod.resource("bronze_grinder");
 
-  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_grinder.png");
+  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MOD_ID, "textures/gui/bronze_grinder.png");
 
   private final TileBronzeGrinder grinder;
   private final InventoryPlayer playerInv;

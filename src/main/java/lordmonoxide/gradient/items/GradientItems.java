@@ -33,8 +33,8 @@ import net.minecraftforge.registries.ObjectHolder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-@ObjectHolder(GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@ObjectHolder(GradientMod.MOD_ID)
 public final class GradientItems {
   private GradientItems() { }
 

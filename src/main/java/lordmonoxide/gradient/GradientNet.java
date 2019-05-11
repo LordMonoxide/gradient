@@ -15,7 +15,7 @@ public final class GradientNet {
 
   private static final String PROTOCOL_VERSION = "1";
   public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
-    .named(new ResourceLocation(GradientMod.MODID, "main_channel"))
+    .named(new ResourceLocation(GradientMod.MOD_ID, "main_channel"))
     .clientAcceptedVersions(PROTOCOL_VERSION::equals)
     .serverAcceptedVersions(PROTOCOL_VERSION::equals)
     .networkProtocolVersion(() -> PROTOCOL_VERSION)

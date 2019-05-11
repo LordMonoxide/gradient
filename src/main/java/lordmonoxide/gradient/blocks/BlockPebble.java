@@ -76,7 +76,7 @@ public class BlockPebble extends Block {
     final IBlockState down = world.getBlockState(pos.down());
 
     return
-      super.isAir(state, world, pos) && (
+      this.isAir(world.getBlockState(pos), world, pos) && (
         down.getMaterial() == Material.CLAY ||
         down.getMaterial() == Material.GRASS ||
         down.getMaterial() == Material.GROUND ||

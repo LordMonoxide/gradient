@@ -1,7 +1,6 @@
 package lordmonoxide.gradient.client.gui;
 
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.containers.GradientGuiContainer;
 import lordmonoxide.gradient.items.GradientItems;
@@ -19,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiClayCast extends GradientGuiContainer {
   public static final ResourceLocation ID = GradientMod.resource("clay_cast");
 
-  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_cast.png");
+  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MOD_ID, "textures/gui/clay_cast.png");
 
   private final ItemClayCastUnhardened held;
 

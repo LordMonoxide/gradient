@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MOD_ID)
 public class HideBedding extends Item {
   public HideBedding() {
     super(new Properties().group(ItemGroup.TOOLS).defaultMaxDamage(4));

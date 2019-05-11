@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder(GradientMod.MODID)
+@ObjectHolder(GradientMod.MOD_ID)
 public final class GradientTileEntities {
   private GradientTileEntities() { }
 
@@ -29,7 +29,7 @@ public final class GradientTileEntities {
   public static final TileEntityType<?> BRONZE_OVEN = null;
   public static final TileEntityType<?> BRONZE_GRINDER = null;
 
-  @Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+  @Mod.EventBusSubscriber(modid = GradientMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
   public static final class Registration {
     private Registration() { }
 

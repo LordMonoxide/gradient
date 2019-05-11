@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiClayCrucible extends GradientGuiContainer {
   public static final ResourceLocation ID = GradientMod.resource("clay_crucible");
 
-  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/clay_crucible.png");
+  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MOD_ID, "textures/gui/clay_crucible.png");
 
   private final TileClayCrucible te;
   private final InventoryPlayer playerInv;

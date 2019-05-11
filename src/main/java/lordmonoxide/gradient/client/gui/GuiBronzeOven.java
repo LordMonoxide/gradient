@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiBronzeOven extends GradientGuiContainer {
   public static final ResourceLocation ID = GradientMod.resource("bronze_oven");
 
-  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_oven.png");
+  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MOD_ID, "textures/gui/bronze_oven.png");
 
   private final TileBronzeOven oven;
   private final InventoryPlayer playerInv;

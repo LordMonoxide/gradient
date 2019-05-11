@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MOD_ID)
 public final class EnergyNetworkManager {
   private static final Map<World, List<EnergyNetwork<?, ?>>> networks = new HashMap<>();
 

@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 
 //TODO
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = GradientMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class DisableVanillaTools {
   private DisableVanillaTools() { }
 

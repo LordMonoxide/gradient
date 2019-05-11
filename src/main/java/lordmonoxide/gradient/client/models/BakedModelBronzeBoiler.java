@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = GradientMod.MOD_ID, value = Dist.CLIENT)
 public class BakedModelBronzeBoiler implements IDynamicBakedModel {
   private static final Map<String, IBakedModel[]> FLUID_MODELS = new HashMap<>();
 

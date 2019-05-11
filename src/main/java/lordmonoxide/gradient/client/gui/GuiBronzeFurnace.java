@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiBronzeFurnace extends GradientGuiContainer {
   public static final ResourceLocation ID = GradientMod.resource("bronze_furnace");
 
-  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MODID, "textures/gui/bronze_furnace.png");
+  private static final ResourceLocation BG_TEXTURE = new ResourceLocation(GradientMod.MOD_ID, "textures/gui/bronze_furnace.png");
 
   private final TileBronzeFurnace furnace;
   private final InventoryPlayer playerInv;

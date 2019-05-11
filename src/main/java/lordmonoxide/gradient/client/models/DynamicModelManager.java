@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.function.Predicate;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GradientMod.MOD_ID)
 public final class DynamicModelManager {
   private DynamicModelManager() { }
 
@@ -56,67 +56,67 @@ public final class DynamicModelManager {
   }
 
   private static boolean acceptOres(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("ore.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("ore.");
   }
 
   private static boolean acceptCastBlocks(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_block.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("cast_block.");
   }
 
   private static boolean acceptPebbles(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("pebble.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("pebble.");
   }
 
   private static boolean acceptIngots(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.ingot.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("cast_item.ingot.");
   }
 
   private static boolean acceptHammers(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.hammer.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("cast_item.hammer.");
   }
 
   private static boolean acceptMattocks(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.mattock.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("cast_item.mattock.");
   }
 
   private static boolean acceptPickaxes(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.pickaxe.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("cast_item.pickaxe.");
   }
 
   private static boolean acceptSwords(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("cast_item.sword.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("cast_item.sword.");
   }
 
   private static boolean acceptNuggets(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("nugget.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("nugget.");
   }
 
   private static boolean acceptAlloyNuggets(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("alloy_nugget.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("alloy_nugget.");
   }
 
   private static boolean acceptDusts(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("dust.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("dust.");
   }
 
   private static boolean acceptCrushed(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("crushed.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("crushed.");
   }
 
   private static boolean acceptPurified(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("purified.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("purified.");
   }
 
   private static boolean acceptPlates(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("plate.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("plate.");
   }
 
   private static boolean acceptTools(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("tool.");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("tool.");
   }
 
   private static boolean acceptBark(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("bark_");
+    return loc.getNamespace().equals(GradientMod.MOD_ID) && loc.getPath().startsWith("bark_");
   }
 
   private static ImmutableMap<String, String> blockTextures(final ResourceLocation loc) {

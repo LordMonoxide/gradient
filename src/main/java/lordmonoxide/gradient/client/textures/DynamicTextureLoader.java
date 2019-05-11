@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GradientMod.MOD_ID)
 public final class DynamicTextureLoader {
   private DynamicTextureLoader() { }
 

@@ -45,10 +45,10 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
 
     final int length = rand.nextInt(maxLength - minLength + 1) + minLength;
 
-    // Initial position (offset by 8 to help prevent cascading)
+    // Initial position
     final Matrix3f rotation = new Matrix3f();
     final Vector3f pos = new Vector3f();
-    final Vector3f root = new Vector3f(start.getX() + 8, start.getY(), start.getZ() + 8);
+    final Vector3f root = new Vector3f(start.getX(), start.getY(), start.getZ());
 
     // Initial rotation
     float xRotation = rand.nextFloat() * PI * 2;

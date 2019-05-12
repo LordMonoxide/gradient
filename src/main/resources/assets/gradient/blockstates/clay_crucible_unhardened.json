@@ -3,15 +3,14 @@
   "defaults": {
     "model": "gradient:clay_crucible",
     "textures": {
-      "hardened": "minecraft:blocks/clay",
-      "particle": "minecraft:blocks/clay",
-      "seared": "minecraft:blocks/clay",
-      "seared_gradient": "minecraft:blocks/clay",
-      "seared_gradient_light": "minecraft:blocks/clay"
+      "hardened": "minecraft:block/clay",
+      "particle": "minecraft:block/clay",
+      "seared": "minecraft:block/clay",
+      "seared_gradient": "minecraft:block/clay",
+      "seared_gradient_light": "minecraft:block/clay"
     }
   },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "": [{}]
   }
 }

@@ -1,6 +1,13 @@
 {
 	"credit": "Made with Blockbench",
   "parent": "minecraft:block/block",
+  "textures": {
+    "hardened": "minecraft:block/terracotta",
+    "particle": "minecraft:block/terracotta",
+    "seared": "gradient:block/clay_seared",
+    "seared_gradient": "gradient:block/clay_seared_gradient",
+    "seared_gradient_light": "gradient:block/clay_seared_gradient_light"
+  },
 	"elements": [
 		{
 			"name": "right",

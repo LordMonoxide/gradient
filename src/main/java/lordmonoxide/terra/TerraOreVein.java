@@ -38,8 +38,6 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
 
   @Override
   public boolean place(final IWorld world, final IChunkGenerator<? extends IChunkGenSettings> generator, final Random rand, final BlockPos start, final TerraOreVeinConfig config) {
-    TerraMod.logger.info("Generating vein at {}", start);
-
     this.state.setDepth(start.getY());
 
     final int minLength = config.minLength.apply(this.state);
@@ -68,7 +66,8 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
       }
     }
 
-    final Map<BlockPos, IBlockState> blocksToPlace = new HashMap<>();
+    final Map<BlockPos, IBlockState> oresToPlace = new HashMap<>();
+    final Map<BlockPos, IBlockState> pebblesToPlace = new HashMap<>();
 
     // 1/x chance for a vein to change direction by up to 45 degrees total (across all axes).
     // Each block that is generated will decrease this value, making it more likely that the
@@ -113,28 +112,40 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
 
           blockPos.setPos(root.x + pos.x, root.y + pos.y, root.z + pos.z);
 
-          this.placeBlock(blocksToPlace, world, blockPos, stage.ore);
+          this.placeBlock(oresToPlace, world, blockPos, stage.ore);
         }
       }
 
       for(final TerraOreVeinConfig.Pebble pebble : config.pebbles) {
         if(rand.nextFloat() <= pebble.density) {
-          this.placePebble(world, pebble.pebble, (int)(root.x + pos.x), (int)(root.z + pos.z));
+          this.placePebble(pebblesToPlace, world, pebble.pebble, (int)(root.x + pos.x), (int)(root.z + pos.z));
         }
       }
     }
 
-    for(final Map.Entry<BlockPos, IBlockState> block : blocksToPlace.entrySet()) {
+    int placed = 0;
+    for(final Map.Entry<BlockPos, IBlockState> block : oresToPlace.entrySet()) {
       final IBlockState state = world.getBlockState(block.getKey());
       if(state.isReplaceableOreGen(world.getWorld(), block.getKey(), TerraOreVein::stonePredicate)) {
+        TerraMod.logger.info("Placing {} @ {}", block.getValue(), block.getKey());
         this.setBlockState(world, block.getKey(), block.getValue());
+        placed++;
       }
     }
 
-    return true;
+    if((float)placed / oresToPlace.size() >= 1.0f / 3.0f) {
+      for(final Map.Entry<BlockPos, IBlockState> block : pebblesToPlace.entrySet()) {
+        TerraMod.logger.info("Placing {} @ {}", block.getValue(), block.getKey());
+        this.setBlockState(world, block.getKey(), block.getValue());
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
-  private void placePebble(final IWorld world, final IBlockState pebble, final int x, final int z) {
+  private void placePebble(final Map<BlockPos, IBlockState> blocksToPlace, final IWorld world, final IBlockState pebble, final int x, final int z) {
     final int chunkX = x >> 4;
     final int chunkZ = z >> 4;
 
@@ -155,7 +166,7 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
     pos.move(EnumFacing.UP);
 
     if(pebble.isValidPosition(world, pos)) {
-      this.setBlockState(world, pos, pebble);
+      blocksToPlace.put(pos, pebble);
     }
   }
 

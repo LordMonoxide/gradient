@@ -4,8 +4,10 @@ import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.config.GradientConfig;
 import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.science.geology.Ores;
+import lordmonoxide.terra.TerraConfig;
 import lordmonoxide.terra.TerraOreVein;
 import lordmonoxide.terra.TerraOreVeinConfig;
+import lordmonoxide.terra.TerraPlacementConfig;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -17,7 +19,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.placement.ChanceRangeConfig;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.Random;
@@ -197,12 +198,12 @@ public final class OreGenerator {
     }
 
     for(final Biome biome : Biome.BIOMES) {
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), carbon,      Biome.CHANCE_RANGE, new ChanceRangeConfig(1.0f / 256.0f, 0, 0,  20)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), coal,        Biome.CHANCE_RANGE, new ChanceRangeConfig(1.0f /  16.0f, 0, 0, 256)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), cassiterite, Biome.CHANCE_RANGE, new ChanceRangeConfig(1.0f /  64.0f, 0, 0, 256)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), copper,      Biome.CHANCE_RANGE, new ChanceRangeConfig(1.0f /  81.0f, 0, 0, 256)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), gold,        Biome.CHANCE_RANGE, new ChanceRangeConfig(1.0f / 225.0f, 0, 0,  32)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), pyrite,      Biome.CHANCE_RANGE, new ChanceRangeConfig(1.0f /  81.0f, 0, 0, 256)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), carbon,      TerraConfig.INSTANCE, new TerraPlacementConfig( 3, 256, 0,  20)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), coal,        TerraConfig.INSTANCE, new TerraPlacementConfig(30,  16, 0, 256)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), cassiterite, TerraConfig.INSTANCE, new TerraPlacementConfig(30,  64, 0, 256)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), copper,      TerraConfig.INSTANCE, new TerraPlacementConfig(30,  81, 0, 256)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), gold,        TerraConfig.INSTANCE, new TerraPlacementConfig(30, 225, 0,  32)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), pyrite,      TerraConfig.INSTANCE, new TerraPlacementConfig(30,  81, 0, 256)));
     }
 
 /*

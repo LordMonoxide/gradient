@@ -127,7 +127,6 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
     for(final Map.Entry<BlockPos, IBlockState> block : oresToPlace.entrySet()) {
       final IBlockState state = world.getBlockState(block.getKey());
       if(state.isReplaceableOreGen(world.getWorld(), block.getKey(), TerraOreVein::stonePredicate)) {
-        TerraMod.logger.info("Placing {} @ {}", block.getValue(), block.getKey());
         this.setBlockState(world, block.getKey(), block.getValue());
         placed++;
       }
@@ -135,7 +134,6 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
 
     if((float)placed / oresToPlace.size() >= 1.0f / 3.0f) {
       for(final Map.Entry<BlockPos, IBlockState> block : pebblesToPlace.entrySet()) {
-        TerraMod.logger.info("Placing {} @ {}", block.getValue(), block.getKey());
         this.setBlockState(world, block.getKey(), block.getValue());
       }
 

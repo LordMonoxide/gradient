@@ -5,9 +5,9 @@ import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.tileentities.TileWoodenAxle;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRotatedPillar;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-public class BlockWoodenAxle extends BlockRotatedPillar {
+public class BlockWoodenAxle extends RotatedPillarBlock {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
@@ -32,32 +32,32 @@ public class BlockWoodenAxle extends BlockRotatedPillar {
 
   @SuppressWarnings("deprecation")
   @Override
-  public void onReplaced(final IBlockState state, final World world, final BlockPos pos, final IBlockState newState, final boolean isMoving) {
+  public void onReplaced(final BlockState state, final World world, final BlockPos pos, final BlockState newState, final boolean isMoving) {
     super.onReplaced(state, world, pos, newState, isMoving);
     EnergyNetworkManager.getManager(world, STORAGE, TRANSFER).disconnect(pos);
   }
 
   @Override
-  public TileWoodenAxle createTileEntity(final IBlockState state, final IBlockReader world) {
+  public TileWoodenAxle createTileEntity(final BlockState state, final IBlockReader world) {
     return new TileWoodenAxle();
   }
 
   @Override
-  public boolean hasTileEntity(final IBlockState state) {
+  public boolean hasTileEntity(final BlockState state) {
     return true;
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isFullCube(final BlockState state) {
     return false;
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public VoxelShape getShape(final IBlockState state, final IBlockReader source, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
     switch(state.get(AXIS)) {
       case X:
         return SHAPE_X;

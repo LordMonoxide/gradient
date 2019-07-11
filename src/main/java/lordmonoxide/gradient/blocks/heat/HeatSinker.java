@@ -1,19 +1,19 @@
 package lordmonoxide.gradient.blocks.heat;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public abstract class HeatSinker extends TileEntity implements ITickable {
+public abstract class HeatSinker extends TileEntity implements ITickableTileEntity {
   private final Map<BlockPos, HeatSinker> sinks = new HashMap<>();
 
   private boolean firstTick = true;
@@ -118,7 +118,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
     this.removeHeat(this.calculateHeatLoss(this.getBlockState()) / 20.0f);
   }
 
-  protected abstract float calculateHeatLoss(IBlockState state);
+  protected abstract float calculateHeatLoss(BlockState state);
 
   /**
    * @return  The percentage of heat that is maintained when this sink absorbs heat. 0.0 = 0%, 1.0 = 100%
@@ -126,14 +126,14 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   protected abstract float heatTransferEfficiency();
 
   @Override
-  public NBTTagCompound write(final NBTTagCompound compound) {
+  public CompoundNBT write(final CompoundNBT compound) {
     compound.putFloat("heat", this.getHeat());
 
     return super.write(compound);
   }
 
   @Override
-  public void read(final NBTTagCompound compound) {
+  public void read(final CompoundNBT compound) {
     this.setHeat(compound.getFloat("heat"));
 
     super.read(compound);
@@ -141,24 +141,24 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
 
   protected void sync() {
     if(!this.getWorld().isRemote) {
-      final IBlockState state = this.getWorld().getBlockState(this.getPos());
+      final BlockState state = this.getWorld().getBlockState(this.getPos());
       this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
       this.markDirty();
     }
   }
 
   @Override
-  public SPacketUpdateTileEntity getUpdatePacket() {
-    return new SPacketUpdateTileEntity(this.pos, 0, this.getUpdateTag());
+  public SUpdateTileEntityPacket getUpdatePacket() {
+    return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
   }
 
   @Override
-  public NBTTagCompound getUpdateTag() {
-    return this.write(new NBTTagCompound());
+  public CompoundNBT getUpdateTag() {
+    return this.write(new CompoundNBT());
   }
 
   @Override
-  public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
+  public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
     this.read(pkt.getNbtCompound());
   }
 }

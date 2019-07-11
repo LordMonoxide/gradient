@@ -2,7 +2,7 @@ package lordmonoxide.gradient.blocks.heat;
 
 import lordmonoxide.gradient.network.PacketUpdateHeatNeighbours;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -14,18 +14,18 @@ public abstract class HeatSinkerBlock extends Block {
   }
 
   @Override
-  public boolean hasTileEntity(final IBlockState state) {
+  public boolean hasTileEntity(final BlockState state) {
     return true;
   }
 
   @Override
-  public abstract TileEntity createTileEntity(IBlockState state, IBlockReader world);
+  public abstract TileEntity createTileEntity(BlockState state, IBlockReader world);
 
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
-  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
-    super.neighborChanged(state, world, pos, block, neighbor);
+  public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor, final boolean isMoving) {
+    super.neighborChanged(state, world, pos, block, neighbor, isMoving);
 
     final TileEntity te = world.getTileEntity(pos);
 

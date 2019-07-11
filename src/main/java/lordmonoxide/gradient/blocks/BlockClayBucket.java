@@ -3,17 +3,16 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -46,12 +45,12 @@ public class BlockClayBucket extends Block {
     super.addInformation(stack, world, tooltip, flag);
 
     if(!this.hardened) {
-      tooltip.add(new TextComponentTranslation("unhardened_clay.tooltip"));
+      tooltip.add(new TranslationTextComponent("unhardened_clay.tooltip"));
     }
   }
 
   @Override
-  public void getDrops(final IBlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
+  public void getDrops(final BlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
     if(!this.hardened) {
       drops.add(new ItemStack(super.getItemDropped(state, world, pos, fortune)));
       return;
@@ -62,20 +61,20 @@ public class BlockClayBucket extends Block {
 
   @SuppressWarnings("deprecation")
   @Override
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
     return BlockFaceShape.UNDEFINED;
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isFullCube(final BlockState state) {
     return false;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public VoxelShape getShape(final IBlockState state, final IBlockReader world, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos) {
     return SHAPE;
   }
 }

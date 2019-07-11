@@ -5,21 +5,22 @@ import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,24 +30,26 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
+
 public class BlockBronzeBoiler extends HeatSinkerBlock {
-  public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
+  public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
   private static final Fluid WATER = null; //TODO FluidRegistry.getFluid("water");
 
   public BlockBronzeBoiler() {
     super(Properties.create(GradientMaterials.MATERIAL_BRONZE_MACHINE).hardnessAndResistance(1.0f, 5.0f));
-    this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
+    this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH));
   }
 
   @Override
-  public TileBronzeBoiler createTileEntity(final IBlockState state, final IBlockReader world) {
+  public TileBronzeBoiler createTileEntity(final BlockState state, final IBlockReader world) {
     return new TileBronzeBoiler();
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+  public boolean onBlockActivated(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
     if(!player.isSneaking()) {
       final TileBronzeBoiler te = (TileBronzeBoiler)world.getTileEntity(pos);
 
@@ -63,27 +66,27 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
           return true;
         }
 
-        te.useBucket(player, hand, world, pos, side);
+        te.useBucket(player, hand, world, pos, hit.getFace());
 
         return true;
       }
 
-      NetworkHooks.openGui((EntityPlayerMP)player, te, pos);
+      NetworkHooks.openGui((ServerPlayerEntity)player, te, pos);
     }
 
     return true;
   }
 
   @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
+  public void onBlockPlacedBy(final World world, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer, final ItemStack stack) {
     world.setBlockState(pos, state.with(FACING, placer.getHorizontalFacing().getOpposite()), 2);
   }
 
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
-  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor) {
-    super.neighborChanged(state, world, pos, block, neighbor);
+  public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbor, final boolean isMoving) {
+    super.neighborChanged(state, world, pos, block, neighbor, isMoving);
 
     final TileEntity te = world.getTileEntity(pos);
 
@@ -92,9 +95,9 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     }
 
     final BlockPos rel = neighbor.subtract(pos);
-    final EnumFacing side = EnumFacing.getFacingFromVector(rel.getX(), rel.getY(), rel.getZ());
+    final Direction side = Direction.getFacingFromVector(rel.getX(), rel.getY(), rel.getZ());
 
-    if(side == EnumFacing.UP) {
+    if(side == Direction.UP) {
       ((TileBronzeBoiler)te).updateOutput(neighbor);
       PacketUpdateBronzeBoilerSteamSink.send(pos, neighbor);
     }
@@ -102,31 +105,31 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
 
   @SuppressWarnings("deprecation")
   @Override
-  public IBlockState rotate(final IBlockState state, final Rotation rot) {
+  public BlockState rotate(final BlockState state, final Rotation rot) {
     return state.with(FACING, rot.rotate(state.get(FACING)));
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public IBlockState mirror(final IBlockState state, final Mirror mirror) {
+  public BlockState mirror(final BlockState state, final Mirror mirror) {
     return state.rotate(mirror.toRotation(state.get(FACING)));
   }
 
   @Override
-  protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
+  protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
     builder.add(FACING);
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isFullCube(final BlockState state) {
     return false;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean isSolid(final IBlockState state) {
+  public boolean isSolid(final BlockState state) {
     return false;
   }
 
@@ -137,7 +140,7 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
   }
 
   @Override
-  public boolean canRenderInLayer(final IBlockState state, final BlockRenderLayer layer) {
+  public boolean canRenderInLayer(final BlockState state, final BlockRenderLayer layer) {
     return layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BlockRenderLayer.TRANSLUCENT;
   }
 }

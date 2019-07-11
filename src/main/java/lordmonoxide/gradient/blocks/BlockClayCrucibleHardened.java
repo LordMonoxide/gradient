@@ -9,25 +9,25 @@ import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.tileentities.TileClayCrucible;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -50,38 +50,38 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   @Override
   public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
     super.addInformation(stack, world, tooltip, flag);
-    tooltip.add(new TextComponentTranslation("block.gradient.clay_crucible_hardened.tooltip"));
+    tooltip.add(new TranslationTextComponent("block.gradient.clay_crucible_hardened.tooltip"));
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
     return BlockFaceShape.UNDEFINED;
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isFullCube(final BlockState state) {
     return false;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean isSolid(final IBlockState state) {
+  public boolean isSolid(final BlockState state) {
     return false;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public VoxelShape getShape(final IBlockState state, final IBlockReader world, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos) {
     return SHAPE;
   }
 
   @Override
-  public int getLightValue(final IBlockState state, final IWorldReader world, final BlockPos pos) {
-    final IBlockState other = world.getBlockState(pos);
+  public int getLightValue(final BlockState state, final IEnviromentBlockReader world, final BlockPos pos) {
+    final BlockState other = world.getBlockState(pos);
     if(other.getBlock() != this) {
       return other.getLightValue(world, pos);
     }
@@ -96,13 +96,13 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   }
 
   @Override
-  public TileClayCrucible createTileEntity(final IBlockState state, final IBlockReader world) {
+  public TileClayCrucible createTileEntity(final BlockState state, final IBlockReader world) {
     return new TileClayCrucible();
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+  public boolean onBlockActivated(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
         final TileClayCrucible te = (TileClayCrucible)world.getTileEntity(pos);
@@ -114,11 +114,11 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
         final ItemStack stack = player.getHeldItem(hand);
 
         // Cast item
-        if(stack.getItem() instanceof ItemBlock && !(stack.getItem() instanceof ItemClayCastUnhardened) && ((ItemBlock)stack.getItem()).getBlock() instanceof BlockClayCast) {
-          final GradientCasts.Cast cast = ((BlockClayCast)((ItemBlock)stack.getItem()).getBlock()).cast;
+        if(stack.getItem() instanceof BlockItem && !(stack.getItem() instanceof ItemClayCastUnhardened) && ((BlockItem)stack.getItem()).getBlock() instanceof BlockClayCast) {
+          final GradientCasts.Cast cast = ((BlockClayCast)((BlockItem)stack.getItem()).getBlock()).cast;
 
           if(te.getMoltenMetal() == null) {
-            player.sendMessage(new TextComponentTranslation("block.gradient.clay_crucible.no_metal").setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TranslationTextComponent("block.gradient.clay_crucible.no_metal").setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
 
@@ -126,12 +126,12 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
           final int amount = cast.amountForMetal(metal);
 
           if(te.getMoltenMetal().amount < amount) {
-            player.sendMessage(new TextComponentTranslation("block.gradient.clay_crucible.not_enough_metal", amount).setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TranslationTextComponent("block.gradient.clay_crucible.not_enough_metal", amount).setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
 
           if(!cast.isValidForMetal(metal)) {
-            player.sendMessage(new TextComponentTranslation("block.gradient.clay_crucible.metal_cant_make_tools").setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TranslationTextComponent("block.gradient.clay_crucible.metal_cant_make_tools").setStyle(new Style().setColor(TextFormatting.RED)));
             return true;
           }
 
@@ -158,12 +158,12 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
             }
           }
 
-          te.useBucket(player, hand, world, pos, side);
+          te.useBucket(player, hand, world, pos, hit.getFace());
 
           return true;
         }
 
-        NetworkHooks.openGui((EntityPlayerMP)player, te, pos);
+        NetworkHooks.openGui((ServerPlayerEntity)player, te, pos);
       }
     }
 
@@ -177,7 +177,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   }
 
   @Override
-  public boolean canRenderInLayer(final IBlockState state, final BlockRenderLayer layer) {
+  public boolean canRenderInLayer(final BlockState state, final BlockRenderLayer layer) {
     return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
   }
 }

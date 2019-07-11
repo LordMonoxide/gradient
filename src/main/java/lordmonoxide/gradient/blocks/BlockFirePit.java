@@ -8,28 +8,28 @@ import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.tileentities.TileFirePit;
 import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
@@ -48,26 +48,26 @@ import java.util.Random;
 public class BlockFirePit extends HeatSinkerBlock {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0d, 0.0d, 0.0d, 16.0d, 4.0d, 16.0d);
 
-  public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
+  public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
   public static final BooleanProperty HAS_FURNACE = BooleanProperty.create("has_furnace");
 
   public BlockFirePit() {
     super(Properties.create(Material.WOOD, MaterialColor.RED).hardnessAndResistance(1.0f, 5.0f));
-    this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH).with(HAS_FURNACE, false));
+    this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(HAS_FURNACE, false));
   }
 
   @Override
-  public int getItemsToDropCount(final IBlockState state, final int fortune, final World world, final BlockPos pos, final Random random) {
+  public int getItemsToDropCount(final BlockState state, final int fortune, final World world, final BlockPos pos, final Random random) {
     return random.nextInt(3) + 2;
   }
 
   @Override
-  public IItemProvider getItemDropped(final IBlockState state, final World world, final BlockPos pos, final int fortune) {
+  public IItemProvider getItemDropped(final BlockState state, final World world, final BlockPos pos, final int fortune) {
     return Items.STICK;
   }
 
   @Override
-  public void getDrops(final IBlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
+  public void getDrops(final BlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
     super.getDrops(state, drops, world, pos, fortune);
 
     if(state.get(HAS_FURNACE)) {
@@ -78,20 +78,20 @@ public class BlockFirePit extends HeatSinkerBlock {
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isFullCube(final BlockState state) {
     return false;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean isSolid(final IBlockState state) {
+  public boolean isSolid(final BlockState state) {
     return false;
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public VoxelShape getShape(final IBlockState state, final IBlockReader source, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
     if(!state.get(HAS_FURNACE)) {
       return SHAPE;
     }
@@ -100,8 +100,8 @@ public class BlockFirePit extends HeatSinkerBlock {
   }
 
   @Override
-  public int getLightValue(final IBlockState state, final IWorldReader world, final BlockPos pos) {
-    final IBlockState other = world.getBlockState(pos);
+  public int getLightValue(final BlockState state, final IWorldReader world, final BlockPos pos) {
+    final BlockState other = world.getBlockState(pos);
     if(other.getBlock() != this) {
       return other.getLightValue(world, pos);
     }
@@ -116,13 +116,13 @@ public class BlockFirePit extends HeatSinkerBlock {
   }
 
   @Override
-  public TileFirePit createTileEntity(final IBlockState state, final IBlockReader world) {
+  public TileFirePit createTileEntity(final BlockState state, final IBlockReader world) {
     return new TileFirePit();
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+  public boolean onBlockActivated(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
     if(!world.isRemote) {
       final TileFirePit firepit = (TileFirePit)world.getTileEntity(pos);
 
@@ -146,7 +146,7 @@ public class BlockFirePit extends HeatSinkerBlock {
 
         if(Block.getBlockFromItem(held.getItem()) instanceof BlockTorchUnlit) {
           if(firepit.isBurning()) {
-            player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)held.getItem()).getBlock()).lit.get(), held.getCount()));
+            player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((BlockItem)held.getItem()).getBlock()).lit.get(), held.getCount()));
             return true;
           }
         }
@@ -223,14 +223,14 @@ public class BlockFirePit extends HeatSinkerBlock {
     final Age age = AgeUtils.getPlayerAge(event.getEntity());
 
     blockPlacedPos.setPos(pos);
-    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
-    updateFirePit(world, blockPlacedPos.move(EnumFacing.EAST), pos, age);
-    updateFirePit(world, blockPlacedPos.move(EnumFacing.SOUTH), pos, age);
-    updateFirePit(world, blockPlacedPos.move(EnumFacing.SOUTH), pos, age);
-    updateFirePit(world, blockPlacedPos.move(EnumFacing.WEST), pos, age);
-    updateFirePit(world, blockPlacedPos.move(EnumFacing.WEST), pos, age);
-    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
-    updateFirePit(world, blockPlacedPos.move(EnumFacing.NORTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(Direction.NORTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(Direction.EAST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(Direction.SOUTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(Direction.SOUTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(Direction.WEST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(Direction.WEST), pos, age);
+    updateFirePit(world, blockPlacedPos.move(Direction.NORTH), pos, age);
+    updateFirePit(world, blockPlacedPos.move(Direction.NORTH), pos, age);
   }
 
   private static void updateFirePit(final IBlockReader world, final BlockPos firePitPos, final BlockPos placedPos, final Age age) {
@@ -242,12 +242,12 @@ public class BlockFirePit extends HeatSinkerBlock {
   }
 
   @Override
-  public IBlockState getStateForPlacement(final BlockItemUseContext context) {
+  public BlockState getStateForPlacement(final BlockItemUseContext context) {
     return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
   }
 
   @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, @Nullable final EntityLivingBase placer, final ItemStack stack) {
+  public void onBlockPlacedBy(final World world, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer, final ItemStack stack) {
     final TileEntity te = world.getTileEntity(pos);
 
     if(te instanceof TileFirePit) {
@@ -258,7 +258,7 @@ public class BlockFirePit extends HeatSinkerBlock {
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
     if(state.get(HAS_FURNACE)) {
       return GradientBlocks.CLAY_FURNACE_HARDENED.getBlockFaceShape(world, state, pos, face);
     }
@@ -268,18 +268,18 @@ public class BlockFirePit extends HeatSinkerBlock {
 
   @SuppressWarnings("deprecation")
   @Override
-  public IBlockState rotate(final IBlockState state, final Rotation rot) {
+  public BlockState rotate(final BlockState state, final Rotation rot) {
     return state.with(FACING, rot.rotate(state.get(FACING)));
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public IBlockState mirror(final IBlockState state, final Mirror mirror) {
+  public BlockState mirror(final BlockState state, final Mirror mirror) {
     return state.rotate(mirror.toRotation(state.get(FACING)));
   }
 
   @Override
-  protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
+  protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
     builder.add(FACING, HAS_FURNACE);
   }
 }

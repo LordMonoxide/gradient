@@ -9,8 +9,9 @@ import lordmonoxide.gradient.science.geology.Ore;
 import lordmonoxide.gradient.science.geology.Ores;
 import lordmonoxide.gradient.utils.RegistryHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -49,7 +50,7 @@ public final class GradientBlocks {
   public static final BlockClayBucket CLAY_BUCKET_HARDENED = null;
 
   public static final BlockLog HARDENED_LOG = null;
-  public static final BlockHardenedPlanks HARDENED_PLANKS = null;
+  public static final Block HARDENED_PLANKS = null;
 
   public static final BlockWoodenAxle WOODEN_AXLE = null;
   public static final BlockWoodenGearbox WOODEN_GEARBOX = null;
@@ -129,7 +130,7 @@ public final class GradientBlocks {
     registry.register(BlockClayBucket.hardened(), GradientIds.CLAY_BUCKET_HARDENED);
 
     registry.register(new BlockLog(), GradientIds.HARDENED_LOG);
-    registry.register(new BlockHardenedPlanks(), GradientIds.HARDENED_PLANKS);
+    registry.register(new Block(Block.Properties.create(Material.WOOD).hardnessAndResistance(2.0f).harvestTool(ToolType.AXE)), GradientIds.HARDENED_PLANKS);
 
     registry.register(new BlockWoodenAxle(), GradientIds.WOODEN_AXLE);
     registry.register(new BlockWoodenGearbox(), GradientIds.WOODEN_GEARBOX);
@@ -150,7 +151,7 @@ public final class GradientBlocks {
 
     for(final Metal metal : Metals.all()) {
       if(!CAST_BLOCK.containsKey(metal)) {
-        CAST_BLOCK.put(metal, registry.register(new CastBlock(), GradientIds.castBlock(metal)));
+        CAST_BLOCK.put(metal, registry.register(new Block(Block.Properties.create(Material.IRON).hardnessAndResistance(10.0f, 5.0f).harvestTool(ToolType.PICKAXE).harvestLevel(2)), GradientIds.castBlock(metal)));
       }
     }
   }

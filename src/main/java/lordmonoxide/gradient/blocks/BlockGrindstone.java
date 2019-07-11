@@ -3,22 +3,22 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.tileentities.TileManualGrinder;
 import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -33,26 +33,26 @@ public class BlockGrindstone extends Block {
 
   private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d, 0.0d, 1.0d, 15.0d, 2.0d, 15.0d);
 
-  public static final DirectionProperty FACING = BlockHorizontal.HORIZONTAL_FACING;
+  public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
   public BlockGrindstone() {
     super(Properties.create(Material.ROCK).hardnessAndResistance(1.0f, 5.0f));
-    this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH));
+    this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH));
   }
 
   @Override
-  public TileManualGrinder createTileEntity(final IBlockState state, final IBlockReader world) {
+  public TileManualGrinder createTileEntity(final BlockState state, final IBlockReader world) {
     return new TileManualGrinder();
   }
 
   @Override
-  public boolean hasTileEntity(final IBlockState state) {
+  public boolean hasTileEntity(final BlockState state) {
     return true;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+  public boolean onBlockActivated(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
     if(!world.isRemote) {
       final TileEntity tile = world.getTileEntity(pos);
 
@@ -101,20 +101,20 @@ public class BlockGrindstone extends Block {
   }
 
   @Override
-  public IBlockState getStateForPlacement(final BlockItemUseContext context) {
+  public BlockState getStateForPlacement(final BlockItemUseContext context) {
     return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public void onReplaced(final IBlockState state, final World world, final BlockPos pos, final IBlockState newState, final boolean isMoving) {
+  public void onReplaced(final BlockState state, final World world, final BlockPos pos, final BlockState newState, final boolean isMoving) {
     final TileManualGrinder grinder = WorldUtils.getTileEntity(world, pos, TileManualGrinder.class);
 
     if(grinder != null) {
       grinder.getCapability(ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
         for(int i = 0; i < inv.getSlots(); i++) {
           if(!inv.getStackInSlot(i).isEmpty()) {
-            world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i)));
+            world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i)));
           }
         }
       });
@@ -125,39 +125,39 @@ public class BlockGrindstone extends Block {
 
   @SuppressWarnings("deprecation")
   @Override
-  public IBlockState rotate(final IBlockState state, final Rotation rot) {
+  public BlockState rotate(final BlockState state, final Rotation rot) {
     return state.with(FACING, rot.rotate(state.get(FACING)));
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public IBlockState mirror(final IBlockState state, final Mirror mirror) {
+  public BlockState mirror(final BlockState state, final Mirror mirror) {
     return state.rotate(mirror.toRotation(state.get(FACING)));
   }
 
   @Override
-  protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
+  protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
     builder.add(FACING);
   }
 
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
     return BlockFaceShape.UNDEFINED;
   }
 
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isFullCube(final BlockState state) {
     return false;
   }
 
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
-  public VoxelShape getShape(final IBlockState state, final IBlockReader source, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
     return SHAPE;
   }
 }

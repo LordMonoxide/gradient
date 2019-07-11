@@ -3,18 +3,16 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.item.Items;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -26,17 +24,17 @@ public class BlockPebble extends Block {
   private final Metal metal;
 
   public BlockPebble() {
-    super(Properties.create(Material.GROUND, MaterialColor.GRAY));
+    super(Properties.create(Material.EARTH, MaterialColor.GRAY));
     this.metal = null;
   }
 
   public BlockPebble(final Metal metal) {
-    super(Properties.create(Material.GROUND, MaterialColor.GRAY).hardnessAndResistance(0.0f).doesNotBlockMovement());
+    super(Properties.create(Material.EARTH, MaterialColor.GRAY).hardnessAndResistance(0.0f).doesNotBlockMovement());
     this.metal = metal;
   }
 
   @Override
-  public void getDrops(final IBlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
+  public void getDrops(final BlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
     for(int i = 0; i < world.rand.nextInt(2); i++) {
       if(world.rand.nextInt(6) == 0) {
         drops.add(new ItemStack(Items.FLINT));
@@ -54,26 +52,26 @@ public class BlockPebble extends Block {
 
   @Override
   @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
     return BlockFaceShape.UNDEFINED;
   }
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isFullCube(final BlockState state) {
     return false;
   }
 
   @Override
   @SuppressWarnings("deprecation")
-  public VoxelShape getShape(final IBlockState state, final IBlockReader source, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
     return SHAPE;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean isValidPosition(final IBlockState state, final IWorldReaderBase world, final BlockPos pos) {
-    final IBlockState down = world.getBlockState(pos.down());
+  public boolean isValidPosition(final BlockState state, final IWorldReaderBase world, final BlockPos pos) {
+    final BlockState down = world.getBlockState(pos.down());
 
     return
       this.isAir(world.getBlockState(pos), world, pos) && (
@@ -91,7 +89,7 @@ public class BlockPebble extends Block {
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
-  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos fromPos) {
+  public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block block, final BlockPos fromPos) {
     if(world.isAirBlock(pos.down())) {
       state.dropBlockAsItem(world, pos, 0);
       world.removeBlock(pos);

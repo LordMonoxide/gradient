@@ -1,18 +1,18 @@
 package lordmonoxide.gradient.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockTorch;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.TorchBlock;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class BlockTorchUnlit extends BlockTorch {
+public class BlockTorchUnlit extends TorchBlock {
   public final Supplier<Block> lit;
 
   public BlockTorchUnlit(final Supplier<Block> lit, final Properties properties) {
@@ -34,18 +34,18 @@ public class BlockTorchUnlit extends BlockTorch {
   @Override
   @OnlyIn(Dist.CLIENT)
   public void addInformation(final ItemStack stack, @Nullable final IBlockReader world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
-    tooltip.add(new TextComponentTranslation(this.getTranslationKey() + ".tooltip"));
+    tooltip.add(new TranslationTextComponent(this.getTranslationKey() + ".tooltip"));
   }
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void animateTick(final IBlockState state, final World world, final BlockPos pos, final Random rand) {
+  public void animateTick(final BlockState state, final World world, final BlockPos pos, final Random rand) {
     // No particles
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+  public boolean onBlockActivated(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
     if(!world.isRemote || !player.isSneaking()) {
       if(this.isLitTorch(player.getHeldItemMainhand()) || this.isLitTorch(player.getHeldItemOffhand())) {
         world.setBlockState(pos, this.lit.get().getDefaultState());
@@ -57,12 +57,12 @@ public class BlockTorchUnlit extends BlockTorch {
   }
 
   private boolean isLitTorch(final ItemStack stack) {
-    if(!(stack.getItem() instanceof ItemBlock)) {
+    if(!(stack.getItem() instanceof BlockItem)) {
       return false;
     }
 
-    final ItemBlock itemBlock = (ItemBlock)stack.getItem();
+    final BlockItem itemBlock = (BlockItem)stack.getItem();
 
-    return itemBlock.getBlock() instanceof BlockTorch && !(itemBlock.getBlock() instanceof BlockTorchUnlit);
+    return itemBlock.getBlock() instanceof TorchBlock && !(itemBlock.getBlock() instanceof BlockTorchUnlit);
   }
 }

@@ -1,10 +1,9 @@
 package lordmonoxide.gradient.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
@@ -19,8 +18,8 @@ public class BlockTorchStand extends Block {
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
-    if(face == EnumFacing.UP || face == EnumFacing.DOWN) {
+  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
+    if(face == Direction.UP || face == Direction.DOWN) {
       return BlockFaceShape.CENTER;
     }
 
@@ -30,14 +29,14 @@ public class BlockTorchStand extends Block {
   @SuppressWarnings("deprecation")
   @Deprecated
   @Override
-  public boolean isFullCube(final IBlockState state) {
+  public boolean isFullCube(final BlockState state) {
     return false;
   }
 
   @SuppressWarnings("deprecation")
   @Deprecated
   @Override
-  public VoxelShape getShape(final IBlockState state, final IBlockReader world, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos) {
     return SHAPE;
   }
 }

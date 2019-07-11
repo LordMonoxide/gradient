@@ -1,20 +1,20 @@
 package lordmonoxide.gradient.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockTorch;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.TorchBlock;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReaderBase;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class BlockTorchLit extends BlockTorch {
+public class BlockTorchLit extends TorchBlock {
   public static final BooleanProperty STAND = BooleanProperty.create("stand");
 
   private final int light;
@@ -28,45 +28,45 @@ public class BlockTorchLit extends BlockTorch {
   }
 
   @Override
-  public boolean ticksRandomly(final IBlockState p_149653_1_) {
+  public boolean ticksRandomly(final BlockState state) {
     return false;
   }
 
   @SuppressWarnings("deprecation")
   @Deprecated
   @Override
-  public int getLightValue(final IBlockState state) {
+  public int getLightValue(final BlockState state) {
     return state.get(STAND) ? this.lightOnStand : this.light;
   }
 
   @Override
-  public int tickRate(final IWorldReaderBase world) {
+  public int tickRate(final IWorldReader world) {
     return 9600;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public void tick(final IBlockState state, final World world, final BlockPos pos, final Random random) {
+  public void tick(final BlockState state, final World world, final BlockPos pos, final Random random) {
     world.setBlockState(pos, GradientBlocks.FIBRE_TORCH_UNLIT.getDefaultState());
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public void onBlockAdded(final IBlockState state, final World world, final BlockPos pos, final IBlockState oldState) {
+  public void onBlockAdded(final BlockState state, final World world, final BlockPos pos, final BlockState oldState, final boolean isMoving) {
     world.getPendingBlockTicks().scheduleTick(pos, this, this.tickRate(world));
-    super.onBlockAdded(state, world, pos, oldState);
+    super.onBlockAdded(state, world, pos, oldState, isMoving);
   }
 
   @Override
-  protected void fillStateContainer(final StateContainer.Builder<Block, IBlockState> builder) {
+  protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
     builder.add(STAND);
   }
 
   @Override
-  public IBlockState getStateForPlacement(final BlockItemUseContext context) {
-    final IBlockState state = super.getStateForPlacement(context);
+  public BlockState getStateForPlacement(final BlockItemUseContext context) {
+    final BlockState state = super.getStateForPlacement(context);
 
-    if(context.getFace() == EnumFacing.UP) {
+    if(context.getFace() == Direction.UP) {
       if(context.getWorld().getBlockState(context.getPos().down()).getBlock() == GradientBlocks.TORCH_STAND) {
         return state.with(STAND, true);
       }

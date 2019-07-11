@@ -1,13 +1,17 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientMaterials;
+import lordmonoxide.gradient.containers.BronzeGrinderContainer;
 import lordmonoxide.gradient.tileentities.TileBronzeGrinder;
 import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -17,12 +21,15 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockBronzeGrinder extends Block {
+import javax.annotation.Nullable;
+
+public class BlockBronzeGrinder extends Block implements INamedContainerProvider {
   public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
   public BlockBronzeGrinder() {
@@ -55,7 +62,7 @@ public class BlockBronzeGrinder extends Block {
           return te.useBucket(player, hand, world, pos, hit.getFace());
         }
 
-        NetworkHooks.openGui((ServerPlayerEntity)player, te, pos);
+        NetworkHooks.openGui((ServerPlayerEntity)player, this, pos);
       }
     }
 
@@ -82,5 +89,22 @@ public class BlockBronzeGrinder extends Block {
   @Override
   protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
     builder.add(FACING);
+  }
+
+  @Override
+  public ITextComponent getDisplayName() {
+    return this.getNameTextComponent();
+  }
+
+  @Nullable
+  @Override
+  public Container createMenu(final int id, final PlayerInventory playerInv, final PlayerEntity player) {
+    final TileBronzeGrinder grinder = WorldUtils.getTileEntity(player.world, player.getPosition(), TileBronzeGrinder.class);
+
+    if(grinder != null) {
+      return new BronzeGrinderContainer(id, playerInv, grinder);
+    }
+
+    return null;
   }
 }

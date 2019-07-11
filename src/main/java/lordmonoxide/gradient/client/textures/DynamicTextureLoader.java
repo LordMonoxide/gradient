@@ -7,8 +7,8 @@ import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.science.geology.Ore;
 import lordmonoxide.gradient.science.geology.Ores;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,7 +30,7 @@ public final class DynamicTextureLoader {
 
   @SubscribeEvent
   public static void onTextureStitch(final TextureStitchEvent.Pre event) {
-    final TextureMap map = event.getMap();
+    final AtlasTexture map = event.getMap();
 
     registerDynamicTextures(map, DynamicTextureLoader::barkGenerator, GradientMod.resource("item/bark_oak"), GradientMod.resource("item/bark_cutout"), new ResourceLocation("minecraft", "block/log_oak"));
     registerDynamicTextures(map, DynamicTextureLoader::barkGenerator, GradientMod.resource("item/bark_spruce"), GradientMod.resource("item/bark_cutout"), new ResourceLocation("minecraft", "block/log_spruce"));
@@ -88,16 +88,16 @@ public final class DynamicTextureLoader {
     }
   }
 
-  private static void registerDynamicTextures(final TextureMap map, final DynamicAtlasSprite.TextureGenerator generator, final ResourceLocation name, final ResourceLocation... sprites) {
+  private static void registerDynamicTextures(final AtlasTexture map, final DynamicAtlasSprite.TextureGenerator generator, final ResourceLocation name, final ResourceLocation... sprites) {
     if(getResource(GradientMod.resource("textures/" + name.getPath() + ".png")) == null) {
       final ResourceLocation loc = GradientMod.resource(name.getPath());
       GradientMod.logger.info("Registering dynamic texture {} ", loc);
-      final Map<ResourceLocation, TextureAtlasSprite> textures = ObfuscationReflectionHelper.getPrivateValue(TextureMap.class, map, "mapUploadedSprites");
+      final Map<ResourceLocation, TextureAtlasSprite> textures = ObfuscationReflectionHelper.getPrivateValue(AtlasTexture.class, map, "mapUploadedSprites");
       textures.put(loc, new DynamicAtlasSprite(loc, 16, 16, generator, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
     }
   }
 
-  private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final ResourceLocation source) {
+  private static void registerDynamicTextures(final AtlasTexture map, final ResourceLocation name, final ResourceLocation source) {
     if(getResource(GradientMod.resource("textures/" + name.getPath() + ".png")) == null) {
       //TODO map.setTextureEntry(new ClonedAtlasSprite(GradientMod.resource(name.getPath()), source));
     }
@@ -110,19 +110,19 @@ public final class DynamicTextureLoader {
       final Map<ResourceLocation, TextureAtlasSprite> textures = ObfuscationReflectionHelper.getPrivateValue(TextureMap.class, map, "mapUploadedSprites");
       textures.put(loc, new MetalAtlasSprite(loc, 16, 16, metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
 */
-  private static void registerDynamicTextures(final TextureMap map, final ResourceLocation name, final Metal metal, final ResourceLocation... sprites) {
+  private static void registerDynamicTextures(final AtlasTexture map, final ResourceLocation name, final Metal metal, final ResourceLocation... sprites) {
     if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
       //TODO map.setTextureEntry(new MetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '.' + metal.name), metal, sprites.length == 0 ? new ResourceLocation[] {name} : sprites));
     }
   }
 
-  private static void registerBlendedMetalTextures(final TextureMap map, final ResourceLocation name, final Metal metal) {
+  private static void registerBlendedMetalTextures(final AtlasTexture map, final ResourceLocation name, final Metal metal) {
     if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '.' + metal.name + ".png")) == null) {
       //TODO map.setTextureEntry(new BlendedMetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '.' + metal.name), metal, BlendedMetalAtlasSprite::enhance, name));
     }
   }
 
-  private static void registerBlendedMetalFluidTextures(final TextureMap map, final ResourceLocation name, final Metal metal) {
+  private static void registerBlendedMetalFluidTextures(final AtlasTexture map, final ResourceLocation name, final Metal metal) {
     if(getResource(new ResourceLocation(name.getNamespace(), "textures/" + name.getPath() + '_' + metal.name + ".png")) == null) {
       //TODO map.setTextureEntry(new BlendedMetalAtlasSprite(new ResourceLocation(name.getNamespace(), name.getPath() + '_' + metal.name), metal, BlendedMetalAtlasSprite::identity, name));
     }

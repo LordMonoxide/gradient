@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.progress;
 
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum Age {
   AGE1, AGE2, AGE3, AGE4;
@@ -15,7 +15,7 @@ public enum Age {
   }
 
   public ITextComponent getDisplayName() {
-    return new TextComponentTranslation(this.translationKey());
+    return new TranslationTextComponent(this.translationKey());
   }
 
   public static Age get(final int age) {

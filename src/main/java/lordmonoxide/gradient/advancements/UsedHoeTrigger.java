@@ -6,10 +6,10 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import lordmonoxide.gradient.GradientMod;
+import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.criterion.AbstractCriterionInstance;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
@@ -60,7 +60,7 @@ public class UsedHoeTrigger implements ICriterionTrigger<UsedHoeTrigger.Instance
     return new UsedHoeTrigger.Instance();
   }
 
-  public void trigger(final EntityPlayerMP player) {
+  public void trigger(final ServerPlayerEntity player) {
     final UsedHoeTrigger.Listeners listeners = this.listeners.get(player.getAdvancements());
 
     if(listeners != null) {
@@ -95,9 +95,10 @@ public class UsedHoeTrigger implements ICriterionTrigger<UsedHoeTrigger.Instance
     }
   }
 
-  public static class Instance extends AbstractCriterionInstance {
-    public Instance() {
-      super(UsedHoeTrigger.ID);
+  public static class Instance implements ICriterionInstance {
+    @Override
+    public ResourceLocation getId() {
+      return UsedHoeTrigger.ID;
     }
   }
 }

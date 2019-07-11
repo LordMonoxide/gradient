@@ -1,14 +1,14 @@
 package lordmonoxide.gradient.client.tesr;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import lordmonoxide.gradient.blocks.BlockFirePit;
 import lordmonoxide.gradient.tileentities.TileFirePit;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -16,12 +16,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TileFirePitRenderer extends TileEntityRenderer<TileFirePit> {
   @Override
   public void render(final TileFirePit firepit, final double x, final double y, final double z, final float partialTicks, final int destroyStage) {
-    final IBlockState state = firepit.getBlockState();
+    final BlockState state = firepit.getBlockState();
 
     GlStateManager.pushMatrix();
     GlStateManager.translated(x + 0.5d, y + 0.5d, z + 0.5d);
 
-    final EnumFacing facing = state.get(BlockFirePit.FACING);
+    final Direction facing = state.get(BlockFirePit.FACING);
     final double facingAngle = Math.toRadians(facing.getHorizontalAngle());
 
     final double fuelAngleOffset = firepit.hasFurnace(state) ? Math.PI / 2 : 0.0d;

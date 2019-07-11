@@ -5,17 +5,17 @@ import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import lordmonoxide.gradient.recipes.MixingRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Particles;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.world.WorldServer;
+import net.minecraft.util.Direction;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
@@ -29,7 +29,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
-public class TileMixingBasin extends TileEntity implements ITickable {
+public class TileMixingBasin extends TileEntity implements ITickableTileEntity {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -106,7 +106,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     return this.inventory.getStackInSlot(OUTPUT_SLOT);
   }
 
-  public ItemStack takeInput(final int slot, final EntityPlayer player) {
+  public ItemStack takeInput(final int slot, final PlayerEntity player) {
     this.age = AgeUtils.getPlayerAge(player);
     final ItemStack input = this.inventory.extractItem(slot, this.inventory.getSlotLimit(slot), false);
     this.updateRecipe();
@@ -130,7 +130,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     return -1;
   }
 
-  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
+  public ItemStack insertItem(final ItemStack stack, final PlayerEntity player) {
     final int slot = this.findOpenSlot();
 
     // No space
@@ -192,7 +192,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     }
 
     if(this.ticks >= this.recipe.ticks) {
-      ((WorldServer)this.world).spawnParticle(Particles.BUBBLE, this.pos.getX() + 0.5d, this.pos.getY() + 0.5d, this.pos.getZ() + 0.5d, 10, 0.1d, 0.1d, 0.1d, 0.01d);
+      ((ServerWorld)this.world).spawnParticle(ParticleTypes.BUBBLE, this.pos.getX() + 0.5d, this.pos.getY() + 0.5d, this.pos.getZ() + 0.5d, 10, 0.1d, 0.1d, 0.1d, 0.01d);
 
       this.ticks = 0;
       this.passes++;
@@ -206,9 +206,9 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   }
 
   @Override
-  public NBTTagCompound write(final NBTTagCompound compound) {
+  public CompoundNBT write(final CompoundNBT compound) {
     compound.put("inventory", this.inventory.serializeNBT());
-    compound.put("tank", this.tank.writeToNBT(new NBTTagCompound()));
+    compound.put("tank", this.tank.writeToNBT(new CompoundNBT()));
     compound.putInt("passes", this.passes);
     compound.putInt("ticks", this.ticks);
     compound.putInt("player_age", this.age.value());
@@ -217,8 +217,8 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   }
 
   @Override
-  public void read(final NBTTagCompound compound) {
-    final NBTTagCompound inv = compound.getCompound("inventory");
+  public void read(final CompoundNBT compound) {
+    final CompoundNBT inv = compound.getCompound("inventory");
     inv.remove("Size");
     this.inventory.deserializeNBT(inv);
     this.tank.readFromNBT(compound.getCompound("tank"));
@@ -232,7 +232,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return LazyOptional.of(() -> (T)this.inventory);
     }
@@ -246,24 +246,24 @@ public class TileMixingBasin extends TileEntity implements ITickable {
 
   protected void sync() {
     if(!this.world.isRemote) {
-      final IBlockState state = this.world.getBlockState(this.getPos());
+      final BlockState state = this.world.getBlockState(this.getPos());
       this.world.notifyBlockUpdate(this.getPos(), state, state, 3);
       this.markDirty();
     }
   }
 
   @Override
-  public SPacketUpdateTileEntity getUpdatePacket() {
-    return new SPacketUpdateTileEntity(this.pos, 0, this.getUpdateTag());
+  public SUpdateTileEntityPacket getUpdatePacket() {
+    return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
   }
 
   @Override
-  public NBTTagCompound getUpdateTag() {
-    return this.write(new NBTTagCompound());
+  public CompoundNBT getUpdateTag() {
+    return this.write(new CompoundNBT());
   }
 
   @Override
-  public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
+  public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
     this.read(pkt.getNbtCompound());
   }
 }

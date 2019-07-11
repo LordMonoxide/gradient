@@ -1,14 +1,14 @@
 package lordmonoxide.gradient.client.tesr;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import lordmonoxide.gradient.blocks.BlockMixingBasin;
 import lordmonoxide.gradient.tileentities.TileMixingBasin;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.item.Items;
+import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +21,7 @@ public class TileMixingBasinRenderer extends TileEntityRenderer<TileMixingBasin>
     GlStateManager.pushMatrix();
     GlStateManager.translated(x + 0.5d, y + 0.5d, z + 0.5d);
 
-    final EnumFacing facing = te.getBlockState().get(BlockMixingBasin.FACING);
+    final Direction facing = te.getBlockState().get(BlockMixingBasin.FACING);
     final double facingAngle = Math.toRadians(facing.getHorizontalAngle());
 
     if(te.hasFluid()) {

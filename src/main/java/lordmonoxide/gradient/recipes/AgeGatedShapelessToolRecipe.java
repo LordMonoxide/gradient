@@ -4,23 +4,21 @@ import com.google.gson.JsonObject;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.utils.AgeUtils;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.ToolItem;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.crafting.RecipeType;
-import net.minecraftforge.common.crafting.VanillaRecipeTypes;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.Random;
@@ -38,7 +36,7 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
 
   @Override
   public boolean matches(final IInventory inv, final World world) {
-    return AgeUtils.playerMeetsAgeRequirement((InventoryCrafting)inv, this.age) && this.recipe.matches(inv, world);
+    return AgeUtils.playerMeetsAgeRequirement((CraftingInventory)inv, this.age) && this.recipe.matches(inv, world);
   }
 
   @Override
@@ -63,7 +61,7 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
     for(int i = 0; i < remaining.size(); ++i) {
       final ItemStack stack = inv.getStackInSlot(i);
 
-      if(stack.getItem() instanceof ItemTool) {
+      if(stack.getItem() instanceof ToolItem) {
         stack.attemptDamageItem(1, rand, null);
 
         if(stack.isDamageable() && stack.getDamage() > stack.getMaxDamage()) {
@@ -104,7 +102,7 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
   }
 
   @Override
-  public RecipeType<? extends IRecipe> getType() {
+  public IRecipeType<? extends IRecipe> getType() {
     return VanillaRecipeTypes.CRAFTING;
   }
 
@@ -119,7 +117,7 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
     @Override
     public AgeGatedShapelessToolRecipe read(final ResourceLocation recipeId, final JsonObject json) {
       final ShapelessRecipe recipe = RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, json);
-      final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
+      final Age age = Age.get(JSONUtils.getInt(json, "age", 1));
 
       return new AgeGatedShapelessToolRecipe(recipe, age);
     }

@@ -42,7 +42,7 @@ public class PacketUpdateBronzeBoilerSteamSink {
       );
     } catch(final IndexOutOfBoundsException e) {
       GradientMod.logger.info("Invalid position in PacketUpdateBronzeBoilerSteamSink", e);
-      return new PacketUpdateBronzeBoilerSteamSink(BlockPos.ORIGIN, BlockPos.ORIGIN);
+      return new PacketUpdateBronzeBoilerSteamSink(BlockPos.ZERO, BlockPos.ZERO);
     }
   }
 

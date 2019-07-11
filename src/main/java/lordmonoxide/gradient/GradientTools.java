@@ -1,20 +1,20 @@
 package lordmonoxide.gradient;
 
-import net.minecraft.block.BlockLog;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.LogBlock;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Enchantments;
-import net.minecraft.init.Items;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.Items;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -44,18 +44,18 @@ public final class GradientTools {
     return TYPES.values();
   }
 
-  private static EnumActionResult onItemUsePass(final ItemUseContext context) {
-    return EnumActionResult.PASS;
+  private static ActionResultType onItemUsePass(final ItemUseContext context) {
+    return ActionResultType.PASS;
   }
 
-  private static EnumActionResult onMattockUse(final ItemUseContext context) {
+  private static ActionResultType onMattockUse(final ItemUseContext context) {
     final IWorld world = context.getWorld();
     final BlockPos pos = context.getPos();
-    final IBlockState state = world.getBlockState(pos);
+    final BlockState state = world.getBlockState(pos);
 
     // Handled in event handler; need this here to stop from placing items in offhand (see #541)
-    if(state.getBlock() instanceof BlockLog) {
-      return EnumActionResult.SUCCESS;
+    if(state.getBlock() instanceof LogBlock) {
+      return ActionResultType.SUCCESS;
     }
 
     return Items.STONE_HOE.onItemUse(context);
@@ -65,11 +65,11 @@ public final class GradientTools {
 
   }
 
-  public static boolean onEntityInteractPass(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+  public static boolean onEntityInteractPass(final ItemStack itemstack, final PlayerEntity player, final LivingEntity entity, final Hand hand) {
     return false;
   }
 
-  public static boolean onEntityInteractShear(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+  public static boolean onEntityInteractShear(final ItemStack itemstack, final PlayerEntity player, final LivingEntity entity, final Hand hand) {
     if(entity.world.isRemote) {
       return false;
     }
@@ -79,7 +79,7 @@ public final class GradientTools {
       final BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
 
       if(target.isShearable(itemstack, entity.world, pos)) {
-        itemstack.damageItem(1, entity);
+        itemstack.damageItem(1, entity, e -> e.sendBreakAnimation(e.getActiveHand()));
 
         final List<ItemStack> drops = target.onSheared(itemstack, entity.world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, itemstack));
 
@@ -92,10 +92,8 @@ public final class GradientTools {
         // Get one random drop from the list
         final ItemStack stack = drops.get(rand.nextInt(drops.size()));
 
-        final EntityItem ent = entity.entityDropItem(stack, 1.0f);
-        ent.motionY += rand.nextFloat() * 0.05F;
-        ent.motionX += (rand.nextFloat() - rand.nextFloat()) * 0.1f;
-        ent.motionZ += (rand.nextFloat() - rand.nextFloat()) * 0.1f;
+        final ItemEntity ent = entity.entityDropItem(stack, 1.0f);
+        ent.setMotion(ent.getMotion().add((rand.nextFloat() - rand.nextFloat()) * 0.1f, rand.nextFloat() * 0.05f, (rand.nextFloat() - rand.nextFloat()) * 0.1f));
       }
 
       return true;
@@ -105,7 +103,7 @@ public final class GradientTools {
   }
 
   private static void mattockTooltip(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip) {
-    tooltip.add(new TextComponentTranslation("item.gradient.stone_mattock.tooltip"));
+    tooltip.add(new TranslationTextComponent("item.gradient.stone_mattock.tooltip"));
   }
 
   public static class Type implements Comparable<Type> {
@@ -137,11 +135,11 @@ public final class GradientTools {
       this.tooltip = tooltip;
     }
 
-    public EnumActionResult onItemUse(final ItemUseContext context) {
+    public ActionResultType onItemUse(final ItemUseContext context) {
       return this.onItemUse.onItemUse(context);
     }
 
-    public boolean onEntityInteract(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+    public boolean onEntityInteract(final ItemStack itemstack, final PlayerEntity player, final LivingEntity entity, final Hand hand) {
       return this.onEntityInteract.onEntityInteract(itemstack, player, entity, hand);
     }
 
@@ -171,12 +169,12 @@ public final class GradientTools {
 
   @FunctionalInterface
   public interface OnItemUse {
-    EnumActionResult onItemUse(final ItemUseContext context);
+    ActionResultType onItemUse(final ItemUseContext context);
   }
 
   @FunctionalInterface
   public interface OnEntityInteract {
-    boolean onEntityInteract(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand);
+    boolean onEntityInteract(final ItemStack itemstack, final PlayerEntity player, final LivingEntity entity, final Hand hand);
   }
 
   @FunctionalInterface

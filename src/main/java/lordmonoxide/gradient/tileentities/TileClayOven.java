@@ -7,12 +7,12 @@ import lordmonoxide.gradient.recipes.FirePitRecipe;
 import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Particles;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
@@ -71,7 +71,7 @@ public class TileClayOven extends HeatSinker {
     return output;
   }
 
-  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
+  public ItemStack insertItem(final ItemStack stack, final PlayerEntity player) {
     if(!this.hasInput()) {
       this.age = AgeUtils.getPlayerAge(player);
 
@@ -107,7 +107,7 @@ public class TileClayOven extends HeatSinker {
   }
 
   @Override
-  protected float calculateHeatLoss(final IBlockState state) {
+  protected float calculateHeatLoss(final BlockState state) {
     return (float)Math.max(0.5d, Math.pow(this.getHeat() / 800, 2));
   }
 
@@ -150,14 +150,14 @@ public class TileClayOven extends HeatSinker {
           final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
           final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-          this.world.addParticle(Particles.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+          this.world.addParticle(ParticleTypes.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
         }
       }
     }
   }
 
   @Override
-  public NBTTagCompound write(final NBTTagCompound compound) {
+  public CompoundNBT write(final CompoundNBT compound) {
     compound.put("inventory", this.inventory.serializeNBT());
 
     compound.putInt("player_age", this.age.value());
@@ -167,8 +167,8 @@ public class TileClayOven extends HeatSinker {
   }
 
   @Override
-  public void read(final NBTTagCompound compound) {
-    final NBTTagCompound inv = compound.getCompound("inventory");
+  public void read(final CompoundNBT compound) {
+    final CompoundNBT inv = compound.getCompound("inventory");
     inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
@@ -188,7 +188,7 @@ public class TileClayOven extends HeatSinker {
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return LazyOptional.of(() -> (T)this.inventory);
     }

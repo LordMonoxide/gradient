@@ -7,8 +7,8 @@ import lordmonoxide.gradient.progress.PlayerProgressEvents;
 import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -16,14 +16,14 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.function.Supplier;
 
 public class PacketUpdatePlayerProgress {
-  public static void send(final EntityPlayerMP player) {
+  public static void send(final ServerPlayerEntity player) {
     GradientNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new PacketUpdatePlayerProgress(player));
   }
 
   private final int playerId;
   private final Age playerAge;
 
-  public PacketUpdatePlayerProgress(final EntityPlayer player) {
+  public PacketUpdatePlayerProgress(final PlayerEntity player) {
     this(player.getEntityId(), AgeUtils.getPlayerAge(player));
   }
 

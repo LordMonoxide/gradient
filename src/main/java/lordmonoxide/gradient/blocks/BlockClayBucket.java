@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -61,20 +62,8 @@ public class BlockClayBucket extends Block {
 
   @SuppressWarnings("deprecation")
   @Override
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
-    return BlockFaceShape.UNDEFINED;
-  }
-
-  @Override
   @Deprecated
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos, final ISelectionContext context) {
     return SHAPE;
   }
 }

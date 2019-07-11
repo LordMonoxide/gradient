@@ -1,21 +1,24 @@
 package lordmonoxide.gradient.containers;
 
 import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 
-public class ContainerBronzeFurnace extends GradientContainer {
+public class BronzeFurnaceContainer extends GradientContainer {
   public static final int FUEL_SLOTS_X = 13;
   public static final int FUEL_SLOTS_Y = 24;
 
   public final TileBronzeFurnace furnace;
-  public final InventoryPlayer playerInv;
 
-  public ContainerBronzeFurnace(final InventoryPlayer playerInv, final TileBronzeFurnace furnace) {
-    super(furnace);
+  public BronzeFurnaceContainer(final int id, final PlayerInventory playerInv) {
+    super(GradientContainers.BRONZE_FURNACE, id, playerInv);
+    this.furnace = null;
+  }
+
+  public BronzeFurnaceContainer(final int id, final PlayerInventory playerInv, final TileBronzeFurnace furnace) {
+    super(GradientContainers.BRONZE_FURNACE, id, playerInv, furnace);
 
     this.furnace = furnace;
-    this.playerInv = playerInv;
 
     for(int i = 0; i < TileBronzeFurnace.FUEL_SLOTS_COUNT; i++) {
       final int i2 = i;
@@ -24,7 +27,7 @@ public class ContainerBronzeFurnace extends GradientContainer {
         @Override public void onSlotChanged() {
           furnace.markDirty();
         }
-        @Override public boolean canTakeStack(final EntityPlayer player) { return !furnace.isBurning(i2); }
+        @Override public boolean canTakeStack(final PlayerEntity player) { return !furnace.isBurning(i2); }
       });
     }
 

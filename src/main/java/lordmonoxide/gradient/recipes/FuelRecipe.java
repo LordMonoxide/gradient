@@ -5,15 +5,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.RecipeType;
 import net.minecraftforge.common.util.RecipeMatcher;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class FuelRecipe implements IRecipe {
   }
 
   @Override
-  public RecipeType<? extends IRecipe> getType() {
+  public IRecipeType<? extends IRecipe> getType() {
     return GradientRecipeTypes.FUEL;
   }
 
@@ -107,12 +107,12 @@ public class FuelRecipe implements IRecipe {
   public static final class Serializer implements IRecipeSerializer<FuelRecipe> {
     @Override
     public FuelRecipe read(final ResourceLocation recipeId, final JsonObject json) {
-      final String group = JsonUtils.getString(json, "group", "");
-      final int   duration = JsonUtils.getInt(json, "duration");
-      final float ignitionTemp = JsonUtils.getFloat(json, "ignitionTemp");
-      final float burnTemp = JsonUtils.getFloat(json, "burnTemp");
-      final float heatPerSec = JsonUtils.getFloat(json, "heatPerSec");
-      final Ingredient ingredient = CraftingHelper.getIngredient(JsonUtils.getJsonObject(json, "ingredient"));
+      final String group = JSONUtils.getString(json, "group", "");
+      final int   duration = JSONUtils.getInt(json, "duration");
+      final float ignitionTemp = JSONUtils.getFloat(json, "ignitionTemp");
+      final float burnTemp = JSONUtils.getFloat(json, "burnTemp");
+      final float heatPerSec = JSONUtils.getFloat(json, "heatPerSec");
+      final Ingredient ingredient = CraftingHelper.getIngredient(JSONUtils.getJsonObject(json, "ingredient"));
 
       return new FuelRecipe(recipeId, group, duration, ignitionTemp, burnTemp, heatPerSec, ingredient);
     }

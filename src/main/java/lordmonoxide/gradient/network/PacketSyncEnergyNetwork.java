@@ -9,7 +9,7 @@ import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -92,7 +92,7 @@ public class PacketSyncEnergyNetwork {
           final TileEntity te = world.getTileEntity(pos);
 
           if(te != null) {
-            final EnumFacing facing = WorldUtils.getFacingFromSerialized(serialized);
+            final Direction facing = WorldUtils.getFacingFromSerialized(serialized);
 
             te
               .getCapability(packet.state.getStorageCapability(), facing)

@@ -8,7 +8,7 @@ import lordmonoxide.gradient.config.GradientConfig;
 import lordmonoxide.gradient.utils.WorldUtils;
 import lordmonoxide.gradient.utils.Tuple;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -87,13 +87,13 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
     EnergyNode newNode = null;
 
-    Map<EnumFacing, EnergyNode> conditionalConnections = null;
+    Map<Direction, EnergyNode> conditionalConnections = null;
 
     for(final Map.Entry<BlockPos, EnergyNode> entry : this.nodes.entrySet()) {
       final BlockPos nodePos = entry.getKey();
       final EnergyNode node = entry.getValue();
 
-      final EnumFacing facing = WorldUtils.areBlocksAdjacent(newNodePos, nodePos);
+      final Direction facing = WorldUtils.areBlocksAdjacent(newNodePos, nodePos);
 
       if(facing != null) {
         if(GradientConfig.enet.enableNodeDebug) {
@@ -122,7 +122,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
             }
 
             if(conditionalConnections == null) {
-              conditionalConnections = new EnumMap<>(EnumFacing.class);
+              conditionalConnections = new EnumMap<>(Direction.class);
             }
 
             conditionalConnections.put(facing, node);
@@ -161,8 +161,8 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
     // If we made a connection, attempt to link up any deferred storages
     if(newNode != null && conditionalConnections != null) {
-      for(final Map.Entry<EnumFacing, EnergyNode> entry : conditionalConnections.entrySet()) {
-        final EnumFacing facing = entry.getKey();
+      for(final Map.Entry<Direction, EnergyNode> entry : conditionalConnections.entrySet()) {
+        final Direction facing = entry.getKey();
         final EnergyNode node = entry.getValue();
 
         if(GradientConfig.enet.enableNodeDebug) {
@@ -226,7 +226,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     }
 
     // Remove the neighbour's connection to this node
-    for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
+    for(final Map.Entry<Direction, EnergyNode> connection : node.connections.entrySet()) {
       connection.getValue().connections.remove(connection.getKey().getOpposite());
     }
 
@@ -234,14 +234,14 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
     // See if we can still access the other nodes
     connectionLoop:
-    for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
+    for(final Map.Entry<Direction, EnergyNode> connection : node.connections.entrySet()) {
       if(connection.getValue() != firstNeighbour) {
-        for(final EnumFacing startFacing : EnumFacing.values()) {
+        for(final Direction startFacing : Direction.values()) {
           if(!firstNeighbour.connections.containsKey(startFacing)) {
             continue;
           }
 
-          for(final EnumFacing goalFacing : EnumFacing.values()) {
+          for(final Direction goalFacing : Direction.values()) {
             if(!connection.getValue().connections.containsKey(goalFacing)) {
               continue;
             }
@@ -261,7 +261,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     return false;
   }
 
-  private boolean canConnect(final IEnergyNode newNode, final EnergyNode existingNode, final EnumFacing facing) {
+  private boolean canConnect(final IEnergyNode newNode, final EnergyNode existingNode, final Direction facing) {
     final IEnergyNode existing;
 
     if(existingNode.te.getCapability(this.storage, facing).isPresent()) {
@@ -285,7 +285,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     float available = 0.0f;
 
     for(final EnergyNode node : this.nodes.values()) {
-      for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
+      for(final Map.Entry<Direction, EnergyNode> connection : node.connections.entrySet()) {
         if(node.te.getCapability(this.storage, connection.getKey()).isPresent()) {
           final STORAGE storage = node.te.getCapability(this.storage, connection.getKey()).orElse(null);
 
@@ -304,10 +304,10 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
   private final Map<STORAGE, List<BlockPos>> extractEnergySources = new HashMap<>();
 
-  public float requestEnergy(final BlockPos sink, final EnumFacing sinkSide, final float amount) {
+  public float requestEnergy(final BlockPos sink, final Direction sinkSide, final float amount) {
     // Find all of the energy sources
     for(final EnergyNode node : this.nodes.values()) {
-      for(final Map.Entry<EnumFacing, EnergyNode> connection : node.connections.entrySet()) {
+      for(final Map.Entry<Direction, EnergyNode> connection : node.connections.entrySet()) {
         if(sink.equals(node.pos) && sinkSide == connection.getKey()) {
           continue;
         }
@@ -359,8 +359,8 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
         for(int i = 1; i < path.size() - 1; i++) {
           final BlockPos pathPos = path.get(i);
-          final EnumFacing facingFrom = WorldUtils.getBlockFacing(pathPos, path.get(i - 1));
-          final EnumFacing facingTo = WorldUtils.getBlockFacing(pathPos, path.get(i + 1));
+          final Direction facingFrom = WorldUtils.getBlockFacing(pathPos, path.get(i - 1));
+          final Direction facingTo = WorldUtils.getBlockFacing(pathPos, path.get(i + 1));
           final TileEntity transferEntity = this.getNode(pathPos).te;
 
           if(transferEntity.getCapability(this.transfer, facingFrom).isPresent()) {
@@ -390,14 +390,14 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     return total;
   }
 
-  private final Set<Tuple<BlockPos, EnumFacing>> closed = new HashSet<>();
-  private final Set<Tuple<BlockPos, EnumFacing>> open = new HashSet<>();
+  private final Set<Tuple<BlockPos, Direction>> closed = new HashSet<>();
+  private final Set<Tuple<BlockPos, Direction>> open = new HashSet<>();
 
-  private final Map<Tuple<BlockPos, EnumFacing>, Tuple<BlockPos, EnumFacing>> cameFrom = new HashMap<>();
-  private final Object2IntMap<Tuple<BlockPos, EnumFacing>> gScore = new Object2IntOpenHashMap<>();
-  private final Object2IntMap<Tuple<BlockPos, EnumFacing>> fScore = new Object2IntLinkedOpenHashMap<>();
+  private final Map<Tuple<BlockPos, Direction>, Tuple<BlockPos, Direction>> cameFrom = new HashMap<>();
+  private final Object2IntMap<Tuple<BlockPos, Direction>> gScore = new Object2IntOpenHashMap<>();
+  private final Object2IntMap<Tuple<BlockPos, Direction>> fScore = new Object2IntLinkedOpenHashMap<>();
 
-  public List<BlockPos> pathFind(final BlockPos start, final EnumFacing startFacing, final BlockPos goal, final EnumFacing goalFacing) {
+  public List<BlockPos> pathFind(final BlockPos start, final Direction startFacing, final BlockPos goal, final Direction goalFacing) {
     this.closed.clear();
     this.open.clear();
     this.cameFrom.clear();
@@ -407,8 +407,8 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     this.gScore.defaultReturnValue(Integer.MAX_VALUE);
     this.fScore.defaultReturnValue(Integer.MAX_VALUE);
 
-    final Tuple<BlockPos, EnumFacing> startTuple = new Tuple<>(start, startFacing);
-    final Tuple<BlockPos, EnumFacing> goalTuple = new Tuple<>(goal, goalFacing);
+    final Tuple<BlockPos, Direction> startTuple = new Tuple<>(start, startFacing);
+    final Tuple<BlockPos, Direction> goalTuple = new Tuple<>(goal, goalFacing);
 
     if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Starting pathfind at {} {}, goal {} {}", start, startFacing, goal, goalFacing);
@@ -419,7 +419,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     this.pathFindSide(startFacing, this.getNode(start), startTuple, goalTuple);
 
     while(!this.open.isEmpty()) {
-      final Tuple<BlockPos, EnumFacing> current = this.getLowest(this.fScore);
+      final Tuple<BlockPos, Direction> current = this.getLowest(this.fScore);
 
       if(GradientConfig.enet.enablePathDebug) {
         GradientMod.logger.info("Current = {} {}", current.a, current.b);
@@ -439,7 +439,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
 
       final EnergyNode currentNode = this.getNode(current.a);
 
-      for(final EnumFacing side : EnumFacing.values()) {
+      for(final Direction side : Direction.values()) {
         this.pathFindSide(side, currentNode, current, goalTuple);
       }
     }
@@ -451,7 +451,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     return new ArrayList<>();
   }
 
-  private void pathFindSide(final EnumFacing side, final EnergyNode currentNode, final Tuple<BlockPos, EnumFacing> currentTuple, final Tuple<BlockPos, EnumFacing> goalTuple) {
+  private void pathFindSide(final Direction side, final EnergyNode currentNode, final Tuple<BlockPos, Direction> currentTuple, final Tuple<BlockPos, Direction> goalTuple) {
     if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Checking side {}, came from {} {}", side, currentTuple.a, currentTuple.b);
     }
@@ -472,8 +472,8 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
       GradientMod.logger.info("Found {}", neighbour);
     }
 
-    final EnumFacing opposite = side.getOpposite();
-    final Tuple<BlockPos, EnumFacing> neighbourTuple = new Tuple<>(neighbour, opposite);
+    final Direction opposite = side.getOpposite();
+    final Tuple<BlockPos, Direction> neighbourTuple = new Tuple<>(neighbour, opposite);
 
     if(!neighbourNode.te.getCapability(this.transfer, opposite).isPresent() && !neighbourTuple.equals(goalTuple)) {
       if(GradientConfig.enet.enablePathDebug) {
@@ -525,7 +525,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     }
   }
 
-  private List<BlockPos> reconstructPath(final Map<Tuple<BlockPos, EnumFacing>, Tuple<BlockPos, EnumFacing>> cameFrom, final Tuple<BlockPos, EnumFacing> goal) {
+  private List<BlockPos> reconstructPath(final Map<Tuple<BlockPos, Direction>, Tuple<BlockPos, Direction>> cameFrom, final Tuple<BlockPos, Direction> goal) {
     if(GradientConfig.enet.enablePathDebug) {
       GradientMod.logger.info("Path:");
     }
@@ -537,7 +537,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
       GradientMod.logger.info("{} {}", goal.a, goal.b);
     }
 
-    Tuple<BlockPos, EnumFacing> current = goal;
+    Tuple<BlockPos, Direction> current = goal;
 
     while(cameFrom.containsKey(current)) {
       current = cameFrom.get(current);
@@ -555,11 +555,11 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     return (int)current.distanceSq(goal);
   }
 
-  private Tuple<BlockPos, EnumFacing> getLowest(final Object2IntMap<Tuple<BlockPos, EnumFacing>> values) {
+  private Tuple<BlockPos, Direction> getLowest(final Object2IntMap<Tuple<BlockPos, Direction>> values) {
     int lowest = Integer.MAX_VALUE;
-    Tuple<BlockPos, EnumFacing> pos = null;
+    Tuple<BlockPos, Direction> pos = null;
 
-    for(final Object2IntMap.Entry<Tuple<BlockPos, EnumFacing>> entry : values.object2IntEntrySet()) {
+    for(final Object2IntMap.Entry<Tuple<BlockPos, Direction>> entry : values.object2IntEntrySet()) {
       if(entry.getIntValue() <= lowest) {
         lowest = entry.getIntValue();
         pos = entry.getKey();
@@ -577,7 +577,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
   public static final class EnergyNode {
     public final BlockPos pos;
     public final TileEntity te;
-    private final Map<EnumFacing, EnergyNode> connections = new EnumMap<>(EnumFacing.class);
+    private final Map<Direction, EnergyNode> connections = new EnumMap<>(Direction.class);
 
     private EnergyNode(final BlockPos pos, final TileEntity te) {
       this.pos = pos;
@@ -585,13 +585,13 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     }
 
     @Nullable
-    public EnergyNode connection(final EnumFacing side) {
+    public EnergyNode connection(final Direction side) {
       return this.connections.get(side);
     }
 
     @Override
     public String toString() {
-      return "Node holder {" + this.te + "} @ " + this.pos + " connections {" + String.join(", ", this.connections.keySet().stream().map(EnumFacing::toString).toArray(String[]::new)) + '}';
+      return "Node holder {" + this.te + "} @ " + this.pos + " connections {" + String.join(", ", this.connections.keySet().stream().map(Direction::toString).toArray(String[]::new)) + '}';
     }
   }
 

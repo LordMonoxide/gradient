@@ -11,18 +11,18 @@ import lordmonoxide.gradient.recipes.GradientRecipeTypes;
 import lordmonoxide.gradient.recipes.HardeningRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Particles;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -94,7 +94,7 @@ public class TileFirePit extends HeatProducer {
     this.tank.setCanDrain(false);
   }
 
-  public boolean hasFurnace(final IBlockState state) {
+  public boolean hasFurnace(final BlockState state) {
     return state.get(BlockFirePit.HAS_FURNACE);
   }
 
@@ -161,7 +161,7 @@ public class TileFirePit extends HeatProducer {
     return output;
   }
 
-  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player, final IBlockState state) {
+  public ItemStack insertItem(final ItemStack stack, final PlayerEntity player, final BlockState state) {
     final Age age = AgeUtils.getPlayerAge(player);
 
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
@@ -196,7 +196,7 @@ public class TileFirePit extends HeatProducer {
     return stack;
   }
 
-  public int getLightLevel(final IBlockState state) {
+  public int getLightLevel(final BlockState state) {
     if(this.getHeat() == 0) {
       return 0;
     }
@@ -227,7 +227,7 @@ public class TileFirePit extends HeatProducer {
       return;
     }
 
-    final IBlockState state = this.world.getBlockState(pos);
+    final BlockState state = this.world.getBlockState(pos);
 
     final HardeningRecipe recipe = RecipeUtils.findRecipe(GradientRecipeTypes.HARDENING, r -> r.matches(state, age));
 
@@ -311,13 +311,13 @@ public class TileFirePit extends HeatProducer {
 
     final Iterator<Map.Entry<BlockPos, Hardening>> it = this.hardenables.entrySet().iterator();
 
-    final Map<BlockPos, IBlockState> toAdd = new HashMap<>();
+    final Map<BlockPos, BlockState> toAdd = new HashMap<>();
 
     while(it.hasNext()) {
       final Map.Entry<BlockPos, Hardening> entry = it.next();
       final BlockPos pos = entry.getKey();
       final Hardening hardening = entry.getValue();
-      final IBlockState current = this.world.getBlockState(pos);
+      final BlockState current = this.world.getBlockState(pos);
 
       if(!hardening.recipe.matches(current, hardening.age)) {
         it.remove();
@@ -334,7 +334,7 @@ public class TileFirePit extends HeatProducer {
 
     this.markDirty();
 
-    for(final Map.Entry<BlockPos, IBlockState> entry : toAdd.entrySet()) {
+    for(final Map.Entry<BlockPos, BlockState> entry : toAdd.entrySet()) {
       this.world.setBlockState(entry.getKey(), entry.getValue());
     }
   }
@@ -343,7 +343,7 @@ public class TileFirePit extends HeatProducer {
     final int light = this.getLightLevel(this.getBlockState());
 
     if(this.lastLight != light) {
-      this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+      this.world.markForRerender(this.pos);
       this.world.checkLight(this.pos);
 
       this.lastLight = light;
@@ -370,7 +370,7 @@ public class TileFirePit extends HeatProducer {
             final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
             final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-            this.world.addParticle(Particles.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+            this.world.addParticle(ParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
           }
         }
 
@@ -382,7 +382,7 @@ public class TileFirePit extends HeatProducer {
           final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
           final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-          this.world.addParticle(Particles.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+          this.world.addParticle(ParticleTypes.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
         }
       }
     }
@@ -424,7 +424,7 @@ public class TileFirePit extends HeatProducer {
   }
 
   @Override
-  protected float calculateHeatLoss(final IBlockState state) {
+  protected float calculateHeatLoss(final BlockState state) {
     return !this.hasFurnace(state) ?
       (float)Math.pow(this.getHeat() / 500 + 1, 2) / 1.5f :
       (float)Math.pow(this.getHeat() / 1600 + 1, 2);
@@ -448,17 +448,17 @@ public class TileFirePit extends HeatProducer {
   }
 
   @Override
-  public NBTTagCompound write(final NBTTagCompound compound) {
+  public CompoundNBT write(final CompoundNBT compound) {
     compound.put("inventory", this.inventory.serializeNBT());
     this.tank.writeToNBT(compound);
 
-    final NBTTagList fuels = new NBTTagList();
+    final ListNBT fuels = new ListNBT();
 
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
       if(this.isBurning(i)) {
         final Fuel fuel = this.getBurningFuel(i);
 
-        final NBTTagCompound tag = new NBTTagCompound();
+        final CompoundNBT tag = new CompoundNBT();
         tag.putInt("slot", i);
         tag.putString("recipe", fuel.recipe.getId().toString());
         tag.putInt("age", fuel.age.value());
@@ -473,9 +473,9 @@ public class TileFirePit extends HeatProducer {
     compound.putInt("player_age", this.age.value());
     compound.putInt("ticks", this.ticks);
 
-    final NBTTagList hardenings = new NBTTagList();
+    final ListNBT hardenings = new ListNBT();
     for(final Map.Entry<BlockPos, Hardening> entry : this.hardenables.entrySet()) {
-      final NBTTagCompound hardening = new NBTTagCompound();
+      final CompoundNBT hardening = new CompoundNBT();
       hardening.put("pos", NBTUtil.writeBlockPos(entry.getKey()));
       hardening.putString("recipe", entry.getValue().recipe.getId().toString());
       hardening.putInt("age", entry.getValue().age.value());
@@ -490,21 +490,21 @@ public class TileFirePit extends HeatProducer {
   }
 
   @Override
-  public void read(final NBTTagCompound compound) {
+  public void read(final CompoundNBT compound) {
     this.lastLight = -1;
 
     Arrays.fill(this.fuels, null);
 
-    final NBTTagCompound inv = compound.getCompound("inventory");
+    final CompoundNBT inv = compound.getCompound("inventory");
     inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
     this.tank.readFromNBT(compound);
 
-    final NBTTagList fuels = compound.getList("fuel", Constants.NBT.TAG_COMPOUND);
+    final ListNBT fuels = compound.getList("fuel", Constants.NBT.TAG_COMPOUND);
 
     for(int i = 0; i < fuels.size(); i++) {
-      final NBTTagCompound tag = fuels.getCompound(i);
+      final CompoundNBT tag = fuels.getCompound(i);
 
       final int slot = tag.getInt("slot");
 
@@ -534,8 +534,8 @@ public class TileFirePit extends HeatProducer {
 
     this.hardenables.clear();
 
-    for(final INBTBase tag : compound.getList("hardening", Constants.NBT.TAG_COMPOUND)) {
-      final NBTTagCompound hardeningNbt = (NBTTagCompound)tag;
+    for(final INBT tag : compound.getList("hardening", Constants.NBT.TAG_COMPOUND)) {
+      final CompoundNBT hardeningNbt = (CompoundNBT)tag;
 
       final BlockPos pos = NBTUtil.readBlockPos(hardeningNbt.getCompound("pos"));
       final HardeningRecipe recipe = (HardeningRecipe)GradientMod.getRecipeManager().getRecipe(new ResourceLocation(hardeningNbt.getString("recipe")));
@@ -554,7 +554,7 @@ public class TileFirePit extends HeatProducer {
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return LazyOptional.of(() -> (T)this.inventory);
     }

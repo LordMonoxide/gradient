@@ -27,7 +27,7 @@ public class BlockWoodenAxle extends RotatedPillarBlock {
   private static final VoxelShape SHAPE_Z = Block.makeCuboidShape(5.0d, 5.0d, 0.0d, 11.0d, 11.0d, 16.0d);
 
   public BlockWoodenAxle() {
-    super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(1.0f, 5.0f));
   }
 
   @SuppressWarnings("deprecation")
@@ -45,28 +45,6 @@ public class BlockWoodenAxle extends RotatedPillarBlock {
   @Override
   public boolean hasTileEntity(final BlockState state) {
     return true;
-  }
-
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
-    switch(state.get(AXIS)) {
-      case X:
-        return SHAPE_X;
-
-      case Z:
-        return SHAPE_Z;
-    }
-
-    return SHAPE_Y;
   }
 }
 

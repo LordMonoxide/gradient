@@ -28,7 +28,7 @@ public class BlockFlywheel extends Block {
   public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
   public BlockFlywheel() {
-    super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(1.0f, 5.0f));
   }
 
   @SuppressWarnings("deprecation")

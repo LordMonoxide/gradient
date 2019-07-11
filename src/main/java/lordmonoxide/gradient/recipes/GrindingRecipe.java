@@ -8,15 +8,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.RecipeType;
 import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.items.IItemHandler;
 
@@ -69,7 +69,7 @@ public class GrindingRecipe implements IRecipe {
   }
 
   @Override
-  public RecipeType<? extends IRecipe> getType() {
+  public IRecipeType<? extends IRecipe> getType() {
     return GradientRecipeTypes.GRINDING;
   }
 
@@ -136,13 +136,13 @@ public class GrindingRecipe implements IRecipe {
   public static final class Serializer implements IRecipeSerializer<GrindingRecipe> {
     @Override
     public GrindingRecipe read(final ResourceLocation recipeId, final JsonObject json) {
-      final String group = JsonUtils.getString(json, "group", "");
-      final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
-      final int passes = JsonUtils.getInt(json, "passes");
-      final int ticks = JsonUtils.getInt(json, "ticks");
+      final String group = JSONUtils.getString(json, "group", "");
+      final Age age = Age.get(JSONUtils.getInt(json, "age", 1));
+      final int passes = JSONUtils.getInt(json, "passes");
+      final int ticks = JSONUtils.getInt(json, "ticks");
 
       final NonNullList<Ingredient> ingredients = NonNullList.create();
-      for(final JsonElement element : JsonUtils.getJsonArray(json, "ingredients")) {
+      for(final JsonElement element : JSONUtils.getJsonArray(json, "ingredients")) {
         ingredients.add(CraftingHelper.getIngredient(element));
       }
 
@@ -150,7 +150,7 @@ public class GrindingRecipe implements IRecipe {
         throw new JsonParseException("No ingredients for grinding recipe");
       }
 
-      final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), true);
+      final ItemStack output = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "result"), true);
 
       return new GrindingRecipe(recipeId, group, age, passes, ticks, output, ingredients);
     }

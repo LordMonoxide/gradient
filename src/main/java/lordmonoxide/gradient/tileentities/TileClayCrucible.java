@@ -1,26 +1,20 @@
 package lordmonoxide.gradient.tileentities;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
-import lordmonoxide.gradient.client.gui.GuiClayCrucible;
-import lordmonoxide.gradient.containers.ContainerClayCrucible;
 import lordmonoxide.gradient.science.geology.Meltable;
 import lordmonoxide.gradient.science.geology.Meltables;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
@@ -42,7 +36,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class TileClayCrucible extends HeatSinker implements IInteractionObject {
+public class TileClayCrucible extends HeatSinker {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -103,7 +97,7 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
     return Math.min((int)(this.getHeat() / 800 * 11) + 4, 15);
   }
 
-  public void useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
+  public void useBucket(final PlayerEntity player, final Hand hand, final World world, final BlockPos pos, final Direction side) {
     if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
       this.sync();
     }
@@ -191,7 +185,7 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
   }
 
   @Override
-  protected float calculateHeatLoss(final IBlockState state) {
+  protected float calculateHeatLoss(final BlockState state) {
     return (float)Math.max(0.5d, Math.pow(this.getHeat() / 800, 2));
   }
 
@@ -202,7 +196,7 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
 
   private void updateLight() {
     if(this.lastLight != this.getLightLevel()) {
-      this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+      this.world.markForRerender(this.pos);
       this.world.checkLight(this.pos);
 
       this.lastLight = this.getLightLevel();
@@ -210,17 +204,17 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
   }
 
   @Override
-  public NBTTagCompound write(final NBTTagCompound compound) {
+  public CompoundNBT write(final CompoundNBT compound) {
     compound.put("inventory", this.inventory.serializeNBT());
     this.tank.writeToNBT(compound);
 
-    final NBTTagList meltings = new NBTTagList();
+    final ListNBT meltings = new ListNBT();
 
     for(int i = 0; i < METAL_SLOTS_COUNT; i++) {
       if(this.isMelting(i)) {
         final MeltingMetal melting = this.getMeltingMetal(i);
 
-        final NBTTagCompound tag = new NBTTagCompound();
+        final CompoundNBT tag = new CompoundNBT();
         tag.putInt("slot", i);
         melting.writeToNbt(tag);
         meltings.add(tag);
@@ -233,21 +227,21 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
   }
 
   @Override
-  public void read(final NBTTagCompound compound) {
+  public void read(final CompoundNBT compound) {
     this.lastLight = this.getLightLevel();
 
     Arrays.fill(this.melting, null);
 
-    final NBTTagCompound inv = compound.getCompound("inventory");
+    final CompoundNBT inv = compound.getCompound("inventory");
     inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
     this.tank.readFromNBT(compound);
 
-    final NBTTagList meltings = compound.getList("melting", Constants.NBT.TAG_COMPOUND);
+    final ListNBT meltings = compound.getList("melting", Constants.NBT.TAG_COMPOUND);
 
     for(int i = 0; i < meltings.size(); i++) {
-      final NBTTagCompound tag = meltings.getCompound(i);
+      final CompoundNBT tag = meltings.getCompound(i);
 
       final int slot = tag.getInt("slot");
 
@@ -261,14 +255,14 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
   }
 
   @Override
-  public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
-    final IBlockState oldState = this.world.getBlockState(this.pos);
+  public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
+    final BlockState oldState = this.world.getBlockState(this.pos);
     super.onDataPacket(net, pkt);
     this.world.notifyBlockUpdate(this.pos, oldState, this.world.getBlockState(this.pos), 2);
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return LazyOptional.of(() -> (T)this.inventory);
     }
@@ -280,39 +274,13 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
     return super.getCapability(capability, facing);
   }
 
-  @Override
-  public ContainerClayCrucible createContainer(final InventoryPlayer playerInventory, final EntityPlayer playerIn) {
-    return new ContainerClayCrucible(playerInventory, this);
-  }
-
-  @Override
-  public String getGuiID() {
-    return GuiClayCrucible.ID.toString();
-  }
-
-  @Override
-  public ITextComponent getName() {
-    return GradientBlocks.CLAY_CRUCIBLE_HARDENED.getNameTextComponent();
-  }
-
-  @Override
-  public boolean hasCustomName() {
-    return false;
-  }
-
-  @Nullable
-  @Override
-  public ITextComponent getCustomName() {
-    return null;
-  }
-
   public static final class MeltingMetal {
     public final Meltable meltable;
     public final Metal metal;
     private final int meltTicksTotal;
     private int meltTicks;
 
-    public static MeltingMetal fromNbt(final Meltable meltable, final Metal metal, final NBTTagCompound tag) {
+    public static MeltingMetal fromNbt(final Meltable meltable, final Metal metal, final CompoundNBT tag) {
       final MeltingMetal melting = new MeltingMetal(meltable, metal, tag.getInt("ticksTotal"));
       melting.meltTicks = tag.getInt("ticks");
       return melting;
@@ -341,7 +309,7 @@ public class TileClayCrucible extends HeatSinker implements IInteractionObject {
       return (float)this.meltTicks / this.meltTicksTotal;
     }
 
-    public NBTTagCompound writeToNbt(final NBTTagCompound tag) {
+    public CompoundNBT writeToNbt(final CompoundNBT tag) {
       tag.putInt("ticksTotal", this.meltTicksTotal);
       tag.putInt("ticks", this.meltTicks);
       return tag;

@@ -5,9 +5,8 @@ import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.PlayerProgress;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 
 //TODO: null
 
@@ -17,7 +16,8 @@ public final class AgeUtils {
   public static Age getAgeNear(final Entity entity, final float distanceSquared) {
     Age age = Age.AGE1;
 
-    for(final EntityPlayer player : entity.world.playerEntities) {
+    //TODO: use AABB version?
+    for(final PlayerEntity player : entity.world.getPlayers()) {
       if(entity.getDistanceSq(player) <= distanceSquared) {
         final PlayerProgress progress = player.getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY).orElse(null);
 
@@ -55,8 +55,8 @@ public final class AgeUtils {
     return false;
   }
 
-  public static boolean playerMeetsAgeRequirement(final InventoryCrafting inv, final Age age) {
-    final EntityPlayer player = RecipeUtils.findPlayerFromInv(inv);
+  public static boolean playerMeetsAgeRequirement(final CraftingInventory inv, final Age age) {
+    final PlayerEntity player = RecipeUtils.findPlayerFromInv(inv);
 
     if(player != null) {
       return playerMeetsAgeRequirement(player, age);

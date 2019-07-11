@@ -2,13 +2,12 @@ package lordmonoxide.gradient.inventory;
 
 import com.google.common.collect.Lists;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,20 +15,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContainerPlayer3x3Crafting extends ContainerPlayer {
+public class ContainerPlayer3x3Crafting extends PlayerContainer {
   private static final String[] ARMOR_SLOT_TEXTURES = {"item/empty_armor_slot_boots", "item/empty_armor_slot_leggings", "item/empty_armor_slot_chestplate", "item/empty_armor_slot_helmet"};
-  private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = {EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
+  private static final EquipmentSlotType[] VALID_EQUIPMENT_SLOTS = {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET};
 
   private static final int CRAFT_SIZE = 3;
 
   public final List<Slot> craftingSlots = new ArrayList<>();
   public final List<Slot> invSlots = new ArrayList<>();
 
-  public ContainerPlayer3x3Crafting(final InventoryPlayer playerInventory, final boolean localWorld, final EntityPlayer player) {
+  public ContainerPlayer3x3Crafting(final PlayerInventory playerInventory, final boolean localWorld, final PlayerEntity player) {
     super(playerInventory, localWorld, player);
 
     this.inventorySlots = Lists.newArrayList();
-    this.craftMatrix = new InventoryCrafting(this, CRAFT_SIZE, CRAFT_SIZE);
+    this.craftMatrix = new CraftingInventory(this, CRAFT_SIZE, CRAFT_SIZE);
 
     this.addSlot(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult, 0, 154, 28));
 
@@ -40,7 +39,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
     }
 
     for(int i = 0; i < 4; ++i) {
-      final EntityEquipmentSlot entityequipmentslot = VALID_EQUIPMENT_SLOTS[i];
+      final EquipmentSlotType entityequipmentslot = VALID_EQUIPMENT_SLOTS[i];
 
       this.addSlot(new Slot(playerInventory, 36 + 3 - i, 8, 8 + i * 18) {
         @Override
@@ -54,7 +53,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
         }
 
         @Override
-        public boolean canTakeStack(final EntityPlayer player) {
+        public boolean canTakeStack(final PlayerEntity player) {
           final ItemStack itemstack = this.getStack();
           return (itemstack.isEmpty() || player.isCreative() || !EnchantmentHelper.hasBindingCurse(itemstack)) && super.canTakeStack(player);
         }
@@ -97,7 +96,7 @@ public class ContainerPlayer3x3Crafting extends ContainerPlayer {
   }
 
   @Override
-  public void onContainerClosed(final EntityPlayer player) {
+  public void onContainerClosed(final PlayerEntity player) {
     super.onContainerClosed(player);
 
     for(int i = 0; i < CRAFT_SIZE * CRAFT_SIZE; i++) {

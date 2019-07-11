@@ -1,26 +1,26 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.client.gui.GuiClayCast;
+import lordmonoxide.gradient.client.gui.ClayCastScreen;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class ItemClayCastUnhardened extends ItemBlock implements IInteractionObject {
+public class ItemClayCastUnhardened extends BlockItem implements INamedContainerProvider {
   public final GradientCasts.Cast cast;
 
   public ItemClayCastUnhardened(final Block block, final GradientCasts.Cast cast, final Properties properties) {
@@ -29,15 +29,15 @@ public class ItemClayCastUnhardened extends ItemBlock implements IInteractionObj
   }
 
   @Override
-  public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
+  public ActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
     final ActionResult<ItemStack> result = super.onItemRightClick(world, player, hand);
 
-    if(result.getType() != EnumActionResult.SUCCESS) {
+    if(result.getType() != ActionResultType.SUCCESS) {
       if(!world.isRemote) {
         final BlockPos pos = player.getPosition();
-        NetworkHooks.openGui((EntityPlayerMP)player, this, pos);
+        NetworkHooks.openGui((ServerPlayerEntity)player, this, pos);
 
-        return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
       }
     }
 
@@ -45,29 +45,19 @@ public class ItemClayCastUnhardened extends ItemBlock implements IInteractionObj
   }
 
   @Override
-  public Container createContainer(final InventoryPlayer playerInventory, final EntityPlayer playerIn) {
-    return new DummyContainer();
-  }
-
-  @Override
-  public String getGuiID() {
-    return GuiClayCast.ID.toString();
-  }
-
-  @Override
-  public boolean hasCustomName() {
-    return false;
+  public ITextComponent getDisplayName() {
+    return this.getName();
   }
 
   @Nullable
   @Override
-  public ITextComponent getCustomName() {
-    return null;
+  public Container createMenu(final int id, final PlayerInventory playerInv, final PlayerEntity player) {
+    return new DummyContainer();
   }
 
   private static class DummyContainer extends Container {
     @Override
-    public boolean canInteractWith(final EntityPlayer playerIn) {
+    public boolean canInteractWith(final PlayerEntity playerIn) {
       return true;
     }
   }

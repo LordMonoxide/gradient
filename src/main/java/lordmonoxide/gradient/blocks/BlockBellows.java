@@ -7,8 +7,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -16,13 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -44,7 +41,7 @@ public class BlockBellows extends Block {
   private static final VoxelShape SHAPE_WEST  = Block.makeCuboidShape(0.0d, 2.0d, 2.0d, 13.0d, 14.0d, 14.0d);
 
   public BlockBellows() {
-    super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH));
   }
 
@@ -75,13 +72,6 @@ public class BlockBellows extends Block {
     return true;
   }
 
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final IBlockState state, final BlockPos pos, final EnumFacing face) {
-    return BlockFaceShape.UNDEFINED;
-  }
-
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
@@ -92,14 +82,7 @@ public class BlockBellows extends Block {
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  @Deprecated
-  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos, final ISelectionContext context) {
     switch(state.get(FACING)) {
       case NORTH:
         return SHAPE_NORTH;

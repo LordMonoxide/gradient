@@ -1,25 +1,18 @@
 package lordmonoxide.gradient.tileentities;
 
 import lordmonoxide.gradient.GradientMod;
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
-import lordmonoxide.gradient.client.gui.GuiBronzeFurnace;
-import lordmonoxide.gradient.containers.ContainerBronzeFurnace;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FuelRecipe;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Particles;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IInteractionObject;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
@@ -30,7 +23,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class TileBronzeFurnace extends HeatProducer implements IInteractionObject {
+public class TileBronzeFurnace extends HeatProducer {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -116,7 +109,7 @@ public class TileBronzeFurnace extends HeatProducer implements IInteractionObjec
     final int light = this.getLightLevel();
 
     if(this.lastLight != light) {
-      this.getWorld().markBlockRangeForRenderUpdate(this.pos, this.pos);
+      this.getWorld().markForRerender(this.pos);
       this.getWorld().checkLight(this.pos);
 
       this.lastLight = light;
@@ -132,7 +125,7 @@ public class TileBronzeFurnace extends HeatProducer implements IInteractionObjec
         final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
         final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-        this.world.addParticle(Particles.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        this.world.addParticle(ParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
 
       { // Smoke
@@ -142,7 +135,7 @@ public class TileBronzeFurnace extends HeatProducer implements IInteractionObjec
         final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
         final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-        this.world.addParticle(Particles.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
+        this.world.addParticle(ParticleTypes.SMOKE, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
     }
   }
@@ -180,7 +173,7 @@ public class TileBronzeFurnace extends HeatProducer implements IInteractionObjec
   }
 
   @Override
-  protected float calculateHeatLoss(final IBlockState state) {
+  protected float calculateHeatLoss(final BlockState state) {
     return (float)Math.pow(this.getHeat() / 1600 + 1, 2);
   }
 
@@ -202,16 +195,16 @@ public class TileBronzeFurnace extends HeatProducer implements IInteractionObjec
   }
 
   @Override
-  public NBTTagCompound write(final NBTTagCompound compound) {
+  public CompoundNBT write(final CompoundNBT compound) {
     compound.put("inventory", this.inventory.serializeNBT());
 
-    final NBTTagList fuels = new NBTTagList();
+    final ListNBT fuels = new ListNBT();
 
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
       if(this.isBurning(i)) {
         final Fuel fuel = this.getBurningFuel(i);
 
-        final NBTTagCompound tag = new NBTTagCompound();
+        final CompoundNBT tag = new CompoundNBT();
         tag.putInt("slot", i);
         tag.putString("recipe", fuel.recipe.getId().toString());
         tag.putInt("age", fuel.age.value());
@@ -227,19 +220,19 @@ public class TileBronzeFurnace extends HeatProducer implements IInteractionObjec
   }
 
   @Override
-  public void read(final NBTTagCompound compound) {
+  public void read(final CompoundNBT compound) {
     this.lastLight = -1;
 
     Arrays.fill(this.fuels, null);
 
-    final NBTTagCompound inv = compound.getCompound("inventory");
+    final CompoundNBT inv = compound.getCompound("inventory");
     inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
-    final NBTTagList fuels = compound.getList("fuel", Constants.NBT.TAG_COMPOUND);
+    final ListNBT fuels = compound.getList("fuel", Constants.NBT.TAG_COMPOUND);
 
     for(int i = 0; i < fuels.size(); i++) {
-      final NBTTagCompound tag = fuels.getCompound(i);
+      final CompoundNBT tag = fuels.getCompound(i);
 
       final int slot = tag.getInt("slot");
 
@@ -261,38 +254,12 @@ public class TileBronzeFurnace extends HeatProducer implements IInteractionObjec
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return LazyOptional.of(() -> (T)this.inventory);
     }
 
     return super.getCapability(capability, facing);
-  }
-
-  @Override
-  public ContainerBronzeFurnace createContainer(final InventoryPlayer playerInventory, final EntityPlayer playerIn) {
-    return new ContainerBronzeFurnace(playerInventory, this);
-  }
-
-  @Override
-  public String getGuiID() {
-    return GuiBronzeFurnace.ID.toString();
-  }
-
-  @Override
-  public ITextComponent getName() {
-    return GradientBlocks.BRONZE_FURNACE.getNameTextComponent();
-  }
-
-  @Override
-  public boolean hasCustomName() {
-    return false;
-  }
-
-  @Nullable
-  @Override
-  public ITextComponent getCustomName() {
-    return null;
   }
 
   public static final class Fuel {

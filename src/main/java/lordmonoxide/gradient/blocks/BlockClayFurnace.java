@@ -13,7 +13,6 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -49,24 +48,6 @@ public class BlockClayFurnace extends Block {
     } else {
       tooltip.add(new TranslationTextComponent("block.gradient.clay_furnace_hardened.tooltip"));
     }
-  }
-
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
-    if(face != Direction.UP && face != Direction.SOUTH) {
-      return BlockFaceShape.SOLID;
-    }
-
-    return BlockFaceShape.UNDEFINED;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  @Deprecated
-  public boolean isTopSolid(final BlockState state) {
-    return false;
   }
 
   @SuppressWarnings("deprecation")

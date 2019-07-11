@@ -3,20 +3,20 @@ package lordmonoxide.gradient.recipes;
 import com.google.gson.JsonObject;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.RecipeType;
 import net.minecraftforge.common.util.RecipeMatcher;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class HardeningRecipe implements IRecipe {
   }
 
   @Override
-  public RecipeType<? extends IRecipe> getType() {
+  public IRecipeType<? extends IRecipe> getType() {
     return GradientRecipeTypes.HARDENING;
   }
 
@@ -70,7 +70,7 @@ public class HardeningRecipe implements IRecipe {
     return false;
   }
 
-  public boolean matches(final IBlockState state, final Age age) {
+  public boolean matches(final BlockState state, final Age age) {
     if(age.ordinal() < this.age.ordinal()) {
       return false;
     }
@@ -96,7 +96,7 @@ public class HardeningRecipe implements IRecipe {
     return this.output.copy();
   }
 
-  public IBlockState getCraftingResult() {
+  public BlockState getCraftingResult() {
     return Block.getBlockFromItem(this.output.getItem()).getDefaultState();
   }
 
@@ -118,12 +118,12 @@ public class HardeningRecipe implements IRecipe {
   public static final class Serializer implements IRecipeSerializer<HardeningRecipe> {
     @Override
     public HardeningRecipe read(final ResourceLocation recipeId, final JsonObject json) {
-      final String group = JsonUtils.getString(json, "group", "");
-      final Age age = Age.get(JsonUtils.getInt(json, "age", 1));
-      final int ticks = JsonUtils.getInt(json, "ticks");
+      final String group = JSONUtils.getString(json, "group", "");
+      final Age age = Age.get(JSONUtils.getInt(json, "age", 1));
+      final int ticks = JSONUtils.getInt(json, "ticks");
 
-      final Ingredient ingredient = CraftingHelper.getIngredient(JsonUtils.getJsonObject(json, "ingredient"));
-      final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), true);
+      final Ingredient ingredient = CraftingHelper.getIngredient(JSONUtils.getJsonObject(json, "ingredient"));
+      final ItemStack output = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "result"), true);
 
       return new HardeningRecipe(recipeId, group, age, ticks, output, ingredient);
     }

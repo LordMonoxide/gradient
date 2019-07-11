@@ -2,15 +2,15 @@ package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientTools;
 import lordmonoxide.gradient.science.geology.Metals;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -35,12 +35,12 @@ public class StoneMattock extends GradientItemWorldTool {
   }
 
   @Override
-  public EnumActionResult onItemUse(final ItemUseContext context) {
+  public ActionResultType onItemUse(final ItemUseContext context) {
     return GradientItems.tool(GradientTools.MATTOCK, Metals.COPPER).onItemUse(context);
   }
 
   @Override
-  public boolean itemInteractionForEntity(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+  public boolean itemInteractionForEntity(final ItemStack itemstack, final PlayerEntity player, final LivingEntity entity, final Hand hand) {
     return GradientItems.tool(GradientTools.MATTOCK, Metals.COPPER).itemInteractionForEntity(itemstack, player, entity, hand);
   }
 
@@ -50,7 +50,7 @@ public class StoneMattock extends GradientItemWorldTool {
   }
 
   @Override
-  public int getHarvestLevel(final ItemStack stack, final ToolType toolType, @Nullable final EntityPlayer player, @Nullable final IBlockState blockState) {
+  public int getHarvestLevel(final ItemStack stack, final ToolType toolType, @Nullable final PlayerEntity player, @Nullable final BlockState blockState) {
     if(!this.toolTypes.contains(toolType)) {
       return -1;
     }

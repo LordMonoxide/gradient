@@ -2,7 +2,7 @@ package lordmonoxide.gradient.client.models;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
@@ -30,7 +30,7 @@ public class BakedModelFluid implements IBakedModel {
 
   private final Fluid fluid;
   private final VertexFormat format;
-  private final EnumMap<EnumFacing, List<BakedQuad>> faceQuads;
+  private final EnumMap<Direction, List<BakedQuad>> faceQuads;
 
   public BakedModelFluid(final Fluid fluid, final int capacity, final int level, final float yOffset, final float height) {
     this(fluid, capacity, level, yOffset, height, x, z);
@@ -40,9 +40,9 @@ public class BakedModelFluid implements IBakedModel {
     this.fluid = fluid;
 
     this.format = DefaultVertexFormats.ITEM;
-    this.faceQuads = Maps.newEnumMap(EnumFacing.class);
+    this.faceQuads = Maps.newEnumMap(Direction.class);
 
-    for(final EnumFacing side : EnumFacing.values()) {
+    for(final Direction side : Direction.values()) {
       this.faceQuads.put(side, ImmutableList.of());
     }
 
@@ -57,7 +57,7 @@ public class BakedModelFluid implements IBakedModel {
 
     // top
 
-    EnumFacing side = EnumFacing.UP;
+    Direction side = Direction.UP;
 
     UnpackedBakedQuad.Builder quadBuilder = new UnpackedBakedQuad.Builder(this.format);
     quadBuilder.setQuadOrientation(side);
@@ -75,7 +75,7 @@ public class BakedModelFluid implements IBakedModel {
 
     // bottom
 
-    side = EnumFacing.DOWN;
+    side = Direction.DOWN;
     quadBuilder = new UnpackedBakedQuad.Builder(this.format);
     quadBuilder.setQuadOrientation(side);
     quadBuilder.setTexture(texture);
@@ -93,7 +93,7 @@ public class BakedModelFluid implements IBakedModel {
 
     // east
 
-    side = EnumFacing.EAST;
+    side = Direction.EAST;
 
     quadBuilder = new UnpackedBakedQuad.Builder(this.format);
     quadBuilder.setQuadOrientation(side);
@@ -108,7 +108,7 @@ public class BakedModelFluid implements IBakedModel {
 
     // west
 
-    side = EnumFacing.WEST;
+    side = Direction.WEST;
 
     quadBuilder = new UnpackedBakedQuad.Builder(this.format);
     quadBuilder.setQuadOrientation(side);
@@ -123,7 +123,7 @@ public class BakedModelFluid implements IBakedModel {
 
     // south
 
-    side = EnumFacing.SOUTH;
+    side = Direction.SOUTH;
 
     quadBuilder = new UnpackedBakedQuad.Builder(this.format);
     quadBuilder.setQuadOrientation(side);
@@ -138,7 +138,7 @@ public class BakedModelFluid implements IBakedModel {
 
     // north
 
-    side = EnumFacing.NORTH;
+    side = Direction.NORTH;
 
     quadBuilder = new UnpackedBakedQuad.Builder(this.format);
     quadBuilder.setQuadOrientation(side);
@@ -153,12 +153,12 @@ public class BakedModelFluid implements IBakedModel {
   }
 
   @Override
-  public List<BakedQuad> getQuads(@Nullable final IBlockState state, @Nullable final EnumFacing side, final Random rand) {
+  public List<BakedQuad> getQuads(@Nullable final BlockState state, @Nullable final Direction side, final Random rand) {
     if(side != null) {
       return this.faceQuads.get(side);
     }
 
-    return this.faceQuads.get(EnumFacing.UP);
+    return this.faceQuads.get(Direction.UP);
   }
 
   @Override
@@ -200,7 +200,7 @@ public class BakedModelFluid implements IBakedModel {
     return ItemOverrideList.EMPTY;
   }
 
-  private void putVertex(final UnpackedBakedQuad.Builder builder, final EnumFacing side, final float x, final float y, final float z, final float u, final float v) {
+  private void putVertex(final UnpackedBakedQuad.Builder builder, final Direction side, final float x, final float y, final float z, final float u, final float v) {
     for(int e = 0; e < this.format.getElementCount(); e++) {
       switch(this.format.getElement(e).getUsage()) {
         case POSITION:

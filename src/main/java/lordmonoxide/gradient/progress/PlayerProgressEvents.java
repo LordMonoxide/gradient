@@ -5,8 +5,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.network.PacketUpdatePlayerProgress;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -21,14 +21,14 @@ public final class PlayerProgressEvents {
 
   @SubscribeEvent
   public static void attachOnSpawn(final AttachCapabilitiesEvent<Entity> event) {
-    if(event.getObject() instanceof EntityPlayer) {
+    if(event.getObject() instanceof PlayerEntity) {
       event.addCapability(CapabilityPlayerProgress.ID, new PlayerProgressProvider());
     }
   }
 
   @SubscribeEvent
   public static void onSpawn(final EntityJoinWorldEvent event) {
-    if(event.getEntity() instanceof EntityPlayer) {
+    if(event.getEntity() instanceof PlayerEntity) {
       if(event.getWorld().isRemote) {
         final Age age = deferredAgeUpdates.remove(event.getEntity().getEntityId());
 
@@ -41,7 +41,7 @@ public final class PlayerProgressEvents {
         return;
       }
 
-      PacketUpdatePlayerProgress.send((EntityPlayerMP)event.getEntity());
+      PacketUpdatePlayerProgress.send((ServerPlayerEntity)event.getEntity());
     }
   }
 

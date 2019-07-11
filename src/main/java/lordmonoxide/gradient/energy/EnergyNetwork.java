@@ -5,7 +5,7 @@ import lordmonoxide.gradient.config.GradientConfig;
 import lordmonoxide.gradient.utils.WorldUtils;
 import lordmonoxide.gradient.utils.Tuple;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.dimension.DimensionType;
@@ -42,7 +42,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     this.state.setCapabilities(storage, transfer);
   }
 
-  private final Map<STORAGE, Tuple<BlockPos, EnumFacing>> tickSinkNodes = new HashMap<>();
+  private final Map<STORAGE, Tuple<BlockPos, Direction>> tickSinkNodes = new HashMap<>();
   private final Set<TRANSFER> tickTransferNodes = new HashSet<>();
 
   public EnergyNetworkState tick() {
@@ -60,7 +60,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         GradientMod.logger.info("Checking {}", te);
       }
 
-      for(final EnumFacing facing : EnumFacing.values()) {
+      for(final Direction facing : Direction.values()) {
         if(te.getCapability(this.storage, facing).isPresent() && te.getCapability(this.storage, facing).orElse(null).canSink()) {
           this.tickSinkNodes.put(te.getCapability(this.storage, facing).orElse(null), new Tuple<>(te.getPos(), facing));
         } else if(te.getCapability(this.transfer, facing).isPresent()) {
@@ -77,10 +77,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       transfer.resetEnergyTransferred();
     }
 
-    for(final Map.Entry<STORAGE, Tuple<BlockPos, EnumFacing>> entry : this.tickSinkNodes.entrySet()) {
+    for(final Map.Entry<STORAGE, Tuple<BlockPos, Direction>> entry : this.tickSinkNodes.entrySet()) {
       final STORAGE sink = entry.getKey();
       final BlockPos pos = entry.getValue().a;
-      final EnumFacing facing = entry.getValue().b;
+      final Direction facing = entry.getValue().b;
 
       if(GradientConfig.enet.enableTickDebug) {
         GradientMod.logger.info("Ticking sink {} @ {}", sink, pos);
@@ -125,15 +125,15 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     return networks;
   }
 
-  public Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> connect(final BlockPos newNodePos, final TileEntity newTe) {
+  public Map<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>> connect(final BlockPos newNodePos, final TileEntity newTe) {
     if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("Attempting to add {} @ {} to a network...", newTe, newNodePos);
     }
 
-    final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> added = new HashMap<>();
-    final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> merge = new HashMap<>();
+    final Map<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>> added = new HashMap<>();
+    final Map<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>> merge = new HashMap<>();
 
-    for(final EnumFacing facing : EnumFacing.values()) {
+    for(final Direction facing : Direction.values()) {
       final BlockPos networkPos = newNodePos.offset(facing);
       final TileEntity worldTe = this.world.getTileEntity(networkPos);
 
@@ -146,7 +146,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         GradientMod.logger.info("Found TE {} @ {} ({})", worldTe, networkPos, facing);
       }
 
-      final EnumFacing opposite = facing.getOpposite();
+      final Direction opposite = facing.getOpposite();
 
       if(newTe.getCapability(this.storage, facing).isPresent()) {
         if(worldTe.getCapability(this.storage, opposite).isPresent()) {
@@ -176,7 +176,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
             GradientMod.logger.info("New TE is transfer, world TE is storage");
           }
 
-          final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new HashMap<>();
+          final Map<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new HashMap<>();
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
@@ -186,7 +186,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
             GradientMod.logger.info("Both TEs are transfers");
           }
 
-          final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new HashMap<>();
+          final Map<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new HashMap<>();
           this.addToOrCreateNetwork(newNodePos, newTe, networkPos, worldTe, networks);
           added.putAll(networks);
           merge.putAll(networks);
@@ -203,15 +203,15 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         GradientMod.logger.info("Merging networks");
       }
 
-      final Iterator<Map.Entry<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>>> it = merge.entrySet().iterator();
-      final Map.Entry<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> firstEntry = it.next();
-      final EnumFacing firstFacing = firstEntry.getKey();
+      final Iterator<Map.Entry<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>>> it = merge.entrySet().iterator();
+      final Map.Entry<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>> firstEntry = it.next();
+      final Direction firstFacing = firstEntry.getKey();
       final EnergyNetworkSegment<STORAGE, TRANSFER> firstNetwork = firstEntry.getValue();
       it.remove();
 
       while(it.hasNext()) {
-        final Map.Entry<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> otherEntry = it.next();
-        final EnumFacing otherFacing = otherEntry.getKey();
+        final Map.Entry<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>> otherEntry = it.next();
+        final Direction otherFacing = otherEntry.getKey();
         final EnergyNetworkSegment<STORAGE, TRANSFER> otherNetwork = otherEntry.getValue();
 
         if(firstNetwork == otherNetwork) {
@@ -248,7 +248,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     return added;
   }
 
-  private void addToOrCreateNetwork(final BlockPos newNodePos, final TileEntity newTe, final BlockPos networkPos, final TileEntity worldTe, final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> added) {
+  private void addToOrCreateNetwork(final BlockPos newNodePos, final TileEntity newTe, final BlockPos networkPos, final TileEntity worldTe, final Map<Direction, EnergyNetworkSegment<STORAGE, TRANSFER>> added) {
     if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("Trying to add new TE {} @ {} to existing networks at {}", newTe, newNodePos, networkPos);
     }
@@ -307,18 +307,18 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     }
   }
 
-  private final Map<EnergyNetworkSegment<STORAGE, TRANSFER>, EnumFacing> extractNetworks = new HashMap<>();
+  private final Map<EnergyNetworkSegment<STORAGE, TRANSFER>, Direction> extractNetworks = new HashMap<>();
 
   public float requestEnergy(final BlockPos requestPosition, final float amount) {
     for(final EnergyNetworkSegment<STORAGE, TRANSFER> network : this.networks) {
       if(network.contains(requestPosition)) {
         final EnergyNetworkSegment.EnergyNode node = network.getNode(requestPosition);
 
-        for(final EnumFacing side : EnumFacing.values()) {
+        for(final Direction side : Direction.values()) {
           final EnergyNetworkSegment.EnergyNode connection = node.connection(side);
 
           if(connection != null) {
-            final EnumFacing opposite = side.getOpposite();
+            final Direction opposite = side.getOpposite();
 
             if(connection.te.getCapability(this.storage, opposite).isPresent()) {
               if(connection.te.getCapability(this.storage, opposite).orElse(null).canSource()) {
@@ -345,10 +345,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     float total = 0.0f;
 
     while(total < amount) {
-      for(final Iterator<Map.Entry<EnergyNetworkSegment<STORAGE, TRANSFER>, EnumFacing>> it = this.extractNetworks.entrySet().iterator(); it.hasNext(); ) {
-        final Map.Entry<EnergyNetworkSegment<STORAGE, TRANSFER>, EnumFacing> entry = it.next();
+      for(final Iterator<Map.Entry<EnergyNetworkSegment<STORAGE, TRANSFER>, Direction>> it = this.extractNetworks.entrySet().iterator(); it.hasNext(); ) {
+        final Map.Entry<EnergyNetworkSegment<STORAGE, TRANSFER>, Direction> entry = it.next();
         final EnergyNetworkSegment<STORAGE, TRANSFER> network = entry.getKey();
-        final EnumFacing requestSide = entry.getValue();
+        final Direction requestSide = entry.getValue();
 
         final float sourced = network.requestEnergy(requestPosition, requestSide, share);
 

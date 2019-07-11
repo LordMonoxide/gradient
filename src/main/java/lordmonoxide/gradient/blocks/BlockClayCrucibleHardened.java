@@ -3,24 +3,29 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
+import lordmonoxide.gradient.containers.ClayCrucibleContainer;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.ItemClayCastUnhardened;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.tileentities.TileClayCrucible;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -40,7 +45,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockClayCrucibleHardened extends HeatSinkerBlock {
+public class BlockClayCrucibleHardened extends HeatSinkerBlock implements INamedContainerProvider {
   private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0d, 0.0d, 1.0d, 15.0d, 15.0d, 15.0d);
 
   public BlockClayCrucibleHardened() {
@@ -53,20 +58,6 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
     tooltip.add(new TranslationTextComponent("block.gradient.clay_crucible_hardened.tooltip"));
   }
 
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
-    return BlockFaceShape.UNDEFINED;
-  }
-
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
   @SuppressWarnings("deprecation")
   @Override
   public boolean isSolid(final BlockState state) {
@@ -75,7 +66,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
 
   @SuppressWarnings("deprecation")
   @Override
-  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos, final ISelectionContext context) {
     return SHAPE;
   }
 
@@ -163,7 +154,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
           return true;
         }
 
-        NetworkHooks.openGui((ServerPlayerEntity)player, te, pos);
+        NetworkHooks.openGui((ServerPlayerEntity)player, this, pos);
       }
     }
 
@@ -179,5 +170,22 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
   @Override
   public boolean canRenderInLayer(final BlockState state, final BlockRenderLayer layer) {
     return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
+  }
+
+  @Override
+  public ITextComponent getDisplayName() {
+    return this.getNameTextComponent();
+  }
+
+  @Nullable
+  @Override
+  public Container createMenu(final int id, final PlayerInventory playerInv, final PlayerEntity player) {
+    final TileClayCrucible crucible = WorldUtils.getTileEntity(player.world, player.getPosition(), TileClayCrucible.class);
+
+    if(crucible != null) {
+      return new ClayCrucibleContainer(id, playerInv, crucible);
+    }
+
+    return null;
   }
 }

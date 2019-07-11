@@ -4,7 +4,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.science.geology.Meltable;
 import lordmonoxide.gradient.science.geology.Meltables;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,9 +26,9 @@ public final class MeltableTooltips {
       return;
     }
 
-    event.getToolTip().add(new TextComponentTranslation("meltable.melt_temp", meltable.meltTemp));
-    event.getToolTip().add(new TextComponentTranslation("meltable.melt_time", meltable.meltTime));
-    event.getToolTip().add(new TextComponentTranslation("meltable.amount", meltable.amount));
-    event.getToolTip().add(new TextComponentTranslation("meltable.fluid", I18n.format("fluid." + meltable.fluid)));
+    event.getToolTip().add(new TranslationTextComponent("meltable.melt_temp", meltable.meltTemp));
+    event.getToolTip().add(new TranslationTextComponent("meltable.melt_time", meltable.meltTime));
+    event.getToolTip().add(new TranslationTextComponent("meltable.amount", meltable.amount));
+    event.getToolTip().add(new TranslationTextComponent("meltable.fluid", I18n.format("fluid." + meltable.fluid)));
   }
 }

@@ -1,14 +1,15 @@
 package lordmonoxide.gradient.items;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -67,15 +68,15 @@ public class Waterskin extends ItemFluidContainer {
 
   @Override
   @Nonnull
-  public ActionResult<ItemStack> onItemRightClick(@Nonnull final World world, @Nonnull final EntityPlayer player, @Nonnull final EnumHand hand) {
+  public ActionResult<ItemStack> onItemRightClick(@Nonnull final World world, @Nonnull final PlayerEntity player, @Nonnull final Hand hand) {
     final ItemStack itemstack = player.getHeldItem(hand);
     final FluidStack fluidStack = getFluid(itemstack);
 
     if(fluidStack == null) {
-      final RayTraceResult target = this.rayTrace(world, player, true);
+      final RayTraceResult target = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
 
-      if(target == null || target.type != RayTraceResult.Type.BLOCK) {
-        return ActionResult.newResult(EnumActionResult.PASS, itemstack);
+      if(target == null || target.getType() != RayTraceResult.Type.BLOCK) {
+        return ActionResult.newResult(ActionResultType.PASS, itemstack);
       }
 
       final BlockPos pos = target.getBlockPos();
@@ -84,17 +85,17 @@ public class Waterskin extends ItemFluidContainer {
       if(filledResult.isSuccess()) {
         final ItemStack filledStack = filledResult.getResult().copy();
         //TODO filledStack.setItemDamage(1);
-        return ActionResult.newResult(EnumActionResult.SUCCESS, filledStack);
+        return ActionResult.newResult(ActionResultType.SUCCESS, filledStack);
       }
 
-      return ActionResult.newResult(EnumActionResult.PASS, itemstack);
+      return ActionResult.newResult(ActionResultType.PASS, itemstack);
     }
 
-    return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+    return ActionResult.newResult(ActionResultType.FAIL, itemstack);
   }
 
   @Override
-  public ICapabilityProvider initCapabilities(@Nonnull final ItemStack stack, final @Nullable NBTTagCompound nbt) {
+  public ICapabilityProvider initCapabilities(@Nonnull final ItemStack stack, final @Nullable CompoundNBT nbt) {
     return new FluidHandlerItemStack.SwapEmpty(stack, stack, this.capacity) {
       @Nonnull
       @Override
@@ -121,8 +122,8 @@ public class Waterskin extends ItemFluidContainer {
   }
 
   public ItemStack getFilled(final Fluid fluid) {
-    final NBTTagCompound nbt = new NBTTagCompound();
-    nbt.put("Fluid", new FluidStack(fluid, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
+    final CompoundNBT nbt = new CompoundNBT();
+    nbt.put("Fluid", new FluidStack(fluid, Fluid.BUCKET_VOLUME).writeToNBT(new CompoundNBT()));
     final ItemStack filled = new ItemStack(this, 1);
     //TODO filled.setTagCompound(nbt);
     return filled;

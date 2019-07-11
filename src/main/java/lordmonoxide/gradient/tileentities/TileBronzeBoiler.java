@@ -1,19 +1,12 @@
 package lordmonoxide.gradient.tileentities;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
-import lordmonoxide.gradient.client.gui.GuiBronzeBoiler;
-import lordmonoxide.gradient.containers.ContainerBronzeBoiler;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
@@ -32,7 +25,7 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
+public class TileBronzeBoiler extends HeatSinker {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
@@ -97,9 +90,9 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
       .build();
   }
 
-  public void useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
+  public void useBucket(final PlayerEntity player, final Hand hand, final World world, final BlockPos pos, final Direction side) {
     if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
-      final IBlockState state = world.getBlockState(pos);
+      final BlockState state = world.getBlockState(pos);
       world.markAndNotifyBlock(pos, null, state, state, 2);
     }
   }
@@ -126,7 +119,7 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   }
 
   @Override
-  protected float calculateHeatLoss(final IBlockState state) {
+  protected float calculateHeatLoss(final BlockState state) {
     return (float)Math.pow(this.getHeat() / 1600 + 1, 2);
   }
 
@@ -154,7 +147,7 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
           this.lastWaterLevel = this.getWaterLevel();
           this.lastSteamLevel = this.getSteamLevel();
 
-          final IBlockState state = this.world.getBlockState(this.pos);
+          final BlockState state = this.world.getBlockState(this.pos);
           this.world.markAndNotifyBlock(this.pos, null, state, state, 2);
         }
 
@@ -178,9 +171,9 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   }
 
   @Override
-  public NBTTagCompound write(final NBTTagCompound compound) {
-    compound.put("water", this.tankWater.writeToNBT(new NBTTagCompound()));
-    compound.put("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
+  public CompoundNBT write(final CompoundNBT compound) {
+    compound.put("water", this.tankWater.writeToNBT(new CompoundNBT()));
+    compound.put("steam", this.tankSteam.writeToNBT(new CompoundNBT()));
 
     compound.putFloat("heat", this.getHeat());
 
@@ -188,7 +181,7 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   }
 
   @Override
-  public void read(final NBTTagCompound compound) {
+  public void read(final CompoundNBT compound) {
     this.tankWater.readFromNBT(compound.getCompound("water"));
     this.tankSteam.readFromNBT(compound.getCompound("steam"));
 
@@ -198,37 +191,11 @@ public class TileBronzeBoiler extends HeatSinker implements IInteractionObject {
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == FLUID_HANDLER_CAPABILITY) {
       return LazyOptional.of(() -> (T)this.tanks);
     }
 
     return super.getCapability(capability, facing);
-  }
-
-  @Override
-  public Container createContainer(final InventoryPlayer playerInventory, final EntityPlayer playerIn) {
-    return new ContainerBronzeBoiler(playerInventory, this);
-  }
-
-  @Override
-  public String getGuiID() {
-    return GuiBronzeBoiler.ID.toString();
-  }
-
-  @Override
-  public ITextComponent getName() {
-    return GradientBlocks.BRONZE_BOILER.getNameTextComponent();
-  }
-
-  @Override
-  public boolean hasCustomName() {
-    return false;
-  }
-
-  @Nullable
-  @Override
-  public ITextComponent getCustomName() {
-    return null;
   }
 }

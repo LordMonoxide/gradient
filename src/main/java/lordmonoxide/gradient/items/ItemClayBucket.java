@@ -1,16 +1,16 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMod;
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -48,14 +48,14 @@ public class ItemClayBucket extends Item {
 
     //TODO this.setContainerItem(this);
 
-    BlockDispenser.registerDispenseBehavior(this, DispenseFluidContainer.getInstance());
+    DispenserBlock.registerDispenseBehavior(this, DispenseFluidContainer.getInstance());
   }
 
   public static ItemStack getFilledBucket(final Fluid fluid) {
     final ItemStack filledBucket = new ItemStack(GradientItems.CLAY_BUCKET);
     final FluidStack fluidContents = new FluidStack(fluid, Fluid.BUCKET_VOLUME);
 
-    final NBTTagCompound tag = new NBTTagCompound();
+    final CompoundNBT tag = new CompoundNBT();
     fluidContents.writeToNBT(tag);
     //TODO filledBucket.setTagCompound(tag);
 
@@ -68,12 +68,12 @@ public class ItemClayBucket extends Item {
   }
 
   @Override
-  public ICapabilityProvider initCapabilities(@Nonnull final ItemStack stack, @Nullable final NBTTagCompound nbt) {
+  public ICapabilityProvider initCapabilities(@Nonnull final ItemStack stack, @Nullable final CompoundNBT nbt) {
     return new FluidBucketWrapper(stack);
   }
 
   @Override
-  public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
+  public ActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
     final ItemStack itemstack = player.getHeldItem(hand);
     final FluidStack fluidStack = this.getFluid(itemstack);
 
@@ -88,8 +88,8 @@ public class ItemClayBucket extends Item {
       }
     }
 
-    if(mop == null || mop.type != RayTraceResult.Type.BLOCK) {
-      return ActionResult.newResult(EnumActionResult.PASS, itemstack);
+    if(mop == null || mop.getType() != RayTraceResult.Type.BLOCK) {
+      return ActionResult.newResult(ActionResultType.PASS, itemstack);
     }
 
     final BlockPos clickPos = mop.getBlockPos();
@@ -109,18 +109,18 @@ public class ItemClayBucket extends Item {
 
           // check whether we replace the item or add the empty one to the inventory
           if(itemstack.isEmpty()) {
-            return ActionResult.newResult(EnumActionResult.SUCCESS, emptyStack);
+            return ActionResult.newResult(ActionResultType.SUCCESS, emptyStack);
           }
 
           // add empty bucket to player inventory
           ItemHandlerHelper.giveItemToPlayer(player, emptyStack);
-          return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
+          return ActionResult.newResult(ActionResultType.SUCCESS, itemstack);
         }
       }
     }
 
     // couldn't place liquid there2
-    return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+    return ActionResult.newResult(ActionResultType.FAIL, itemstack);
   }
 
   @SubscribeEvent(priority = EventPriority.LOW) // low priority so other mods can handle their stuff first
@@ -138,7 +138,7 @@ public class ItemClayBucket extends Item {
 
     // needs to target a block
     final RayTraceResult target = event.getTarget();
-    if(target == null || target.type != RayTraceResult.Type.BLOCK) {
+    if(target == null || target.getType() != RayTraceResult.Type.BLOCK) {
       return;
     }
 
@@ -190,9 +190,9 @@ public class ItemClayBucket extends Item {
 
     protected void setFluid(@Nullable final FluidStack fluidStack) {
       if(fluidStack == null) {
-        this.container.setTag(new NBTTagCompound());
+        this.container.setTag(new CompoundNBT());
       } else {
-        final NBTTagCompound tag = new NBTTagCompound();
+        final CompoundNBT tag = new CompoundNBT();
         fluidStack.writeToNBT(tag);
         this.container.setTag(tag);
       }
@@ -255,7 +255,7 @@ public class ItemClayBucket extends Item {
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> capability, @Nullable final EnumFacing facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> capability, @Nullable final Direction facing) {
       if(capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY) {
         return LazyOptional.of(() -> (T)this);
       }

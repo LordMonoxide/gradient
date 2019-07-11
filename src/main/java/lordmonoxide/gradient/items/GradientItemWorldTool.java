@@ -1,12 +1,12 @@
 package lordmonoxide.gradient.items;
 
 import com.google.common.collect.Multimap;
-import net.minecraft.block.BlockRedstoneOre;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.RedstoneOreBlock;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +28,7 @@ public class GradientItemWorldTool extends Item {
   }
 
   @Override
-  public boolean canHarvestBlock(final ItemStack stack, final IBlockState state) {
+  public boolean canHarvestBlock(final ItemStack stack, final BlockState state) {
     if(state.getBlockHardness(null, null) <= 1.0f) {
       return true;
     }
@@ -39,7 +39,7 @@ public class GradientItemWorldTool extends Item {
       }
 
       // Redstone has weird special-case handling
-      if(type == ToolType.PICKAXE && state.getBlock() instanceof BlockRedstoneOre) {
+      if(type == ToolType.PICKAXE && state.getBlock() instanceof RedstoneOreBlock) {
         return true;
       }
     }
@@ -48,32 +48,32 @@ public class GradientItemWorldTool extends Item {
   }
 
   @Override
-  public float getDestroySpeed(final ItemStack stack, final IBlockState state) {
+  public float getDestroySpeed(final ItemStack stack, final BlockState state) {
     return this.canHarvestBlock(stack, state) ? this.harvestSpeed : 0.0f;
   }
 
   @Override
-  public boolean hitEntity(final ItemStack stack, final EntityLivingBase target, final EntityLivingBase attacker) {
-    stack.damageItem(this.attackDurabilityLost, attacker);
+  public boolean hitEntity(final ItemStack stack, final LivingEntity target, final LivingEntity attacker) {
+    stack.damageItem(this.attackDurabilityLost, attacker, e -> e.sendBreakAnimation(attacker.getActiveHand()));
     return true;
   }
 
   @Override
-  public boolean onBlockDestroyed(final ItemStack stack, final World world, final IBlockState state, final BlockPos pos, final EntityLivingBase entityLiving) {
+  public boolean onBlockDestroyed(final ItemStack stack, final World world, final BlockState state, final BlockPos pos, final LivingEntity entityLiving) {
     if(state.getBlockHardness(world, pos) != 0.0f) {
-      stack.damageItem(1, entityLiving);
+      stack.damageItem(1, entityLiving, e -> e.sendBreakAnimation(entityLiving.getActiveHand()));
     }
 
     return true;
   }
 
   @Override
-  public Multimap<String, AttributeModifier> getAttributeModifiers(final EntityEquipmentSlot equipmentSlot, final ItemStack stack) {
+  public Multimap<String, AttributeModifier> getAttributeModifiers(final EquipmentSlotType equipmentSlot, final ItemStack stack) {
     final Multimap<String, AttributeModifier> modifiers = super.getAttributeModifiers(equipmentSlot, stack);
 
-    if(equipmentSlot == EntityEquipmentSlot.MAINHAND) {
-      modifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.getAttackDamage(stack), 0));
-      modifiers.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", this.getAttackSpeed(stack), 0));
+    if(equipmentSlot == EquipmentSlotType.MAINHAND) {
+      modifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.getAttackDamage(stack), AttributeModifier.Operation.ADDITION));
+      modifiers.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", this.getAttackSpeed(stack), AttributeModifier.Operation.ADDITION));
     }
 
     return modifiers;

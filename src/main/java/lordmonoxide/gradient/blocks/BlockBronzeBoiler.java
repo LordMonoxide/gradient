@@ -2,14 +2,19 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientMaterials;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
+import lordmonoxide.gradient.containers.BronzeBoilerContainer;
 import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -21,6 +26,7 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,7 +38,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class BlockBronzeBoiler extends HeatSinkerBlock {
+public class BlockBronzeBoiler extends HeatSinkerBlock implements INamedContainerProvider {
   public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
   private static final Fluid WATER = null; //TODO FluidRegistry.getFluid("water");
@@ -71,7 +77,7 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
         return true;
       }
 
-      NetworkHooks.openGui((ServerPlayerEntity)player, te, pos);
+      NetworkHooks.openGui((ServerPlayerEntity)player, this, pos);
     }
 
     return true;
@@ -120,13 +126,6 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     builder.add(FACING);
   }
 
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
   @SuppressWarnings("deprecation")
   @Override
   public boolean isSolid(final BlockState state) {
@@ -142,5 +141,22 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
   @Override
   public boolean canRenderInLayer(final BlockState state, final BlockRenderLayer layer) {
     return layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BlockRenderLayer.TRANSLUCENT;
+  }
+
+  @Override
+  public ITextComponent getDisplayName() {
+    return this.getNameTextComponent();
+  }
+
+  @Nullable
+  @Override
+  public Container createMenu(final int id, final PlayerInventory playerInv, final PlayerEntity player) {
+    final TileBronzeBoiler boiler = WorldUtils.getTileEntity(player.world, player.getPosition(), TileBronzeBoiler.class);
+
+    if(boiler != null) {
+      return new BronzeBoilerContainer(id, playerInv, boiler);
+    }
+
+    return null;
   }
 }

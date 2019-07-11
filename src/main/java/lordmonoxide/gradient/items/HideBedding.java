@@ -1,14 +1,17 @@
 package lordmonoxide.gradient.items;
 
+import com.mojang.datafixers.util.Either;
 import lordmonoxide.gradient.GradientMod;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.common.extensions.IForgeDimension;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
@@ -27,59 +30,59 @@ public class HideBedding extends Item {
   }
 
   @Override
-  public EnumActionResult onItemUse(final ItemUseContext context) {
+  public ActionResultType onItemUse(final ItemUseContext context) {
     final World world = context.getWorld();
 
     if(world.isRemote()) {
-      return EnumActionResult.PASS;
+      return ActionResultType.PASS;
     }
 
-    final EntityPlayer player = context.getPlayer();
+    final PlayerEntity player = context.getPlayer();
 
     if(player == null) {
-      return EnumActionResult.PASS;
+      return ActionResultType.PASS;
     }
 
     final BlockPos pos = player.getPosition();
 
     final IForgeDimension.SleepResult sleepResult = world.getDimension().canSleepAt(player, pos);
     if(sleepResult == IForgeDimension.SleepResult.BED_EXPLODES) {
-      world.createExplosion(null, DamageSource.netherBedExplosion(), pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d, 5.0f, true, true);
+      world.createExplosion(null, DamageSource.netherBedExplosion(), pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d, 5.0f, true, Explosion.Mode.DESTROY);
     }
 
     if(sleepResult == IForgeDimension.SleepResult.DENY) {
-      return EnumActionResult.SUCCESS;
+      return ActionResultType.SUCCESS;
     }
 
-    final EntityPlayer.SleepResult result = player.trySleep(pos);
+    final Either<PlayerEntity.SleepResult, Unit> trySleep = player.trySleep(pos);
 
-    switch(result) {
-      case OK:
-        sleeping.add(player);
-        context.getItem().damageItem(1, player);
-        break;
+    trySleep.ifLeft(result -> {
+      switch(result) {
+        case NOT_POSSIBLE_NOW:
+          player.sendStatusMessage(new TranslationTextComponent("tile.bed.noSleep"), true);
+          break;
 
-      case NOT_POSSIBLE_NOW:
-        player.sendStatusMessage(new TextComponentTranslation("tile.bed.noSleep"), true);
-        break;
+        case NOT_SAFE:
+          player.sendStatusMessage(new TranslationTextComponent("tile.bed.notSafe"), true);
+          break;
 
-      case NOT_SAFE:
-        player.sendStatusMessage(new TextComponentTranslation("tile.bed.notSafe"), true);
-        break;
+        case TOO_FAR_AWAY:
+          player.sendStatusMessage(new TranslationTextComponent("tile.bed.tooFarAway"), true);
+          break;
+      }
+    }).ifRight(unit -> {
+      sleeping.add(player);
+      context.getItem().damageItem(1, player, e -> e.sendBreakAnimation(e.getActiveHand()));
+    });
 
-      case TOO_FAR_AWAY:
-        player.sendStatusMessage(new TextComponentTranslation("tile.bed.tooFarAway"), true);
-        break;
-    }
-
-    return EnumActionResult.SUCCESS;
+    return ActionResultType.SUCCESS;
   }
 
-  private static final List<EntityPlayer> sleeping = new ArrayList<>();
+  private static final List<PlayerEntity> sleeping = new ArrayList<>();
 
   @SubscribeEvent
   public static void onSleepingLocationCheck(final SleepingLocationCheckEvent event) {
-    if(sleeping.contains(event.getEntityPlayer())) {
+    if(sleeping.contains(event.getEntity())) {
       event.setResult(Event.Result.ALLOW);
     }
   }

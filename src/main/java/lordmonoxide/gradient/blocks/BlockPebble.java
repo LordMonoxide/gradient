@@ -11,8 +11,10 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -52,25 +54,13 @@ public class BlockPebble extends Block {
 
   @Override
   @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
-    return BlockFaceShape.UNDEFINED;
-  }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos, final ISelectionContext context) {
     return SHAPE;
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean isValidPosition(final BlockState state, final IWorldReaderBase world, final BlockPos pos) {
+  public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
     final BlockState down = world.getBlockState(pos.down());
 
     return
@@ -89,10 +79,10 @@ public class BlockPebble extends Block {
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated
-  public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block block, final BlockPos fromPos) {
+  public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block block, final BlockPos fromPos, final boolean isMoving) {
     if(world.isAirBlock(pos.down())) {
       state.dropBlockAsItem(world, pos, 0);
-      world.removeBlock(pos);
+      world.removeBlock(pos, isMoving);
     }
   }
 }

@@ -42,7 +42,7 @@ public class PacketUpdateHeatNeighbours {
       );
     } catch(final IndexOutOfBoundsException e) {
       GradientMod.logger.info("Invalid position in PacketUpdateHeatNeighbours", e);
-      return new PacketUpdateHeatNeighbours(BlockPos.ORIGIN, BlockPos.ORIGIN);
+      return new PacketUpdateHeatNeighbours(BlockPos.ZERO, BlockPos.ZERO);
     }
   }
 

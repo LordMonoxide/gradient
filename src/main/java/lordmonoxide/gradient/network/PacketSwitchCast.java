@@ -5,7 +5,7 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientNet;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.ItemClayCastUnhardened;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -46,7 +46,7 @@ public class PacketSwitchCast {
     }
 
     ctx.get().enqueueWork(() -> {
-      final InventoryPlayer inv = ctx.get().getSender().inventory;
+      final PlayerInventory inv = ctx.get().getSender().inventory;
       final ItemStack hand = inv.getCurrentItem();
 
       if(!(hand.getItem() instanceof ItemClayCastUnhardened)) {

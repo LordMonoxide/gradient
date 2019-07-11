@@ -2,6 +2,13 @@ package lordmonoxide.gradient;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import lordmonoxide.gradient.advancements.AdvancementTriggers;
+import lordmonoxide.gradient.client.gui.BronzeBoilerScreen;
+import lordmonoxide.gradient.client.gui.BronzeFurnaceScreen;
+import lordmonoxide.gradient.client.gui.BronzeGrinderScreen;
+import lordmonoxide.gradient.client.gui.BronzeOvenScreen;
+import lordmonoxide.gradient.client.gui.ClayCastScreen;
+import lordmonoxide.gradient.client.gui.ClayCrucibleScreen;
+import lordmonoxide.gradient.containers.GradientContainers;
 import lordmonoxide.gradient.energy.CapabilityEnergy;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
@@ -16,6 +23,7 @@ import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.recipes.GradientRecipeSerializers;
 import lordmonoxide.gradient.science.geology.Meltables;
 import lordmonoxide.gradient.worldgen.OreGenerator;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.item.crafting.RecipeManager;
@@ -25,8 +33,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -68,8 +74,6 @@ public class GradientMod {
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupServer);
 
-    ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GradientGuiHandler::openGui);
-
     MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 
     // Need to do this to make sure the class loads
@@ -110,6 +114,13 @@ public class GradientMod {
 
   private void setupClient(final FMLClientSetupEvent event) {
     logger.info("------------------- SETUP CLIENT -------------------");
+
+    ScreenManager.registerFactory(GradientContainers.CLAY_CAST, ClayCastScreen::new);
+    ScreenManager.registerFactory(GradientContainers.CLAY_CRUCIBLE, ClayCrucibleScreen::new);
+    ScreenManager.registerFactory(GradientContainers.BRONZE_BOILER, BronzeBoilerScreen::new);
+    ScreenManager.registerFactory(GradientContainers.BRONZE_FURNACE, BronzeFurnaceScreen::new);
+    ScreenManager.registerFactory(GradientContainers.BRONZE_GRINDER, BronzeGrinderScreen::new);
+    ScreenManager.registerFactory(GradientContainers.BRONZE_OVEN, BronzeOvenScreen::new);
 
     MinecraftForge.EVENT_BUS.addListener(this::onWorldLoad);
 

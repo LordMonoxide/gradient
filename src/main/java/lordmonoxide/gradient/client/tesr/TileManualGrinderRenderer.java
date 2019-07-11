@@ -1,13 +1,13 @@
 package lordmonoxide.gradient.client.tesr;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import lordmonoxide.gradient.blocks.BlockGrindstone;
 import lordmonoxide.gradient.tileentities.TileManualGrinder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,7 +18,7 @@ public class TileManualGrinderRenderer extends TileEntityRenderer<TileManualGrin
     GlStateManager.pushMatrix();
     GlStateManager.translated(x + 0.5d, y + 0.5d, z + 0.5d);
 
-    final EnumFacing facing = te.getBlockState().get(BlockGrindstone.FACING);
+    final Direction facing = te.getBlockState().get(BlockGrindstone.FACING);
 
     if(te.hasInput()) {
       GlStateManager.pushMatrix();

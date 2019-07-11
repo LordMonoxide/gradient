@@ -1,24 +1,17 @@
 package lordmonoxide.gradient.tileentities;
 
-import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.client.gui.GuiBronzeGrinder;
-import lordmonoxide.gradient.containers.ContainerBronzeGrinder;
 import lordmonoxide.gradient.recipes.GrinderRecipes;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -34,7 +27,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
-public class TileBronzeGrinder extends TileEntity implements ITickable, IInteractionObject {
+public class TileBronzeGrinder extends TileEntity implements ITickableTileEntity {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
@@ -74,7 +67,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable, IInterac
     this.tanks.addHandler(STEAM, this.tankSteam);
   }
 
-  public boolean useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
+  public boolean useBucket(final PlayerEntity player, final Hand hand, final World world, final BlockPos pos, final Direction side) {
     if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
       this.sync();
       return true;
@@ -128,16 +121,16 @@ public class TileBronzeGrinder extends TileEntity implements ITickable, IInterac
   }
 
   @Override
-  public NBTTagCompound write(final NBTTagCompound compound) {
+  public CompoundNBT write(final CompoundNBT compound) {
     compound.put("inventory", this.inventory.serializeNBT());
-    compound.put("steam", this.tankSteam.writeToNBT(new NBTTagCompound()));
+    compound.put("steam", this.tankSteam.writeToNBT(new CompoundNBT()));
     compound.putInt("workTicks", this.workTicks);
     return super.write(compound);
   }
 
   @Override
-  public void read(final NBTTagCompound compound) {
-    final NBTTagCompound inv = compound.getCompound("inventory");
+  public void read(final CompoundNBT compound) {
+    final CompoundNBT inv = compound.getCompound("inventory");
     inv.remove("Size");
     this.inventory.deserializeNBT(inv);
 
@@ -147,7 +140,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable, IInterac
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return LazyOptional.of(() -> (T)this.inventory);
     }
@@ -161,50 +154,24 @@ public class TileBronzeGrinder extends TileEntity implements ITickable, IInterac
 
   private void sync() {
     if(!this.world.isRemote) {
-      final IBlockState state = this.world.getBlockState(this.getPos());
+      final BlockState state = this.world.getBlockState(this.getPos());
       this.world.notifyBlockUpdate(this.getPos(), state, state, 3);
       this.markDirty();
     }
   }
 
   @Override
-  public SPacketUpdateTileEntity getUpdatePacket() {
-    return new SPacketUpdateTileEntity(this.pos, 0, this.getUpdateTag());
+  public SUpdateTileEntityPacket getUpdatePacket() {
+    return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
   }
 
   @Override
-  public NBTTagCompound getUpdateTag() {
-    return this.write(new NBTTagCompound());
+  public CompoundNBT getUpdateTag() {
+    return this.write(new CompoundNBT());
   }
 
   @Override
-  public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
+  public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
     this.read(pkt.getNbtCompound());
-  }
-
-  @Override
-  public Container createContainer(final InventoryPlayer playerInventory, final EntityPlayer playerIn) {
-    return new ContainerBronzeGrinder(playerInventory, this);
-  }
-
-  @Override
-  public String getGuiID() {
-    return GuiBronzeGrinder.ID.toString();
-  }
-
-  @Override
-  public ITextComponent getName() {
-    return GradientBlocks.BRONZE_GRINDER.getNameTextComponent();
-  }
-
-  @Override
-  public boolean hasCustomName() {
-    return false;
-  }
-
-  @Nullable
-  @Override
-  public ITextComponent getCustomName() {
-    return null;
   }
 }

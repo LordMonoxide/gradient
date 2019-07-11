@@ -30,11 +30,12 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -75,13 +76,6 @@ public class BlockFirePit extends HeatSinkerBlock {
     }
   }
 
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
   @SuppressWarnings("deprecation")
   @Override
   public boolean isSolid(final BlockState state) {
@@ -91,7 +85,7 @@ public class BlockFirePit extends HeatSinkerBlock {
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos, final ISelectionContext context) {
     if(!state.get(HAS_FURNACE)) {
       return SHAPE;
     }
@@ -100,7 +94,7 @@ public class BlockFirePit extends HeatSinkerBlock {
   }
 
   @Override
-  public int getLightValue(final BlockState state, final IWorldReader world, final BlockPos pos) {
+  public int getLightValue(final BlockState state, final IEnviromentBlockReader world, final BlockPos pos) {
     final BlockState other = world.getBlockState(pos);
     if(other.getBlock() != this) {
       return other.getLightValue(world, pos);
@@ -136,7 +130,7 @@ public class BlockFirePit extends HeatSinkerBlock {
         if(held.getItem() instanceof FireStarter) {
           if(!firepit.isBurning()) {
             if(!player.isCreative()) {
-              held.damageItem(1, player);
+              held.damageItem(1, player, e -> e.sendBreakAnimation(e.getActiveHand()));
             }
 
             firepit.light();
@@ -253,17 +247,6 @@ public class BlockFirePit extends HeatSinkerBlock {
     if(te instanceof TileFirePit) {
       ((TileFirePit)te).updateSurroundingHardenables(AgeUtils.getPlayerAge(placer));
     }
-  }
-
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
-    if(state.get(HAS_FURNACE)) {
-      return GradientBlocks.CLAY_FURNACE_HARDENED.getBlockFaceShape(world, state, pos, face);
-    }
-
-    return BlockFaceShape.UNDEFINED;
   }
 
   @SuppressWarnings("deprecation")

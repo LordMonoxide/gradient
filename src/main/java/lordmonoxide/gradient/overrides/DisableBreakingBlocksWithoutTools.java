@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.overrides;
 
 import lordmonoxide.gradient.GradientMod;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -14,7 +14,7 @@ public final class DisableBreakingBlocksWithoutTools {
 
   @SubscribeEvent
   public static void onBreakSpeed(final PlayerEvent.BreakSpeed event) {
-    final IBlockState state = event.getState();
+    final BlockState state = event.getState();
 
     if(state.getBlockHardness(event.getEntity().getEntityWorld(), event.getPos()) <= 1.0f || state.getBlock().getHarvestTool(state) == null) {
       return;

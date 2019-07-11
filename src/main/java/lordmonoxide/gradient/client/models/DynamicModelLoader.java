@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.resources.IResourceManager;
@@ -17,6 +19,7 @@ import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.model.animation.IClip;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -90,9 +93,10 @@ public class DynamicModelLoader implements ICustomModelLoader {
       return this.parent.getTextures(modelGetter, missingTextureErrors);
     }
 
+    @Nullable
     @Override
-    public IBakedModel bake(final Function<ResourceLocation, IUnbakedModel> modelGetter, final Function<ResourceLocation, TextureAtlasSprite> spriteGetter, final IModelState state, final boolean uvlock, final VertexFormat format) {
-      return this.parent.bake(modelGetter, spriteGetter, state, uvlock, format);
+    public IBakedModel bake(final ModelBakery bakery, final Function<ResourceLocation, TextureAtlasSprite> spriteGetter, final ISprite sprite, final VertexFormat format) {
+      return this.parent.bake(bakery, spriteGetter, sprite, format);
     }
 
     @Override

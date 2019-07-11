@@ -2,13 +2,13 @@ package lordmonoxide.gradient.utils;
 
 import cpw.mods.modlauncher.api.INameMappingService;
 import lordmonoxide.gradient.GradientMod;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.common.crafting.RecipeType;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nullable;
@@ -22,13 +22,15 @@ public final class RecipeUtils {
   private static final Field containerPlayerPlayerField;
   private static final Field slotCraftingPlayerField;
 
+  //TODO: use AT
+
   static {
     try {
-      eventHandlerField = InventoryCrafting.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_70465_c"));
+      eventHandlerField = CraftingInventory.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_70465_c"));
       eventHandlerField.setAccessible(true);
-      containerPlayerPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_82862_h"));
+      containerPlayerPlayerField = PlayerContainer.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_82862_h"));
       containerPlayerPlayerField.setAccessible(true);
-      slotCraftingPlayerField = ContainerPlayer.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_75238_b"));
+      slotCraftingPlayerField = PlayerContainer.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_75238_b"));
       slotCraftingPlayerField.setAccessible(true);
     } catch(final NoSuchFieldException e) {
       throw new RuntimeException(e);
@@ -36,7 +38,7 @@ public final class RecipeUtils {
   }
 
   @Nullable
-  public static <T extends Container> T getContainer(final InventoryCrafting inv, final Class<T> containerClass) {
+  public static <T extends Container> T getContainer(final CraftingInventory inv, final Class<T> containerClass) {
     try {
       final Object container = eventHandlerField.get(inv);
       return containerClass.isInstance(container) ? containerClass.cast(eventHandlerField.get(inv)) : null;
@@ -46,16 +48,16 @@ public final class RecipeUtils {
   }
 
   @Nullable
-  public static EntityPlayer findPlayerFromInv(final InventoryCrafting inv) {
+  public static PlayerEntity findPlayerFromInv(final CraftingInventory inv) {
     try {
       final Container container = getContainer(inv, Container.class);
 
-      if(container instanceof ContainerPlayer) {
-        return (EntityPlayer)containerPlayerPlayerField.get(container);
+      if(container instanceof PlayerContainer) {
+        return (PlayerEntity)containerPlayerPlayerField.get(container);
       }
 
-      if(container instanceof ContainerWorkbench) {
-        return (EntityPlayer)slotCraftingPlayerField.get(container.getSlot(0));
+      if(container instanceof WorkbenchContainer) {
+        return (PlayerEntity)slotCraftingPlayerField.get(container.getSlot(0));
       }
 
       // Can't find player
@@ -67,7 +69,7 @@ public final class RecipeUtils {
   }
 
   @Nullable
-  public static <T extends IRecipe> T findRecipe(final RecipeType<T> type, final Predicate<T> match) {
+  public static <T extends IRecipe<?>> T findRecipe(final IRecipeType<T> type, final Predicate<T> match) {
     for(final T recipe : GradientMod.getRecipeManager().getRecipes(type)) {
       if(match.test(recipe)) {
         return recipe;

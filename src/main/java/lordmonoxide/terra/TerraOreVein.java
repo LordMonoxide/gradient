@@ -1,15 +1,15 @@
 package lordmonoxide.terra;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.IChunkGenSettings;
-import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.common.Tags;
 import org.joml.Matrix3f;
@@ -26,7 +26,7 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
   private static final float PI = (float)Math.PI;
 
   //TODO: handle this predicate better... needs to be configurable, but still work with deferred gen
-  static boolean stonePredicate(@Nullable final IBlockState state) {
+  static boolean stonePredicate(@Nullable final BlockState state) {
     if(state == null) {
       return false;
     }
@@ -37,7 +37,7 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
   private final OreGenState state = new OreGenState();
 
   @Override
-  public boolean place(final IWorld world, final IChunkGenerator<? extends IChunkGenSettings> generator, final Random rand, final BlockPos start, final TerraOreVeinConfig config) {
+  public boolean place(final IWorld world, final ChunkGenerator<? extends GenerationSettings> generator, final Random rand, final BlockPos start, final TerraOreVeinConfig config) {
     this.state.setDepth(start.getY());
 
     final int minLength = config.minLength.apply(this.state);
@@ -66,8 +66,8 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
       }
     }
 
-    final Map<BlockPos, IBlockState> oresToPlace = new HashMap<>();
-    final Map<BlockPos, IBlockState> pebblesToPlace = new HashMap<>();
+    final Map<BlockPos, BlockState> oresToPlace = new HashMap<>();
+    final Map<BlockPos, BlockState> pebblesToPlace = new HashMap<>();
 
     // 1/x chance for a vein to change direction by up to 45 degrees total (across all axes).
     // Each block that is generated will decrease this value, making it more likely that the
@@ -124,8 +124,8 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
     }
 
     int placed = 0;
-    for(final Map.Entry<BlockPos, IBlockState> block : oresToPlace.entrySet()) {
-      final IBlockState state = world.getBlockState(block.getKey());
+    for(final Map.Entry<BlockPos, BlockState> block : oresToPlace.entrySet()) {
+      final BlockState state = world.getBlockState(block.getKey());
       if(state.isReplaceableOreGen(world.getWorld(), block.getKey(), TerraOreVein::stonePredicate)) {
         this.setBlockState(world, block.getKey(), block.getValue());
         placed++;
@@ -133,7 +133,7 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
     }
 
     if((float)placed / oresToPlace.size() >= 1.0f / 3.0f) {
-      for(final Map.Entry<BlockPos, IBlockState> block : pebblesToPlace.entrySet()) {
+      for(final Map.Entry<BlockPos, BlockState> block : pebblesToPlace.entrySet()) {
         this.setBlockState(world, block.getKey(), block.getValue());
       }
 
@@ -143,7 +143,7 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
     return false;
   }
 
-  private void placePebble(final Map<BlockPos, IBlockState> blocksToPlace, final IWorld world, final IBlockState pebble, final int x, final int z) {
+  private void placePebble(final Map<BlockPos, BlockState> blocksToPlace, final IWorld world, final BlockState pebble, final int x, final int z) {
     final int chunkX = x >> 4;
     final int chunkZ = z >> 4;
 
@@ -157,18 +157,18 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
 
     final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, 128, z);
 
-    for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && (iblockstate.getMaterial().isReplaceable() || iblockstate.isIn(BlockTags.LOGS)); iblockstate = world.getBlockState(pos)) {
-      pos.move(EnumFacing.DOWN);
+    for(BlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && (iblockstate.getMaterial().isReplaceable() || iblockstate.isIn(BlockTags.LOGS)); iblockstate = world.getBlockState(pos)) {
+      pos.move(Direction.DOWN);
     }
 
-    pos.move(EnumFacing.UP);
+    pos.move(Direction.UP);
 
     if(pebble.isValidPosition(world, pos)) {
       blocksToPlace.put(pos, pebble);
     }
   }
 
-  private void placeBlock(final Map<BlockPos, IBlockState> blocksToPlace, final IWorld world, final BlockPos pos, final IBlockState ore) {
+  private void placeBlock(final Map<BlockPos, BlockState> blocksToPlace, final IWorld world, final BlockPos pos, final BlockState ore) {
     if(World.isOutsideBuildHeight(pos)) {
       return;
     }

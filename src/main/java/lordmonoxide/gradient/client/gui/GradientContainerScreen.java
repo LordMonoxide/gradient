@@ -1,24 +1,29 @@
-package lordmonoxide.gradient.containers;
+package lordmonoxide.gradient.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import lordmonoxide.gradient.containers.GradientContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GradientGuiContainer extends GuiContainer {
-  protected GradientGuiContainer(final Container container) {
-    super(container);
+@OnlyIn(Dist.CLIENT)
+public abstract class GradientContainerScreen<T extends GradientContainer> extends ContainerScreen<T> {
+  protected GradientContainerScreen(final T container, final PlayerInventory playerInv, final ITextComponent text) {
+    super(container, playerInv, text);
   }
 
   @Override
@@ -32,7 +37,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
   protected void renderToolTips(final int mouseX, final int mouseY) { }
 
   protected void renderFluidTankToolTip(final FluidTank tank, final int x, final int y) {
-    this.drawHoveringText(this.getFluidTankToolTip(tank), x, y, this.fontRenderer);
+    this.renderTooltip(this.getFluidTankToolTip(tank), x, y);
   }
 
   public List<String> getFluidTankToolTip(final FluidTank tank) {
@@ -88,11 +93,11 @@ public abstract class GradientGuiContainer extends GuiContainer {
     tessellator.draw();
   }
 
-  protected class ItemButton extends GuiButton {
+  protected class ButtonItem extends Button {
     public final ItemStack item;
 
-    public ItemButton(final int id, final ItemStack item, final int x, final int y) {
-      super(id, x + GradientGuiContainer.this.guiLeft, y + GradientGuiContainer.this.guiTop, 20, 20, "");
+    public ButtonItem(final int id, final ItemStack item, final int x, final int y, final IPressable onPress) {
+      super(id, x + GradientContainerScreen.this.guiLeft, y + GradientContainerScreen.this.guiTop, 20, 20, onPress);
       this.item = item;
     }
 
@@ -101,7 +106,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
       super.render(mouseX, mouseY, partialTicks);
 
       if(this.visible) {
-        GradientGuiContainer.this.itemRender.renderItemAndEffectIntoGUI(this.item, this.x + 2, this.y + 2);
+        GradientContainerScreen.this.itemRender.renderItemAndEffectIntoGUI(this.item, this.x + 2, this.y + 2);
       }
     }
   }
@@ -139,8 +144,8 @@ public abstract class GradientGuiContainer extends GuiContainer {
     }
 
     public boolean isMouseOver(final int mouseX, final int mouseY) {
-      final int mX = mouseX - GradientGuiContainer.this.guiLeft;
-      final int mY = mouseY - GradientGuiContainer.this.guiTop;
+      final int mX = mouseX - GradientContainerScreen.this.guiLeft;
+      final int mY = mouseY - GradientContainerScreen.this.guiTop;
       return mX >= this.x && mY >= this.y && mX < this.x + this.w && mY < this.y + this.h;
     }
   }

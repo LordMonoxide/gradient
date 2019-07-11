@@ -1,10 +1,10 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.blocks.BlockFlywheel;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
 
-public class ItemFlywheel extends ItemBlock {
+public class ItemFlywheel extends BlockItem {
   public ItemFlywheel(final BlockFlywheel block) {
     super(block, new Properties().group(ItemGroup.TOOLS));
   }

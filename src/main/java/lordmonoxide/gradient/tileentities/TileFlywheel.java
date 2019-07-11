@@ -6,9 +6,9 @@ import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
@@ -42,12 +42,12 @@ public class TileFlywheel extends TileEntity {
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == STORAGE) {
-      final IBlockState state = this.world.getBlockState(this.pos);
+      final BlockState state = this.world.getBlockState(this.pos);
 
       if(state.getBlock() == GradientBlocks.FLYWHEEL) {
-        final EnumFacing myFacing = state.get(BlockFlywheel.FACING);
+        final Direction myFacing = state.get(BlockFlywheel.FACING);
 
         if(facing == myFacing.rotateY() || facing == myFacing.rotateYCCW()) {
           return LazyOptional.of(() -> (T)this.energy);

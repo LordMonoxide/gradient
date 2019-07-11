@@ -1,12 +1,13 @@
 package lordmonoxide.gradient.containers;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -18,13 +19,22 @@ public class GradientContainer extends Container {
   public static final int INV_SLOTS_Y =  84;
   public static final int HOT_SLOTS_Y = 142;
 
+  public final PlayerInventory playerInv;
   protected final IItemHandler inventory;
 
-  public GradientContainer(final TileEntity te) {
-    this.inventory = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH).orElseThrow(() -> new RuntimeException("TE wasn't an item handler"));
+  public GradientContainer(final ContainerType<?> type, final int id, final PlayerInventory playerInv) {
+    super(type, id);
+    this.playerInv = playerInv;
+    this.inventory = null;
   }
 
-  protected void addPlayerSlots(final InventoryPlayer invPlayer) {
+  public GradientContainer(final ContainerType<?> type, final int id, final PlayerInventory playerInv, final TileEntity te) {
+    super(type, id);
+    this.playerInv = playerInv;
+    this.inventory = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.NORTH).orElseThrow(() -> new RuntimeException("TE wasn't an item handler"));
+  }
+
+  protected void addPlayerSlots(final PlayerInventory invPlayer) {
     // Player inv
     for(int y = 0; y < 3; ++y) {
       for(int x = 0; x < 9; ++x) {
@@ -39,12 +49,12 @@ public class GradientContainer extends Container {
   }
 
   @Override
-  public boolean canInteractWith(final EntityPlayer player) {
+  public boolean canInteractWith(final PlayerEntity player) {
     return true;
   }
 
   @Override
-  public ItemStack transferStackInSlot(final EntityPlayer player, final int index) {
+  public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
     final Slot slot = this.inventorySlots.get(index);
 
     if(slot == null || !slot.getHasStack()) {

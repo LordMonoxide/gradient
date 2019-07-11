@@ -2,7 +2,7 @@ package lordmonoxide.gradient.science.geology;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.items.GradientItems;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Tags;

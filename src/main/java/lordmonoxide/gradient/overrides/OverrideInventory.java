@@ -4,8 +4,8 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.inventory.ContainerPlayer3x3Crafting;
 import lordmonoxide.gradient.inventory.GuiInventory3x3Crafting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -20,19 +20,19 @@ public final class OverrideInventory {
   @OnlyIn(Dist.CLIENT)
   @SubscribeEvent
   public static void onGuiOpen(final GuiOpenEvent event) {
-    if(event.getGui() != null && event.getGui().getClass() == GuiInventory.class) {
+    if(event.getGui() != null && event.getGui().getClass() == InventoryScreen.class) {
       event.setGui(new GuiInventory3x3Crafting(Minecraft.getInstance().player));
     }
   }
 
   @SubscribeEvent
   public static void onEntityJoinWorld(final EntityJoinWorldEvent event) {
-    if(event.getEntity() instanceof EntityPlayer) {
-      final EntityPlayer player = (EntityPlayer)event.getEntity();
+    if(event.getEntity() instanceof PlayerEntity) {
+      final PlayerEntity player = (PlayerEntity)event.getEntity();
 
-      if(!(player.inventoryContainer instanceof ContainerPlayer3x3Crafting)) {
-        player.inventoryContainer = new ContainerPlayer3x3Crafting(player.inventory, !player.world.isRemote, player);
-        player.openContainer = player.inventoryContainer;
+      if(!(player.container instanceof ContainerPlayer3x3Crafting)) {
+        player.container = new ContainerPlayer3x3Crafting(player.inventory, !player.world.isRemote, player);
+        player.openContainer = player.container;
       }
     }
   }

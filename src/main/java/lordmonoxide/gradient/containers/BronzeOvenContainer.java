@@ -1,22 +1,25 @@
 package lordmonoxide.gradient.containers;
 
 import lordmonoxide.gradient.tileentities.TileBronzeOven;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
-public class ContainerBronzeOven extends GradientContainer {
+public class BronzeOvenContainer extends GradientContainer {
   public static final int INPUT_SLOTS_X = 13;
   public static final int INPUT_SLOTS_Y = 34;
   public static final int OUTPUT_SLOTS_X = 51;
   public static final int OUTPUT_SLOTS_Y = 34;
 
   public final TileBronzeOven oven;
-  public final InventoryPlayer playerInv;
 
-  public ContainerBronzeOven(final InventoryPlayer inventory, final TileBronzeOven oven) {
-    super(oven);
+  public BronzeOvenContainer(final int id, final PlayerInventory playerInv) {
+    super(GradientContainers.BRONZE_OVEN, id, playerInv);
+    this.oven = null;
+  }
+
+  public BronzeOvenContainer(final int id, final PlayerInventory playerInv, final TileBronzeOven oven) {
+    super(GradientContainers.BRONZE_OVEN, id, playerInv, oven);
 
     this.oven = oven;
-    this.playerInv = inventory;
 
     this.addSlot(new SlotFurnaceInput(this.inventory, TileBronzeOven.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
       @Override public void onSlotChanged() {
@@ -32,6 +35,6 @@ public class ContainerBronzeOven extends GradientContainer {
       }
     });
 
-    this.addPlayerSlots(inventory);
+    this.addPlayerSlots(playerInv);
   }
 }

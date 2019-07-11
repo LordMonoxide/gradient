@@ -1,12 +1,12 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientMod;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.LazyLoadBase;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,12 +46,12 @@ public enum GradientArmourMaterial implements IArmorMaterial {
   }
 
   @Override
-  public int getDurability(final EntityEquipmentSlot slot) {
+  public int getDurability(final EquipmentSlotType slot) {
     return MAX_DAMAGE_ARRAY[slot.getIndex()] * this.maxDamageFactor;
   }
 
   @Override
-  public int getDamageReductionAmount(final EntityEquipmentSlot slot) {
+  public int getDamageReductionAmount(final EquipmentSlotType slot) {
     return this.damageReductionAmountArray[slot.getIndex()];
   }
 

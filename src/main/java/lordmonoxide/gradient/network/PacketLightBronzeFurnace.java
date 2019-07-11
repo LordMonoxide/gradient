@@ -32,7 +32,7 @@ public class PacketLightBronzeFurnace {
       return new PacketLightBronzeFurnace(new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt()));
     } catch(final IndexOutOfBoundsException e) {
       GradientMod.logger.error("Invalid position in PacketLightBronzeFurnace", e);
-      return new PacketLightBronzeFurnace(BlockPos.ORIGIN);
+      return new PacketLightBronzeFurnace(BlockPos.ZERO);
     }
   }
 

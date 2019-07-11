@@ -3,11 +3,11 @@ package lordmonoxide.gradient.overrides;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLog;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.LogBlock;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,19 +29,19 @@ public final class AxesStripBark {
       return;
     }
 
-    final EntityPlayer player = event.getEntityPlayer();
+    final PlayerEntity player = event.getEntityPlayer();
     final ItemStack held = player.getHeldItemMainhand();
 
     final BlockPos pos = event.getPos();
-    final IBlockState state = world.getBlockState(pos);
+    final BlockState state = world.getBlockState(pos);
 
     if(held.getItem().getHarvestLevel(held, ToolType.AXE, player, state) == -1) {
       return;
     }
 
-    if(state.getBlock() instanceof BlockLog) {
-      world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), getBark(state.getBlock())));
-      held.damageItem(1, player);
+    if(state.getBlock() instanceof LogBlock) {
+      world.addEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), getBark(state.getBlock())));
+      held.damageItem(1, player, e -> e.sendBreakAnimation(e.getActiveHand()));
       event.setUseItem(Event.Result.ALLOW);
     }
   }

@@ -18,6 +18,7 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -89,7 +90,7 @@ public class BlockDryingRack extends Block {
 
     if(te != null) {
       if(te.hasItem()) {
-        world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), te.getItem()));
+        world.addEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), te.getItem()));
       }
     }
 
@@ -125,21 +126,7 @@ public class BlockDryingRack extends Block {
   @Override
   @Deprecated
   @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
-    return BlockFaceShape.UNDEFINED;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  @Deprecated
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader source, final BlockPos pos, final ISelectionContext context) {
     final Direction facing = state.get(FACING);
 
     if(!state.get(ROOF)) {

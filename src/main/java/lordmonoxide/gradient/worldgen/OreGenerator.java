@@ -8,17 +8,17 @@ import lordmonoxide.terra.TerraConfig;
 import lordmonoxide.terra.TerraOreVein;
 import lordmonoxide.terra.TerraOreVeinConfig;
 import lordmonoxide.terra.TerraPlacementConfig;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.Random;
@@ -219,7 +219,7 @@ public final class OreGenerator {
 */
   }
 
-  private boolean generateHematite(final Random random, final ChunkPos chunkPos, final World world, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider) {
+  private boolean generateHematite(final Random random, final ChunkPos chunkPos, final World world, final ChunkGenerator chunkGenerator, final AbstractChunkProvider chunkProvider) {
     if(!BiomeDictionary.hasType(world.getBiome(chunkPos.getBlock(0, 0, 0)), BiomeDictionary.Type.WATER)) {
       if(random.nextInt(100) == 0) {
         return this.runGenerator(this.smallHematite, world, random, chunkPos.x, chunkPos.z, 2, 0, 128);
@@ -231,11 +231,11 @@ public final class OreGenerator {
     if(random.nextInt(100) == 0) {
       final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(chunkPos.getXStart() + random.nextInt(16), 64, chunkPos.getZStart() + random.nextInt(16));
 
-      for(IBlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && iblockstate.getMaterial() != Material.ROCK; iblockstate = world.getBlockState(pos)) {
-        pos.move(EnumFacing.DOWN);
+      for(BlockState iblockstate = world.getBlockState(pos); pos.getY() > 0 && iblockstate.getMaterial() != Material.ROCK; iblockstate = world.getBlockState(pos)) {
+        pos.move(Direction.DOWN);
       }
 
-      pos.move(EnumFacing.UP, 4);
+      pos.move(Direction.UP, 4);
 
       return false; //TODO this.hematite.generate(world, random, pos);
     }

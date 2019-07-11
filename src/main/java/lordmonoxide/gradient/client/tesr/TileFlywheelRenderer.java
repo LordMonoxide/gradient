@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.client.tesr;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import lordmonoxide.gradient.tileentities.TileFlywheel;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

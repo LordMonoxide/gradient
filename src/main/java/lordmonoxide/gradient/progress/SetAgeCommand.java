@@ -10,8 +10,8 @@ import lordmonoxide.gradient.network.PacketUpdatePlayerProgress;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;
 
@@ -28,10 +28,10 @@ public final class SetAgeCommand {
       );
   }
 
-  private static int execute(final CommandContext<CommandSource> ctx, final Age age, final Collection<EntityPlayerMP> players) throws CommandSyntaxException {
-    final EntityPlayerMP sender = ctx.getSource().asPlayer();
+  private static int execute(final CommandContext<CommandSource> ctx, final Age age, final Collection<ServerPlayerEntity> players) throws CommandSyntaxException {
+    final ServerPlayerEntity sender = ctx.getSource().asPlayer();
 
-    for(final EntityPlayerMP target : players) {
+    for(final ServerPlayerEntity target : players) {
       target
         .getCapability(CapabilityPlayerProgress.PLAYER_PROGRESS_CAPABILITY)
         .ifPresent(progress -> {
@@ -40,10 +40,10 @@ public final class SetAgeCommand {
           AdvancementTriggers.CHANGE_AGE.trigger(target);
           PacketUpdatePlayerProgress.send(target);
 
-          target.sendMessage(new TextComponentTranslation("commands.gradient.setage.set", age.getDisplayName()));
+          target.sendMessage(new TranslationTextComponent("commands.gradient.setage.set", age.getDisplayName()));
 
           if(sender != target) {
-            sender.sendMessage(new TextComponentTranslation("commands.gradient.setage.set_other", target.getDisplayName(), age.getDisplayName()));
+            sender.sendMessage(new TranslationTextComponent("commands.gradient.setage.set_other", target.getDisplayName(), age.getDisplayName()));
           }
         });
     }

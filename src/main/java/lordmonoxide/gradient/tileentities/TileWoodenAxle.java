@@ -5,10 +5,10 @@ import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyTransfer;
-import net.minecraft.block.BlockRotatedPillar;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.LazyOptional;
@@ -38,12 +38,12 @@ public class TileWoodenAxle extends TileEntity {
   }
 
   @Override
-  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+  public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
     if(capability == TRANSFER) {
-      final IBlockState state = this.world.getBlockState(this.pos);
+      final BlockState state = this.world.getBlockState(this.pos);
 
       if(state.getBlock() == GradientBlocks.WOODEN_AXLE) {
-        if(facing != null && facing.getAxis() == state.get(BlockRotatedPillar.AXIS)) {
+        if(facing != null && facing.getAxis() == state.get(RotatedPillarBlock.AXIS)) {
           return LazyOptional.of(() -> (T)this.transfer);
         }
       }

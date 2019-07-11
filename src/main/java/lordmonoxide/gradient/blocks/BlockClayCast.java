@@ -18,6 +18,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -69,27 +70,9 @@ public final class BlockClayCast extends Block {
     }
   }
 
-  @Override
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(final IBlockReader world, final BlockState state, final BlockPos pos, final Direction face) {
-    if(face == Direction.DOWN) {
-      return BlockFaceShape.SOLID;
-    }
-
-    return BlockFaceShape.UNDEFINED;
-  }
-
   @SuppressWarnings("deprecation")
   @Override
-  @Deprecated
-  public boolean isFullCube(final BlockState state) {
-    return false;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos) {
+  public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos, final ISelectionContext context) {
     return SHAPE;
   }
 

@@ -1,12 +1,12 @@
 package lordmonoxide.gradient.energy;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class EnergyTransfer implements IEnergyTransfer {
   private float energy;
 
   @Override
-  public void transfer(final float amount, final EnumFacing from, final EnumFacing to) {
+  public void transfer(final float amount, final Direction from, final Direction to) {
     this.energy += amount;
   }
 

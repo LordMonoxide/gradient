@@ -102,8 +102,8 @@ public final class GradientBlocks {
     }
 
     registry.register(new BlockTorchStand(), GradientIds.TORCH_STAND);
-    registry.register(new BlockTorchUnlit(() -> FIBRE_TORCH_LIT, Block.Properties.create(Material.CIRCUITS)), GradientIds.FIBRE_TORCH_UNLIT);
-    registry.register(new BlockTorchLit(0.67f, 0.9375f, Block.Properties.create(Material.CIRCUITS)), GradientIds.FIBRE_TORCH_LIT);
+    registry.register(new BlockTorchUnlit(() -> FIBRE_TORCH_LIT, Block.Properties.create(Material.MISCELLANEOUS)), GradientIds.FIBRE_TORCH_UNLIT);
+    registry.register(new BlockTorchLit(0.67f, 0.9375f, Block.Properties.create(Material.MISCELLANEOUS)), GradientIds.FIBRE_TORCH_LIT);
     registry.register(new BlockFirePit(), GradientIds.FIRE_PIT);
     registry.register(new BlockBellows(), GradientIds.BELLOWS);
 

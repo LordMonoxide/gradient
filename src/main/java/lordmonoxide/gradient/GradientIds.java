@@ -4,7 +4,7 @@ import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.science.geology.Ore;
 import lordmonoxide.gradient.science.geology.Ores;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

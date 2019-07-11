@@ -33,7 +33,7 @@ public class BlockHandCrank extends Block {
   public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
   public BlockHandCrank() {
-    super(Properties.create(Material.CIRCUITS).hardnessAndResistance(1.0f, 5.0f));
+    super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(1.0f, 5.0f));
   }
 
   @SuppressWarnings("deprecation")

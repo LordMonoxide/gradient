@@ -1,9 +1,9 @@
 package lordmonoxide.gradient.progress;
 
 import lordmonoxide.gradient.GradientMod;
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -18,10 +18,10 @@ public final class CapabilityPlayerProgress {
   public static Capability<PlayerProgress> PLAYER_PROGRESS_CAPABILITY;
 
   public static void register() {
-    CapabilityManager.INSTANCE.register(PlayerProgress.class, new Capability.IStorage<>() {
+    CapabilityManager.INSTANCE.register(PlayerProgress.class, new Capability.IStorage<PlayerProgress>() {
       @Override
-      public INBTBase writeNBT(final Capability<PlayerProgress> capability, final PlayerProgress instance, final EnumFacing side) {
-        final NBTTagCompound tags = new NBTTagCompound();
+      public INBT writeNBT(final Capability<PlayerProgress> capability, final PlayerProgress instance, final Direction side) {
+        final CompoundNBT tags = new CompoundNBT();
 
         tags.putString("age", instance.getAge().name());
 
@@ -29,12 +29,12 @@ public final class CapabilityPlayerProgress {
       }
 
       @Override
-      public void readNBT(final Capability<PlayerProgress> capability, final PlayerProgress instance, final EnumFacing side, final INBTBase base) {
-        if(!(base instanceof NBTTagCompound)) {
+      public void readNBT(final Capability<PlayerProgress> capability, final PlayerProgress instance, final Direction side, final INBT base) {
+        if(!(base instanceof CompoundNBT)) {
           return;
         }
 
-        final NBTTagCompound nbt = (NBTTagCompound)base;
+        final CompoundNBT nbt = (CompoundNBT)base;
 
         if(nbt.contains("age")) {
           instance.setAge(Age.valueOf(nbt.getString("age")));

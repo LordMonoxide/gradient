@@ -10,14 +10,14 @@ import lordmonoxide.gradient.science.geology.Meltables;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CropsBlock;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -38,7 +38,7 @@ public final class AddExtraDrops {
 
   @SubscribeEvent
   public static void leavesDropSticks(final BlockEvent.HarvestDropsEvent event) {
-    if(event.getState().getBlock() instanceof BlockLeaves) {
+    if(event.getState().getBlock() instanceof LeavesBlock) {
       if(event.getWorld().getRandom().nextInt(9) < 1 + event.getFortuneLevel()) {
         event.getDrops().add(new ItemStack(Items.STICK));
       }
@@ -67,12 +67,12 @@ public final class AddExtraDrops {
 
   @SubscribeEvent
   public static void wheatDropsFibre(final BlockEvent.HarvestDropsEvent event) {
-    final IBlockState state = event.getState();
+    final BlockState state = event.getState();
 
     if(state.getBlock() == Blocks.WHEAT) {
-      final BlockCrops wheat = (BlockCrops)state.getBlock();
+      final CropsBlock wheat = (CropsBlock)state.getBlock();
 
-      if(state.get(BlockCrops.AGE) == wheat.getMaxAge()) {
+      if(state.get(CropsBlock.AGE) == wheat.getMaxAge()) {
         final int amount = event.getWorld().getRandom().nextInt(2 + event.getFortuneLevel());
 
         if(amount != 0) {
@@ -84,7 +84,7 @@ public final class AddExtraDrops {
 
   @SubscribeEvent
   public static void gravelDropsPebbles(final BlockEvent.HarvestDropsEvent event) {
-    final IBlockState state = event.getState();
+    final BlockState state = event.getState();
 
     if(state.getBlock() == Blocks.GRAVEL) {
       for(int i = 0; i < 3 + event.getFortuneLevel(); i++) {
@@ -105,7 +105,7 @@ public final class AddExtraDrops {
       return;
     }
 
-    final EntityPlayer player = event.getHarvester();
+    final PlayerEntity player = event.getHarvester();
 
     //TODO: null
     final FixToolBreakingNotFiringHarvestDropEvents.IPlayerItem cap = player.getCapability(FixToolBreakingNotFiringHarvestDropEvents.CapabilityPlayerItem.CAPABILITY, null).orElse(null);

@@ -1,12 +1,12 @@
 package lordmonoxide.gradient.items;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
@@ -26,7 +26,7 @@ public class StoneHatchet extends GradientItemWorldTool {
   @Override
   public void addInformation(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flagIn) {
     super.addInformation(stack, world, tooltip, flagIn);
-    tooltip.add(new TextComponentTranslation("item.gradient.stone_hatchet.tooltip"));
+    tooltip.add(new TranslationTextComponent("item.gradient.stone_hatchet.tooltip"));
   }
 
   @Override
@@ -35,7 +35,7 @@ public class StoneHatchet extends GradientItemWorldTool {
   }
 
   @Override
-  public int getHarvestLevel(final ItemStack stack, final ToolType toolType, @Nullable final EntityPlayer player, @Nullable final IBlockState blockState) {
+  public int getHarvestLevel(final ItemStack stack, final ToolType toolType, @Nullable final PlayerEntity player, @Nullable final BlockState blockState) {
     if(!this.toolTypes.contains(toolType)) {
       return -1;
     }

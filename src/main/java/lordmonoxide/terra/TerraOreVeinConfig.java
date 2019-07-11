@@ -1,7 +1,7 @@
 package lordmonoxide.terra;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 
 import java.util.ArrayList;
@@ -29,13 +29,13 @@ public final class TerraOreVeinConfig implements IFeatureConfig {
   }
 
   public static final class Stage {
-    public final IBlockState ore;
+    public final BlockState ore;
     public final StateFunction<Integer> minRadius;
     public final StateFunction<Integer> maxRadius;
     public final StateFunction<Float> blockDensity;
     public final StateFunction<Float> stageSpawnChance;
 
-    private Stage(final IBlockState ore, final StateFunction<Integer> minRadius, final StateFunction<Integer> maxRadius, final StateFunction<Float> blockDensity, final StateFunction<Float> stageSpawnChance) {
+    private Stage(final BlockState ore, final StateFunction<Integer> minRadius, final StateFunction<Integer> maxRadius, final StateFunction<Float> blockDensity, final StateFunction<Float> stageSpawnChance) {
       this.ore = ore;
       this.minRadius = minRadius;
       this.maxRadius = maxRadius;
@@ -45,10 +45,10 @@ public final class TerraOreVeinConfig implements IFeatureConfig {
   }
 
   public static final class Pebble {
-    public final IBlockState pebble;
+    public final BlockState pebble;
     public final float density;
 
-    private Pebble(final IBlockState pebble, final float density) {
+    private Pebble(final BlockState pebble, final float density) {
       this.pebble = pebble;
       this.density = density;
     }
@@ -103,7 +103,7 @@ public final class TerraOreVeinConfig implements IFeatureConfig {
   }
 
   public static final class StageBuilder {
-    private IBlockState ore = Blocks.STONE.getDefaultState();
+    private BlockState ore = Blocks.STONE.getDefaultState();
     private StateFunction<Integer> minRadius = state -> 0;
     private StateFunction<Integer> maxRadius = state -> 5;
     private StateFunction<Float> blockDensity = state -> 0.75f;
@@ -111,7 +111,7 @@ public final class TerraOreVeinConfig implements IFeatureConfig {
 
     private StageBuilder() { }
 
-    public StageBuilder ore(final IBlockState ore) {
+    public StageBuilder ore(final BlockState ore) {
       this.ore = ore;
       return this;
     }
@@ -158,12 +158,12 @@ public final class TerraOreVeinConfig implements IFeatureConfig {
   }
 
   public static final class PebbleBuilder {
-    private IBlockState pebble = Blocks.AIR.getDefaultState();
+    private BlockState pebble = Blocks.AIR.getDefaultState();
     private float density = 0.5f;
 
     private PebbleBuilder() { }
 
-    public PebbleBuilder pebble(final IBlockState pebble) {
+    public PebbleBuilder pebble(final BlockState pebble) {
       this.pebble = pebble;
       return this;
     }

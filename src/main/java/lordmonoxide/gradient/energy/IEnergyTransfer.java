@@ -1,6 +1,6 @@
 package lordmonoxide.gradient.energy;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public interface IEnergyTransfer extends IEnergyNode {
   /**
@@ -13,7 +13,7 @@ public interface IEnergyTransfer extends IEnergyNode {
    * @param from   The side energy is flowing from
    * @param to     The side energy is flowing to
    */
-  void transfer(final float amount, final EnumFacing from, final EnumFacing to);
+  void transfer(final float amount, final Direction from, final Direction to);
 
   float getEnergyTransferred();
   void resetEnergyTransferred();

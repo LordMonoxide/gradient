@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.items;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ToolType;
@@ -24,7 +24,7 @@ public class StonePickaxe extends GradientItemWorldTool {
   }
 
   @Override
-  public int getHarvestLevel(final ItemStack stack, final ToolType toolType, @Nullable final EntityPlayer player, @Nullable final IBlockState blockState) {
+  public int getHarvestLevel(final ItemStack stack, final ToolType toolType, @Nullable final PlayerEntity player, @Nullable final BlockState blockState) {
     if(!this.toolTypes.contains(toolType)) {
       return -1;
     }

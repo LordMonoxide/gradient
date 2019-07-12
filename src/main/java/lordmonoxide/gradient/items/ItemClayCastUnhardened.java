@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.items;
 
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.client.gui.ClayCastScreen;
+import lordmonoxide.gradient.containers.ClayCastContainer;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -52,13 +52,6 @@ public class ItemClayCastUnhardened extends BlockItem implements INamedContainer
   @Nullable
   @Override
   public Container createMenu(final int id, final PlayerInventory playerInv, final PlayerEntity player) {
-    return new DummyContainer();
-  }
-
-  private static class DummyContainer extends Container {
-    @Override
-    public boolean canInteractWith(final PlayerEntity playerIn) {
-      return true;
-    }
+    return new ClayCastContainer(id, playerInv);
   }
 }

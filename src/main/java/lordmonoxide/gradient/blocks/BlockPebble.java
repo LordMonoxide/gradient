@@ -8,7 +8,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -66,13 +65,13 @@ public class BlockPebble extends Block {
     return
       this.isAir(world.getBlockState(pos), world, pos) && (
         down.getMaterial() == Material.CLAY ||
-        down.getMaterial() == Material.GRASS ||
-        down.getMaterial() == Material.GROUND ||
+        down.getMaterial() == Material.ORGANIC ||
+        down.getMaterial() == Material.EARTH ||
         down.getMaterial() == Material.ICE ||
         down.getMaterial() == Material.PACKED_ICE ||
         down.getMaterial() == Material.ROCK ||
         down.getMaterial() == Material.SAND
-      ) && down.isTopSolid()
+      ) && down.isSolid()
     ;
   }
 
@@ -81,8 +80,7 @@ public class BlockPebble extends Block {
   @Deprecated
   public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block block, final BlockPos fromPos, final boolean isMoving) {
     if(world.isAirBlock(pos.down())) {
-      state.dropBlockAsItem(world, pos, 0);
-      world.removeBlock(pos, isMoving);
+      world.destroyBlock(pos, true);
     }
   }
 }

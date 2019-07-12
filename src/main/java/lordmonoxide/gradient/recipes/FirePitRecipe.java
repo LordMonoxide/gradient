@@ -19,11 +19,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirePitRecipe implements IRecipe {
+public class FirePitRecipe implements IRecipe<IInventory> {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
@@ -95,7 +96,7 @@ public class FirePitRecipe implements IRecipe {
         ++ingredientCount;
 
         if(this.isSimple) {
-          recipeItemHelper.accountStack(itemstack, 1);
+          recipeItemHelper.accountStack(itemstack);
         } else {
           inputStacks.add(itemstack);
         }
@@ -133,7 +134,7 @@ public class FirePitRecipe implements IRecipe {
     return this.input;
   }
 
-  public static final class Serializer implements IRecipeSerializer<FirePitRecipe> {
+  public static final class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FirePitRecipe> {
     @Override
     public FirePitRecipe read(final ResourceLocation recipeId, final JsonObject json) {
       final String group = JSONUtils.getString(json, "group", "");
@@ -187,11 +188,6 @@ public class FirePitRecipe implements IRecipe {
       }
 
       buffer.writeItemStack(recipe.output);
-    }
-
-    @Override
-    public ResourceLocation getName() {
-      return GradientRecipeTypes.FIREPIT.getId();
     }
   }
 }

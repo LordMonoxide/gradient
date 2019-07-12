@@ -4,6 +4,7 @@ import cpw.mods.modlauncher.api.INameMappingService;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.WorkbenchContainer;
@@ -69,10 +70,10 @@ public final class RecipeUtils {
   }
 
   @Nullable
-  public static <T extends IRecipe<?>> T findRecipe(final IRecipeType<T> type, final Predicate<T> match) {
-    for(final T recipe : GradientMod.getRecipeManager().getRecipes(type)) {
-      if(match.test(recipe)) {
-        return recipe;
+  public static <C extends IInventory, T extends IRecipe<C>> T findRecipe(final IRecipeType<T> type, final Predicate<T> match) {
+    for(final IRecipe<C> recipe : GradientMod.getRecipeManager().getRecipes(type).values()) {
+      if(match.test((T)recipe)) {
+        return (T)recipe;
       }
     }
 

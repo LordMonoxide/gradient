@@ -20,12 +20,13 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MixingRecipe implements IRecipe {
+public class MixingRecipe implements IRecipe<IInventory> {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
@@ -104,7 +105,7 @@ public class MixingRecipe implements IRecipe {
         ++ingredientCount;
 
         if(this.isSimple) {
-          recipeItemHelper.accountStack(itemstack, 1);
+          recipeItemHelper.accountStack(itemstack);
         } else {
           inputStacks.add(itemstack);
         }
@@ -142,7 +143,7 @@ public class MixingRecipe implements IRecipe {
     return this.input;
   }
 
-  public static final class Serializer implements IRecipeSerializer<MixingRecipe> {
+  public static final class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<MixingRecipe> {
     @Override
     public MixingRecipe read(final ResourceLocation recipeId, final JsonObject json) {
       final String group = JSONUtils.getString(json, "group", "");
@@ -195,11 +196,6 @@ public class MixingRecipe implements IRecipe {
       }
 
       buffer.writeItemStack(recipe.output);
-    }
-
-    @Override
-    public ResourceLocation getName() {
-      return GradientRecipeTypes.MIXING.getId();
     }
   }
 }

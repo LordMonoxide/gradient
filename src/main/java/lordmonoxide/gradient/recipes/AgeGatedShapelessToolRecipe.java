@@ -1,11 +1,9 @@
 package lordmonoxide.gradient.recipes;
 
 import com.google.gson.JsonObject;
-import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.crafting.IRecipe;
@@ -20,10 +18,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Random;
 
-public class AgeGatedShapelessToolRecipe implements GradientRecipe {
+public class AgeGatedShapelessToolRecipe implements IRecipe<CraftingInventory> {
   private static final Random rand = new Random();
 
   private final ShapelessRecipe recipe;
@@ -35,12 +34,12 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
   }
 
   @Override
-  public boolean matches(final IInventory inv, final World world) {
-    return AgeUtils.playerMeetsAgeRequirement((CraftingInventory)inv, this.age) && this.recipe.matches(inv, world);
+  public boolean matches(final CraftingInventory inv, final World world) {
+    return AgeUtils.playerMeetsAgeRequirement(inv, this.age) && this.recipe.matches(inv, world);
   }
 
   @Override
-  public ItemStack getCraftingResult(final IInventory inv) {
+  public ItemStack getCraftingResult(final CraftingInventory inv) {
     return this.recipe.getCraftingResult(inv);
   }
 
@@ -55,8 +54,8 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
   }
 
   @Override
-  public NonNullList<ItemStack> getRemainingItems(final IInventory inv) {
-    final NonNullList<ItemStack> remaining = GradientRecipe.super.getRemainingItems(inv);
+  public NonNullList<ItemStack> getRemainingItems(final CraftingInventory inv) {
+    final NonNullList<ItemStack> remaining = IRecipe.super.getRemainingItems(inv);
 
     for(int i = 0; i < remaining.size(); ++i) {
       final ItemStack stack = inv.getStackInSlot(i);
@@ -103,20 +102,17 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
 
   @Override
   public IRecipeType<? extends IRecipe> getType() {
-    return VanillaRecipeTypes.CRAFTING;
+    return IRecipeType.CRAFTING;
   }
 
-  @Override
   public Age getAge() {
     return this.age;
   }
 
-  public static final class Serializer implements IRecipeSerializer<AgeGatedShapelessToolRecipe> {
-    private static final ResourceLocation id = GradientMod.resource("shapeless");
-
+  public static final class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AgeGatedShapelessToolRecipe> {
     @Override
     public AgeGatedShapelessToolRecipe read(final ResourceLocation recipeId, final JsonObject json) {
-      final ShapelessRecipe recipe = RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, json);
+      final ShapelessRecipe recipe = IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, json);
       final Age age = Age.get(JSONUtils.getInt(json, "age", 1));
 
       return new AgeGatedShapelessToolRecipe(recipe, age);
@@ -124,7 +120,7 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
 
     @Override
     public AgeGatedShapelessToolRecipe read(final ResourceLocation recipeId, final PacketBuffer buffer) {
-      final ShapelessRecipe recipe = RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, buffer);
+      final ShapelessRecipe recipe = IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, buffer);
       final Age age = Age.get(buffer.readVarInt());
 
       return new AgeGatedShapelessToolRecipe(recipe, age);
@@ -132,13 +128,8 @@ public class AgeGatedShapelessToolRecipe implements GradientRecipe {
 
     @Override
     public void write(final PacketBuffer buffer, final AgeGatedShapelessToolRecipe recipe) {
-      RecipeSerializers.CRAFTING_SHAPELESS.write(buffer, recipe.recipe);
+      IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe.recipe);
       buffer.writeVarInt(recipe.age.value());
-    }
-
-    @Override
-    public ResourceLocation getName() {
-      return id;
     }
   }
 }

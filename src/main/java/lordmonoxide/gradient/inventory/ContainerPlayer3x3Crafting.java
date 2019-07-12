@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -27,14 +28,13 @@ public class ContainerPlayer3x3Crafting extends PlayerContainer {
   public ContainerPlayer3x3Crafting(final PlayerInventory playerInventory, final boolean localWorld, final PlayerEntity player) {
     super(playerInventory, localWorld, player);
 
-    this.inventorySlots = Lists.newArrayList();
-    this.craftMatrix = new CraftingInventory(this, CRAFT_SIZE, CRAFT_SIZE);
+    this.field_75181_e = new CraftingInventory(this, CRAFT_SIZE, CRAFT_SIZE);
 
-    this.addSlot(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult, 0, 154, 28));
+    this.addSlot(new CraftingResultSlot(playerInventory.player, this.field_75181_e, this.field_75179_f, 0, 154, 28));
 
     for(int x = 0; x < 2; ++x) {
       for(int y = 0; y < 2; ++y) {
-        this.craftingSlots.add(this.addSlot(new Slot(this.craftMatrix, y + x * CRAFT_SIZE, 98 + y * 18, 18 + x * 18)));
+        this.craftingSlots.add(this.addSlot(new Slot(this.field_75181_e, y + x * CRAFT_SIZE, 98 + y * 18, 18 + x * 18)));
       }
     }
 
@@ -87,12 +87,12 @@ public class ContainerPlayer3x3Crafting extends PlayerContainer {
     for(int x = 0; x < CRAFT_SIZE; ++x) {
       for(int y = 0; y < CRAFT_SIZE; ++y) {
         if(x >= 2 || y >= 2) {
-          this.craftingSlots.add(this.addSlot(new Slot(this.craftMatrix, y + x * CRAFT_SIZE, 98 + y * 18, 18 + x * 18)));
+          this.craftingSlots.add(this.addSlot(new Slot(this.field_75181_e, y + x * CRAFT_SIZE, 98 + y * 18, 18 + x * 18)));
         }
       }
     }
 
-    this.onCraftMatrixChanged(this.craftMatrix);
+    this.onCraftMatrixChanged(this.field_75181_e);
   }
 
   @Override
@@ -100,13 +100,13 @@ public class ContainerPlayer3x3Crafting extends PlayerContainer {
     super.onContainerClosed(player);
 
     for(int i = 0; i < CRAFT_SIZE * CRAFT_SIZE; i++) {
-      final ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
+      final ItemStack itemstack = this.field_75181_e.removeStackFromSlot(i);
 
       if(!itemstack.isEmpty()) {
         player.dropItem(itemstack, false);
       }
     }
 
-    this.craftResult.clear();
+    this.field_75179_f.clear();
   }
 }

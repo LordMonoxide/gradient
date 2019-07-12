@@ -12,6 +12,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -78,30 +80,32 @@ public class ItemClayBucket extends Item {
     final FluidStack fluidStack = this.getFluid(itemstack);
 
     // clicked on a block?
-    final RayTraceResult mop = this.rayTrace(world, player, fluidStack == null);
+    final RayTraceResult trace = rayTrace(world, player, fluidStack == null ? RayTraceContext.FluidMode.NONE : RayTraceContext.FluidMode.SOURCE_ONLY);
 
     if(fluidStack == null) {
-      final ActionResult<ItemStack> ret = ForgeEventFactory.onBucketUse(player, world, itemstack, mop);
+      final ActionResult<ItemStack> ret = ForgeEventFactory.onBucketUse(player, world, itemstack, trace);
 
       if(ret != null) {
         return ret;
       }
     }
 
-    if(mop == null || mop.getType() != RayTraceResult.Type.BLOCK) {
+    if(trace.getType() != RayTraceResult.Type.BLOCK) {
       return ActionResult.newResult(ActionResultType.PASS, itemstack);
     }
 
-    final BlockPos clickPos = mop.getBlockPos();
+    final BlockRayTraceResult mop = (BlockRayTraceResult)trace;
+
+    final BlockPos clickPos = mop.getPos();
     // can we place liquid there?
     if(world.isBlockModifiable(player, clickPos)) {
       // the block adjacent to the side we clicked on
-      final BlockPos targetPos = clickPos.offset(mop.sideHit);
+      final BlockPos targetPos = clickPos.offset(mop.getFace());
 
       // can the player place there?
-      if(player.canPlayerEdit(targetPos, mop.sideHit, itemstack)) {
+      if(player.canPlayerEdit(targetPos, mop.getFace(), itemstack)) {
         // try placing liquid
-        final FluidActionResult result = FluidUtil.tryPlaceFluid(player, world, targetPos, itemstack, fluidStack);
+        final FluidActionResult result = FluidUtil.tryPlaceFluid(player, world, player.getActiveHand(), targetPos, itemstack, fluidStack);
         if(result.isSuccess() && !player.isCreative()) {
           itemstack.shrink(1);
           final ItemStack drained = result.getResult();
@@ -132,23 +136,25 @@ public class ItemClayBucket extends Item {
 
     // not for us to handle
     final ItemStack emptyBucket = event.getEmptyBucket();
-    if(emptyBucket.isEmpty() || emptyBucket.getItem() != GradientItems.CLAY_BUCKET) {
+    if(emptyBucket.getItem() != GradientItems.CLAY_BUCKET) {
       return;
     }
 
     // needs to target a block
-    final RayTraceResult target = event.getTarget();
-    if(target == null || target.getType() != RayTraceResult.Type.BLOCK) {
+    final RayTraceResult mop = event.getTarget();
+    if(mop.getType() != RayTraceResult.Type.BLOCK) {
       return;
     }
 
+    final BlockRayTraceResult target = (BlockRayTraceResult)mop;
+
     final World world = event.getWorld();
-    final BlockPos pos = target.getBlockPos();
+    final BlockPos pos = target.getPos();
 
     final ItemStack singleBucket = emptyBucket.copy();
     singleBucket.setCount(1);
 
-    final FluidActionResult filledResult = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), world, pos, target.sideHit);
+    final FluidActionResult filledResult = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), world, pos, target.getFace());
     if(filledResult.isSuccess()) {
       event.setResult(Event.Result.ALLOW);
       event.setFilledBucket(filledResult.getResult());

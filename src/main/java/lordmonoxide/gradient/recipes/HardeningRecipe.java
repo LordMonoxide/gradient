@@ -18,11 +18,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.RecipeMatcher;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HardeningRecipe implements IRecipe {
+public class HardeningRecipe implements IRecipe<IInventory> {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
@@ -82,7 +83,7 @@ public class HardeningRecipe implements IRecipe {
     inputStacks.clear();
 
     if(this.isSimple) {
-      recipeItemHelper.accountStack(stack, 1);
+      recipeItemHelper.accountStack(stack);
       return recipeItemHelper.canCraft(this, null);
     }
 
@@ -115,7 +116,7 @@ public class HardeningRecipe implements IRecipe {
     return this.input;
   }
 
-  public static final class Serializer implements IRecipeSerializer<HardeningRecipe> {
+  public static final class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<HardeningRecipe> {
     @Override
     public HardeningRecipe read(final ResourceLocation recipeId, final JsonObject json) {
       final String group = JSONUtils.getString(json, "group", "");
@@ -147,11 +148,6 @@ public class HardeningRecipe implements IRecipe {
       buffer.writeVarInt(recipe.ticks);
       recipe.input.get(0).write(buffer);
       buffer.writeItemStack(recipe.output);
-    }
-
-    @Override
-    public ResourceLocation getName() {
-      return GradientRecipeTypes.HARDENING.getId();
     }
   }
 }

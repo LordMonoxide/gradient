@@ -6,6 +6,7 @@ import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FuelRecipe;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.ParticleTypes;
@@ -22,6 +23,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class TileBronzeFurnace extends HeatProducer {
   @CapabilityInject(IItemHandler.class)
@@ -237,16 +239,20 @@ public class TileBronzeFurnace extends HeatProducer {
       final int slot = tag.getInt("slot");
 
       if(slot < FUEL_SLOTS_COUNT) {
-        final FuelRecipe recipe = (FuelRecipe)GradientMod.getRecipeManager().getRecipe(new ResourceLocation(tag.getString("recipe")));
-        final Age age1 = Age.get(tag.getInt("age"));
-        final int ticks = tag.getInt("ticks");
-        final boolean burning = tag.getBoolean("burning");
+        final Optional<? extends IRecipe<?>> r = GradientMod.getRecipeManager().getRecipe(new ResourceLocation(tag.getString("recipe")));
 
-        final Fuel fuel = new Fuel(recipe, age1);
-        fuel.burnTicks = ticks;
-        fuel.isBurning = burning;
+        r.ifPresent(r2 -> {
+          final FuelRecipe recipe = (FuelRecipe)r2;
+          final Age age1 = Age.get(tag.getInt("age"));
+          final int ticks = tag.getInt("ticks");
+          final boolean burning = tag.getBoolean("burning");
 
-        this.fuels[slot] = fuel;
+          final Fuel fuel = new Fuel(recipe, age1);
+          fuel.burnTicks = ticks;
+          fuel.isBurning = burning;
+
+          this.fuels[slot] = fuel;
+        });
       }
     }
 

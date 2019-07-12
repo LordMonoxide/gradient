@@ -15,11 +15,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.RecipeMatcher;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FuelRecipe implements IRecipe {
+public class FuelRecipe implements IRecipe<IInventory> {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
@@ -74,7 +75,7 @@ public class FuelRecipe implements IRecipe {
     inputStacks.clear();
 
     if(this.isSimple) {
-      recipeItemHelper.accountStack(stack, 1);
+      recipeItemHelper.accountStack(stack);
       return recipeItemHelper.canCraft(this, null);
     }
 
@@ -104,7 +105,7 @@ public class FuelRecipe implements IRecipe {
     return this.input;
   }
 
-  public static final class Serializer implements IRecipeSerializer<FuelRecipe> {
+  public static final class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FuelRecipe> {
     @Override
     public FuelRecipe read(final ResourceLocation recipeId, final JsonObject json) {
       final String group = JSONUtils.getString(json, "group", "");
@@ -137,11 +138,6 @@ public class FuelRecipe implements IRecipe {
       buffer.writeFloat(recipe.burnTemp);
       buffer.writeFloat(recipe.heatPerSec);
       recipe.input.get(0).write(buffer);
-    }
-
-    @Override
-    public ResourceLocation getName() {
-      return GradientRecipeTypes.FUEL.getId();
     }
   }
 }

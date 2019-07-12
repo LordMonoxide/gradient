@@ -9,6 +9,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -73,14 +74,16 @@ public class Waterskin extends ItemFluidContainer {
     final FluidStack fluidStack = getFluid(itemstack);
 
     if(fluidStack == null) {
-      final RayTraceResult target = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
+      final RayTraceResult trace = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
 
-      if(target == null || target.getType() != RayTraceResult.Type.BLOCK) {
+      if(trace.getType() != RayTraceResult.Type.BLOCK) {
         return ActionResult.newResult(ActionResultType.PASS, itemstack);
       }
 
-      final BlockPos pos = target.getBlockPos();
-      final FluidActionResult filledResult = FluidUtil.tryPickUpFluid(itemstack, player, world, pos, target.sideHit);
+      final BlockRayTraceResult target = (BlockRayTraceResult)trace;
+
+      final BlockPos pos = target.getPos();
+      final FluidActionResult filledResult = FluidUtil.tryPickUpFluid(itemstack, player, world, pos, target.getFace());
 
       if(filledResult.isSuccess()) {
         final ItemStack filledStack = filledResult.getResult().copy();

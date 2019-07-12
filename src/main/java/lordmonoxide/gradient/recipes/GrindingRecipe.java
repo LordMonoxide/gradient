@@ -19,11 +19,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrindingRecipe implements IRecipe {
+public class GrindingRecipe implements IRecipe<IInventory> {
   private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
   private static final List<ItemStack> inputStacks = new ArrayList<>();
 
@@ -95,7 +96,7 @@ public class GrindingRecipe implements IRecipe {
         ++ingredientCount;
 
         if(this.isSimple) {
-          recipeItemHelper.accountStack(itemstack, 1);
+          recipeItemHelper.accountStack(itemstack);
         } else {
           inputStacks.add(itemstack);
         }
@@ -133,7 +134,7 @@ public class GrindingRecipe implements IRecipe {
     return this.input;
   }
 
-  public static final class Serializer implements IRecipeSerializer<GrindingRecipe> {
+  public static final class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<GrindingRecipe> {
     @Override
     public GrindingRecipe read(final ResourceLocation recipeId, final JsonObject json) {
       final String group = JSONUtils.getString(json, "group", "");
@@ -186,11 +187,6 @@ public class GrindingRecipe implements IRecipe {
       }
 
       buffer.writeItemStack(recipe.output);
-    }
-
-    @Override
-    public ResourceLocation getName() {
-      return GradientRecipeTypes.GRINDING.getId();
     }
   }
 }

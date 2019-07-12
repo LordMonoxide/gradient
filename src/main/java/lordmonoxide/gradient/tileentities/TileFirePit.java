@@ -509,16 +509,18 @@ public class TileFirePit extends HeatProducer {
       final int slot = tag.getInt("slot");
 
       if(slot < FUEL_SLOTS_COUNT) {
-        final FuelRecipe recipe = (FuelRecipe)GradientMod.getRecipeManager().getRecipe(new ResourceLocation(tag.getString("recipe")));
-        final Age age1 = Age.get(tag.getInt("age"));
-        final int ticks = tag.getInt("ticks");
-        final boolean burning = tag.getBoolean("burning");
+        GradientMod.getRecipeManager().getRecipe(new ResourceLocation(tag.getString("recipe"))).ifPresent(r -> {
+          final FuelRecipe recipe = (FuelRecipe)r;
+          final Age age1 = Age.get(tag.getInt("age"));
+          final int ticks = tag.getInt("ticks");
+          final boolean burning = tag.getBoolean("burning");
 
-        final Fuel fuel = new Fuel(recipe, age1);
-        fuel.burnTicks = ticks;
-        fuel.isBurning = burning;
+          final Fuel fuel = new Fuel(recipe, age1);
+          fuel.burnTicks = ticks;
+          fuel.isBurning = burning;
 
-        this.fuels[slot] = fuel;
+          this.fuels[slot] = fuel;
+        });
       }
     }
 
@@ -538,14 +540,17 @@ public class TileFirePit extends HeatProducer {
       final CompoundNBT hardeningNbt = (CompoundNBT)tag;
 
       final BlockPos pos = NBTUtil.readBlockPos(hardeningNbt.getCompound("pos"));
-      final HardeningRecipe recipe = (HardeningRecipe)GradientMod.getRecipeManager().getRecipe(new ResourceLocation(hardeningNbt.getString("recipe")));
-      final Age age1 = Age.get(hardeningNbt.getInt("age"));
-      final int ticks = hardeningNbt.getInt("ticks");
 
-      final Hardening hardening = new Hardening(recipe, age1);
-      hardening.hardenTicks = ticks;
+      GradientMod.getRecipeManager().getRecipe(new ResourceLocation(hardeningNbt.getString("recipe"))).ifPresent(r -> {
+        final HardeningRecipe recipe = (HardeningRecipe)r;
+        final Age age1 = Age.get(hardeningNbt.getInt("age"));
+        final int ticks = hardeningNbt.getInt("ticks");
 
-      this.hardenables.put(pos, hardening);
+        final Hardening hardening = new Hardening(recipe, age1);
+        hardening.hardenTicks = ticks;
+
+        this.hardenables.put(pos, hardening);
+      });
     }
 
     this.updateRecipe();

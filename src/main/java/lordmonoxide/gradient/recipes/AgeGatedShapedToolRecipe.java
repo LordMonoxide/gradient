@@ -1,11 +1,9 @@
 package lordmonoxide.gradient.recipes;
 
 import com.google.gson.JsonObject;
-import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.crafting.IRecipe;
@@ -20,10 +18,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Random;
 
-public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
+public class AgeGatedShapedToolRecipe implements IShapedRecipe<CraftingInventory> {
   private static final Random rand = new Random();
 
   private final ShapedRecipe recipe;
@@ -51,7 +50,7 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
 
   @Override
   public IRecipeType<? extends IRecipe> getType() {
-    return VanillaRecipeTypes.CRAFTING;
+    return IRecipeType.CRAFTING;
   }
 
   @Override
@@ -70,17 +69,17 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
   }
 
   @Override
-  public boolean matches(final IInventory inv, final World world) {
-    return AgeUtils.playerMeetsAgeRequirement((CraftingInventory)inv, this.age) && this.recipe.matches(inv, world);
+  public boolean matches(final CraftingInventory inv, final World world) {
+    return AgeUtils.playerMeetsAgeRequirement(inv, this.age) && this.recipe.matches(inv, world);
   }
 
   @Override
-  public ItemStack getCraftingResult(final IInventory inv) {
+  public ItemStack getCraftingResult(final CraftingInventory inv) {
     return this.recipe.getCraftingResult(inv);
   }
 
   @Override
-  public NonNullList<ItemStack> getRemainingItems(final IInventory inv) {
+  public NonNullList<ItemStack> getRemainingItems(final CraftingInventory inv) {
     final NonNullList<ItemStack> list = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 
     for(int i = 0; i < list.size(); ++i) {
@@ -112,17 +111,14 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
     return this.recipe.getRecipeHeight();
   }
 
-  @Override
   public Age getAge() {
     return this.age;
   }
 
-  public static final class Serializer implements IRecipeSerializer<AgeGatedShapedToolRecipe> {
-    private static final ResourceLocation id = GradientMod.resource("shaped");
-
+  public static final class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AgeGatedShapedToolRecipe> {
     @Override
     public AgeGatedShapedToolRecipe read(final ResourceLocation recipeId, final JsonObject json) {
-      final ShapedRecipe recipe = RecipeSerializers.CRAFTING_SHAPED.read(recipeId, json);
+      final ShapedRecipe recipe = IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, json);
       final Age age = Age.get(JSONUtils.getInt(json, "age", 1));
 
       return new AgeGatedShapedToolRecipe(recipe, age);
@@ -130,7 +126,7 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
 
     @Override
     public AgeGatedShapedToolRecipe read(final ResourceLocation recipeId, final PacketBuffer buffer) {
-      final ShapedRecipe recipe = RecipeSerializers.CRAFTING_SHAPED.read(recipeId, buffer);
+      final ShapedRecipe recipe = IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer);
       final Age age = Age.get(buffer.readVarInt());
 
       return new AgeGatedShapedToolRecipe(recipe, age);
@@ -138,13 +134,8 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe, GradientRecipe {
 
     @Override
     public void write(final PacketBuffer buffer, final AgeGatedShapedToolRecipe recipe) {
-      RecipeSerializers.CRAFTING_SHAPED.write(buffer, recipe.recipe);
+      IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe.recipe);
       buffer.writeVarInt(recipe.age.value());
-    }
-
-    @Override
-    public ResourceLocation getName() {
-      return id;
     }
   }
 }

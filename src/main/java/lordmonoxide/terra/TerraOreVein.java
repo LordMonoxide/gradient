@@ -7,6 +7,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
@@ -176,7 +177,7 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
     final ChunkPos chunkPos = new ChunkPos(pos);
 
     if(!world.isChunkLoaded(chunkPos.x, chunkPos.z, false)) {
-      final DeferredGenerationStorage deferredOres = DeferredGenerationStorage.get(world.getWorld());
+      final DeferredGenerationStorage deferredOres = DeferredGenerationStorage.get((ServerWorld)world.getWorld());
       deferredOres.getOres(chunkPos).put(pos.toImmutable(), ore);
       deferredOres.markDirty();
       return;

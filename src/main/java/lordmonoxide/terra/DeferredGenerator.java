@@ -17,9 +17,10 @@ import java.util.Random;
 import java.util.function.Function;
 
 public class DeferredGenerator extends Feature<NoFeatureConfig> {
-  //TODO
-  public DeferredGenerator(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
-    super(configFactoryIn);
+  public static final DeferredGenerator INSTANCE = new DeferredGenerator(NoFeatureConfig::deserialize);
+
+  public DeferredGenerator(final Function<Dynamic<?>, ? extends NoFeatureConfig> configFactory) {
+    super(configFactory);
   }
 
   @Override

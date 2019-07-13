@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.containers.ClayCastContainer;
-import lordmonoxide.gradient.containers.ClayCrucibleContainer;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.items.ItemClayCastUnhardened;
 import lordmonoxide.gradient.network.PacketSwitchCast;
@@ -49,16 +48,16 @@ public class ClayCastScreen extends GradientContainerScreen<ClayCastContainer> {
       x += 22;
 
       if(this.held.cast == cast) {
-        button.enabled = false;
+        button.active = false;
         this.selectedCast = (ButtonItem)button;
       }
     }
   }
 
   private Button addButtonForTool(final GradientCasts.Cast cast, final int x, final int y) {
-    return this.addButton(new ButtonItem(cast.id, GradientItems.castItem(cast, Metals.COPPER, 1), x, y, button -> {
-      ClayCastScreen.this.selectedCast.enabled = true;
-      button.enabled = false;
+    return this.addButton(new ButtonItem(GradientItems.castItem(cast, Metals.COPPER, 1), x, y, button -> {
+      ClayCastScreen.this.selectedCast.active = true;
+      button.active = false;
       ClayCastScreen.this.selectedCast = (ButtonItem)button;
 
       PacketSwitchCast.send(GradientCasts.getCast(cast.id));

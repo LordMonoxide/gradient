@@ -28,7 +28,6 @@ public abstract class GradientContainerScreen<T extends GradientContainer> exten
 
   @Override
   public void render(final int mouseX, final int mouseY, final float partialTicks) {
-    this.drawDefaultBackground();
     super.render(mouseX, mouseY, partialTicks);
     this.renderToolTips(mouseX, mouseY);
     this.renderHoveredToolTip(mouseX, mouseY);
@@ -83,10 +82,10 @@ public abstract class GradientContainerScreen<T extends GradientContainer> exten
         final double yE = Math.min(yS + scale, y + height);
         final double vE = vS + (yE - yS) / scale * spriteHeight;
 
-        buffer.pos(xS, yS, this.zLevel).tex(uS, vS).color(r, g, b, a).endVertex();
-        buffer.pos(xS, yE, this.zLevel).tex(uS, vE).color(r, g, b, a).endVertex();
-        buffer.pos(xE, yE, this.zLevel).tex(uE, vE).color(r, g, b, a).endVertex();
-        buffer.pos(xE, yS, this.zLevel).tex(uE, vS).color(r, g, b, a).endVertex();
+        buffer.pos(xS, yS, this.blitOffset).tex(uS, vS).color(r, g, b, a).endVertex();
+        buffer.pos(xS, yE, this.blitOffset).tex(uS, vE).color(r, g, b, a).endVertex();
+        buffer.pos(xE, yE, this.blitOffset).tex(uE, vE).color(r, g, b, a).endVertex();
+        buffer.pos(xE, yS, this.blitOffset).tex(uE, vS).color(r, g, b, a).endVertex();
       }
     }
 
@@ -96,8 +95,8 @@ public abstract class GradientContainerScreen<T extends GradientContainer> exten
   protected class ButtonItem extends Button {
     public final ItemStack item;
 
-    public ButtonItem(final int id, final ItemStack item, final int x, final int y, final IPressable onPress) {
-      super(id, x + GradientContainerScreen.this.guiLeft, y + GradientContainerScreen.this.guiTop, 20, 20, onPress);
+    public ButtonItem(final ItemStack item, final int x, final int y, final IPressable onPress) {
+      super(x + GradientContainerScreen.this.guiLeft, y + GradientContainerScreen.this.guiTop, 20, 20, "", onPress);
       this.item = item;
     }
 
@@ -106,7 +105,7 @@ public abstract class GradientContainerScreen<T extends GradientContainer> exten
       super.render(mouseX, mouseY, partialTicks);
 
       if(this.visible) {
-        GradientContainerScreen.this.itemRender.renderItemAndEffectIntoGUI(this.item, this.x + 2, this.y + 2);
+        GradientContainerScreen.this.itemRenderer.renderItemAndEffectIntoGUI(this.item, this.x + 2, this.y + 2);
       }
     }
   }

@@ -197,8 +197,6 @@ public class TileClayCrucible extends HeatSinker {
   private void updateLight() {
     if(this.lastLight != this.getLightLevel()) {
       this.world.markForRerender(this.pos);
-      this.world.checkLight(this.pos);
-
       this.lastLight = this.getLightLevel();
     }
   }

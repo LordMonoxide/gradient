@@ -2,6 +2,7 @@ package lordmonoxide.gradient.tileentities;
 
 import lordmonoxide.gradient.GradientIds;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,21 +42,21 @@ public final class GradientTileEntities {
 
       //TODO: datafixer (see https://github.com/progwml6/ironchest/blob/7ecd01921cd0466b6075b78fedb81bc9d70d8207/src/main/java/com/progwml6/ironchest/common/tileentity/IronChestEntityType.java#L91)
 
-      registry.register(TileEntityType.Builder.create(TileFirePit::new).build(null).setRegistryName(GradientIds.FIRE_PIT));
-      registry.register(TileEntityType.Builder.create(TileBellows::new).build(null).setRegistryName(GradientIds.BELLOWS));
-      registry.register(TileEntityType.Builder.create(TileManualGrinder::new).build(null).setRegistryName(GradientIds.GRINDSTONE));
-      registry.register(TileEntityType.Builder.create(TileMixingBasin::new).build(null).setRegistryName(GradientIds.MIXING_BASIN));
-      registry.register(TileEntityType.Builder.create(TileDryingRack::new).build(null).setRegistryName(GradientIds.DRYING_RACK));
-      registry.register(TileEntityType.Builder.create(TileClayCrucible::new).build(null).setRegistryName(GradientIds.CLAY_CRUCIBLE_HARDENED));
-      registry.register(TileEntityType.Builder.create(TileClayOven::new).build(null).setRegistryName(GradientIds.CLAY_OVEN_HARDENED));
-      registry.register(TileEntityType.Builder.create(TileHandCrank::new).build(null).setRegistryName(GradientIds.HAND_CRANK));
-      registry.register(TileEntityType.Builder.create(TileFlywheel::new).build(null).setRegistryName(GradientIds.FLYWHEEL));
-      registry.register(TileEntityType.Builder.create(TileWoodenAxle::new).build(null).setRegistryName(GradientIds.WOODEN_AXLE));
-      registry.register(TileEntityType.Builder.create(TileWoodenGearbox::new).build(null).setRegistryName(GradientIds.WOODEN_GEARBOX));
-      registry.register(TileEntityType.Builder.create(TileBronzeFurnace::new).build(null).setRegistryName(GradientIds.BRONZE_FURNACE));
-      registry.register(TileEntityType.Builder.create(TileBronzeBoiler::new).build(null).setRegistryName(GradientIds.BRONZE_BOILER));
-      registry.register(TileEntityType.Builder.create(TileBronzeOven::new).build(null).setRegistryName(GradientIds.BRONZE_OVEN));
-      registry.register(TileEntityType.Builder.create(TileBronzeGrinder::new).build(null).setRegistryName(GradientIds.BRONZE_GRINDER));
+      registry.register(TileEntityType.Builder.create(TileFirePit::new, GradientBlocks.FIRE_PIT).build(null).setRegistryName(GradientIds.FIRE_PIT));
+      registry.register(TileEntityType.Builder.create(TileBellows::new, GradientBlocks.BELLOWS).build(null).setRegistryName(GradientIds.BELLOWS));
+      registry.register(TileEntityType.Builder.create(TileManualGrinder::new, GradientBlocks.GRINDSTONE).build(null).setRegistryName(GradientIds.GRINDSTONE));
+      registry.register(TileEntityType.Builder.create(TileMixingBasin::new, GradientBlocks.MIXING_BASIN).build(null).setRegistryName(GradientIds.MIXING_BASIN));
+      registry.register(TileEntityType.Builder.create(TileDryingRack::new, GradientBlocks.DRYING_RACK).build(null).setRegistryName(GradientIds.DRYING_RACK));
+      registry.register(TileEntityType.Builder.create(TileClayCrucible::new, GradientBlocks.CLAY_CRUCIBLE_HARDENED).build(null).setRegistryName(GradientIds.CLAY_CRUCIBLE_HARDENED));
+      registry.register(TileEntityType.Builder.create(TileClayOven::new, GradientBlocks.CLAY_OVEN_HARDENED).build(null).setRegistryName(GradientIds.CLAY_OVEN_HARDENED));
+      registry.register(TileEntityType.Builder.create(TileHandCrank::new, GradientBlocks.HAND_CRANK).build(null).setRegistryName(GradientIds.HAND_CRANK));
+      registry.register(TileEntityType.Builder.create(TileFlywheel::new, GradientBlocks.FLYWHEEL).build(null).setRegistryName(GradientIds.FLYWHEEL));
+      registry.register(TileEntityType.Builder.create(TileWoodenAxle::new, GradientBlocks.WOODEN_AXLE).build(null).setRegistryName(GradientIds.WOODEN_AXLE));
+      registry.register(TileEntityType.Builder.create(TileWoodenGearbox::new, GradientBlocks.WOODEN_GEARBOX).build(null).setRegistryName(GradientIds.WOODEN_GEARBOX));
+      registry.register(TileEntityType.Builder.create(TileBronzeFurnace::new, GradientBlocks.BRONZE_FURNACE).build(null).setRegistryName(GradientIds.BRONZE_FURNACE));
+      registry.register(TileEntityType.Builder.create(TileBronzeBoiler::new, GradientBlocks.BRONZE_BOILER).build(null).setRegistryName(GradientIds.BRONZE_BOILER));
+      registry.register(TileEntityType.Builder.create(TileBronzeOven::new, GradientBlocks.BRONZE_OVEN).build(null).setRegistryName(GradientIds.BRONZE_OVEN));
+      registry.register(TileEntityType.Builder.create(TileBronzeGrinder::new, GradientBlocks.BRONZE_GRINDER).build(null).setRegistryName(GradientIds.BRONZE_GRINDER));
     }
   }
 }

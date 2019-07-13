@@ -1,17 +1,18 @@
 package lordmonoxide.gradient.integrations.jei;
 
-import lordmonoxide.gradient.recipes.GradientRecipe;
+import lordmonoxide.gradient.recipes.AgeRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class ShapelessAgeCraftingExtension<T extends GradientRecipe> implements ICraftingCategoryExtension {
+public class ShapelessAgeCraftingExtension<T extends IRecipe & AgeRecipe> implements ICraftingCategoryExtension {
   protected final T recipe;
 
   public ShapelessAgeCraftingExtension(final T recipe) {

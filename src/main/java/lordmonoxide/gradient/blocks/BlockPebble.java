@@ -1,14 +1,10 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -34,6 +30,7 @@ public class BlockPebble extends Block {
     this.metal = metal;
   }
 
+/*TODO pebble drops
   @Override
   public void getDrops(final BlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
     for(int i = 0; i < world.rand.nextInt(2); i++) {
@@ -50,6 +47,7 @@ public class BlockPebble extends Block {
       }
     }
   }
+*/
 
   @Override
   @SuppressWarnings("deprecation")

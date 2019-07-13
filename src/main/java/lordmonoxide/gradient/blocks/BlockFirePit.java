@@ -17,16 +17,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.IItemProvider;
 import net.minecraft.util.Mirror;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -43,7 +40,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MOD_ID)
 public class BlockFirePit extends HeatSinkerBlock {
@@ -55,25 +51,6 @@ public class BlockFirePit extends HeatSinkerBlock {
   public BlockFirePit() {
     super(Properties.create(Material.WOOD, MaterialColor.RED).hardnessAndResistance(1.0f, 5.0f));
     this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(HAS_FURNACE, false));
-  }
-
-  @Override
-  public int getItemsToDropCount(final BlockState state, final int fortune, final World world, final BlockPos pos, final Random random) {
-    return random.nextInt(3) + 2;
-  }
-
-  @Override
-  public IItemProvider getItemDropped(final BlockState state, final World world, final BlockPos pos, final int fortune) {
-    return Items.STICK;
-  }
-
-  @Override
-  public void getDrops(final BlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
-    super.getDrops(state, drops, world, pos, fortune);
-
-    if(state.get(HAS_FURNACE)) {
-      drops.add(new ItemStack(GradientBlocks.CLAY_FURNACE_HARDENED));
-    }
   }
 
   @SuppressWarnings("deprecation")

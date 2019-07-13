@@ -33,7 +33,7 @@ public class BronzeFurnaceScreen extends GradientContainerScreen<BronzeFurnaceCo
   @Override
   public void init() {
     super.init();
-    this.addButton(new ButtonItem(0, Items.FLINT_AND_STEEL.getDefaultInstance(), 92, 22, button -> PacketLightBronzeFurnace.send(BronzeFurnaceScreen.this.furnace.getPos())));
+    this.addButton(new ButtonItem(Items.FLINT_AND_STEEL.getDefaultInstance(), 92, 22, button -> PacketLightBronzeFurnace.send(BronzeFurnaceScreen.this.furnace.getPos())));
   }
 
   @Override
@@ -53,7 +53,7 @@ public class BronzeFurnaceScreen extends GradientContainerScreen<BronzeFurnaceCo
         final int y = BronzeFurnaceContainer.FUEL_SLOTS_Y + slot / 3 * (GradientContainer.SLOT_Y_SPACING + 2);
         final float percent = this.furnace.getBurningFuel(slot).burnPercent();
 
-        drawRect(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
+        fill(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
       }
     }
 

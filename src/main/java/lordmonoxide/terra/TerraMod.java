@@ -4,6 +4,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -22,7 +23,7 @@ public class TerraMod {
 
   private void setup(final FMLCommonSetupEvent event) {
     for(final Biome biome : Biome.BIOMES) {
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(new DeferredGenerator(), IFeatureConfig.NO_FEATURE_CONFIG, Biome.PASSTHROUGH, IPlacementConfig.NO_PLACEMENT_CONFIG));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(DeferredGenerator.INSTANCE, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));
     }
   }
 }

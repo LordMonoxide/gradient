@@ -6,7 +6,6 @@ import lordmonoxide.gradient.client.gui.BronzeBoilerScreen;
 import lordmonoxide.gradient.client.gui.BronzeFurnaceScreen;
 import lordmonoxide.gradient.client.gui.BronzeGrinderScreen;
 import lordmonoxide.gradient.client.gui.BronzeOvenScreen;
-import lordmonoxide.gradient.client.gui.ClayCastScreen;
 import lordmonoxide.gradient.client.gui.ClayCrucibleScreen;
 import lordmonoxide.gradient.containers.GradientContainers;
 import lordmonoxide.gradient.energy.CapabilityEnergy;
@@ -115,7 +114,7 @@ public class GradientMod {
   private void setupClient(final FMLClientSetupEvent event) {
     logger.info("------------------- SETUP CLIENT -------------------");
 
-    ScreenManager.registerFactory(GradientContainers.CLAY_CAST, ClayCastScreen::new);
+//TODO    ScreenManager.registerFactory(GradientContainers.CLAY_CAST, ClayCastScreen::new);
     ScreenManager.registerFactory(GradientContainers.CLAY_CRUCIBLE, ClayCrucibleScreen::new);
     ScreenManager.registerFactory(GradientContainers.BRONZE_BOILER, BronzeBoilerScreen::new);
     ScreenManager.registerFactory(GradientContainers.BRONZE_FURNACE, BronzeFurnaceScreen::new);

@@ -52,7 +52,7 @@ public class ClayCrucibleScreen extends GradientContainerScreen<ClayCrucibleCont
         final int y = ClayCrucibleContainer.METAL_SLOTS_Y + (slot / 5) * (GradientContainer.SLOT_Y_SPACING + 2);
         final float percent = this.te.getMeltingMetal(slot).meltPercent();
 
-        drawRect(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
+        fill(x, (int)(y + percent * 16), x + 2, y + 16, 0xFF01FE00);
       }
     }
 

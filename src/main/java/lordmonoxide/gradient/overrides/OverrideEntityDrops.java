@@ -40,7 +40,7 @@ public final class OverrideEntityDrops {
   private OverrideEntityDrops() { }
 
   @ObjectHolder("quark:tallow")
-  private static final Item TALLOW = null;
+  private static Item TALLOW;
 
   @SubscribeEvent
   public static void addHideDrops(final LivingDropsEvent event) {

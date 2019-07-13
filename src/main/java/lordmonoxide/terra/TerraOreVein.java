@@ -1,5 +1,6 @@
 package lordmonoxide.terra;
 
+import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tags.BlockTags;
@@ -22,9 +23,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
 
 public class TerraOreVein extends Feature<TerraOreVeinConfig> {
   private static final float PI = (float)Math.PI;
+
+  public static final TerraOreVein INSTANCE = new TerraOreVein(TerraOreVeinConfig::deserialize);
+
+  public TerraOreVein(final Function<Dynamic<?>, ? extends TerraOreVeinConfig> config) {
+    super(config);
+  }
 
   //TODO: handle this predicate better... needs to be configurable, but still work with deferred gen
   static boolean stonePredicate(@Nullable final BlockState state) {
@@ -148,9 +156,9 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
     final int chunkX = x >> 4;
     final int chunkZ = z >> 4;
 
-    if(!world.isChunkLoaded(chunkX, chunkZ, false)) {
+    if(!world.chunkExists(chunkX, chunkZ)) {
       final ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
-      final DeferredGenerationStorage deferredOres = DeferredGenerationStorage.get(world.getWorld());
+      final DeferredGenerationStorage deferredOres = DeferredGenerationStorage.get((ServerWorld)world.getWorld());
       deferredOres.getOres(chunkPos).put(new BlockPos(x, 0, z), pebble);
       deferredOres.markDirty();
       return;
@@ -176,7 +184,7 @@ public class TerraOreVein extends Feature<TerraOreVeinConfig> {
 
     final ChunkPos chunkPos = new ChunkPos(pos);
 
-    if(!world.isChunkLoaded(chunkPos.x, chunkPos.z, false)) {
+    if(!world.chunkExists(chunkPos.x, chunkPos.z)) {
       final DeferredGenerationStorage deferredOres = DeferredGenerationStorage.get((ServerWorld)world.getWorld());
       deferredOres.getOres(chunkPos).put(pos.toImmutable(), ore);
       deferredOres.markDirty();

@@ -6,6 +6,7 @@ import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -22,7 +23,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Random;
 
-public class AgeGatedShapedToolRecipe implements IShapedRecipe<CraftingInventory> {
+public class AgeGatedShapedToolRecipe implements ICraftingRecipe, IShapedRecipe<CraftingInventory>, AgeRecipe {
   private static final Random rand = new Random();
 
   private final ShapedRecipe recipe;
@@ -111,6 +112,7 @@ public class AgeGatedShapedToolRecipe implements IShapedRecipe<CraftingInventory
     return this.recipe.getRecipeHeight();
   }
 
+  @Override
   public Age getAge() {
     return this.age;
   }

@@ -1,21 +1,17 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientMaterials;
-import lordmonoxide.gradient.items.GradientItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -48,16 +44,6 @@ public class BlockClayBucket extends Block {
     if(!this.hardened) {
       tooltip.add(new TranslationTextComponent("unhardened_clay.tooltip"));
     }
-  }
-
-  @Override
-  public void getDrops(final BlockState state, final NonNullList<ItemStack> drops, final World world, final BlockPos pos, final int fortune) {
-    if(!this.hardened) {
-      drops.add(new ItemStack(super.getItemDropped(state, world, pos, fortune)));
-      return;
-    }
-
-    drops.add(new ItemStack(GradientItems.CLAY_BUCKET));
   }
 
   @SuppressWarnings("deprecation")

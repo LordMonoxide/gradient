@@ -1,20 +1,18 @@
 package lordmonoxide.gradient.integrations.jei;
 
 import lordmonoxide.gradient.recipes.AgeGatedShapedToolRecipe;
-import mezz.jei.api.recipe.category.extensions.vanilla.crafting.IShapedCraftingCategoryExtension;
+import net.minecraftforge.common.util.Size2i;
 
-public class ShapedAgeCraftingExtension extends ShapelessAgeCraftingExtension<AgeGatedShapedToolRecipe> implements IShapedCraftingCategoryExtension {
+import javax.annotation.Nullable;
+
+public class ShapedAgeCraftingExtension extends ShapelessAgeCraftingExtension<AgeGatedShapedToolRecipe> {
   public ShapedAgeCraftingExtension(final AgeGatedShapedToolRecipe recipe) {
     super(recipe);
   }
 
+  @Nullable
   @Override
-  public int getWidth() {
-    return this.recipe.getRecipeWidth();
-  }
-
-  @Override
-  public int getHeight() {
-    return this.recipe.getRecipeHeight();
+  public Size2i getSize() {
+    return new Size2i(this.recipe.getRecipeWidth(), this.recipe.getRecipeHeight());
   }
 }

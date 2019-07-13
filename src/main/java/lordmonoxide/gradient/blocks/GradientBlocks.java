@@ -10,7 +10,9 @@ import lordmonoxide.gradient.science.geology.Ores;
 import lordmonoxide.gradient.utils.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,7 +25,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = GradientMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(GradientMod.MOD_ID)
 public final class GradientBlocks {
-  public static final BlockSalt SALT_BLOCK = null;
+  public static final Block SALT_BLOCK = null;
   public static final BlockPebble PEBBLE = null;
 
   private static final Map<Metal, Block> METAL_PEBBLES = new LinkedHashMap<>();
@@ -94,7 +96,7 @@ public final class GradientBlocks {
 
     final RegistryHelper<Block> registry = new RegistryHelper<>(event.getRegistry());
 
-    registry.register(new BlockSalt(), GradientIds.SALT_BLOCK);
+    registry.register(new Block(Block.Properties.create(Material.SAND, MaterialColor.QUARTZ).hardnessAndResistance(0.5f).sound(SoundType.SAND)), GradientIds.SALT_BLOCK);
     registry.register(new BlockPebble(), GradientIds.PEBBLE);
 
     for(final Metal metal : Metals.all()) {

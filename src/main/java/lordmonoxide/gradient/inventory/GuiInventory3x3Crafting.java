@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import lordmonoxide.gradient.GradientMod;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,10 +19,12 @@ public class GuiInventory3x3Crafting extends InventoryScreen {
     super.init();
 
     for(final Widget button : this.buttons) {
+/*TODO hide recipe book button
       if(button.id == 10) {
         button.visible = false;
         break;
       }
+*/
     }
   }
 

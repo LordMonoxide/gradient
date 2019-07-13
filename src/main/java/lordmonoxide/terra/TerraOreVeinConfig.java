@@ -1,5 +1,7 @@
 package lordmonoxide.terra;
 
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.DynamicOps;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.world.gen.feature.IFeatureConfig;
@@ -26,6 +28,16 @@ public final class TerraOreVeinConfig implements IFeatureConfig {
     this.pebbles = pebbles;
     this.minLength = minLength;
     this.maxLength = maxLength;
+  }
+
+  @Override
+  public <T> Dynamic<T> serialize(final DynamicOps<T> dynamicOps) {
+    return null; //TODO
+  }
+
+  public static TerraOreVeinConfig deserialize(final Dynamic<?> config) {
+    //TODO
+    return new TerraOreVeinConfig(new Stage[0], new Pebble[0], i -> 0, i -> 0);
   }
 
   public static final class Stage {

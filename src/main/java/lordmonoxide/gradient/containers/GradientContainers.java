@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.containers;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,12 +30,12 @@ public final class GradientContainers {
 
       final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
 
-      registry.register(new ContainerType<>(ClayCastContainer::new));
-      registry.register(new ContainerType<>(ClayCrucibleContainer::new));
-      registry.register(new ContainerType<>(BronzeBoilerContainer::new));
-      registry.register(new ContainerType<>(BronzeFurnaceContainer::new));
-      registry.register(new ContainerType<>(BronzeGrinderContainer::new));
-      registry.register(new ContainerType<>(BronzeOvenContainer::new));
+      registry.register(new ContainerType<>(ClayCastContainer::new).setRegistryName(GradientMod.resource("clay_cast")));
+      registry.register(new ContainerType<>(ClayCrucibleContainer::new).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName()));
+      registry.register(new ContainerType<>(BronzeBoilerContainer::new).setRegistryName(GradientBlocks.BRONZE_BOILER.getRegistryName()));
+      registry.register(new ContainerType<>(BronzeFurnaceContainer::new).setRegistryName(GradientBlocks.BRONZE_FURNACE.getRegistryName()));
+      registry.register(new ContainerType<>(BronzeGrinderContainer::new).setRegistryName(GradientBlocks.BRONZE_GRINDER.getRegistryName()));
+      registry.register(new ContainerType<>(BronzeOvenContainer::new).setRegistryName(GradientBlocks.BRONZE_OVEN.getRegistryName()));
     }
   }
 }

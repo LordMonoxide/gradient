@@ -111,9 +111,7 @@ public class TileBronzeFurnace extends HeatProducer {
     final int light = this.getLightLevel();
 
     if(this.lastLight != light) {
-      this.getWorld().markForRerender(this.pos);
-      this.getWorld().checkLight(this.pos);
-
+      this.world.markForRerender(this.pos);
       this.lastLight = light;
     }
   }

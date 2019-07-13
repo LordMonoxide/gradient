@@ -198,12 +198,12 @@ public final class OreGenerator {
     }
 
     for(final Biome biome : Biome.BIOMES) {
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), carbon,      TerraConfig.INSTANCE, new TerraPlacementConfig( 3, 256, 0,  20)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), coal,        TerraConfig.INSTANCE, new TerraPlacementConfig(30,  16, 0, 256)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), cassiterite, TerraConfig.INSTANCE, new TerraPlacementConfig(30,  64, 0, 256)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), copper,      TerraConfig.INSTANCE, new TerraPlacementConfig(30,  81, 0, 256)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), gold,        TerraConfig.INSTANCE, new TerraPlacementConfig(30, 225, 0,  32)));
-      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createCompositeFeature(new TerraOreVein(), pyrite,      TerraConfig.INSTANCE, new TerraPlacementConfig(30,  81, 0, 256)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerraOreVein.INSTANCE, carbon,      TerraConfig.INSTANCE, new TerraPlacementConfig(256, 0,  20)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerraOreVein.INSTANCE, coal,        TerraConfig.INSTANCE, new TerraPlacementConfig( 16, 0, 256)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerraOreVein.INSTANCE, cassiterite, TerraConfig.INSTANCE, new TerraPlacementConfig( 64, 0, 256)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerraOreVein.INSTANCE, copper,      TerraConfig.INSTANCE, new TerraPlacementConfig( 81, 0, 256)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerraOreVein.INSTANCE, gold,        TerraConfig.INSTANCE, new TerraPlacementConfig(225, 0,  32)));
+      biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerraOreVein.INSTANCE, pyrite,      TerraConfig.INSTANCE, new TerraPlacementConfig( 81, 0, 256)));
     }
 
 /*

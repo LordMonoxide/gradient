@@ -344,8 +344,6 @@ public class TileFirePit extends HeatProducer {
 
     if(this.lastLight != light) {
       this.world.markForRerender(this.pos);
-      this.world.checkLight(this.pos);
-
       this.lastLight = light;
     }
   }

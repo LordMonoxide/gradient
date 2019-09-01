@@ -31,7 +31,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
-  private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
+  private final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
 
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;

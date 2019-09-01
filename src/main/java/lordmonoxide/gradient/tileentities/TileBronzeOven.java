@@ -31,7 +31,7 @@ public class TileBronzeOven extends TileEntity implements ITickable {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
-  private static final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
+  private final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
 
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;
@@ -105,7 +105,9 @@ public class TileBronzeOven extends TileEntity implements ITickable {
     }
 
     if(this.isCooking()) {
-      if(this.tankSteam.drain(STEAM_USE_PER_TICK, true).amount >= STEAM_USE_PER_TICK) {
+      final FluidStack steam = this.tankSteam.drain(STEAM_USE_PER_TICK, true);
+
+      if(steam != null && steam.amount >= STEAM_USE_PER_TICK) {
         this.cookTicks++;
       }
 

@@ -1,6 +1,8 @@
 package lordmonoxide.gradient.client.tesr;
 
+import lordmonoxide.gradient.blocks.BlockManualGrinder;
 import lordmonoxide.gradient.tileentities.TileManualGrinder;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -14,6 +16,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileManualGrinderRenderer extends TileEntitySpecialRenderer<TileManualGrinder> {
   @Override
   public void render(final TileManualGrinder te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
+    final IBlockState state = te.getWorld().getBlockState(te.getPos());
+
+    if(!(state.getBlock() instanceof BlockManualGrinder)) {
+      return;
+    }
+
     GlStateManager.pushMatrix();
     GlStateManager.translate((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f);
 

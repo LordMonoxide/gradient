@@ -3,6 +3,7 @@ package lordmonoxide.gradient.tileentities;
 import lordmonoxide.gradient.GradientFluids;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.BlockFirePit;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FirePitRecipe;
@@ -93,7 +94,7 @@ public class TileFirePit extends HeatProducer {
   }
 
   public boolean hasFurnace(final IBlockState state) {
-    return state.getValue(BlockFirePit.HAS_FURNACE);
+    return state.getBlock() == GradientBlocks.FIRE_PIT && state.getValue(BlockFirePit.HAS_FURNACE);
   }
 
   public boolean isBurning() {

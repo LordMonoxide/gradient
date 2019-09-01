@@ -1,6 +1,8 @@
 package lordmonoxide.gradient.client.tesr;
 
+import lordmonoxide.gradient.blocks.BlockMixingBasin;
 import lordmonoxide.gradient.tileentities.TileMixingBasin;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -17,6 +19,12 @@ public class TileMixingBasinRenderer extends TileEntitySpecialRenderer<TileMixin
 
   @Override
   public void render(final TileMixingBasin te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
+    final IBlockState state = te.getWorld().getBlockState(te.getPos());
+
+    if(!(state.getBlock() instanceof BlockMixingBasin)) {
+      return;
+    }
+
     GlStateManager.pushMatrix();
     GlStateManager.translate((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f);
 

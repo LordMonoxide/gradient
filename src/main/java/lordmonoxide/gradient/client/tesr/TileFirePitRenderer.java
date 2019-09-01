@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.client.tesr;
 
+import lordmonoxide.gradient.blocks.BlockFirePit;
 import lordmonoxide.gradient.tileentities.TileFirePit;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,10 @@ public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> 
   @Override
   public void render(final TileFirePit firepit, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
     final IBlockState state = firepit.getWorld().getBlockState(firepit.getPos());
+
+    if(!(state.getBlock() instanceof BlockFirePit)) {
+      return;
+    }
 
     GlStateManager.pushMatrix();
     GlStateManager.translate(x + 0.5d, y + 0.5d, z + 0.5d);

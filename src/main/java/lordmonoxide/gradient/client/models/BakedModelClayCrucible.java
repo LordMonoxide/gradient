@@ -55,7 +55,7 @@ public class BakedModelClayCrucible implements IBakedModel {
       final FluidStack fluid = exState.getValue(BlockClayCrucibleHardened.FLUID);
 
       if(fluid != null && fluid.amount > 0) {
-        return FLUID_MODELS.get(fluid.getFluid().getName())[Math.floorDiv(fluid.amount, Fluid.BUCKET_VOLUME) - 1].getQuads(null, side, rand);
+        return FLUID_MODELS.get(fluid.getFluid().getName())[Math.max(0, fluid.amount / Fluid.BUCKET_VOLUME - 1)].getQuads(null, side, rand);
       }
     }
 

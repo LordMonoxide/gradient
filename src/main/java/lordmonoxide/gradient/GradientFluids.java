@@ -57,13 +57,7 @@ public final class GradientFluids {
 
     fluids.add(fluid);
 
-    final Block block = new BlockMetalFluid(fluid);
-
-    if(fluid.getBlock() == null) {
-      fluid.setBlock(block);
-    }
-
-    registry.register(block);
+    registry.register(new BlockMetalFluid(fluid));
 
     return fluid;
   }

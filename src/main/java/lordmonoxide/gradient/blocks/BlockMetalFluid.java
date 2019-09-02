@@ -9,6 +9,5 @@ public class BlockMetalFluid extends BlockFluidClassic {
     super(fluid, Material.WATER);
     this.setRegistryName(fluid.getUnlocalizedName());
     this.setTranslationKey(fluid.getUnlocalizedName());
-    fluid.setBlock(this);
   }
 }

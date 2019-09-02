@@ -7,3 +7,4 @@ criteria1 = addCriteria("hasHide", "minecraft:inventory_changed")
 criteria1.addItem(<ore:hide>)
 
 setRequiresParents()
+setPos(32,94)

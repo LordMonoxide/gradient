@@ -50,7 +50,7 @@ public final class DynamicModelLoader {
   }
 
   private static DynamicModel registerItem(final Predicate<ResourceLocation> accepts) {
-    final DynamicModel model = new DynamicModel(accepts, DynamicModelLoader::itemTextures, new ResourceLocation("builtin/generated"), true);
+    final DynamicModel model = new DynamicModel(accepts, DynamicModelLoader::itemTextures, new ResourceLocation("minecraft", "item/generated"), true);
     ModelLoaderRegistry.registerLoader(model);
     return model;
   }

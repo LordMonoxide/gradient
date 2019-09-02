@@ -13,3 +13,4 @@ criteria3 = addCriteria("hasPebble", "minecraft:inventory_changed")
 criteria3.addItem(<gradient:pebble>)
 
 setRequiresParents()
+setPos(32,27)

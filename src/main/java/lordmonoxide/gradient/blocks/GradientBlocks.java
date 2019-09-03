@@ -97,7 +97,7 @@ public final class GradientBlocks {
   public static final BlockBronzeOven        BRONZE_OVEN         = new BlockBronzeOven();
   public static final BlockBronzeGrinder     BRONZE_GRINDER      = new BlockBronzeGrinder();
 
-  private static final Map<Ore.Metal, Block> ORES = new LinkedHashMap<>();
+  private static final Map<Ore.Metal, BlockOre> ORES = new LinkedHashMap<>();
 
   static {
     for(final Ore.Metal ore : Ores.metals()) {
@@ -127,7 +127,7 @@ public final class GradientBlocks {
     return CLAY_CASTS_HARDENED.get(cast);
   }
 
-  public static Block ore(final Ore.Metal ore) {
+  public static BlockOre ore(final Ore.Metal ore) {
     return ORES.get(ore);
   }
 

@@ -44,6 +44,11 @@
         "fluid": "iron"
       }
     }],
+    "lead": [{
+      "custom": {
+        "fluid": "lead"
+      }
+    }],
     "magnesium": [{
       "custom": {
         "fluid": "magnesium"

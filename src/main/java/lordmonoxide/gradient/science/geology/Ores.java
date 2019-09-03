@@ -22,6 +22,10 @@ public final class Ores {
   public static final Ore.Metal PYRITE      = addOre("pyrite", o -> o.metal(Metals.PYRITE));
   public static final Ore.Metal SPHALERITE  = addOre("sphalerite", o -> o.metal(Metals.SPHALERITE).basic(Metals.ZINC));
 
+  // Mod compatibility - not used by Gradient
+  public static final Ore.Metal LEAD        = addOre("lead", o -> o.metal(Metals.LEAD));
+  public static final Ore.Metal TIN         = addOre("tin", o -> o.metal(Metals.TIN));
+
   public static Ore.Metal addOre(final String name, final Consumer<MetalOreBuilder> builder) {
     final MetalOreBuilder mb = new MetalOreBuilder();
     builder.accept(mb);

@@ -3,6 +3,8 @@ package lordmonoxide.gradient.items;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
+import lordmonoxide.gradient.blocks.BlockOre;
+import lordmonoxide.gradient.blocks.CastBlock;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.entities.EntityPebble;
 import lordmonoxide.gradient.science.geology.Metal;
@@ -189,8 +191,8 @@ public final class GradientItems {
     CAST_BLOCK.put(Metals.GLASS, ItemBlock.getItemFromBlock(Blocks.GLASS));
 
     for(final Ore.Metal ore : Ores.metals()) {
-      final Block block = GradientBlocks.ore(ore);
-      ORE.put(ore, new ItemBlock(block).setRegistryName(block.getRegistryName()));
+      final BlockOre block = GradientBlocks.ore(ore);
+      ORE.put(ore, new ItemOreBlock(block).setRegistryName(block.getRegistryName()));
       CRUSHED.put(ore, new ItemMetal("crushed", ore.metal));
       PURIFIED.put(ore, new ItemMetal("purified", ore.metal));
     }
@@ -223,7 +225,7 @@ public final class GradientItems {
 
       if(!CAST_BLOCK.containsKey(metal)) {
         final Block castBlock = GradientBlocks.castBlock(metal);
-        CAST_BLOCK.put(metal, new ItemBlock(castBlock).setRegistryName(castBlock.getRegistryName()));
+        CAST_BLOCK.put(metal, (castBlock instanceof CastBlock ? new ItemCastBlock((CastBlock)castBlock) : new ItemBlock(castBlock)).setRegistryName(castBlock.getRegistryName()));
       }
     }
 

@@ -11,6 +11,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -28,6 +29,11 @@ public class Tool extends GradientItemWorldTool {
     super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, metal.durability);
     this.type = type;
     this.metal = metal;
+  }
+
+  @Override
+  public String getItemStackDisplayName(final ItemStack stack) {
+    return I18n.translateToLocalFormatted("item.tool.name", I18n.translateToLocal("metal." + this.metal.name), I18n.translateToLocal("item.tool.type." + this.type.cast.name));
   }
 
   @Override

@@ -60,11 +60,9 @@ item.cast_item.type.ingot=Ingot
 tile.cast_block.name=Block of %s
 
 # Metals
-item.alloy_nugget.bronze.name=Bronze Alloy Nugget
 item.dust.flint.name=Flint Dust
 item.nugget.coal.name=Coal Nugget
 item.metal.type.nugget=%s Nugget
-item.metal.type.alloy_nugget=%s Alloy Nugget
 item.metal.type.dust=%s Dust
 item.metal.type.crushed=Crushed %s Ore
 item.metal.type.purified=Purified Crushed %s Ore

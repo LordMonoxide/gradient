@@ -188,7 +188,6 @@ public final class GradientItems {
   private static final Map<Metal, ItemMetal> NUGGET = new LinkedHashMap<>();
   public static final GradientItem NUGGET_COAL = new GradientItem("nugget.coal", CreativeTabs.MATERIALS);
   private static final Map<Metal, ItemMetal> PLATE = new LinkedHashMap<>();
-  private static final Map<Metal, ItemMetal> ALLOY_NUGGET = new LinkedHashMap<>();
   private static final Map<GradientCasts.Cast, Map<Metal, CastItem>> CAST_ITEM = new LinkedHashMap<>();
   private static final Map<Metal, Item> CAST_BLOCK = new LinkedHashMap<>();
 
@@ -207,21 +206,6 @@ public final class GradientItems {
 
       if(metal.canMakeIngots) {
         NUGGET.put(metal, new ItemMetal("nugget", metal));
-
-        if(metal.elements.size() > 1) {
-          boolean make = true;
-
-          for(final Metal.MetalElement element : metal.elements) {
-            if(Metals.get(element.element) == Metals.INVALID_METAL) {
-              make = false;
-              break;
-            }
-          }
-
-          if(make) {
-            ALLOY_NUGGET.put(metal, new ItemMetal("alloy_nugget", metal));
-          }
-        }
 
         if(metal.canMakePlates) {
           PLATE.put(metal, new ItemMetal("plate", metal));
@@ -308,10 +292,6 @@ public final class GradientItems {
 
   public static Tool tool(final GradientTools.Type type, final Metal metal) {
     return TOOL.get(type).get(metal);
-  }
-
-  public static ItemMetal alloyNugget(final Metal metal) {
-    return ALLOY_NUGGET.get(metal);
   }
 
   @SubscribeEvent
@@ -432,7 +412,6 @@ public final class GradientItems {
     DUST.values().forEach(registry::register);
     registry.register(DUST_FLINT);
     PLATE.values().forEach(registry::register);
-    ALLOY_NUGGET.values().forEach(registry::register);
     CAST_ITEM.values().forEach(map -> map.values().forEach(registry::register));
 
     for(final Item castBlock : CAST_BLOCK.values()) {
@@ -510,21 +489,6 @@ public final class GradientItems {
         OreDictionary.registerOre("nugget", nugget(metal));
         OreDictionary.registerOre("nugget" + caps, nugget(metal));
         OreDictionary.registerOre("ingot" + caps, castItem(GradientCasts.INGOT, metal, 1));
-
-        if(metal.elements.size() > 1) {
-          boolean make = true;
-
-          for(final Metal.MetalElement element : metal.elements) {
-            if(Metals.get(element.element) == Metals.INVALID_METAL) {
-              make = false;
-              break;
-            }
-          }
-
-          if(make) {
-            OreDictionary.registerOre("alloyNugget" + caps, alloyNugget(metal));
-          }
-        }
 
         if(metal.canMakePlates) {
           OreDictionary.registerOre("plate" + caps, plate(metal));

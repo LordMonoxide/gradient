@@ -30,7 +30,6 @@ public final class DynamicModelLoader {
     registerItem(DynamicModelLoader::acceptPickaxes);
     registerItem(DynamicModelLoader::acceptSwords);
     registerItem(DynamicModelLoader::acceptNuggets);
-    registerItem(DynamicModelLoader::acceptAlloyNuggets);
     registerItem(DynamicModelLoader::acceptDusts);
     registerItem(DynamicModelLoader::acceptCrushed);
     registerItem(DynamicModelLoader::acceptPurified);
@@ -89,10 +88,6 @@ public final class DynamicModelLoader {
 
   private static boolean acceptNuggets(final ResourceLocation loc) {
     return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("nugget.");
-  }
-
-  private static boolean acceptAlloyNuggets(final ResourceLocation loc) {
-    return loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().startsWith("alloy_nugget.");
   }
 
   private static boolean acceptDusts(final ResourceLocation loc) {

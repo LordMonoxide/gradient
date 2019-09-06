@@ -20,7 +20,7 @@ public class BlockClayMetalMixerUnhardened extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(2.0d / 16.0d, 0.0d, 2.0d / 16.0d, 14.0d / 16.0d, 6.0d / 16.0d, 14.0d / 16.0d);
 
   public BlockClayMetalMixerUnhardened() {
-    super("clay_metal_mixer.unhardened", CreativeTabs.TOOLS, Material.CLAY);
+    super("clay_metal_mixer_unhardened", CreativeTabs.TOOLS, Material.CLAY);
     this.setResistance(2.0f);
     this.setHardness(1.0f);
   }

@@ -77,6 +77,10 @@ public final class GradientBlocks {
   public static final BlockClayCrucibleHardened   CLAY_CRUCIBLE_HARDENED   = new BlockClayCrucibleHardened();
   public static final BlockClayOvenUnhardened     CLAY_OVEN_UNHARDENED     = new BlockClayOvenUnhardened();
   public static final BlockClayOvenHardened       CLAY_OVEN_HARDENED       = new BlockClayOvenHardened();
+  @GameRegistry.ObjectHolder("gradient:clay_metal_mixer_unhardened")
+  public static final BlockClayMetalMixerUnhardened CLAY_METAL_MIXER_UNHARDENED = null;
+  @GameRegistry.ObjectHolder("gradient:clay_metal_mixer_hardened")
+  public static final BlockClayMetalMixerHardened CLAY_METAL_MIXER_HARDENED = null;
 
   private static final Map<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_UNHARDENED = new LinkedHashMap<>();
   private static final Map<GradientCasts.Cast, BlockClayCast> CLAY_CASTS_HARDENED   = new LinkedHashMap<>();
@@ -181,6 +185,8 @@ public final class GradientBlocks {
     registry.register(CLAY_CRUCIBLE_HARDENED);
     registry.register(CLAY_OVEN_UNHARDENED);
     registry.register(CLAY_OVEN_HARDENED);
+    registry.register(new BlockClayMetalMixerUnhardened());
+    registry.register(new BlockClayMetalMixerHardened());
     CLAY_CASTS_UNHARDENED.values().forEach(registry::register);
     CLAY_CASTS_HARDENED.values().forEach(registry::register);
     registry.register(CLAY_BUCKET_UNHARDENED);
@@ -197,7 +203,9 @@ public final class GradientBlocks {
         registry.register(castBlock);
       }
     }
+  }
 
+  public static void registerTileEntities() {
     GameRegistry.registerTileEntity(TileFirePit.class,       FIRE_PIT.getRegistryName());
     GameRegistry.registerTileEntity(TileBellows.class,       BELLOWS.getRegistryName());
     GameRegistry.registerTileEntity(TileManualGrinder.class, MANUAL_GRINDER.getRegistryName());
@@ -210,8 +218,9 @@ public final class GradientBlocks {
     GameRegistry.registerTileEntity(TileWoodenAxle.class,    WOODEN_AXLE.getRegistryName());
     GameRegistry.registerTileEntity(TileWoodenGearbox.class, WOODEN_GEARBOX.getRegistryName());
 
-    GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
-    GameRegistry.registerTileEntity(TileClayOven.class,     CLAY_OVEN_HARDENED.getRegistryName());
+    GameRegistry.registerTileEntity(TileClayCrucible.class,   CLAY_CRUCIBLE_HARDENED.getRegistryName());
+    GameRegistry.registerTileEntity(TileClayOven.class,       CLAY_OVEN_HARDENED.getRegistryName());
+    GameRegistry.registerTileEntity(TileClayMetalMixer.class, CLAY_METAL_MIXER_HARDENED.getRegistryName());
 
     GameRegistry.registerTileEntity(TileBronzeFurnace.class, BRONZE_FURNACE.getRegistryName());
     GameRegistry.registerTileEntity(TileBronzeBoiler.class,  BRONZE_BOILER.getRegistryName());

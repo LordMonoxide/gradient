@@ -46,11 +46,11 @@ minecraft {
 }
 
 repositories {
-  maven {
-    //IC2
-    name = "player-ic2"
-    url = "http://maven.ic2.player.to/"
-  }
+//  maven {
+//    //IC2
+//    name = "player-ic2"
+//    url = "http://maven.ic2.player.to/"
+//  }
 
   maven {
     name = "BuildCraft"
@@ -65,7 +65,7 @@ repositories {
 }
 
 dependencies {
-  deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.187-ex112'
+//  deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.187-ex112'
 
   //deobfCompile 'com.mod-buildcraft:buildcraft-all:7.99.23'
 

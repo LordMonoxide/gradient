@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.tileentities;
 
-import ic2.core.ref.FluidName;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +10,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 
@@ -25,7 +28,7 @@ public class TileBronzeBoiler extends HeatSinker {
   public static final int STEAM_CAPACITY = 32;
 
   private final Fluid WATER = FluidRegistry.getFluid("water");
-  private final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
+  private final Fluid STEAM = FluidRegistry.getFluid("steam");
 
   public final FluidTank tankWater = new FluidTank(Fluid.BUCKET_VOLUME * WATER_CAPACITY);
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * STEAM_CAPACITY);

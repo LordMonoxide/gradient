@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.tileentities;
 
-import ic2.core.ref.FluidName;
 import lordmonoxide.gradient.recipes.GrinderRecipes;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +15,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.IItemHandler;
@@ -31,7 +34,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
-  private final Fluid STEAM = FluidRegistry.getFluid(FluidName.steam.getName());
+  private final Fluid STEAM = FluidRegistry.getFluid("steam");
 
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;

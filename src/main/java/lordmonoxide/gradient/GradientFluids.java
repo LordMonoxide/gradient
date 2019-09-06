@@ -1,6 +1,6 @@
 package lordmonoxide.gradient;
 
-import lordmonoxide.gradient.blocks.BlockMetalFluid;
+import lordmonoxide.gradient.blocks.BlockGradientFluid;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.Block;
@@ -22,6 +22,7 @@ public final class GradientFluids {
   private GradientFluids() { }
 
   public static Fluid AIR;
+  public static Fluid STEAM;
   public static Map<Metal, Fluid> METALS = new HashMap<>();
 
   public static final Set<Fluid> fluids = new HashSet<>();
@@ -37,6 +38,7 @@ public final class GradientFluids {
     }
 
     AIR = registerFluid(registry, "air", fluid -> fluid.setDensity(1).setViscosity(1).setGaseous(true));
+    STEAM = registerFluid(registry, "steam", fluid -> fluid.setDensity(1).setViscosity(1).setGaseous(true));
   }
 
   private static Fluid registerFluid(final IForgeRegistry<Block> registry, final String name, final float meltTemp) {
@@ -52,12 +54,12 @@ public final class GradientFluids {
       fluid = new Fluid(name, GradientMod.resource("blocks/fluid_" + name), GradientMod.resource("blocks/fluid_" + name + "_flowing"));
       fluidConfig.accept(fluid);
       FluidRegistry.registerFluid(fluid);
-      FluidRegistry.addBucketForFluid(fluid);
     }
 
     fluids.add(fluid);
 
-    registry.register(new BlockMetalFluid(fluid));
+    FluidRegistry.addBucketForFluid(fluid);
+    registry.register(new BlockGradientFluid(fluid));
 
     return fluid;
   }

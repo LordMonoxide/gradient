@@ -35,6 +35,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -123,6 +124,10 @@ public final class GradientItems {
   public static final Item CLAY_CRUCIBLE_HARDENED   = new ItemBlock(GradientBlocks.CLAY_CRUCIBLE_HARDENED).setRegistryName(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName());
   public static final Item CLAY_OVEN_UNHARDENED     = new ItemBlock(GradientBlocks.CLAY_OVEN_UNHARDENED).setRegistryName(GradientBlocks.CLAY_OVEN_UNHARDENED.getRegistryName());
   public static final Item CLAY_OVEN_HARDENED       = new ItemBlock(GradientBlocks.CLAY_OVEN_HARDENED).setRegistryName(GradientBlocks.CLAY_OVEN_HARDENED.getRegistryName());
+  @GameRegistry.ObjectHolder("gradient:clay_metal_mixer_unhardened")
+  public static final ItemBlock CLAY_METAL_MIXER_UNHARDENED = null;
+  @GameRegistry.ObjectHolder("gradient:clay_metal_mixer_hardened")
+  public static final ItemBlock CLAY_METAL_MIXER_HARDENED = null;
 
   private static final Map<GradientCasts.Cast, Item> CLAY_CAST_UNHARDENED = new LinkedHashMap<>();
   private static final Map<GradientCasts.Cast, Item> CLAY_CAST_HARDENED   = new LinkedHashMap<>();
@@ -377,6 +382,8 @@ public final class GradientItems {
     registry.register(CLAY_CRUCIBLE_HARDENED);
     registry.register(CLAY_OVEN_UNHARDENED);
     registry.register(CLAY_OVEN_HARDENED);
+    registry.register(new ItemBlock(GradientBlocks.CLAY_METAL_MIXER_UNHARDENED).setRegistryName(GradientBlocks.CLAY_METAL_MIXER_UNHARDENED.getRegistryName()));
+    registry.register(new ItemBlock(GradientBlocks.CLAY_METAL_MIXER_HARDENED).setRegistryName(GradientBlocks.CLAY_METAL_MIXER_HARDENED.getRegistryName()));
     CLAY_CAST_UNHARDENED.values().forEach(registry::register);
     CLAY_CAST_HARDENED.values().forEach(registry::register);
     registry.register(CLAY_BUCKET_UNHARDENED);

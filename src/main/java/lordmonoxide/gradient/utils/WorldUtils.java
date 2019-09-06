@@ -4,7 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockAccess;
 
 import javax.annotation.Nullable;
 
@@ -12,7 +12,7 @@ public final class WorldUtils {
   private WorldUtils() { }
 
   @Nullable
-  public static <T extends TileEntity> T getTileEntity(final World world, final BlockPos pos, final Class<T> clazz) {
+  public static <T extends TileEntity> T getTileEntity(final IBlockAccess world, final BlockPos pos, final Class<T> clazz) {
     final TileEntity te = world.getTileEntity(pos);
     return clazz.isInstance(te) ? clazz.cast(te) : null;
   }

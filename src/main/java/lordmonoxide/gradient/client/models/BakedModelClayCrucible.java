@@ -117,9 +117,7 @@ public class BakedModelClayCrucible implements IBakedModel {
 
     // get ModelResourceLocations of all tank block variants from the registry except "inventory"
 
-    final RegistrySimple<ModelResourceLocation, IBakedModel> registry = (RegistrySimple<ModelResourceLocation, IBakedModel>) event.getModelRegistry();
-
-    for(final ModelResourceLocation loc : registry.getKeys()) {
+    for(final ModelResourceLocation loc : event.getModelRegistry().getKeys()) {
       if(loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().equals(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName().getPath()) && !"inventory".equals(loc.getVariant())) {
         final IBakedModel registeredModel = event.getModelRegistry().getObject(loc);
         final IBakedModel replacementModel = new BakedModelClayCrucible(registeredModel);

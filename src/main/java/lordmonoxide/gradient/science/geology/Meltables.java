@@ -3,9 +3,16 @@ package lordmonoxide.gradient.science.geology;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.recipes.MeltingRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.OreIngredient;
+import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 
@@ -19,79 +26,39 @@ public final class Meltables {
   public static void registerMeltables() {
     GradientMod.logger.info("Registering meltables");
 
-    oreLoop:
-    for(final String oreName : OreDictionary.getOreNames()) {
-      if(oreName.startsWith("ore")) {
-        final Ore.Metal ore = Ores.getMetal(oreName.substring(3).toLowerCase());
+    //TODO: event
+    final IForgeRegistry<IRecipe> registry = ForgeRegistries.RECIPES;
 
-        if(ore != Ores.INVALID_ORE_METAL) {
-          final Meltable meltable = add(oreName, ore.basic.meltTime, ore.basic.meltTemp, ore.basic.name, Fluid.BUCKET_VOLUME);
-          Metals.addMeltable(meltable, ore.basic);
-        }
-      } else if(oreName.startsWith("ingot")) {
-        final Metal metal = Metals.get(oreName.substring(5).toLowerCase());
+    for(final Ore.Metal ore : Ores.metals()) {
+      final String uc = StringUtils.capitalize(ore.name);
 
-        if(metal != Metals.INVALID_METAL) {
-          final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
-          Metals.addMeltable(meltable, metal);
-        }
-      } else if(oreName.startsWith("nugget")) {
-        final Metal metal = Metals.get(oreName.substring(6).toLowerCase());
-
-        if(metal != Metals.INVALID_METAL) {
-          final Meltable meltable = add(oreName, metal.meltTime / 4.0f, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME / 4);
-          Metals.addMeltable(meltable, metal);
-        }
-      } else if(oreName.startsWith("dust")) {
-        final Metal metal = Metals.get(oreName.substring(4).toLowerCase());
-
-        if(metal != Metals.INVALID_METAL) {
-          final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
-          Metals.addMeltable(meltable, metal);
-        }
-      } else if(oreName.startsWith("block")) {
-        final Metal metal = Metals.get(oreName.substring(5).toLowerCase());
-
-        if(metal != Metals.INVALID_METAL) {
-          final Meltable meltable = add(oreName, metal.meltTime * 8.0f, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME * 8);
-          Metals.addMeltable(meltable, metal);
-        }
-      } else if(oreName.startsWith("crushed")) {
-        final Metal metal = Metals.get(oreName.substring(7).toLowerCase());
-
-        if(metal != Metals.INVALID_METAL) {
-          final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
-          Metals.addMeltable(meltable, metal);
-        }
-      } else if(oreName.startsWith("purified")) {
-        final Metal metal = Metals.get(oreName.substring(8).toLowerCase());
-
-        if(metal != Metals.INVALID_METAL) {
-          final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
-          Metals.addMeltable(meltable, metal);
-        }
-      } else if(oreName.startsWith("plate")) {
-        final Metal metal = Metals.get(oreName.substring(5).toLowerCase());
-
-        if(metal != Metals.INVALID_METAL) {
-          final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
-          Metals.addMeltable(meltable, metal);
-        }
-      }
+      registry.register(
+        new MeltingRecipe(GradientMod.MODID, ore.basic.meltTime, ore.basic.meltTemp, new FluidStack(ore.basic.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("ore" + uc)).setRegistryName(GradientMod.resource("melting/ore_" + ore.name))
+      );
     }
 
-    add("oreIron", Metals.IRON.meltTime, Metals.IRON.meltTemp, "iron", Fluid.BUCKET_VOLUME);
+    for(final Metal metal : Metals.all()) {
+      final String uc = StringUtils.capitalize(metal.name);
 
-    add("sand",       8.0f, 1200.00f, "glass", Fluid.BUCKET_VOLUME * 8);
-    add("blockGlass", 8.0f, 1200.00f, "glass", Fluid.BUCKET_VOLUME * 8);
-    add("dustGlass",  8.0f, 1200.00f, "glass", Fluid.BUCKET_VOLUME * 8);
-    add("paneGlass",  2.0f, 1200.00f, "glass", Fluid.BUCKET_VOLUME / 2);
-  }
+      registry.registerAll(
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("ingot" + uc)).setRegistryName(GradientMod.resource("melting/ingot_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime / 4.0f, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME / 4), new OreIngredient("nugget" + uc)).setRegistryName(GradientMod.resource("melting/nugget_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("dust" + uc)).setRegistryName(GradientMod.resource("melting/dust_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime * 8.0f, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME * 8), new OreIngredient("block" + uc)).setRegistryName(GradientMod.resource("melting/block_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("crushed" + uc)).setRegistryName(GradientMod.resource("melting/crushed_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("purified" + uc)).setRegistryName(GradientMod.resource("melting/purified_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("plate" + uc)).setRegistryName(GradientMod.resource("melting/plate_" + metal.name))
+      );
+    }
 
-  private static Meltable add(final String oreDict, final float meltTime, final float meltTemp, final String fluid, final int amount) {
-    final Meltable meltable = new Meltable(meltTime, meltTemp, fluid, amount);
-    meltables.put(OreDictionary.getOreID(oreDict), meltable);
-    return meltable;
+    registry.registerAll(
+      new MeltingRecipe(GradientMod.MODID, Metals.IRON.meltTime, Metals.IRON.meltTemp, new FluidStack(Metals.IRON.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("ingotIron")),
+
+      new MeltingRecipe(GradientMod.MODID, 8.0f, 1200.0f, new FluidStack(Metals.GLASS.getFluid(), Fluid.BUCKET_VOLUME * 8), new OreIngredient("sand")),
+      new MeltingRecipe(GradientMod.MODID, 8.0f, 1200.0f, new FluidStack(Metals.GLASS.getFluid(), Fluid.BUCKET_VOLUME * 8), new OreIngredient("blockGlass")),
+      new MeltingRecipe(GradientMod.MODID, 8.0f, 1200.0f, new FluidStack(Metals.GLASS.getFluid(), Fluid.BUCKET_VOLUME * 8), new OreIngredient("dustGlass")),
+      new MeltingRecipe(GradientMod.MODID, 2.0f, 1200.0f, new FluidStack(Metals.GLASS.getFluid(), Fluid.BUCKET_VOLUME / 2), new OreIngredient("paneGlass"))
+    );
   }
 
   public static Meltable get(final ItemStack stack) {

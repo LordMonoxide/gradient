@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.containers;
 
-import lordmonoxide.gradient.science.geology.Meltables;
+import lordmonoxide.gradient.recipes.MeltingRecipe;
+import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -12,7 +13,7 @@ public class SlotMetal extends SlotItemHandler {
 
   @Override
   public boolean isItemValid(final ItemStack stack) {
-    return Meltables.get(stack) != Meltables.INVALID_MELTABLE && super.isItemValid(stack);
+    return RecipeUtils.findRecipe(MeltingRecipe.class, recipe -> recipe.matches(stack)) != null && super.isItemValid(stack);
   }
 
   @Override

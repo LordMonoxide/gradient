@@ -1,0 +1,51 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "gradient:clay_metal_mixer"
+  },
+  "variants": {
+    "normal": [{}],
+    "connected_north": {
+      "true": {
+        "submodel": {
+          "pipe_north": { "model": "gradient:clay_metal_mixer_pipe" }
+        }
+      },
+      "false": { }
+    },
+    "connected_south": {
+      "true": {
+        "submodel": {
+          "pipe_south": {
+            "model": "gradient:clay_metal_mixer_pipe",
+            "y": 180
+          }
+        }
+      },
+      "false": { }
+    },
+    "connected_west": {
+      "true": {
+        "submodel": {
+          "pipe_west": {
+            "model": "gradient:clay_metal_mixer_pipe",
+            "y": 270
+          }
+        }
+      },
+      "false": { }
+    },
+    "connected_east": {
+      "true": {
+        "submodel": {
+          "pipe_east": {
+            "model": "gradient:clay_metal_mixer_pipe",
+            "y": 90
+          }
+        }
+      },
+      "false": { }
+    },
+    "inventory": [{}]
+  }
+}

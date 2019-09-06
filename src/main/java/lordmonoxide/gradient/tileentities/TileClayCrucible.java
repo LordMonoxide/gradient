@@ -6,23 +6,18 @@ import lordmonoxide.gradient.science.geology.Meltables;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -44,8 +39,21 @@ public class TileClayCrucible extends HeatSinker {
 
   public static final int FIRST_METAL_SLOT = 0;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
-  public final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * FLUID_CAPACITY);
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
+    @Override
+    protected void onContentsChanged(final int slot) {
+      super.onContentsChanged(slot);
+      TileClayCrucible.this.sync();
+    }
+  };
+
+  public final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * FLUID_CAPACITY) {
+    @Override
+    protected void onContentsChanged() {
+      super.onContentsChanged();
+      TileClayCrucible.this.sync();
+    }
+  };
 
   private final MeltingMetal[] melting = new MeltingMetal[METAL_SLOTS_COUNT];
 
@@ -73,18 +81,8 @@ public class TileClayCrucible extends HeatSinker {
     return Math.min((int)(this.getHeat() / 800 * 11) + 4, 15);
   }
 
-  public void useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
-    if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
-      this.sync();
-    }
-  }
-
   public void consumeMetal(final int amount) {
-    final FluidStack result = this.tank.drain(amount, true);
-
-    if(result != null && result.amount != 0) {
-      this.sync();
-    }
+    this.tank.drain(amount, true);
   }
 
   @Override
@@ -121,8 +119,6 @@ public class TileClayCrucible extends HeatSinker {
   }
 
   private void checkForMoltenMetal() {
-    boolean update = false;
-
     for(int slot = 0; slot < METAL_SLOTS_COUNT; slot++) {
       if(this.isMelting(slot)) {
         final MeltingMetal melting = this.getMeltingMetal(slot);
@@ -136,15 +132,9 @@ public class TileClayCrucible extends HeatSinker {
 
             final FluidStack fluid = new FluidStack(melting.meltable.getFluid(), melting.meltable.amount);
             this.tank.fill(fluid, true);
-
-            update = true;
           }
         }
       }
-    }
-
-    if(update) {
-      this.sync();
     }
   }
 

@@ -3,6 +3,7 @@ package lordmonoxide.gradient;
 import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.network.PacketLightBronzeFurnace;
 import lordmonoxide.gradient.network.PacketSwitchCast;
+import lordmonoxide.gradient.network.PacketUpdateClayMetalMixerNeighbours;
 import lordmonoxide.gradient.network.PacketUpdateHeatNeighbours;
 import lordmonoxide.gradient.energy.PacketSyncEnergyNetwork;
 import lordmonoxide.gradient.progress.PacketUpdatePlayerProgress;
@@ -22,6 +23,7 @@ public final class GradientNet {
 
     CHANNEL.registerMessage(PacketSwitchCast.Handler.class, PacketSwitchCast.class, id++, Side.SERVER);
     CHANNEL.registerMessage(PacketUpdateHeatNeighbours.Handler.class, PacketUpdateHeatNeighbours.class, id++, Side.CLIENT);
+    CHANNEL.registerMessage(PacketUpdateClayMetalMixerNeighbours.Handler.class, PacketUpdateClayMetalMixerNeighbours.class, id++, Side.CLIENT);
     CHANNEL.registerMessage(PacketLightBronzeFurnace.Handler.class, PacketLightBronzeFurnace.class, id++, Side.SERVER);
     CHANNEL.registerMessage(PacketUpdateBronzeBoilerSteamSink.Handler.class, PacketUpdateBronzeBoilerSteamSink.class, id++, Side.CLIENT);
 

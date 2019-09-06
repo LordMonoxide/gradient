@@ -1,0 +1,17 @@
+{
+  "parameters": {
+  },
+  "clips": {
+    "idle": "#identity",
+    "spinning": ["apply", "gradient:block/clay_metal_mixer@spinning", "#spinning_cycle"]
+  },
+  "states": [
+    "idle",
+    "spinning"
+  ],
+  "start_state": "idle",
+  "transitions": {
+    "idle": ["idle", "spinning"],
+    "spinning": ["idle", "spinning"]
+  }
+}

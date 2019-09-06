@@ -64,6 +64,11 @@
         "fluid": "sphalerite"
       }
     }],
+    "steam": [{
+      "custom": {
+        "fluid": "steam"
+      }
+    }],
     "tin": [{
       "custom": {
         "fluid": "tin"

@@ -8,6 +8,7 @@ import lordmonoxide.gradient.client.tesr.TileManualGrinderRenderer;
 import lordmonoxide.gradient.client.tesr.TileMixingBasinRenderer;
 import lordmonoxide.gradient.items.GradientItems;
 import lordmonoxide.gradient.tileentities.TileBellows;
+import lordmonoxide.gradient.tileentities.TileClayMetalMixer;
 import lordmonoxide.gradient.tileentities.TileClayOven;
 import lordmonoxide.gradient.tileentities.TileDryingRack;
 import lordmonoxide.gradient.tileentities.TileFirePit;
@@ -78,6 +79,7 @@ public final class ModelManager {
   private static void registerBlockModels() {
     ClientRegistry.bindTileEntitySpecialRenderer(TileFirePit.class, new TileFirePitRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileBellows.class, new AnimationTESR<>());
+    ClientRegistry.bindTileEntitySpecialRenderer(TileClayMetalMixer.class, new AnimationTESR<>());
     ClientRegistry.bindTileEntitySpecialRenderer(TileClayOven.class, new TileClayOvenRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileManualGrinder.class, new TileManualGrinderRenderer());
     ClientRegistry.bindTileEntitySpecialRenderer(TileMixingBasin.class, new TileMixingBasinRenderer());

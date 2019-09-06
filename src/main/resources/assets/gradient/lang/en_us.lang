@@ -108,6 +108,7 @@ fluid.tin=Molten Tin
 fluid.zinc=Molten Zinc
 fluid.glass=Molten Glass
 fluid.air=Air
+fluid.steam=Steam
 
 # Blocks
 tile.ore.name=%s Ore
@@ -140,6 +141,9 @@ tile.clay_furnace.hardened.tooltip=Right click on a fire pit to attach
 tile.clay_oven.unhardened.name=Unhardened Clay Oven
 tile.clay_oven.hardened.name=Clay Oven
 tile.clay_oven.hardened.tooltip=Place on top of a furnace to use its heat
+tile.clay_metal_mixer_unhardened.name=Unhardened Clay Metal Mixer
+tile.clay_metal_mixer_hardened.name=Clay Metal Mixer
+tile.clay_metal_mixer_hardened.tooltip=Place between two crucibles, with another crucible underneath
 tile.clay_crucible.unhardened.name=Unhardened Clay Crucible
 tile.clay_crucible.hardened.name=Clay Crucible
 tile.clay_crucible.hardened.tooltip=Place on top of a furnace to use its heat

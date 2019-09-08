@@ -101,9 +101,7 @@ public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> 
     final Minecraft mc = Minecraft.getMinecraft();
 
     if(mc.objectMouseOver != null && mc.objectMouseOver.getBlockPos() != null && mc.objectMouseOver.getBlockPos().equals(firepit.getPos())) {
-      GlStateManager.disableDepth();
       this.drawNameplate(firepit, I18n.format("tile.fire_pit.heat", Math.round(firepit.getHeat())), -0.5d, -0.75d, -0.5d, 8);
-      GlStateManager.enableDepth();
     }
 
     GlStateManager.popMatrix();

@@ -371,7 +371,7 @@ public class TileFirePit extends HeatProducer {
           }
 
           if(this.tank.getFluidAmount() > 0) {
-
+            //TODO uhh empty if statement??
           }
         }
 
@@ -599,6 +599,10 @@ public class TileFirePit extends HeatProducer {
 
     public boolean isDepleted() {
       return this.burnTicks >= this.burnTicksTotal;
+    }
+
+    public float percentBurned() {
+      return (float)this.burnTicks / this.burnTicksTotal;
     }
   }
 

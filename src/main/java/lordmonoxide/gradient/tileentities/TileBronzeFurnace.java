@@ -1,8 +1,10 @@
 package lordmonoxide.gradient.tileentities;
 
+import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FuelRecipe;
+import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -19,6 +21,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
@@ -31,7 +34,26 @@ public class TileBronzeFurnace extends HeatProducer {
 
   public static final int FIRST_FUEL_SLOT = 0;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
+    @Override
+    public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+      return super.isItemValid(slot, stack) && RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack)) != null;
+    }
+
+    @Override
+    protected void onContentsChanged(final int slot) {
+      super.onContentsChanged(slot);
+
+      final ItemStack stack = this.getStackInSlot(slot);
+      if(stack.isEmpty()) {
+        TileBronzeFurnace.this.fuels[slot] = null;
+      } else {
+        final FuelRecipe recipe = RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack));
+
+        TileBronzeFurnace.this.fuels[slot] = new Fuel(recipe, Age.highest()); //TODO: hardcoded age
+      }
+    }
+  };
 
   private final Fuel[] fuels = new Fuel[FUEL_SLOTS_COUNT];
 
@@ -91,6 +113,7 @@ public class TileBronzeFurnace extends HeatProducer {
 
   private void igniteFuel() {
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
+      GradientMod.logger.info("isBurning {} fuels {}", this.isBurning(i), this.fuels[i]);
       if(!this.isBurning(i) && this.fuels[i] != null) {
         if(this.canIgnite(this.fuels[i])) {
           this.fuels[i].ignite();
@@ -123,15 +146,14 @@ public class TileBronzeFurnace extends HeatProducer {
         this.getWorld().spawnParticle(EnumParticleTypes.FLAME, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
       }
 
-      { // Smoke
-        final double radius = this.getWorld().rand.nextDouble() * 0.35d;
-        final double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
+      // Smoke
+      final double radius = this.getWorld().rand.nextDouble() * 0.35d;
+      final double angle  = this.getWorld().rand.nextDouble() * Math.PI * 2;
 
-        final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
-        final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
+      final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
+      final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
 
-        this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
-      }
+      this.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, this.pos.getY() + 0.1d, z, 0.0d, 0.0d, 0.0d);
     }
   }
 
@@ -154,7 +176,6 @@ public class TileBronzeFurnace extends HeatProducer {
         fuel.tick();
 
         if(fuel.isDepleted()) {
-          this.fuels[slot] = null;
           this.setFuelSlot(slot, ItemStack.EMPTY);
         }
 
@@ -186,6 +207,7 @@ public class TileBronzeFurnace extends HeatProducer {
   }
 
   private boolean canIgnite(final Fuel fuel) {
+    GradientMod.logger.info("Heat {} ignition {}", this.getHeat(), fuel.recipe.ignitionTemp);
     return this.getHeat() >= fuel.recipe.ignitionTemp;
   }
 

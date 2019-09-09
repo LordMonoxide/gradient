@@ -133,7 +133,7 @@ public class TileClayMetalMixer extends HeatSinker {
   }
 
   private int getTicksForRecipe(final AlloyRecipe recipe) {
-    return recipe.getOutput().amount * 3;
+    return (int)(recipe.getOutput().amount * 1.5f);
   }
 
   @Override

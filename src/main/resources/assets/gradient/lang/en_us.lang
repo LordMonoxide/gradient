@@ -233,6 +233,9 @@ jei.fuel.ignitionTemp=Ignition temperature: %d °C
 jei.fuel.burnTemp=Max temperature: %d °C
 jei.fuel.heatPerSec=Heat: %d °C/s
 
+jei.alloy.name=Alloy
+jei.alloy.amount=%d mB
+
 # Commands
 commands.setage.usage=/setage <age> [<player>]
 commands.setage.set=Your age is now %s

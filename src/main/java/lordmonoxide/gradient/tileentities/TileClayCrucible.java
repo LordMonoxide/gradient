@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.tileentities;
 
+import lordmonoxide.gradient.GradientFluids;
 import lordmonoxide.gradient.blocks.heat.HeatSinker;
 import lordmonoxide.gradient.science.geology.Meltable;
 import lordmonoxide.gradient.science.geology.Meltables;
@@ -48,6 +49,16 @@ public class TileClayCrucible extends HeatSinker {
   };
 
   public final FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * FLUID_CAPACITY) {
+    @Override
+    public boolean canFillFluidType(final FluidStack fluid) {
+      return super.canFillFluidType(fluid) && GradientFluids.METALS.containsValue(fluid.getFluid());
+    }
+
+    @Override
+    public boolean canDrainFluidType(@Nullable final FluidStack fluid) {
+      return super.canDrainFluidType(fluid) && GradientFluids.METALS.containsValue(fluid.getFluid());
+    }
+
     @Override
     protected void onContentsChanged() {
       super.onContentsChanged();

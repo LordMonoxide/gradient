@@ -113,7 +113,6 @@ public class TileBronzeFurnace extends HeatProducer {
 
   private void igniteFuel() {
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
-      GradientMod.logger.info("isBurning {} fuels {}", this.isBurning(i), this.fuels[i]);
       if(!this.isBurning(i) && this.fuels[i] != null) {
         if(this.canIgnite(this.fuels[i])) {
           this.fuels[i].ignite();

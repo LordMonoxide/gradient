@@ -3,6 +3,7 @@ jdk: openjdk8
 
 before_install:
   - ./travis_release.sh
+  - ./gradlew setupDecompWorkspace
 
 deploy:
   provider: releases

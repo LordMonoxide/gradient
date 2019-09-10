@@ -2,7 +2,6 @@ package lordmonoxide.gradient.tileentities;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.HeatProducer;
-import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.FuelRecipe;
 import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.state.IBlockState;
@@ -50,7 +49,7 @@ public class TileBronzeFurnace extends HeatProducer {
       } else if(!TileBronzeFurnace.this.world.isRemote) {
         final FuelRecipe recipe = RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack));
 
-        TileBronzeFurnace.this.fuels[slot] = new Fuel(recipe, Age.highest()); //TODO: hardcoded age
+        TileBronzeFurnace.this.fuels[slot] = new Fuel(recipe);
       }
     }
   };
@@ -223,7 +222,6 @@ public class TileBronzeFurnace extends HeatProducer {
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
         tag.setString("recipe", fuel.recipe.getRegistryName().toString());
-        tag.setInteger("age", fuel.age.value());
         tag.setInteger("ticks", fuel.burnTicks);
         tag.setBoolean("burning", fuel.isBurning);
         fuels.appendTag(tag);
@@ -254,11 +252,10 @@ public class TileBronzeFurnace extends HeatProducer {
 
       if(slot < FUEL_SLOTS_COUNT) {
         final FuelRecipe recipe = (FuelRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(tag.getString("recipe")));
-        final Age age1 = Age.get(tag.getInteger("age"));
         final int ticks = tag.getInteger("ticks");
         final boolean burning = tag.getBoolean("burning");
 
-        final Fuel fuel = new Fuel(recipe, age1);
+        final Fuel fuel = new Fuel(recipe);
         fuel.burnTicks = ticks;
         fuel.isBurning = burning;
 
@@ -288,14 +285,12 @@ public class TileBronzeFurnace extends HeatProducer {
 
   public static final class Fuel {
     public final FuelRecipe recipe;
-    public final Age age;
     private final int burnTicksTotal;
     private int burnTicks;
     private boolean isBurning;
 
-    private Fuel(final FuelRecipe recipe, final Age age) {
+    private Fuel(final FuelRecipe recipe) {
       this.recipe = recipe;
-      this.age = age;
       this.burnTicksTotal = this.recipe.duration * 20;
     }
 

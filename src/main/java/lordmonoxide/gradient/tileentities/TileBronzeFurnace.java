@@ -47,7 +47,7 @@ public class TileBronzeFurnace extends HeatProducer {
       final ItemStack stack = this.getStackInSlot(slot);
       if(stack.isEmpty()) {
         TileBronzeFurnace.this.fuels[slot] = null;
-      } else {
+      } else if(!TileBronzeFurnace.this.world.isRemote) {
         final FuelRecipe recipe = RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack));
 
         TileBronzeFurnace.this.fuels[slot] = new Fuel(recipe, Age.highest()); //TODO: hardcoded age

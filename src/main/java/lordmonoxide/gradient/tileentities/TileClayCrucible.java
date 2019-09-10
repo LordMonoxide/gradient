@@ -138,15 +138,22 @@ public class TileClayCrucible extends HeatSinker {
 
         if(!this.world.isRemote) {
           if(melting.isMelted()) {
-            this.melting[slot] = null;
-            this.setMetalSlot(slot, ItemStack.EMPTY);
-
             final FluidStack fluid = new FluidStack(melting.meltable.getFluid(), melting.meltable.amount);
-            this.tank.fill(fluid, true);
+
+            if(this.hasRoom(fluid)) {
+              this.melting[slot] = null;
+              this.setMetalSlot(slot, ItemStack.EMPTY);
+
+              this.tank.fill(fluid, true);
+            }
           }
         }
       }
     }
+  }
+
+  private boolean hasRoom(final FluidStack fluid) {
+    return this.tank.fill(fluid, false) == fluid.amount;
   }
 
   private ItemStack getMetalSlot(final int slot) {
@@ -282,9 +289,8 @@ public class TileClayCrucible extends HeatSinker {
       this.meltTicksTotal = meltTicksTotal;
     }
 
-    public MeltingMetal tick() {
+    public void tick() {
       this.meltTicks++;
-      return this;
     }
 
     public boolean isMelted() {
@@ -292,7 +298,7 @@ public class TileClayCrucible extends HeatSinker {
     }
 
     public float meltPercent() {
-      return (float)this.meltTicks / this.meltTicksTotal;
+      return Math.min((float)this.meltTicks / this.meltTicksTotal, 1.0f);
     }
 
     public NBTTagCompound writeToNbt(final NBTTagCompound tag) {

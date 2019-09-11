@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.recipes;
 
-import ic2.api.recipe.Recipes;
 import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientTools;
@@ -27,6 +26,9 @@ import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
@@ -41,7 +43,6 @@ public final class ExtraRecipes {
 
     registerDusts(registry);
     registerPlates(registry);
-    registerAlloys(registry);
     registerCasts(registry);
     registerTools(registry);
     registerNuggets(registry);
@@ -87,37 +88,6 @@ public final class ExtraRecipes {
         NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(hammers))
       ).setRegistryName(GradientMod.resource(recipeName)));
     }
-  }
-
-  private static void registerAlloys(final IForgeRegistry<IRecipe> registry) {
-    registry.register(new ShapelessRecipes(
-      GradientMod.MODID,
-      new ItemStack(GradientItems.alloyNugget(Metals.BRONZE)),
-      NonNullList.from(Ingredient.EMPTY, new OreIngredient("nuggetCopper"), new OreIngredient("nuggetCopper"), new OreIngredient("nuggetCopper"), new OreIngredient("nuggetTin"))
-    ).setRegistryName(GradientMod.resource("recipe.alloy_nugget.bronze.1")));
-
-/* TODO
-    for(final GradientMetals.Alloy alloy : GradientMetals.alloys) {
-      final ItemStack output = GradientItems.alloyNugget(alloy).getItemStack(alloy.output.amount);
-
-      final Ingredient[] ingredients = new Ingredient[alloy.inputs.size()];
-
-      final StringBuilder recipeName = new StringBuilder("recipe.alloy_nugget." + alloy.output.metal.name + '.' + alloy.output.amount);
-
-      for(int i = 0; i < ingredients.length; i++) {
-        ingredients[i] = new OreIngredient("nugget" + StringUtils.capitalize(alloy.inputs.get(i).name));
-        recipeName.append('.').append(alloy.inputs.get(i).name);
-      }
-
-      GradientMod.logger.info("Adding recipe {}", recipeName);
-
-      registry.register(new ShapelessRecipes(
-        GradientMod.MODID,
-        output,
-        NonNullList.from(Ingredient.EMPTY, ingredients)
-      ).setRegistryName(GradientMod.resource(recipeName.toString())));
-    }
-*/
   }
 
   private static void registerCasts(final IForgeRegistry<IRecipe> registry) {
@@ -180,17 +150,171 @@ public final class ExtraRecipes {
     }
   }
 
+  //TODO ...omg
   private static void registerOreWashingRecipes() {
+    final Class<?> ic2RecipesClass;
+    try {
+      ic2RecipesClass = Class.forName("ic2.api.recipe.Recipes");
+    } catch(final ClassNotFoundException e) {
+      GradientMod.logger.warn("Can't register ore washing recipe - IC2 Recipes class not found", e);
+      return;
+    }
+
+    final Class<?> ic2IRecipeInputClass;
+    try {
+      ic2IRecipeInputClass = Class.forName("ic2.api.recipe.IRecipeInput");
+    } catch(final ClassNotFoundException e) {
+      GradientMod.logger.warn("Can't register ore washing recipe - IC2 IRecipeInput class not found", e);
+      return;
+    }
+
+    final Field oreWashingField;
+    try {
+      oreWashingField = ic2RecipesClass.getDeclaredField("oreWashing");
+    } catch(final NoSuchFieldException e) {
+      GradientMod.logger.warn("Can't register ore washing recipe - IC2 Recipes.oreWashing not found", e);
+      return;
+    }
+
+    final Object oreWashing;
+    try {
+      oreWashing = oreWashingField.get(null);
+    } catch(final IllegalAccessException e) {
+      GradientMod.logger.warn("Can't register ore washing recipe - could not get IC2 Recipes.oreWashing", e);
+      return;
+    }
+
+    final Field inputFactoryField;
+    try {
+      inputFactoryField = ic2RecipesClass.getDeclaredField("inputFactory");
+    } catch(final NoSuchFieldException e) {
+      GradientMod.logger.warn("Can't register ore washing recipe - IC2 Recipes.inputFactory not found", e);
+      return;
+    }
+
+    final Object inputFactory;
+    try {
+      inputFactory = inputFactoryField.get(null);
+    } catch(final IllegalAccessException e) {
+      GradientMod.logger.warn("Can't register ore washing recipe - could not get IC2 Recipes.inputFactory", e);
+      return;
+    }
+
+    final Method forOreDictMethod;
+    try {
+      forOreDictMethod = inputFactory.getClass().getDeclaredMethod("forOreDict", String.class);
+    } catch(final NoSuchMethodException e) {
+      GradientMod.logger.warn("Can't register ore washing recipe - could not find IC2 Recipes.inputFactory.forOreDict", e);
+      return;
+    }
+
+    final Method addRecipeMethod;
+    try {
+      addRecipeMethod = oreWashing.getClass().getDeclaredMethod("addRecipe", ic2IRecipeInputClass, NBTTagCompound.class, boolean.class, ItemStack[].class);
+    } catch(final NoSuchMethodException e) {
+      GradientMod.logger.warn("Can't register ore washing recipe - could not find IC2 Recipes.oreWashing.addRecipe", e);
+      return;
+    }
+
     for(final Ore.Metal ore : Ores.metals()) {
       final NBTTagCompound nbt = new NBTTagCompound();
       nbt.setInteger("amount", 1000); // Water amount
 
       final String oreName = StringUtils.capitalize(ore.name);
-      Recipes.oreWashing.addRecipe(Recipes.inputFactory.forOreDict("crushed" + oreName), nbt, false, OreDictUtils.getFirst("purified" + oreName));
+
+      final Object input;
+      try {
+        input = forOreDictMethod.invoke(inputFactory, "crushed" + oreName);
+      } catch(final IllegalAccessException | InvocationTargetException e) {
+        GradientMod.logger.warn("Can't register ore washing recipe - could not invoke IC2 Recipes.inputFactory.forOreDict", e);
+        return;
+      }
+
+      try {
+        addRecipeMethod.invoke(oreWashing, input, nbt, false, new ItemStack[] {OreDictUtils.getFirst("purified" + oreName)});
+      } catch(final IllegalAccessException | InvocationTargetException e) {
+        GradientMod.logger.warn("Can't register ore washing recipe - could not invoke IC2 Recipes.oreWashing.addRecipe", e);
+      }
     }
   }
 
   private static void registerExtractorRecipes() {
-    Recipes.extractor.addRecipe(Recipes.inputFactory.forFluidContainer(FluidRegistry.WATER), null, false, GradientItems.SALT.getItemStack(4));
+    final Class<?> ic2RecipesClass;
+    try {
+      ic2RecipesClass = Class.forName("ic2.api.recipe.Recipes");
+    } catch(final ClassNotFoundException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - IC2 Recipes class not found", e);
+      return;
+    }
+
+    final Class<?> ic2IRecipeInputClass;
+    try {
+      ic2IRecipeInputClass = Class.forName("ic2.api.recipe.IRecipeInput");
+    } catch(final ClassNotFoundException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - IC2 IRecipeInput class not found", e);
+      return;
+    }
+
+    final Field extractorField;
+    try {
+      extractorField = ic2RecipesClass.getDeclaredField("extractor");
+    } catch(final NoSuchFieldException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - IC2 Recipes.extractor not found", e);
+      return;
+    }
+
+    final Object extractor;
+    try {
+      extractor = extractorField.get(null);
+    } catch(final IllegalAccessException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - could not get IC2 Recipes.extractor", e);
+      return;
+    }
+
+    final Field inputFactoryField;
+    try {
+      inputFactoryField = ic2RecipesClass.getDeclaredField("inputFactory");
+    } catch(final NoSuchFieldException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - IC2 Recipes.inputFactory not found", e);
+      return;
+    }
+
+    final Object inputFactory;
+    try {
+      inputFactory = inputFactoryField.get(null);
+    } catch(final IllegalAccessException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - could not get IC2 Recipes.inputFactory", e);
+      return;
+    }
+
+    final Method forFluidContainerMethod;
+    try {
+      forFluidContainerMethod = inputFactory.getClass().getDeclaredMethod("forFluidContainer", Fluid.class);
+    } catch(final NoSuchMethodException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - could not find IC2 Recipes.inputFactory.forFluidContainer", e);
+      return;
+    }
+
+    final Method addRecipeMethod;
+    try {
+      addRecipeMethod = extractor.getClass().getDeclaredMethod("addRecipe", ic2IRecipeInputClass, NBTTagCompound.class, boolean.class, ItemStack[].class);
+    } catch(final NoSuchMethodException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - could not find IC2 Recipes.extractor.addRecipe", e);
+      return;
+    }
+
+    final Object input;
+    try {
+      input = forFluidContainerMethod.invoke(inputFactory, FluidRegistry.WATER);
+    } catch(final IllegalAccessException | InvocationTargetException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - could not invoke IC2 Recipes.inputFactory.forFluidContainer", e);
+      return;
+    }
+
+    try {
+      addRecipeMethod.invoke(extractor, input, null, false, new ItemStack[] {GradientItems.SALT.getItemStack(4)});
+    } catch(final IllegalAccessException | InvocationTargetException e) {
+      GradientMod.logger.warn("Can't register extractor recipe - could not invoke IC2 Recipes.extractor.addRecipe", e);
+    }
   }
 }

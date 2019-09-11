@@ -44,6 +44,11 @@
         "fluid": "iron"
       }
     }],
+    "lead": [{
+      "custom": {
+        "fluid": "lead"
+      }
+    }],
     "magnesium": [{
       "custom": {
         "fluid": "magnesium"
@@ -57,6 +62,11 @@
     "sphalerite": [{
       "custom": {
         "fluid": "sphalerite"
+      }
+    }],
+    "steam": [{
+      "custom": {
+        "fluid": "steam"
       }
     }],
     "tin": [{

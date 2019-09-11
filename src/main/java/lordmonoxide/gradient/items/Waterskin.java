@@ -14,7 +14,12 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -82,6 +87,14 @@ public class Waterskin extends ItemFluidContainer {
       }
 
       final BlockPos pos = target.getBlockPos();
+
+      final IFluidHandler handler = FluidUtil.getFluidHandler(world, pos, target.sideHit);
+      final FluidStack contained = handler != null ? handler.drain(Fluid.BUCKET_VOLUME, false) : null;
+
+      if(contained == null || contained.getFluid() != FluidRegistry.WATER) {
+        return ActionResult.newResult(EnumActionResult.PASS, itemstack);
+      }
+
       final FluidActionResult filledResult = FluidUtil.tryPickUpFluid(itemstack, player, world, pos, target.sideHit);
 
       if(filledResult.isSuccess()) {

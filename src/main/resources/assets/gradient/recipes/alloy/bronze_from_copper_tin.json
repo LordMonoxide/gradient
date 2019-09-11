@@ -1,0 +1,14 @@
+{
+  "type": "gradient:alloy",
+  "result": {
+    "name": "bronze",
+    "amount": 4
+  },
+  "ingredients": [{
+    "name": "copper",
+    "amount": 3
+  }, {
+    "name": "tin",
+    "amount": 1
+  }]
+}

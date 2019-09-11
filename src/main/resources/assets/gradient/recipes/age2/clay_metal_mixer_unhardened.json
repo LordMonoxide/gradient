@@ -1,0 +1,20 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
+  "result": {
+    "item": "gradient:clay_metal_mixer_unhardened"
+  },
+  "pattern": [
+    "CCC",
+    "PCP",
+    "PCP"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:clay_ball"
+    },
+    "P": {
+      "item": "gradient:pebble"
+    }
+  }
+}

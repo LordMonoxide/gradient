@@ -77,31 +77,8 @@ public final class Meltables {
           final Meltable meltable = add(oreName, metal.meltTime, metal.meltTemp, metal.name, Fluid.BUCKET_VOLUME);
           Metals.addMeltable(meltable, metal);
         }
-      } else if(oreName.startsWith("alloyNugget")) {
-        //TODO
-/*
-        final Metal metal = Metals.get(oreName.substring(11).toLowerCase());
-
-        float hottest = 0;
-
-        for(final Metal.MetalElement component : metal.elements) {
-          final Metal m = Metals.get(component.element.name);
-
-          if(m == Metals.INVALID_METAL) {
-            continue oreLoop;
-          }
-
-          if(m.meltTemp > hottest) {
-            hottest = m.meltTemp;
-          }
-        }
-
-        add(oreName, metal, metal.elements.size() / 4.0f, hottest, Fluid.BUCKET_VOLUME / 4 * alloy.output.amount);
-*/
       }
     }
-
-    add("alloyNuggetBronze", Metals.COPPER.meltTime / 4.0f * 3.0f + Metals.TIN.meltTime / 4.0f, Metals.COPPER.meltTemp, "bronze", Fluid.BUCKET_VOLUME);
 
     add("oreIron", Metals.IRON.meltTime, Metals.IRON.meltTemp, "iron", Fluid.BUCKET_VOLUME);
 

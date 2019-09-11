@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.client.models;
 
+import lordmonoxide.gradient.GradientFluids;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.BlockClayCrucibleHardened;
 import lordmonoxide.gradient.blocks.GradientBlocks;
@@ -13,12 +14,10 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.registry.RegistrySimple;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -55,7 +54,7 @@ public class BakedModelClayCrucible implements IBakedModel {
       final FluidStack fluid = exState.getValue(BlockClayCrucibleHardened.FLUID);
 
       if(fluid != null && fluid.amount > 0) {
-        return FLUID_MODELS.get(fluid.getFluid().getName())[Math.floorDiv(fluid.amount, Fluid.BUCKET_VOLUME) - 1].getQuads(null, side, rand);
+        return FLUID_MODELS.get(fluid.getFluid().getName())[Math.max(0, fluid.amount / Fluid.BUCKET_VOLUME - 1)].getQuads(null, side, rand);
       }
     }
 
@@ -109,17 +108,18 @@ public class BakedModelClayCrucible implements IBakedModel {
 
   @SubscribeEvent
   public static void onModelBakeEvent(final ModelBakeEvent event) {
+    GradientMod.logger.info("Adding fluids to clay crucible model");
+
     // generate fluid models for all registered fluids for 16 levels each
 
-    for(final Fluid fluid : FluidRegistry.getBucketFluids()) {
+    for(final Fluid fluid : GradientFluids.METALS.values()) {
+      GradientMod.logger.info("Adding fluid {} {}", fluid.getName(), fluid);
       FLUID_MODELS.put(fluid.getName(), getFluidModels(fluid, TileClayCrucible.FLUID_CAPACITY, 1.0f / 16.0f, 11.0f / 16.0f));
     }
 
     // get ModelResourceLocations of all tank block variants from the registry except "inventory"
 
-    final RegistrySimple<ModelResourceLocation, IBakedModel> registry = (RegistrySimple<ModelResourceLocation, IBakedModel>) event.getModelRegistry();
-
-    for(final ModelResourceLocation loc : registry.getKeys()) {
+    for(final ModelResourceLocation loc : event.getModelRegistry().getKeys()) {
       if(loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().equals(GradientBlocks.CLAY_CRUCIBLE_HARDENED.getRegistryName().getPath()) && !"inventory".equals(loc.getVariant())) {
         final IBakedModel registeredModel = event.getModelRegistry().getObject(loc);
         final IBakedModel replacementModel = new BakedModelClayCrucible(registeredModel);

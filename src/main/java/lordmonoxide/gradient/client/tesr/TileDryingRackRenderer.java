@@ -16,10 +16,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileDryingRackRenderer extends TileEntitySpecialRenderer<TileDryingRack> {
   @Override
   public void render(final TileDryingRack rack, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
+    final IBlockState state = rack.getWorld().getBlockState(rack.getPos());
+
+    if(!(state.getBlock() instanceof BlockDryingRack)) {
+      return;
+    }
+
     GlStateManager.pushMatrix();
     GlStateManager.translate(x + 0.5d, y + 0.5d, z + 0.5d);
 
-    final IBlockState state = rack.getWorld().getBlockState(rack.getPos());
     final EnumFacing facing = state.getValue(BlockDryingRack.FACING);
     final boolean roof = state.getValue(BlockDryingRack.ROOF);
 

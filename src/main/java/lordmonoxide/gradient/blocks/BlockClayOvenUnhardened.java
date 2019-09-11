@@ -1,7 +1,5 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.tileentities.TileFirePit;
-import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -14,7 +12,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -82,12 +79,6 @@ public class BlockClayOvenUnhardened extends GradientBlock {
   @Override
   public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
     world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
-
-    final TileEntity te = world.getTileEntity(pos);
-
-    if(te instanceof TileFirePit) {
-      ((TileFirePit)te).updateSurroundingHardenables(AgeUtils.getPlayerAge(placer));
-    }
   }
 
   @Override

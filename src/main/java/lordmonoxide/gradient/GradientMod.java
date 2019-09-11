@@ -1,6 +1,7 @@
 package lordmonoxide.gradient;
 
 import lordmonoxide.gradient.advancements.AdvancementTriggers;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.energy.CapabilityEnergy;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
@@ -103,6 +104,8 @@ public class GradientMod {
   @Mod.EventHandler
   public void init(final FMLInitializationEvent event) {
     logger.info("------------------- INIT -------------------");
+
+    GradientBlocks.registerTileEntities();
 
     GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     GameRegistry.registerWorldGenerator(new OreGenerator(), 0);

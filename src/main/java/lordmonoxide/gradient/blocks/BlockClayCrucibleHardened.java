@@ -189,8 +189,7 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
             }
           }
 
-          te.useBucket(player, hand, world, pos, side);
-
+          FluidUtil.interactWithFluidHandler(player, hand, world, pos, side);
           return true;
         }
 

@@ -5,11 +5,14 @@ import lordmonoxide.gradient.blocks.BlockBronzeBoiler;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.registry.RegistrySimple;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -57,7 +60,7 @@ public class BakedModelBronzeBoiler implements IBakedModel {
       }
 
       if(steamLevel > 0) {
-        quads.addAll(FLUID_MODELS.get("ic2steam")[steamLevel - 1].getQuads(null, side, rand));
+        quads.addAll(FLUID_MODELS.get("steam")[steamLevel - 1].getQuads(null, side, rand));
       }
 
       return quads;
@@ -109,16 +112,16 @@ public class BakedModelBronzeBoiler implements IBakedModel {
 
   @SubscribeEvent
   public static void onModelBakeEvent(final ModelBakeEvent event) {
+    GradientMod.logger.info("Adding fluids to bronze boiler model");
+
     // generate fluid models for all registered fluids for 16 levels each
 
     FLUID_MODELS.put("water", getFluidModels(FluidRegistry.WATER, TileBronzeBoiler.WATER_CAPACITY, 1.0f / 16.0f, 6.0f / 16.0f));
-    FLUID_MODELS.put("ic2steam", getFluidModels(FluidRegistry.getFluid("ic2steam"), TileBronzeBoiler.STEAM_CAPACITY, 9.0f / 16.0f, 6.0f / 16.0f));
+    FLUID_MODELS.put("steam", getFluidModels(FluidRegistry.getFluid("steam"), TileBronzeBoiler.STEAM_CAPACITY, 9.0f / 16.0f, 6.0f / 16.0f));
 
     // get ModelResourceLocations of all tank block variants from the registry except "inventory"
 
-    final RegistrySimple<ModelResourceLocation, IBakedModel> registry = (RegistrySimple<ModelResourceLocation, IBakedModel>) event.getModelRegistry();
-
-    for(final ModelResourceLocation loc : registry.getKeys()) {
+    for(final ModelResourceLocation loc : event.getModelRegistry().getKeys()) {
       if(loc.getNamespace().equals(GradientMod.MODID) && loc.getPath().equals(GradientBlocks.BRONZE_BOILER.getRegistryName().getPath()) && !"inventory".equals(loc.getVariant())) {
         final IBakedModel registeredModel = event.getModelRegistry().getObject(loc);
         final IBakedModel replacementModel = new BakedModelBronzeBoiler(registeredModel);

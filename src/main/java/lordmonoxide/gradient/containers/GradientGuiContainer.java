@@ -1,6 +1,5 @@
 package lordmonoxide.gradient.containers;
 
-import ic2.core.util.Util;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -14,6 +13,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -132,7 +132,7 @@ public abstract class GradientGuiContainer extends GuiContainer {
 
       final Fluid fluid = this.tank.getFluid().getFluid();
       final TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getStill(this.tank.getFluid()).toString());
-      final double renderHeight = this.h * Util.limit(this.tank.getFluidAmount() / (double)this.tank.getCapacity(), 0.0d, 1.0d);
+      final double renderHeight = this.h * MathHelper.clamp(this.tank.getFluidAmount() / (double)this.tank.getCapacity(), 0.0d, 1.0d);
       final int color = fluid.getColor(this.tank.getFluid());
 
       Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);

@@ -7,6 +7,7 @@ import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
@@ -111,13 +112,19 @@ public class TileBronzeFurnace extends HeatProducer {
   }
 
   private void igniteFuel() {
+    boolean shouldUpdate = false;
+
     for(int i = 0; i < FUEL_SLOTS_COUNT; i++) {
       if(!this.isBurning(i) && this.fuels[i] != null) {
         if(this.canIgnite(this.fuels[i])) {
           this.fuels[i].ignite();
-          this.sync();
+          shouldUpdate = true;
         }
       }
+    }
+
+    if(shouldUpdate) {
+      this.sync();
     }
   }
 
@@ -174,7 +181,7 @@ public class TileBronzeFurnace extends HeatProducer {
         fuel.tick();
 
         if(fuel.isDepleted()) {
-          this.setFuelSlot(slot, ItemStack.EMPTY);
+          this.clearFuelSlot(slot);
         }
 
         if(fuel.recipe.burnTemp > this.getHeat()) {
@@ -196,16 +203,11 @@ public class TileBronzeFurnace extends HeatProducer {
     return 0.6f;
   }
 
-  private ItemStack getFuelSlot(final int slot) {
-    return this.inventory.getStackInSlot(FIRST_FUEL_SLOT + slot);
-  }
-
-  private void setFuelSlot(final int slot, final ItemStack stack) {
-    this.inventory.setStackInSlot(FIRST_FUEL_SLOT + slot, stack);
+  private void clearFuelSlot(final int slot) {
+    this.inventory.setStackInSlot(FIRST_FUEL_SLOT + slot, ItemStack.EMPTY);
   }
 
   private boolean canIgnite(final Fuel fuel) {
-    GradientMod.logger.info("Heat {} ignition {}", this.getHeat(), fuel.recipe.ignitionTemp);
     return this.getHeat() >= fuel.recipe.ignitionTemp;
   }
 
@@ -251,15 +253,18 @@ public class TileBronzeFurnace extends HeatProducer {
       final int slot = tag.getInteger("slot");
 
       if(slot < FUEL_SLOTS_COUNT) {
-        final FuelRecipe recipe = (FuelRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(tag.getString("recipe")));
-        final int ticks = tag.getInteger("ticks");
-        final boolean burning = tag.getBoolean("burning");
+        final ResourceLocation loc = new ResourceLocation(tag.getString("recipe"));
+        final IRecipe recipe = ForgeRegistries.RECIPES.getValue(loc);
 
-        final Fuel fuel = new Fuel(recipe);
-        fuel.burnTicks = ticks;
-        fuel.isBurning = burning;
+        if(recipe instanceof FuelRecipe) {
+          final Fuel fuel = new Fuel((FuelRecipe)recipe);
+          fuel.burnTicks = tag.getInteger("ticks");
+          fuel.isBurning = tag.getBoolean("burning");
 
-        this.fuels[slot] = fuel;
+          this.fuels[slot] = fuel;
+        } else {
+          GradientMod.logger.warn("Bronze furnace failed to load recipe {} ({})", loc, recipe);
+        }
       }
     }
 

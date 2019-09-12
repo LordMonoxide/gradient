@@ -1,6 +1,5 @@
 {
-  "credit": "Made with Blockbench",
-  "parent": "block/block",
+  "parent": "minecraft:block/block",
   "textures": {
     "side": "minecraft:blocks/log_big_oak",
     "particle": "minecraft:blocks/log_big_oak"

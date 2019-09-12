@@ -1,0 +1,17 @@
+{
+  "parameters": {
+  },
+  "clips": {
+    "idle": ["apply", "gradient:block/manual_grinder@idle", "#spinning_cycle"],
+    "spinning": ["apply", "gradient:block/manual_grinder@spinning", "#spinning_cycle"]
+  },
+  "states": [
+    "idle",
+    "spinning"
+  ],
+  "start_state": "idle",
+  "transitions": {
+    "idle": ["idle", "spinning"],
+    "spinning": ["idle", "spinning"]
+  }
+}

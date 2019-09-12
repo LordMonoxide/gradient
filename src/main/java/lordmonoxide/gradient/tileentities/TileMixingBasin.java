@@ -6,6 +6,7 @@ import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -14,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -27,6 +29,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class TileMixingBasin extends TileEntity implements ITickable {
   @CapabilityInject(IItemHandler.class)
@@ -164,6 +167,18 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     }
 
     if(this.ticks < this.recipe.ticks) {
+      final Random rand = this.getWorld().rand;
+
+      if(rand.nextInt(2) == 0) {
+        final double radius = rand.nextDouble() * 0.2d;
+        final double angle = rand.nextDouble() * Math.PI * 2;
+
+        final double x = this.pos.getX() + 0.5d + radius * Math.cos(angle);
+        final double z = this.pos.getZ() + 0.5d + radius * Math.sin(angle);
+
+        ((WorldServer)this.world).spawnParticle(EnumParticleTypes.WATER_BUBBLE, x, this.pos.getY() + 0.4d, z, 1, 0.0d, 0.0d, 0.0d, 0.0d);
+      }
+
       this.ticks++;
       this.markDirty();
     }
@@ -190,7 +205,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     }
 
     if(this.ticks >= this.recipe.ticks) {
-      ((WorldServer)this.world).spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.pos.getX() + 0.5d, this.pos.getY() + 0.5d, this.pos.getZ() + 0.5d, 10, 0.1d, 0.1d, 0.1d, 0.01d);
+      this.getWorld().playSound(this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f, SoundEvents.ENTITY_GENERIC_SWIM, SoundCategory.BLOCKS, 0.8f + this.getWorld().rand.nextFloat(), this.getWorld().rand.nextFloat() * 0.7f + 0.3f, false);
 
       this.ticks = 0;
       this.passes++;
@@ -271,6 +286,8 @@ public class TileMixingBasin extends TileEntity implements ITickable {
 
   @Override
   public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt) {
+    final IBlockState oldState = this.world.getBlockState(this.pos);
     this.readFromNBT(pkt.getNbtCompound());
+    this.world.notifyBlockUpdate(this.pos, oldState, this.world.getBlockState(this.pos), 2);
   }
 }

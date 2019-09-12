@@ -1,8 +1,9 @@
 language: java
-jdk: oraclejdk8
+jdk: openjdk8
 
 before_install:
   - ./travis_release.sh
+  - ./gradlew setupDecompWorkspace
 
 deploy:
   provider: releases

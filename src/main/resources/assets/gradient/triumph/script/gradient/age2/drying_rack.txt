@@ -1,0 +1,10 @@
+setIcon(<gradient:drying_rack>)
+setTitle("Hang It Up")
+setDescription("Craft a drying rack")
+addParent("gradient:age2/root")
+
+criteria1 = addCriteria("hasDryingRack", "minecraft:inventory_changed")
+criteria1.addItem(<gradient:drying_rack>)
+
+setRequiresParents()
+setPos(95,18)

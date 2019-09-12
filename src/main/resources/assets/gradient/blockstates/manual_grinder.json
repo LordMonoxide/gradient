@@ -1,8 +1,15 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "model": "gradient:manual_grinder"
+  },
   "variants": {
-    "facing=north": { "model": "gradient:manual_grinder" },
-    "facing=east":  { "model": "gradient:manual_grinder", "y":  90 },
-    "facing=south": { "model": "gradient:manual_grinder", "y": 180 },
-    "facing=west":  { "model": "gradient:manual_grinder", "y": 270 }
+    "facing": {
+      "north": { },
+      "east":  { "y":  90 },
+      "south": { "y": 180 },
+      "west":  { "y": 270 }
+    },
+    "inventory": [{}]
   }
 }

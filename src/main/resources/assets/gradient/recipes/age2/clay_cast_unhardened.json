@@ -2,8 +2,7 @@
   "type": "gradient:age_gated_shapeless",
   "age": 2,
   "result": {
-    "item": "gradient:clay_cast_unhardened",
-    "data": 0
+    "item": "gradient:clay_cast.pickaxe.unhardened"
   },
   "ingredients": [{
     "item": "minecraft:clay_ball"

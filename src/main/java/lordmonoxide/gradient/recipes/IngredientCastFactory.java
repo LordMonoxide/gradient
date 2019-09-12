@@ -2,7 +2,8 @@ package lordmonoxide.gradient.recipes;
 
 import com.google.gson.JsonObject;
 import lordmonoxide.gradient.GradientCasts;
-import lordmonoxide.gradient.blocks.claycast.ItemClayCast;
+import lordmonoxide.gradient.items.GradientItems;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IIngredientFactory;
@@ -16,6 +17,6 @@ public class IngredientCastFactory implements IIngredientFactory {
   public Ingredient parse(final JsonContext context, final JsonObject json) {
     final String castName = JsonUtils.getString(json, "cast");
     final GradientCasts.Cast cast = GradientCasts.getCast(castName);
-    return new IngredientNBT(ItemClayCast.getCast(cast));
+    return new IngredientNBT(new ItemStack(GradientItems.clayCastHardened(cast)));
   }
 }

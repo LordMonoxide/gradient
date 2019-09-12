@@ -2,6 +2,7 @@ package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.items.GradientItemTool;
 import lordmonoxide.gradient.progress.Age;
+import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -48,7 +49,7 @@ public class AgeGatedShapedToolRecipe extends IForgeRegistryEntry.Impl<IRecipe> 
 
   @Override
   public boolean matches(final InventoryCrafting inv, final World world) {
-    return RecipeHelper.playerMeetsAgeRequirement(inv, this.age) && this.recipe.matches(inv, world);
+    return AgeUtils.playerMeetsAgeRequirement(inv, this.age) && this.recipe.matches(inv, world);
   }
 
   @Override

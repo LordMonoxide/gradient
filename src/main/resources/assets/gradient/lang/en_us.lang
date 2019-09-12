@@ -1,6 +1,13 @@
 # Items
 item.fibre.name=Fibre
 item.twine.name=Twine
+item.bark_oak.name=Oak Bark
+item.bark_spruce.name=Spruce Bark
+item.bark_birch.name=Birch Bark
+item.bark_jungle.name=Jungle Bark
+item.bark_acacia.name=Acacia Bark
+item.bark_dark_oak.name=Dark Oak Bark
+item.mulch.name=Mulch
 item.hide_cow.name=Cow Hide
 item.hide_donkey.name=Donkey Hide
 item.hide_horse.name=Horse Hide
@@ -12,175 +19,155 @@ item.hide_polar_bear.name=Polar Bear Hide
 item.hide_sheep.name=Sheep Hide
 item.hide_wolf.name=Wolf Hide
 
+item.hide_raw.name=Raw Hide
+item.hide_salted.name=Salted Hide
+item.hide_preserved.name=Preserved Hide
+item.hide_tanned.name=Tanned Hide
+
 item.hide_boots.name=Hide Boots
 item.hide_pants.name=Hide Pants
 item.hide_shirt.name=Hide Shirt
 item.hide_headcover.name=Hide Headcover
 
 item.hide_bedding.name=Hide Bedding
-
 item.waterskin.name=Waterskin
+item.leather_cord.name=Leather Cord
 
 # Tools
 item.bone_awl.name=Bone Awl
 item.stone_hammer.name=Stone Hammer
+item.stone_hammer.tooltip=Use on ores to get metal nuggets
 item.stone_hatchet.name=Stone Hatchet
+item.stone_mattock.name=Stone Mattock
+item.stone_mattock.tooltip=Right click to till soil, strip logs, or shear animals
+item.stone_pickaxe.name=Stone Pickaxe
 item.fire_starter.name=Fire Starter
 item.flint_knife.name=Flint Knife
-item.tool.pickaxe.copper.name=Copper Pickaxe
-item.tool.pickaxe.tin.name=Tin Pickaxe
-item.tool.pickaxe.iron.name=Iron Pickaxe
-item.tool.pickaxe.gold.name=Gold Pickaxe
-item.tool.pickaxe.bronze.name=Bronze Pickaxe
-item.tool.pickaxe.magnesium.name=Magnesium Pickaxe
-item.tool.mattock.copper.name=Copper Mattock
-item.tool.mattock.tin.name=Tin Mattock
-item.tool.mattock.iron.name=Iron Mattock
-item.tool.mattock.gold.name=Gold Mattock
-item.tool.mattock.bronze.name=Bronze Mattock
-item.tool.mattock.magnesium.name=Magnesium Mattock
-item.tool.sword.copper.name=Copper Sword
-item.tool.sword.tin.name=Tin Sword
-item.tool.sword.iron.name=Iron Sword
-item.tool.sword.gold.name=Gold Sword
-item.tool.sword.bronze.name=Bronze Sword
-item.tool.sword.magnesium.name=Magnesium Sword
-item.tool.hammer.copper.name=Copper Forge Hammer
-item.tool.hammer.tin.name=Tin Forge Hammer
-item.tool.hammer.iron.name=Iron Forge Hammer
-item.tool.hammer.gold.name=Gold Forge Hammer
-item.tool.hammer.bronze.name=Bronze Forge Hammer
-item.tool.hammer.magnesium.name=Magnesium Forge Hammer
+
+item.tool.name=%s %s
+item.tool.type.pickaxe=Pickaxe
+item.tool.type.mattock=Mattock
+item.tool.type.sword=Sword
+item.tool.type.hammer=Forge Hammer
 
 # Cast items
-item.cast_item.pickaxe.copper.name=Copper Pickaxe Head
-item.cast_item.pickaxe.tin.name=Tin Pickaxe Head
-item.cast_item.pickaxe.iron.name=Iron Pickaxe Head
-item.cast_item.pickaxe.gold.name=Gold Pickaxe Head
-item.cast_item.pickaxe.bronze.name=Bronze Pickaxe Head
-item.cast_item.pickaxe.magnesium.name=Magnesium Pickaxe Head
-item.cast_item.mattock.copper.name=Copper Mattock Head
-item.cast_item.mattock.tin.name=Tin Mattock Head
-item.cast_item.mattock.iron.name=Iron Mattock Head
-item.cast_item.mattock.gold.name=Gold Mattock Head
-item.cast_item.mattock.bronze.name=Bronze Mattock Head
-item.cast_item.mattock.magnesium.name=Magnesium Mattock Head
-item.cast_item.sword.copper.name=Copper Sword Blade
-item.cast_item.sword.tin.name=Tin Sword Blade
-item.cast_item.sword.iron.name=Iron Sword Blade
-item.cast_item.sword.gold.name=Gold Sword Blade
-item.cast_item.sword.bronze.name=Bronze Sword Blade
-item.cast_item.sword.magnesium.name=Magnesium Sword Blade
-item.cast_item.hammer.copper.name=Copper Forge Hammer Head
-item.cast_item.hammer.tin.name=Tin Forge Hammer Head
-item.cast_item.hammer.iron.name=Iron Forge Hammer Head
-item.cast_item.hammer.gold.name=Gold Forge Hammer Head
-item.cast_item.hammer.bronze.name=Bronze Forge Hammer Head
-item.cast_item.hammer.magnesium.name=Magnesium Forge Hammer Head
-item.cast_item.ingot.copper.name=Copper Ingot
-item.cast_item.ingot.tin.name=Tin Ingot
-item.cast_item.ingot.iron.name=Iron Ingot
-item.cast_item.ingot.gold.name=Gold Ingot
-item.cast_item.ingot.bronze.name=Bronze Ingot
-item.cast_item.ingot.magnesium.name=Magnesium Ingot
-tile.cast_block.copper.name=Block of Copper
-tile.cast_block.tin.name=Block of Tin
-tile.cast_block.bronze.name=Block of Bronze
-tile.cast_block.magnesium.name=Block of Magnesium
+item.cast_item.name=%s %s
+item.cast_item.type.pickaxe=Pickaxe Head
+item.cast_item.type.mattock=Mattock Head
+item.cast_item.type.sword=Sword Blade
+item.cast_item.type.hammer=Hammer Head
+item.cast_item.type.ingot=Ingot
+tile.cast_block.name=Block of %s
 
 # Metals
-item.nugget.copper.name=Copper Nugget
-item.nugget.tin.name=Tin Nugget
-item.nugget.iron.name=Iron Nugget
-item.nugget.gold.name=Gold Nugget
-item.nugget.bronze.name=Bronze Nugget
-item.nugget.magnesium.name=Magnesium Nugget
-item.nugget.coal.name=Coal Nugget
-item.alloy_nugget.bronze.name=Bronze Alloy Nugget
-item.dust.copper.name=Copper Dust
-item.dust.tin.name=Tin Dust
-item.dust.iron.name=Iron Dust
-item.dust.gold.name=Gold Dust
-item.dust.bronze.name=Bronze Dust
-item.dust.magnesium.name=Magnesium Dust
 item.dust.flint.name=Flint Dust
-item.dust.glass.name=Glass Dust
-item.crushed.copper.name=Crushed Copper Ore
-item.crushed.tin.name=Crushed Tin Ore
-item.crushed.iron.name=Crushed Iron Ore
-item.crushed.gold.name=Crushed Gold Ore
-item.crushed.bronze.name=Crushed Bronze Ore
-item.crushed.magnesium.name=Crushed Magnesium Ore
-item.crushed.purified.copper.name=Purified Crushed Copper Ore
-item.crushed.purified.tin.name=Purified Crushed Tin Ore
-item.crushed.purified.iron.name=Purified Crushed Iron Ore
-item.crushed.purified.gold.name=Purified Crushed Gold Ore
-item.crushed.purified.bronze.name=Purified Crushed Bronze Ore
-item.crushed.purified.magnesium.name=Purified Crushed Magnesium Ore
-item.plate.copper.name=Copper Plate
-item.plate.tin.name=Tin Plate
-item.plate.iron.name=Iron Plate
-item.plate.gold.name=Gold Plate
-item.plate.bronze.name=Bronze Plate
-item.plate.magnesium.name=Magnesium Plate
-
-item.mortar.name=Mortar and Pestle
+item.nugget.coal.name=Coal Nugget
+item.metal.type.nugget=%s Nugget
+item.metal.type.dust=%s Dust
+item.metal.type.crushed=Crushed %s Ore
+item.metal.type.purified=Purified Crushed %s Ore
+item.metal.type.plate=%s Plate
 
 # Machine parts
 item.igniter.name=Ignition Powder
 item.grinding_head.name=Grinding Head
 
+# Metals
+metal.azurite=Azurite
+metal.bronze=Bronze
+metal.cassiterite=Cassiterite
+metal.copper=Copper
+metal.glass=Glass
+metal.gold=Gold
+metal.graphite=Graphite
+metal.hematite=Hematite
+metal.iron=Iron
+metal.lead=Lead
+metal.magnesium=Magnesium
+metal.pyrite=Pyrite
+metal.sphalerite=Sphalerite
+metal.tin=Tin
+metal.zinc=Zinc
+
 # Fluids
-fluid.copper=Molten Copper
-fluid.tin=Molten Tin
-fluid.iron=Molten Iron
-fluid.gold=Molten Gold
+fluid.azurite=Molten Azurite
 fluid.bronze=Molten Bronze
+fluid.cassiterite=Molten Cassiterite
+fluid.copper=Molten Copper
+fluid.gold=Molten Gold
+fluid.graphite=Molten Graphite
+fluid.hematite=Molten Hematite
+fluid.iron=Molten Iron
+fluid.lead=Molten Lead
 fluid.magnesium=Molten Magnesium
+fluid.pyrite=Molten Pyrite
+fluid.sphalerite=Molten Sphalerite
+fluid.tin=Molten Tin
+fluid.zinc=Molten Zinc
 fluid.glass=Molten Glass
+fluid.air=Air
+fluid.steam=Steam
 
 # Blocks
-tile.ore_magnesium.name=Magnesium Ore
+tile.ore.name=%s Ore
 tile.salt_block.name=Salt Block
 tile.pebble.name=Pebble
 tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
-tile.fire_pit.heat=Heat: %d °C
+tile.fire_pit.heat=%d °C
+tile.bellows.name=Bellows
+tile.bellows.tooltip=Place next to a fire pit or furnace and right click repeatedly to use
 tile.fibre_torch_lit.name=Lit Fibre Torch
 tile.fibre_torch_unlit.name=Unlit Fibre Torch
 tile.fibre_torch_unlit.tooltip=Light on a fire pit or with another torch
 
-tile.clay_bowl.unhardened.name=Unhardened Clay Bowl
-tile.clay_bowl.hardened.name=Clay Bowl
+tile.hardened_log.name=Hardened Log
+tile.hardened_planks.name=Hardened Planks
+item.hardened_stick.name=Hardened Stick
+
+tile.standing_torch.name=Torch Stand
+
+unhardened_clay.tooltip=Place next to a fire pit to dry
 tile.clay_bucket.unhardened.name=Unhardened Clay Bucket
 tile.clay_bucket.hardened.name=Clay Bucket
 item.clay_bucket_item.name=Clay Bucket of %s
 item.clay_bucket_item.empty.name=Empty Clay Bucket
 tile.clay_furnace.unhardened.name=Unhardened Clay Furnace
 tile.clay_furnace.hardened.name=Clay Furnace
-tile.clay_crucible_unhardened.name=Unhardened Clay Crucible
-tile.clay_crucible.name=Clay Crucible
+tile.clay_furnace.hardened.tooltip=Right click on a fire pit to attach
+tile.clay_oven.unhardened.name=Unhardened Clay Oven
+tile.clay_oven.hardened.name=Clay Oven
+tile.clay_oven.hardened.tooltip=Place on top of a furnace to use its heat
+tile.clay_metal_mixer_unhardened.name=Unhardened Clay Metal Mixer
+tile.clay_metal_mixer_hardened.name=Clay Metal Mixer
+tile.clay_metal_mixer_hardened.tooltip=Place between two crucibles, with another crucible underneath
+tile.clay_crucible.unhardened.name=Unhardened Clay Crucible
+tile.clay_crucible.hardened.name=Clay Crucible
+tile.clay_crucible.hardened.tooltip=Place on top of a furnace to use its heat
 tile.clay_crucible.molten=%s: %f
 tile.clay_crucible.no_metal=The crucible is empty
 tile.clay_crucible.not_enough_metal=This cast requires %d mB
 tile.clay_crucible.metal_cant_make_tools=This metal can't be used to make tools
-tile.clay_cast_unhardened.pickaxe.name=Unhardened Clay Cast (Pickaxe)
-tile.clay_cast_unhardened.mattock.name=Unhardened Clay Cast (Mattock)
-tile.clay_cast_unhardened.sword.name=Unhardened Clay Cast (Sword)
-tile.clay_cast_unhardened.hammer.name=Unhardened Clay Cast (Hammer)
-tile.clay_cast_unhardened.ingot.name=Unhardened Clay Cast (Ingot)
-tile.clay_cast_unhardened.block.name=Unhardened Clay Cast (Block)
-tile.clay_cast.metal_amount=%s → %d mB
-tile.clay_cast.pickaxe.name=Clay Cast (Pickaxe)
-tile.clay_cast.mattock.name=Clay Cast (Mattock)
-tile.clay_cast.sword.name=Clay Cast (Sword)
-tile.clay_cast.hammer.name=Clay Cast (Hammer)
-tile.clay_cast.ingot.name=Clay Cast (Ingot)
-tile.clay_cast.block.name=Clay Cast (Block)
+tile.clay_cast.unhardened.tooltip=Right click to switch cast. Place next to a fire pit to dry.
+tile.clay_cast.pickaxe.unhardened.name=Unhardened Clay Cast (Pickaxe)
+tile.clay_cast.mattock.unhardened.name=Unhardened Clay Cast (Mattock)
+tile.clay_cast.sword.unhardened.name=Unhardened Clay Cast (Sword)
+tile.clay_cast.hammer.unhardened.name=Unhardened Clay Cast (Hammer)
+tile.clay_cast.ingot.unhardened.name=Unhardened Clay Cast (Ingot)
+tile.clay_cast.block.unhardened.name=Unhardened Clay Cast (Block)
+tile.clay_cast.pickaxe.hardened.name=Clay Cast (Pickaxe)
+tile.clay_cast.mattock.hardened.name=Clay Cast (Mattock)
+tile.clay_cast.sword.hardened.name=Clay Cast (Sword)
+tile.clay_cast.hammer.hardened.name=Clay Cast (Hammer)
+tile.clay_cast.ingot.hardened.name=Clay Cast (Ingot)
+tile.clay_cast.block.hardened.name=Clay Cast (Block)
+tile.clay_cast.hardened.tooltip=Right click on a crucible to cast
+tile.clay_cast.hardened.metal_amount=%s → %d mB
 
 tile.manual_grinder.name=Grindstone
 tile.mixing_basin.name=Mixing Basin
+tile.drying_rack.name=Drying Rack
 
 tile.bronze_machine_hull.name=Bronze Machine Hull
 tile.bronze_furnace.name=Bronze Furnace
@@ -209,13 +196,15 @@ item.salt.name=Salt
 item.flour.name=Flour
 item.dough.name=Dough
 
-# Metal
-metal.melt_temp=Melting Point: %f °C
-metal.melt_time=Melting Time: %d sec
-metal.amount=Amount: %d mB
+tile.wooden_axle.name=Wooden Axle
+item.wooden_gear.name=Wooden Gear
+tile.wooden_gearbox.name=Wooden Gearbox
 
-# Hardenable tooltip
-hardenable.tooltip=Place next to a fire pit to harden (%d sec)
+# Meltables
+meltable.melt_temp=Melting Point: %f °C
+meltable.melt_time=Melting Time: %d sec
+meltable.amount=Amount: %d mB
+meltable.fluid=Fluid: %s
 
 # JEI integration
 jei.requirement.age=Requires %s
@@ -233,6 +222,19 @@ jei.mixer.ticks=%d ticks
 
 jei.grinder.passes=%d grinds
 jei.grinder.ticks=%d ticks
+
+jei.hardening.name=Hardening
+jei.hardening.ticks=%d ticks
+jei.hardening.instructions=Place next to a firepit
+
+jei.fuel.name=Fuel
+jei.fuel.duration=Burn time: %d seconds
+jei.fuel.ignitionTemp=Ignition temperature: %d °C
+jei.fuel.burnTemp=Max temperature: %d °C
+jei.fuel.heatPerSec=Heat: %d °C/s
+
+jei.alloy.name=Alloy
+jei.alloy.amount=%d mB
 
 # Commands
 commands.setage.usage=/setage <age> [<player>]

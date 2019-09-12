@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
-public class FurnaceRecipes {
+public final class FurnaceRecipes {
   private FurnaceRecipes() { }
 
   @SubscribeEvent
@@ -18,6 +18,6 @@ public class FurnaceRecipes {
     GradientMod.logger.info("Registering furnace recipes...");
 
     net.minecraft.item.crafting.FurnaceRecipes.instance().addSmelting(GradientItems.SUGARCANE_PASTE, new ItemStack(Items.SUGAR), 0.25f);
-    net.minecraft.item.crafting.FurnaceRecipes.instance().addSmelting(GradientItems.DOUGH, new ItemStack(Items.BREAD, 4), 0.35f);
+    net.minecraft.item.crafting.FurnaceRecipes.instance().addSmelting(GradientItems.DOUGH, new ItemStack(Items.BREAD, 2), 0.35f);
   }
 }

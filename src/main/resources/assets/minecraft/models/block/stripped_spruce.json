@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "particle": "blocks/stripped_spruce_log",
+    "side": "blocks/stripped_spruce_log",
+    "end": "blocks/stripped_spruce_log_top"
+  }
+}

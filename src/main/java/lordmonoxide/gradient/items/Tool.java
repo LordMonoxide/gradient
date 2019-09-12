@@ -1,44 +1,55 @@
 package lordmonoxide.gradient.items;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientTools;
+import lordmonoxide.gradient.science.geology.Metal;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Tool extends GradientItemWorldTool {
-  private static final Set<Tool> tools = new HashSet<>();
-
-  public static ItemStack getTool(final GradientTools.Type type, final GradientMetals.Metal metal, final int amount, final int damage) {
-    for(final Tool tool : tools) {
-      if(tool.type == type && tool.metal == metal) {
-        return new ItemStack(tool, amount, damage);
-      }
-    }
-
-    return ItemStack.EMPTY;
-  }
-
   public final GradientTools.Type type;
-  public final GradientMetals.Metal metal;
+  public final Metal metal;
 
-  public Tool(final GradientTools.Type type, final GradientMetals.Metal metal) {
+  public Tool(final GradientTools.Type type, final Metal metal) {
     super("tool." + type.cast.name + '.' + metal.name, metal.harvestSpeed, (float)(-4 + type.attackSpeed * metal.attackSpeedMultiplier), (int)(type.attackDamage * metal.attackDamageMultiplier), type.attackDurabilityLost, metal.durability);
-    tools.add(this);
-
     this.type = type;
     this.metal = metal;
   }
 
   @Override
+  public String getItemStackDisplayName(final ItemStack stack) {
+    return I18n.translateToLocalFormatted("item.tool.name", I18n.translateToLocal("metal." + this.metal.name), I18n.translateToLocal("item.tool.type." + this.type.cast.name));
+  }
+
+  @Override
+  public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag flag) {
+    super.addInformation(stack, world, tooltip, flag);
+    this.type.tooltip(stack, world, tooltip);
+  }
+
+  @Override
   public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
     return this.type.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+  }
+
+  @Override
+  public boolean itemInteractionForEntity(final ItemStack itemstack, final EntityPlayer player, final EntityLivingBase entity, final EnumHand hand) {
+    return this.type.onEntityInteract(itemstack, player, entity, hand);
   }
 
   @Override

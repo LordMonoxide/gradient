@@ -1,6 +1,19 @@
 {
+  "forge_marker": 1,
   "variants": {
-    "hardened=false": { "model": "gradient:clay_bucket.unhardened" },
-    "hardened=true":  { "model": "gradient:clay_bucket.hardened" }
+    "inventory": {
+      "model": "gradient:clay_bucket_dynamic",
+      "textures": {
+        "base": "gradient:items/clay_bucket_base",
+        "fluid": "gradient:items/clay_bucket_fluid",
+        "cover": "gradient:items/clay_bucket_cover"
+      },
+      "transform": "forge:default-item",
+      "custom": {
+        "fluid": "water",
+        "flipGas": true,
+        "applyTint": false
+      }
+    }
   }
 }

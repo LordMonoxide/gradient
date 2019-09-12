@@ -1,7 +1,9 @@
 package lordmonoxide.gradient.recipes;
 
-import lordmonoxide.gradient.GradientMetals;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.science.geology.Metal;
+import lordmonoxide.gradient.science.geology.Metals;
+import lordmonoxide.gradient.utils.OreDictUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = GradientMod.MODID)
-public class GrinderRecipes {
+public final class GrinderRecipes {
   private GrinderRecipes() { }
 
   private static final Map<ItemStack, ItemStack> recipes = new HashMap<>();
@@ -26,7 +28,7 @@ public class GrinderRecipes {
     add(Items.FLINT, "dustFlint");
     add("coal", "dustCoal");
 
-    for(final GradientMetals.Metal metal : GradientMetals.metals) {
+    for(final Metal metal : Metals.all()) {
       final String name = StringUtils.capitalize(metal.name);
 
       final String crushedName = "crushed" + name;
@@ -54,7 +56,7 @@ public class GrinderRecipes {
   }
 
   public static boolean add(final Item input, final String output) {
-    return add(input, OreDictHelper.getFirst(output));
+    return add(input, OreDictUtils.getFirst(output));
   }
 
   public static boolean add(final String input, final ItemStack output) {
@@ -68,7 +70,7 @@ public class GrinderRecipes {
   }
 
   public static boolean add(final String input, final String output) {
-    return add(input, OreDictHelper.getFirst(output));
+    return add(input, OreDictUtils.getFirst(output));
   }
 
   public static boolean remove(final ItemStack input) {

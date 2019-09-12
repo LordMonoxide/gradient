@@ -1,0 +1,7 @@
+{
+  "bellows_blow": {
+    "category": "block",
+    "subtitle": "gradient.subtitle.bellows_blow",
+    "sounds": ["gradient:bellows_blow"]
+  }
+}

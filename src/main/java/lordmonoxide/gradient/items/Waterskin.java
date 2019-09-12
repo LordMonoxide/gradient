@@ -14,7 +14,12 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -73,14 +78,23 @@ public class Waterskin extends ItemFluidContainer {
   public ActionResult<ItemStack> onItemRightClick(@Nonnull final World world, @Nonnull final EntityPlayer player, @Nonnull final EnumHand hand) {
     final ItemStack itemstack = player.getHeldItem(hand);
     final FluidStack fluidStack = getFluid(itemstack);
+
     if(fluidStack == null) {
       final RayTraceResult target = this.rayTrace(world, player, true);
 
-      if(target.typeOfHit != RayTraceResult.Type.BLOCK) {
+      if(target == null || target.typeOfHit != RayTraceResult.Type.BLOCK) {
         return ActionResult.newResult(EnumActionResult.PASS, itemstack);
       }
 
       final BlockPos pos = target.getBlockPos();
+
+      final IFluidHandler handler = FluidUtil.getFluidHandler(world, pos, target.sideHit);
+      final FluidStack contained = handler != null ? handler.drain(Fluid.BUCKET_VOLUME, false) : null;
+
+      if(contained == null || contained.getFluid() != FluidRegistry.WATER) {
+        return ActionResult.newResult(EnumActionResult.PASS, itemstack);
+      }
+
       final FluidActionResult filledResult = FluidUtil.tryPickUpFluid(itemstack, player, world, pos, target.sideHit);
 
       if(filledResult.isSuccess()) {
@@ -122,6 +136,14 @@ public class Waterskin extends ItemFluidContainer {
     };
   }
 
+  public ItemStack getFilled(final Fluid fluid) {
+    final NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setTag("Fluid", new FluidStack(fluid, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
+    final ItemStack filled = new ItemStack(this, 1, 1);
+    filled.setTagCompound(nbt);
+    return filled;
+  }
+
   @Override
   public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> subItems) {
     if(!this.isInCreativeTab(tab)) {
@@ -129,11 +151,6 @@ public class Waterskin extends ItemFluidContainer {
     }
 
     subItems.add(new ItemStack(this, 1, 0));
-
-    final NBTTagCompound nbt = new NBTTagCompound();
-    nbt.setTag("Fluid", new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME).writeToNBT(new NBTTagCompound()));
-    final ItemStack filled = new ItemStack(this, 1, 1);
-    filled.setTagCompound(nbt);
-    subItems.add(filled);
+    subItems.add(this.getFilled(FluidRegistry.WATER));
   }
 }

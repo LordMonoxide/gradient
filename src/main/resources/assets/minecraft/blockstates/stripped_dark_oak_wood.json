@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "inventory": { "model": "stripped_dark_oak" },
+    "axis=y":    { "model": "stripped_dark_oak" },
+    "axis=z":    { "model": "stripped_dark_oak", "x": 90 },
+    "axis=x":    { "model": "stripped_dark_oak", "x": 90, "y": 90 },
+    "axis=none": { "model": "stripped_dark_oak" }
+  }
+}

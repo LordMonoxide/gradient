@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.items;
 
 import com.google.common.collect.Multimap;
+import lordmonoxide.gradient.GradientMod;
 import net.minecraft.block.BlockRedstoneOre;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -8,10 +9,15 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
 public class GradientItemWorldTool extends GradientItemTool {
   private final float harvestSpeed;
   private final float attackSpeed;
@@ -26,29 +32,39 @@ public class GradientItemWorldTool extends GradientItemTool {
     this.attackDurabilityLost = attackDurabilityLost;
   }
 
-  @Override
-  public boolean canHarvestBlock(final IBlockState blockIn, final ItemStack stack) {
-    if(blockIn.getBlockHardness(null, null) <= 1.0f) {
-      return true;
+  @SubscribeEvent
+  public static void canHarvestBlock(final PlayerEvent.BreakSpeed event) {
+    final EntityLivingBase entity = event.getEntityLiving();
+    final ItemStack stack = entity.getHeldItemMainhand();
+    final Item item = stack.getItem();
+
+    if(!(item instanceof GradientItemWorldTool)) {
+      return;
     }
 
-    for(final String type : this.getToolClasses(stack)) {
-      if(blockIn.getBlock().isToolEffective(type, blockIn)) {
-        return true;
+    final IBlockState state = event.getState();
+
+    for(final String type : item.getToolClasses(stack)) {
+      if(state.getBlock().isToolEffective(type, state)) {
+        return;
       }
 
       // Redstone has weird special-case handling
-      if("pickaxe".equals(type) && blockIn.getBlock() instanceof BlockRedstoneOre) {
-        return true;
+      if("pickaxe".equals(type) && state.getBlock() instanceof BlockRedstoneOre) {
+        return;
       }
     }
 
-    return false;
+    if(state.getBlockHardness(entity.getEntityWorld(), event.getPos()) <= 1.0f) {
+      return;
+    }
+
+    event.setCanceled(true);
   }
 
   @Override
   public float getDestroySpeed(final ItemStack stack, final IBlockState state) {
-    return this.canHarvestBlock(state, stack) ? this.harvestSpeed : 0.0f;
+    return this.harvestSpeed;
   }
 
   @Override

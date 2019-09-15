@@ -35,12 +35,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Side.CLIENT)
 public class ItemClayBucket extends GradientItem implements ModelManager.CustomModel {
   private final ItemStack empty;
 
@@ -75,7 +76,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
   @Override
   public String getItemStackDisplayName(final ItemStack stack) {
-    final FluidStack fluidStack = this.getFluid(stack);
+    final FluidStack fluidStack = getFluid(stack);
     if(fluidStack == null) {
       return I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".empty.name").trim();
     }
@@ -101,7 +102,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
   }
 
   @Nullable
-  public FluidStack getFluid(final ItemStack container) {
+  public static FluidStack getFluid(final ItemStack container) {
     return FluidStack.loadFluidStackFromNBT(container.getTagCompound());
   }
 
@@ -113,7 +114,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
   @Override
   public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
     final ItemStack itemstack = player.getHeldItem(hand);
-    final FluidStack fluidStack = this.getFluid(itemstack);
+    final FluidStack fluidStack = getFluid(itemstack);
 
     // clicked on a block?
     final RayTraceResult mop = this.rayTrace(world, player, fluidStack == null);
@@ -163,6 +164,10 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
   @SubscribeEvent(priority = EventPriority.LOW) // low priority so other mods can handle their stuff first
   public static void onFillBucket(final FillBucketEvent event) {
+    if(event.getWorld().isRemote) {
+      return;
+    }
+
     if(event.getResult() != Event.Result.DEFAULT) {
       // event was already handled
       return;
@@ -170,7 +175,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
     // not for us to handle
     final ItemStack emptyBucket = event.getEmptyBucket();
-    if(emptyBucket.isEmpty() || emptyBucket.getItem() != GradientItems.CLAY_BUCKET && emptyBucket.getItemDamage() != 0) {
+    if(emptyBucket.isEmpty() || emptyBucket.getItem() != GradientItems.CLAY_BUCKET || emptyBucket.getItemDamage() != 0) {
       return;
     }
 
@@ -202,7 +207,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
     ModelClayBucket.setBucketModelDefinition(this);
   }
 
-  public class FluidBucketWrapper implements IFluidHandlerItem, ICapabilityProvider {
+  public static class FluidBucketWrapper implements IFluidHandlerItem, ICapabilityProvider {
     protected final ItemStack container;
 
     public FluidBucketWrapper(final ItemStack container) {
@@ -224,7 +229,7 @@ public class ItemClayBucket extends GradientItem implements ModelManager.CustomM
 
     @Nullable
     public FluidStack getFluid() {
-      return ItemClayBucket.this.getFluid(this.container);
+      return ItemClayBucket.getFluid(this.container);
     }
 
     protected void setFluid(@Nullable final FluidStack fluidStack) {

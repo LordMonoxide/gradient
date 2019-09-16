@@ -113,7 +113,6 @@ public class BakedModelClayCrucible implements IBakedModel {
     // generate fluid models for all registered fluids for 16 levels each
 
     for(final Fluid fluid : GradientFluids.METALS.values()) {
-      GradientMod.logger.info("Adding fluid {} {}", fluid.getName(), fluid);
       FLUID_MODELS.put(fluid.getName(), getFluidModels(fluid, TileClayCrucible.FLUID_CAPACITY, 1.0f / 16.0f, 11.0f / 16.0f));
     }
 

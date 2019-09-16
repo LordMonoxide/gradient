@@ -12,6 +12,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Random;
@@ -49,7 +50,13 @@ public class AgeGatedShapedToolRecipe extends IForgeRegistryEntry.Impl<IRecipe> 
 
   @Override
   public boolean matches(final InventoryCrafting inv, final World world) {
-    return AgeUtils.playerMeetsAgeRequirement(inv, this.age) && this.recipe.matches(inv, world);
+    final boolean matches = AgeUtils.playerMeetsAgeRequirement(inv, this.age) && this.recipe.matches(inv, world);
+
+    if(Loader.isModLoaded("ic2")) {
+      return matches && AgeGatedShapelessToolRecipe.matchesIc2(inv);
+    }
+
+    return matches;
   }
 
   @Override
@@ -59,25 +66,31 @@ public class AgeGatedShapedToolRecipe extends IForgeRegistryEntry.Impl<IRecipe> 
 
   @Override
   public NonNullList<ItemStack> getRemainingItems(final InventoryCrafting inv) {
-    final NonNullList<ItemStack> list = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+    final NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 
-    for(int i = 0; i < list.size(); ++i) {
-      final ItemStack stack = inv.getStackInSlot(i);
+    for(int slot = 0; slot < remaining.size(); ++slot) {
+      final ItemStack stack = inv.getStackInSlot(slot);
 
       if(stack.getItem() instanceof GradientItemTool) {
         stack.attemptDamageItem(1, rand, null);
 
         if(stack.isItemStackDamageable() && stack.getItemDamage() > stack.getMaxDamage()) {
-          list.set(i, ItemStack.EMPTY);
+          remaining.set(slot, ItemStack.EMPTY);
         } else {
-          list.set(i, stack.copy());
+          remaining.set(slot, stack.copy());
         }
       } else {
-        list.set(i, ForgeHooks.getContainerItem(stack));
+        if(Loader.isModLoaded("ic2")) {
+          if(AgeGatedShapelessToolRecipe.processIc2Tool(remaining, slot, stack)) {
+            continue;
+          }
+        }
+
+        remaining.set(slot, ForgeHooks.getContainerItem(stack));
       }
     }
 
-    return list;
+    return remaining;
   }
 
   @Override

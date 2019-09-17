@@ -10,7 +10,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
@@ -60,11 +59,14 @@ public class BlockBronzeOven extends GradientBlock {
     return true;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  @Deprecated
+  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
@@ -78,12 +80,14 @@ public class BlockBronzeOven extends GradientBlock {
     return state.getValue(FACING).getHorizontalIndex();
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState withRotation(final IBlockState state, final Rotation rot) {
     return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public IBlockState withMirror(final IBlockState state, final Mirror mirror) {
@@ -92,6 +96,6 @@ public class BlockBronzeOven extends GradientBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING);
+    return new BlockStateContainer.Builder(this).add(FACING).build();
   }
 }

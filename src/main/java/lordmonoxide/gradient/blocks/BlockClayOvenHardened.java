@@ -2,8 +2,6 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.tileentities.TileClayOven;
-import lordmonoxide.gradient.tileentities.TileFirePit;
-import lordmonoxide.gradient.utils.AgeUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
@@ -15,7 +13,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
@@ -131,15 +128,11 @@ public class BlockClayOvenHardened extends HeatSinkerBlock {
     return true;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
-
-    final TileEntity te = world.getTileEntity(pos);
-
-    if(te instanceof TileFirePit) {
-      ((TileFirePit)te).updateSurroundingHardenables(AgeUtils.getPlayerAge(placer));
-    }
+  @Deprecated
+  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
   }
 
   @Override

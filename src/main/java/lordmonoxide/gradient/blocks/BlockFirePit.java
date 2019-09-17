@@ -243,10 +243,15 @@ public class BlockFirePit extends HeatSinkerBlock {
     }
   }
 
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+  }
+
   @Override
   public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
-
     final TileEntity te = world.getTileEntity(pos);
 
     if(te instanceof TileFirePit) {

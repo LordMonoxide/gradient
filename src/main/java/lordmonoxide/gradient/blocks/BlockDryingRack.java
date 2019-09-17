@@ -140,7 +140,7 @@ public class BlockDryingRack extends GradientBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING, ROOF);
+    return new BlockStateContainer.Builder(this).add(FACING, ROOF).build();
   }
 
   @Override

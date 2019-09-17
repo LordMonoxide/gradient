@@ -2,12 +2,11 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.network.PacketUpdateBronzeBoilerSteamSink;
 import lordmonoxide.gradient.tileentities.TileBronzeBoiler;
-import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -15,7 +14,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -25,7 +23,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
@@ -83,9 +80,11 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
     return true;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  @Deprecated
+  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
   }
 
   @SuppressWarnings("deprecation")
@@ -138,15 +137,12 @@ public class BlockBronzeBoiler extends HeatSinkerBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    final IUnlistedProperty[] unlisted = {WATER_LEVEL, STEAM_LEVEL};
-    final IProperty[] listed = {FACING};
-
-    return new ExtendedBlockState(this, listed, unlisted);
+    return new BlockStateContainer.Builder(this).add(WATER_LEVEL, STEAM_LEVEL).add(FACING).build();
   }
 
   @Override
   public IBlockState getExtendedState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
-    final IExtendedBlockState extendedState = (IExtendedBlockState) state;
+    final IExtendedBlockState extendedState = (IExtendedBlockState)state;
 
     final TileEntity te = world.getTileEntity(pos);
 

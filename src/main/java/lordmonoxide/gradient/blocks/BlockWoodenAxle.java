@@ -47,7 +47,7 @@ public class BlockWoodenAxle extends BlockRotatedPillar {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, AXIS);
+    return new BlockStateContainer.Builder(this).add(AXIS).build();
   }
 
   @Override

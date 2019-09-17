@@ -69,6 +69,10 @@ public class TileFirePit extends HeatProducer {
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
     @Override
     public int getSlotLimit(final int slot) {
+      if(slot == FIRST_OUTPUT_SLOT) {
+        return super.getSlotLimit(slot);
+      }
+
       return 1;
     }
 

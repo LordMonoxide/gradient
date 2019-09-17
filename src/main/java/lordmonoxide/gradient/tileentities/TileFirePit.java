@@ -180,6 +180,18 @@ public class TileFirePit extends HeatProducer {
     return this.fuels[slot] != null && this.fuels[slot].isBurning;
   }
 
+  public boolean isCooking() {
+    return this.recipe != null;
+  }
+
+  public float getCookingPercent() {
+    if(!this.isCooking()) {
+      return 0.0f;
+    }
+
+    return (float)this.ticks / this.recipe.ticks;
+  }
+
   public Fuel getBurningFuel(final int slot) {
     return this.fuels[slot];
   }

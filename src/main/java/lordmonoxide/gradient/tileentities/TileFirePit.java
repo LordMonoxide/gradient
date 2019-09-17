@@ -151,7 +151,7 @@ public class TileFirePit extends HeatProducer {
   private Age age = Age.AGE1;
   private int ticks;
 
-  private boolean forceInsert = false;
+  private boolean forceInsert;
   private final Fuel[] fuels = new Fuel[FUEL_SLOTS_COUNT];
 
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();

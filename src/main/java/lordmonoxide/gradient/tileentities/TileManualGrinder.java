@@ -6,7 +6,7 @@ import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
-import net.minecraft.block.state.IBlockState;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,6 +24,7 @@ import net.minecraftforge.common.model.animation.IAnimationStateMachine;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileManualGrinder extends TileEntity implements ITickable {
@@ -33,7 +34,54 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   @CapabilityInject(IAnimationStateMachine.class)
   private static Capability<IAnimationStateMachine> ANIMATION_CAPABILITY;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(2);
+  private static final int INPUT_SLOT = 0;
+  private static final int OUTPUT_SLOT = 1;
+
+  private final ItemStackHandler inventory = new ItemStackHandler(2) {
+    @Override
+    public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+      if(slot == INPUT_SLOT) {
+        return RecipeUtils.findRecipe(GrindingRecipe.class, recipe -> recipe.matches(stack)) != null;
+      }
+
+      return false;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack) && !forceInsert) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    protected void onContentsChanged(final int slot) {
+      if(slot == INPUT_SLOT) {
+        final ItemStack stack = this.getStackInSlot(slot);
+
+        if(!stack.isEmpty()) {
+          if(TileManualGrinder.this.recipe == null) {
+            TileManualGrinder.this.passes = 0;
+            TileManualGrinder.this.ticks = 0;
+            TileManualGrinder.this.updateRecipe();
+
+            if(TileManualGrinder.this.recipe != null) {
+              TileManualGrinder.this.ticks = TileManualGrinder.this.recipe.ticks;
+            }
+          }
+        } else {
+          TileManualGrinder.this.recipe = null;
+          TileManualGrinder.this.passes = 0;
+          TileManualGrinder.this.ticks = 0;
+        }
+      }
+
+      TileManualGrinder.this.sync();
+    }
+  };
 
   @Nullable
   private final IAnimationStateMachine asm;
@@ -44,60 +92,43 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   private Age age = Age.AGE1;
   private int passes;
   private int ticks;
+  private boolean forceInsert;
 
   public TileManualGrinder() {
     this.asm = GradientMod.proxy.loadAsm(GradientMod.resource("asms/block/manual_grinder.json"), ImmutableMap.of("spinning_cycle", this.ticksValue));
   }
 
   public boolean hasInput() {
-    return !this.inventory.getStackInSlot(0).isEmpty();
+    return !this.inventory.getStackInSlot(INPUT_SLOT).isEmpty();
   }
 
   public boolean hasOutput() {
-    return !this.inventory.getStackInSlot(1).isEmpty();
+    return !this.inventory.getStackInSlot(OUTPUT_SLOT).isEmpty();
   }
 
   public ItemStack getInput() {
-    return this.inventory.getStackInSlot(0);
+    return this.inventory.getStackInSlot(INPUT_SLOT);
   }
 
   public ItemStack getOutput() {
-    return this.inventory.getStackInSlot(1);
+    return this.inventory.getStackInSlot(OUTPUT_SLOT);
   }
 
   public ItemStack takeInput() {
-    this.recipe = null;
-    final ItemStack input = this.inventory.extractItem(0, this.inventory.getSlotLimit(0), false);
-    this.sync();
-    return input;
+    return this.inventory.extractItem(INPUT_SLOT, this.inventory.getSlotLimit(0), false);
   }
 
   public ItemStack takeOutput() {
-    final ItemStack output = this.inventory.extractItem(1, this.inventory.getSlotLimit(1), false);
-    this.sync();
-    return output;
+    return this.inventory.extractItem(OUTPUT_SLOT, this.inventory.getSlotLimit(1), false);
   }
 
   public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
     if(!this.hasInput()) {
       this.age = AgeUtils.getPlayerAge(player);
-
-      final ItemStack remaining = this.inventory.insertItem(0, stack, false);
-
-      this.updateRecipe();
-      this.passes = 0;
-
-      if(this.recipe != null) {
-        this.ticks = this.recipe.ticks;
-      }
-
-      this.sync();
-      return remaining;
+      return this.inventory.insertItem(INPUT_SLOT, stack, false);
     }
 
-    final ItemStack remaining = this.inventory.insertItem(0, stack, false);
-    this.sync();
-    return remaining;
+    return this.inventory.insertItem(INPUT_SLOT, stack, false);
   }
 
   @Override
@@ -130,14 +161,10 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     if(this.ticks >= this.recipe.ticks && this.passes >= this.recipe.passes) {
       this.passes = 0;
 
-      this.inventory.extractItem(0, 1, false);
-      this.inventory.insertItem(1, this.recipe.getRecipeOutput().copy(), false);
-
-      if(!this.hasInput()) {
-        this.recipe = null;
-      }
-
-      this.sync();
+      this.inventory.extractItem(INPUT_SLOT, 1, false);
+      this.forceInsert = true;
+      this.inventory.insertItem(OUTPUT_SLOT, this.recipe.getRecipeOutput().copy(), false);
+      this.forceInsert = false;
     }
   }
 
@@ -157,7 +184,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   }
 
   private void updateRecipe() {
-    this.recipe = RecipeUtils.findRecipe(GrindingRecipe.class, recipe -> recipe.matches(this.inventory, this.age, 0, 0));
+    this.recipe = RecipeUtils.findRecipe(GrindingRecipe.class, recipe -> recipe.matches(this.getInput(), this.age));
   }
 
   @Override
@@ -208,8 +235,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
 
   private void sync() {
     if(!this.getWorld().isRemote) {
-      final IBlockState state = this.getWorld().getBlockState(this.getPos());
-      this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+      WorldUtils.notifyUpdate(this.world, this.pos);
       this.markDirty();
     }
   }

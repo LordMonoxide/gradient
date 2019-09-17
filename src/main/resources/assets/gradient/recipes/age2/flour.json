@@ -6,8 +6,8 @@
   "result": {
     "item": "gradient:flour"
   },
-  "ingredients": [{
+  "ingredient": {
     "type": "forge:ore_dict",
     "ore": "cropWheat"
-  }]
+  }
 }

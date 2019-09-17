@@ -7,7 +7,7 @@
     "item": "gradient:salt",
     "count": 4
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "gradient:salt_block"
-  }]
+  }
 }

@@ -47,19 +47,36 @@ public class TileManualGrinder extends TileEntity implements ITickable {
       return false;
     }
 
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack) && !forceInsert) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
     @Override
     protected void onContentsChanged(final int slot) {
       if(slot == INPUT_SLOT) {
         final ItemStack stack = this.getStackInSlot(slot);
 
-        // Gonna need to check if it's the same
         if(!stack.isEmpty()) {
-          TileManualGrinder.this.updateRecipe();
+          if(TileManualGrinder.this.recipe == null) {
+            TileManualGrinder.this.passes = 0;
+            TileManualGrinder.this.ticks = 0;
+            TileManualGrinder.this.updateRecipe();
+
+            if(TileManualGrinder.this.recipe != null) {
+              TileManualGrinder.this.ticks = TileManualGrinder.this.recipe.ticks;
+            }
+          }
         } else {
           TileManualGrinder.this.recipe = null;
+          TileManualGrinder.this.passes = 0;
+          TileManualGrinder.this.ticks = 0;
         }
-
-        TileManualGrinder.this.ticks = 0;
       }
 
       TileManualGrinder.this.sync();
@@ -75,6 +92,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   private Age age = Age.AGE1;
   private int passes;
   private int ticks;
+  private boolean forceInsert;
 
   public TileManualGrinder() {
     this.asm = GradientMod.proxy.loadAsm(GradientMod.resource("asms/block/manual_grinder.json"), ImmutableMap.of("spinning_cycle", this.ticksValue));
@@ -107,23 +125,10 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
     if(!this.hasInput()) {
       this.age = AgeUtils.getPlayerAge(player);
-
-      final ItemStack remaining = this.inventory.insertItem(INPUT_SLOT, stack, false);
-
-      this.updateRecipe();
-      this.passes = 0;
-
-      if(this.recipe != null) {
-        this.ticks = this.recipe.ticks;
-      }
-
-      this.sync();
-      return remaining;
+      return this.inventory.insertItem(INPUT_SLOT, stack, false);
     }
 
-    final ItemStack remaining = this.inventory.insertItem(INPUT_SLOT, stack, false);
-    this.sync();
-    return remaining;
+    return this.inventory.insertItem(INPUT_SLOT, stack, false);
   }
 
   @Override
@@ -157,13 +162,9 @@ public class TileManualGrinder extends TileEntity implements ITickable {
       this.passes = 0;
 
       this.inventory.extractItem(INPUT_SLOT, 1, false);
+      this.forceInsert = true;
       this.inventory.insertItem(OUTPUT_SLOT, this.recipe.getRecipeOutput().copy(), false);
-
-      if(!this.hasInput()) {
-        this.recipe = null;
-      }
-
-      this.sync();
+      this.forceInsert = false;
     }
   }
 

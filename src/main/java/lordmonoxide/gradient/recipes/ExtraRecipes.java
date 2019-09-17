@@ -66,7 +66,7 @@ public final class ExtraRecipes {
           3,
           60,
           GradientItems.dust(metal).getItemStack(),
-          NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)))
+          new OreIngredient("ingot" + StringUtils.capitalize(metal.name))
         ).setRegistryName(GradientMod.resource(recipeName)));
       }
     }

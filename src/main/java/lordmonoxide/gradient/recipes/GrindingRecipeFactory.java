@@ -18,7 +18,7 @@ public class GrindingRecipeFactory implements IRecipeFactory {
     final int passes = JsonUtils.getInt(json, "passes");
     final int ticks = JsonUtils.getInt(json, "ticks");
 
-    final Ingredient ingredient = CraftingHelper.getIngredient(JsonUtils.getJsonObject(json, "ingredient"));
+    final Ingredient ingredient = CraftingHelper.getIngredient(JsonUtils.getJsonObject(json, "ingredient"), context);
     final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
 
     return new GrindingRecipe(group, age, passes, ticks, output, ingredient);

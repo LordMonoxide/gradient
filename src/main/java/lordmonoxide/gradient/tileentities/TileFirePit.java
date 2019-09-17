@@ -35,6 +35,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -61,11 +62,72 @@ public class TileFirePit extends HeatProducer {
   public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
   public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + 1;
 
-  private static int FLUID_CAPACITY = 100;
+  private static final int FLUID_CAPACITY = 100;
 
   private final Fluid air = GradientFluids.AIR;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
+    @Override
+    public int getSlotLimit(final int slot) {
+      return 1;
+    }
+
+    @Override
+    public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+      // Fuel
+      if(slot < FUEL_SLOTS_COUNT) {
+        return
+          !TileFirePit.this.hasFuel(slot) &&
+          RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack)) != null;
+      }
+
+      // Input
+      if(slot < FIRST_OUTPUT_SLOT) {
+        return
+          !TileFirePit.this.hasInput() &&
+          !TileFirePit.this.hasFurnace(TileFirePit.this.world.getBlockState(TileFirePit.this.pos)) &&
+          RecipeUtils.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(stack)) != null;
+      }
+
+      // Output
+      return false;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack) && !TileFirePit.this.forceInsert) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    protected void onContentsChanged(final int slot) {
+      final ItemStack stack = this.getStackInSlot(slot);
+
+      if(slot < FUEL_SLOTS_COUNT) {
+        if(!stack.isEmpty()) {
+          final FuelRecipe recipe = RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack));
+          TileFirePit.this.fuels[slot] = new Fuel(recipe);
+        } else {
+          TileFirePit.this.fuels[slot] = null;
+        }
+      } else if(slot < FIRST_OUTPUT_SLOT) {
+        if(!stack.isEmpty()) {
+          TileFirePit.this.updateRecipe();
+        } else {
+          TileFirePit.this.recipe = null;
+        }
+
+        TileFirePit.this.ticks = 0;
+      }
+
+      TileFirePit.this.sync();
+    }
+  };
+
   public final FluidTank tank = new FluidTank(FLUID_CAPACITY) {
     @Override
     public boolean canFillFluidType(final FluidStack fluid) {
@@ -74,7 +136,9 @@ public class TileFirePit extends HeatProducer {
 
     @Override
     protected void onContentsChanged() {
-      TileFirePit.this.sync();
+      if(!TileFirePit.this.world.isRemote) {
+        TileFirePit.this.sync();
+      }
     }
   };
 
@@ -83,6 +147,7 @@ public class TileFirePit extends HeatProducer {
   private Age age = Age.AGE1;
   private int ticks;
 
+  private boolean forceInsert = false;
   private final Fuel[] fuels = new Fuel[FUEL_SLOTS_COUNT];
 
   private final Map<BlockPos, Hardening> hardenables = new HashMap<>();
@@ -124,10 +189,7 @@ public class TileFirePit extends HeatProducer {
   }
 
   public ItemStack takeFuel(final int slot) {
-    final ItemStack fuel = this.inventory.extractItem(FIRST_FUEL_SLOT + slot, this.inventory.getSlotLimit(FIRST_FUEL_SLOT + slot), false);
-    this.fuels[slot] = null;
-    this.sync();
-    return fuel;
+    return this.inventory.extractItem(FIRST_FUEL_SLOT + slot, this.inventory.getSlotLimit(FIRST_FUEL_SLOT + slot), false);
   }
 
   public boolean hasInput() {
@@ -139,11 +201,7 @@ public class TileFirePit extends HeatProducer {
   }
 
   public ItemStack takeInput() {
-    final ItemStack input = this.inventory.extractItem(FIRST_INPUT_SLOT, this.inventory.getSlotLimit(FIRST_INPUT_SLOT), false);
-    this.recipe = null;
-    this.ticks = 0;
-    this.sync();
-    return input;
+    return this.inventory.extractItem(FIRST_INPUT_SLOT, this.inventory.getSlotLimit(FIRST_INPUT_SLOT), false);
   }
 
   public boolean hasOutput() {
@@ -155,39 +213,20 @@ public class TileFirePit extends HeatProducer {
   }
 
   public ItemStack takeOutput() {
-    final ItemStack output = this.inventory.extractItem(FIRST_OUTPUT_SLOT, this.inventory.getSlotLimit(FIRST_OUTPUT_SLOT), false);
-    this.sync();
-    return output;
+    return this.inventory.extractItem(FIRST_OUTPUT_SLOT, this.inventory.getSlotLimit(FIRST_OUTPUT_SLOT), false);
   }
 
-  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player, final IBlockState state) {
-    final Age age = AgeUtils.getPlayerAge(player);
+  public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
+    for(int slot = 0; slot < FIRST_OUTPUT_SLOT; slot++) {
+      if(this.inventory.isItemValid(slot, stack)) {
+        this.inventory.setStackInSlot(slot, stack.splitStack(1));
 
-    for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
-      if(!this.hasFuel(slot)) {
-        final FuelRecipe recipe = RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack));
-
-        if(recipe != null) {
-          final ItemStack input = stack.splitStack(1);
-          this.setFuelSlot(slot, input);
-          this.fuels[slot] = new Fuel(recipe, age);
-          this.sync();
-          return stack;
+        if(slot == FIRST_INPUT_SLOT) {
+          this.age = AgeUtils.getPlayerAge(player);
         }
+
+        return stack;
       }
-    }
-
-    if(!this.hasInput() && !this.hasFurnace(state)) {
-      this.age = age;
-
-      final ItemStack input = stack.splitStack(1);
-      this.inventory.setStackInSlot(FIRST_INPUT_SLOT, input);
-
-      this.updateRecipe();
-      this.ticks = 0;
-
-      this.sync();
-      return stack;
     }
 
     return stack;
@@ -200,8 +239,8 @@ public class TileFirePit extends HeatProducer {
 
     return Math.min(
       !this.hasFurnace(state) ?
-        (int)(this.getHeat() / 800 * 11) + 4 :
-        (int)(this.getHeat() / 1000 * 9) + 2,
+        (int)(this.getHeat() /  800 * 11) + 4 :
+        (int)(this.getHeat() / 1000 *  9) + 2,
       15
     );
   }
@@ -294,10 +333,11 @@ public class TileFirePit extends HeatProducer {
     }
 
     if(this.ticks >= this.recipe.ticks) {
+      final ItemStack output = this.recipe.getRecipeOutput().copy();
       this.inventory.extractItem(FIRST_INPUT_SLOT, 1, false);
-      this.inventory.insertItem(FIRST_OUTPUT_SLOT, this.recipe.getRecipeOutput().copy(), false);
-      this.recipe = null;
-      this.sync();
+      this.forceInsert = true;
+      this.inventory.insertItem(FIRST_OUTPUT_SLOT, output, false);
+      this.forceInsert = false;
     }
   }
 
@@ -399,11 +439,10 @@ public class TileFirePit extends HeatProducer {
 
   @Override
   protected float calculateHeatGain() {
-    float temperatureChange = 0;
-
     final float airBonus = 1.0f + this.getHeatRatio() / 3.0f;
     this.tank.drainInternal(2, true);
 
+    float temperatureChange = 0;
     for(int slot = 0; slot < FUEL_SLOTS_COUNT; slot++) {
       if(this.isBurning(slot)) {
         final Fuel fuel = this.fuels[slot];
@@ -411,7 +450,6 @@ public class TileFirePit extends HeatProducer {
         fuel.tick();
 
         if(fuel.isDepleted()) {
-          this.fuels[slot] = null;
           this.setFuelSlot(slot, ItemStack.EMPTY);
         }
 
@@ -427,7 +465,7 @@ public class TileFirePit extends HeatProducer {
   @Override
   protected float calculateHeatLoss(final IBlockState state) {
     return !this.hasFurnace(state) ?
-      (float)Math.pow(this.getHeat() / 500 + 1, 2) / 1.5f :
+      (float)Math.pow(this.getHeat() /  500 + 1, 2) / 1.5f :
       (float)Math.pow(this.getHeat() / 1600 + 1, 2);
   }
 
@@ -445,7 +483,7 @@ public class TileFirePit extends HeatProducer {
   }
 
   private void updateRecipe() {
-    this.recipe = RecipeUtils.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(this.inventory, this.age, FIRST_INPUT_SLOT, FIRST_INPUT_SLOT));
+    this.recipe = RecipeUtils.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(this.getInput(), this.age));
   }
 
   @Override
@@ -462,7 +500,6 @@ public class TileFirePit extends HeatProducer {
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("slot", i);
         tag.setString("recipe", fuel.recipe.getRegistryName().toString());
-        tag.setInteger("age", fuel.age.value());
         tag.setInteger("ticks", fuel.burnTicks);
         tag.setBoolean("burning", fuel.isBurning);
         fuels.appendTag(tag);
@@ -511,11 +548,10 @@ public class TileFirePit extends HeatProducer {
 
       if(slot < FUEL_SLOTS_COUNT) {
         final FuelRecipe recipe = (FuelRecipe)ForgeRegistries.RECIPES.getValue(new ResourceLocation(tag.getString("recipe")));
-        final Age age1 = Age.get(tag.getInteger("age"));
         final int ticks = tag.getInteger("ticks");
         final boolean burning = tag.getBoolean("burning");
 
-        final Fuel fuel = new Fuel(recipe, age1);
+        final Fuel fuel = new Fuel(recipe);
         fuel.burnTicks = ticks;
         fuel.isBurning = burning;
 
@@ -578,14 +614,12 @@ public class TileFirePit extends HeatProducer {
 
   public static final class Fuel {
     public final FuelRecipe recipe;
-    public final Age age;
     private final int burnTicksTotal;
     private int burnTicks;
     private boolean isBurning;
 
-    private Fuel(final FuelRecipe recipe, final Age age) {
+    private Fuel(final FuelRecipe recipe) {
       this.recipe = recipe;
-      this.age = age;
       this.burnTicksTotal = this.recipe.duration * 20;
     }
 

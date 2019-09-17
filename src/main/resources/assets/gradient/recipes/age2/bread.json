@@ -6,7 +6,7 @@
   "result": {
     "item": "minecraft:bread"
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "gradient:dough"
-  }]
+  }
 }

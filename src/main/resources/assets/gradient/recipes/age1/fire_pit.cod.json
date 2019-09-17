@@ -6,8 +6,8 @@
     "item": "minecraft:cooked_fish",
     "data": 0
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "minecraft:fish",
     "data": 0
-  }]
+  }
 }

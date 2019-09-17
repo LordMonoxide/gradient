@@ -83,7 +83,7 @@ public class TileClayOven extends HeatSinker {
   }
 
   private void updateRecipe() {
-    this.recipe = RecipeUtils.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(this.inventory, this.age, INPUT_SLOT, INPUT_SLOT));
+    this.recipe = RecipeUtils.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(this.getInput(), this.age));
   }
 
   @Override

@@ -5,7 +5,7 @@
   "result": {
     "item": "minecraft:cooked_mutton"
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "minecraft:mutton"
-  }]
+  }
 }

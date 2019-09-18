@@ -35,6 +35,18 @@ public class TileClayOven extends HeatSinker {
   private Age age = Age.AGE1;
   private int ticks;
 
+  public boolean isCooking() {
+    return this.recipe != null;
+  }
+
+  public float getCookingPercent() {
+    if(!this.isCooking()) {
+      return 0.0f;
+    }
+
+    return this.ticks / (this.recipe.ticks * this.getHeatScale());
+  }
+
   public boolean hasInput() {
     return !this.getInput().isEmpty();
   }
@@ -42,6 +54,7 @@ public class TileClayOven extends HeatSinker {
   public ItemStack getInput() {
     return this.inventory.getStackInSlot(INPUT_SLOT);
   }
+
 
   public ItemStack takeInput() {
     final ItemStack input = this.inventory.extractItem(INPUT_SLOT, this.inventory.getSlotLimit(INPUT_SLOT), false);
@@ -110,12 +123,20 @@ public class TileClayOven extends HeatSinker {
     return 0.6f;
   }
 
+  private float getHeatScale() {
+    if(this.recipe == null) {
+      return 1.0f;
+    }
+
+    return 1.0f - ((this.getHeat() - this.recipe.temperature) / 2000.0f + 0.1f);
+  }
+
   private void cook() {
     if(this.recipe == null) {
       return;
     }
 
-    final float heatScale = 1.0f - ((this.getHeat() - this.recipe.temperature) / 2000.0f + 0.1f);
+    final float heatScale = this.getHeatScale();
 
     if(this.ticks < this.recipe.ticks * heatScale) {
       if(this.getHeat() >= this.recipe.temperature) {

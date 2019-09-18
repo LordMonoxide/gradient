@@ -50,7 +50,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     @Nonnull
     @Override
     public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
-      if(!this.isItemValid(slot, stack) && !forceInsert) {
+      if(!this.isItemValid(slot, stack) && !TileManualGrinder.this.forceInsert) {
         return stack;
       }
 

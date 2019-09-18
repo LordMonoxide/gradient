@@ -17,6 +17,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
@@ -28,12 +29,60 @@ public class TileClayOven extends HeatSinker {
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
+    @Override
+    public int getSlotLimit(final int slot) {
+      if(slot == OUTPUT_SLOT) {
+        return super.getSlotLimit(slot);
+      }
+
+      return 1;
+    }
+
+    @Override
+    public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+      if(slot == INPUT_SLOT) {
+        return
+          !TileClayOven.this.hasInput() &&
+          RecipeUtils.findRecipe(FirePitRecipe.class, recipe -> recipe.matches(stack)) != null;
+      }
+
+      return false;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack) && !TileClayOven.this.forceInsert) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    protected void onContentsChanged(final int slot) {
+      final ItemStack stack = this.getStackInSlot(slot);
+
+      if(slot == INPUT_SLOT) {
+        if(!stack.isEmpty()) {
+          TileClayOven.this.updateRecipe();
+        } else {
+          TileClayOven.this.recipe = null;
+        }
+
+        TileClayOven.this.ticks = 0;
+      }
+
+      TileClayOven.this.sync();
+    }
+  };
 
   @Nullable
   private FirePitRecipe recipe;
   private Age age = Age.AGE1;
   private int ticks;
+  private boolean forceInsert;
 
   public boolean isCooking() {
     return this.recipe != null;
@@ -57,11 +106,7 @@ public class TileClayOven extends HeatSinker {
 
 
   public ItemStack takeInput() {
-    final ItemStack input = this.inventory.extractItem(INPUT_SLOT, this.inventory.getSlotLimit(INPUT_SLOT), false);
-    this.recipe = null;
-    this.ticks = 0;
-    this.sync();
-    return input;
+    return this.inventory.extractItem(INPUT_SLOT, this.inventory.getSlotLimit(INPUT_SLOT), false);
   }
 
   public boolean hasOutput() {
@@ -73,22 +118,14 @@ public class TileClayOven extends HeatSinker {
   }
 
   public ItemStack takeOutput() {
-    final ItemStack output = this.inventory.extractItem(OUTPUT_SLOT, this.inventory.getSlotLimit(OUTPUT_SLOT), false);
-    this.sync();
-    return output;
+    return this.inventory.extractItem(OUTPUT_SLOT, this.inventory.getSlotLimit(OUTPUT_SLOT), false);
   }
 
   public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
     if(!this.hasInput()) {
       this.age = AgeUtils.getPlayerAge(player);
+      this.inventory.setStackInSlot(INPUT_SLOT, stack.splitStack(1));
 
-      final ItemStack input = stack.splitStack(1);
-      this.inventory.setStackInSlot(INPUT_SLOT, input);
-
-      this.updateRecipe();
-      this.ticks = 0;
-
-      this.sync();
       return stack;
     }
 
@@ -146,10 +183,11 @@ public class TileClayOven extends HeatSinker {
     }
 
     if(this.ticks >= this.recipe.ticks * heatScale) {
+      final ItemStack output = this.recipe.getRecipeOutput().copy();
       this.inventory.extractItem(INPUT_SLOT, 1, false);
-      this.inventory.insertItem(OUTPUT_SLOT, this.recipe.getRecipeOutput().copy(), false);
-      this.recipe = null;
-      this.sync();
+      this.forceInsert = true;
+      this.inventory.insertItem(OUTPUT_SLOT, output, false);
+      this.forceInsert = false;
     }
   }
 

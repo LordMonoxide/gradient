@@ -4,6 +4,7 @@ import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.MixingRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -28,6 +29,7 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
@@ -70,13 +72,67 @@ public class TileMixingBasin extends TileEntity implements ITickable {
   public static final int INPUT_SIZE = 5;
   private static final int OUTPUT_SLOT = INPUT_SIZE;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(INPUT_SIZE + 1);
+  private final ItemStackHandler inventory = new ItemStackHandler(INPUT_SIZE + 1) {
+    @Override
+    public int getSlotLimit(final int slot) {
+      if(slot < INPUT_SIZE) {
+        return 1;
+      }
+
+      return super.getSlotLimit(slot);
+    }
+
+    @Override
+    public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+      if(slot == OUTPUT_SLOT) {
+        return false;
+      }
+
+      return super.isItemValid(slot, stack);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack) && !TileMixingBasin.this.forceInsert) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    protected void onContentsChanged(final int slot) {
+      if(slot < INPUT_SIZE) {
+        final ItemStack stack = this.getStackInSlot(slot);
+
+        if(!stack.isEmpty()) {
+          if(TileMixingBasin.this.recipe == null) {
+            TileMixingBasin.this.passes = 0;
+            TileMixingBasin.this.ticks = 0;
+            TileMixingBasin.this.updateRecipe();
+
+            if(TileMixingBasin.this.recipe != null) {
+              TileMixingBasin.this.ticks = TileMixingBasin.this.recipe.ticks;
+            }
+          }
+        } else {
+          TileMixingBasin.this.recipe = null;
+          TileMixingBasin.this.passes = 0;
+          TileMixingBasin.this.ticks = 0;
+        }
+      }
+
+      TileMixingBasin.this.sync();
+    }
+  };
 
   @Nullable
   private MixingRecipe recipe;
   private Age age = Age.AGE1;
   private int passes;
   private int ticks;
+  private boolean forceInsert;
 
   public TileMixingBasin() {
     this.tanks.addHandler(WATER, this.tank);
@@ -109,16 +165,11 @@ public class TileMixingBasin extends TileEntity implements ITickable {
 
   public ItemStack takeInput(final int slot, final EntityPlayer player) {
     this.age = AgeUtils.getPlayerAge(player);
-    final ItemStack input = this.inventory.extractItem(slot, this.inventory.getSlotLimit(slot), false);
-    this.updateRecipe();
-    this.sync();
-    return input;
+    return this.inventory.extractItem(slot, this.inventory.getSlotLimit(slot), false);
   }
 
   public ItemStack takeOutput() {
-    final ItemStack output = this.inventory.extractItem(OUTPUT_SLOT, this.inventory.getSlotLimit(OUTPUT_SLOT), false);
-    this.sync();
-    return output;
+    return this.inventory.extractItem(OUTPUT_SLOT, this.inventory.getSlotLimit(OUTPUT_SLOT), false);
   }
 
   private int findOpenSlot() {
@@ -140,18 +191,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
     }
 
     this.age = AgeUtils.getPlayerAge(player);
-
-    final ItemStack input = stack.splitStack(1);
-    this.inventory.setStackInSlot(slot, input);
-
-    this.updateRecipe();
-    this.passes = 0;
-
-    if(this.recipe != null) {
-      this.ticks = this.recipe.ticks;
-    }
-
-    this.sync();
+    this.inventory.setStackInSlot(slot, stack.splitStack(1));
 
     return stack;
   }
@@ -185,17 +225,17 @@ public class TileMixingBasin extends TileEntity implements ITickable {
 
     if(this.ticks >= this.recipe.ticks && this.passes >= this.recipe.passes) {
       this.passes = 0;
-
       this.tank.setFluid(null);
+
+      final ItemStack output = this.recipe.getRecipeOutput().copy();
 
       for(int slot = 0; slot < INPUT_SIZE; slot++) {
         this.inventory.setStackInSlot(slot, ItemStack.EMPTY);
       }
 
-      this.inventory.setStackInSlot(INPUT_SIZE, this.recipe.getRecipeOutput().copy());
-      this.recipe = null;
-
-      this.sync();
+      this.forceInsert = true;
+      this.inventory.setStackInSlot(OUTPUT_SLOT, output);
+      this.forceInsert = false;
     }
   }
 
@@ -268,8 +308,7 @@ public class TileMixingBasin extends TileEntity implements ITickable {
 
   protected void sync() {
     if(!this.getWorld().isRemote) {
-      final IBlockState state = this.getWorld().getBlockState(this.getPos());
-      this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+      WorldUtils.notifyUpdate(this.world, this.pos);
       this.markDirty();
     }
   }

@@ -36,8 +36,33 @@ public class TileBronzeFurnace extends HeatProducer {
 
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
     @Override
+    public int getSlotLimit(final int slot) {
+      return 1;
+    }
+
+    @Override
     public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
       return super.isItemValid(slot, stack) && RecipeUtils.findRecipe(FuelRecipe.class, r -> r.matches(stack)) != null;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack)) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+      if(TileBronzeFurnace.this.isBurning(slot)) {
+        return ItemStack.EMPTY;
+      }
+
+      return super.extractItem(slot, amount, simulate);
     }
 
     @Override
@@ -52,6 +77,8 @@ public class TileBronzeFurnace extends HeatProducer {
 
         TileBronzeFurnace.this.fuels[slot] = new Fuel(recipe);
       }
+
+      TileBronzeFurnace.this.sync();
     }
   };
 

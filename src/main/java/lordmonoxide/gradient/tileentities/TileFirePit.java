@@ -306,13 +306,13 @@ public class TileFirePit extends HeatProducer {
   }
 
   @Override
-  protected void tickBeforeCooldown() {
+  protected void tickBeforeCooldown(final float tickScale) {
     this.igniteFuel();
   }
 
   @Override
-  protected void tickAfterCooldown() {
-    super.tickAfterCooldown();
+  protected void tickAfterCooldown(final float tickScale) {
+    super.tickAfterCooldown(tickScale);
 
     this.cook();
     this.updateLight();

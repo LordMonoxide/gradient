@@ -3,6 +3,7 @@ package lordmonoxide.gradient.blocks;
 import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.tileentities.TileBronzeOven;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -42,7 +43,7 @@ public class BlockBronzeOven extends GradientBlock {
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
       if(!player.isSneaking()) {
-        final TileBronzeOven te = (TileBronzeOven)world.getTileEntity(pos);
+        final TileBronzeOven te = WorldUtils.getTileEntity(world, pos, TileBronzeOven.class);
 
         if(te == null) {
           return false;

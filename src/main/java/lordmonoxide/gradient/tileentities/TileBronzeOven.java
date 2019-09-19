@@ -21,7 +21,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -78,6 +77,13 @@ public class TileBronzeOven extends TileEntity implements ITickable {
   };
 
   public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16) {
+    private final Fluid steam = FluidRegistry.getFluid("steam");
+
+    @Override
+    public boolean canFillFluidType(final FluidStack fluid) {
+      return super.canFillFluidType(fluid) && fluid.getFluid() == this.steam;
+    }
+
     @Override
     protected void onContentsChanged() {
       super.onContentsChanged();
@@ -85,14 +91,8 @@ public class TileBronzeOven extends TileEntity implements ITickable {
     }
   };
 
-  private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap();
-
   private int cookTicks;
   private boolean forceInsert;
-
-  public TileBronzeOven() {
-    this.tanks.addHandler(FluidRegistry.getFluid("steam"), this.tankSteam);
-  }
 
   public boolean useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
     return FluidUtil.interactWithFluidHandler(player, hand, world, pos, side);
@@ -182,7 +182,7 @@ public class TileBronzeOven extends TileEntity implements ITickable {
     }
 
     if(capability == FLUID_HANDLER_CAPABILITY) {
-      return FLUID_HANDLER_CAPABILITY.cast(this.tanks);
+      return FLUID_HANDLER_CAPABILITY.cast(this.tankSteam);
     }
 
     return super.getCapability(capability, facing);

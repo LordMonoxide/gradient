@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
@@ -42,8 +43,45 @@ public class TileClayCrucible extends HeatSinker {
 
   private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
     @Override
+    public int getSlotLimit(final int slot) {
+      return 1;
+    }
+
+    @Override
+    public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+      return super.isItemValid(slot, stack) && Meltables.get(stack) != Meltables.INVALID_MELTABLE;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack)) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+      if(TileClayCrucible.this.isMelting(slot)) {
+        return ItemStack.EMPTY;
+      }
+
+      return super.extractItem(slot, amount, simulate);
+    }
+
+    @Override
     protected void onContentsChanged(final int slot) {
       super.onContentsChanged(slot);
+
+      final ItemStack stack = this.getStackInSlot(slot);
+
+      if(stack.isEmpty()) {
+        TileClayCrucible.this.melting[slot] = null;
+      }
+
       TileClayCrucible.this.sync();
     }
   };
@@ -141,9 +179,7 @@ public class TileClayCrucible extends HeatSinker {
             final FluidStack fluid = new FluidStack(melting.meltable.getFluid(), melting.meltable.amount);
 
             if(this.hasRoom(fluid)) {
-              this.melting[slot] = null;
               this.setMetalSlot(slot, ItemStack.EMPTY);
-
               this.tank.fill(fluid, true);
             }
           }

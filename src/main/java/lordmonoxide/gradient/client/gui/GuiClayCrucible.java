@@ -60,7 +60,7 @@ public class GuiClayCrucible extends GradientGuiContainer {
     this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x404040);
     this.fontRenderer.drawString(this.playerInv.getDisplayName().getUnformattedText(), 8, this.ySize - 94, 0x404040);
 
-    this.fontRenderer.drawString(heat, ContainerClayCrucible.FUEL_SLOTS_X, 58, 0x404040);
+    this.fontRenderer.drawString(heat, ContainerClayCrucible.METAL_SLOTS_X, 58, 0x404040);
   }
 
   @Override

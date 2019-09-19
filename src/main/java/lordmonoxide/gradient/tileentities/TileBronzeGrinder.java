@@ -1,7 +1,7 @@
 package lordmonoxide.gradient.tileentities;
 
 import lordmonoxide.gradient.recipes.GrinderRecipes;
-import net.minecraft.block.state.IBlockState;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,10 +21,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileBronzeGrinder extends TileEntity implements ITickable {
@@ -34,8 +34,6 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
-  private final Fluid STEAM = FluidRegistry.getFluid("steam");
-
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;
   public static final int WORKING_SLOT = 2;
@@ -44,35 +42,60 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
   private static final int WORK_TIME = 600;
   private static final int STEAM_USE_PER_TICK = 4;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
-
-  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
-  private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
     @Override
-    public int fill(final FluidStack resource, final boolean doFill) {
-      final int amount = super.fill(resource, doFill);
-
-      if(amount != 0) {
-        TileBronzeGrinder.this.sync();
+    public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+      if(slot != INPUT_SLOT) {
+        return false;
       }
 
-      return amount;
+      return super.isItemValid(slot, stack) && !GrinderRecipes.getOutput(stack).isEmpty();
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack) && !TileBronzeGrinder.this.forceInsert) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    protected void onContentsChanged(final int slot) {
+      super.onContentsChanged(slot);
+
+      if(slot == WORKING_SLOT) {
+        if(!this.getStackInSlot(slot).isEmpty()) {
+          TileBronzeGrinder.this.workTicks = 0;
+        }
+      }
+
+      TileBronzeGrinder.this.sync();
+    }
+  };
+
+  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16) {
+    private final Fluid steam = FluidRegistry.getFluid("steam");
+
+    @Override
+    public boolean canFillFluidType(final FluidStack fluid) {
+      return super.canFillFluidType(fluid) && fluid.getFluid() == this.steam;
+    }
+
+    @Override
+    protected void onContentsChanged() {
+      super.onContentsChanged();
+      TileBronzeGrinder.this.sync();
     }
   };
 
   private int workTicks;
-
-  public TileBronzeGrinder() {
-    this.tanks.addHandler(STEAM, this.tankSteam);
-  }
+  private boolean forceInsert;
 
   public boolean useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
-    if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
-      this.sync();
-      return true;
-    }
-
-    return false;
+    return FluidUtil.interactWithFluidHandler(player, hand, world, pos, side);
   }
 
   @Override
@@ -100,21 +123,26 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
     if(!this.isWorking() && !this.getInputStack().isEmpty()) {
       final ItemStack finished = GrinderRecipes.getOutput(this.getInputStack()).copy();
 
+      this.forceInsert = true;
       if(this.inventory.insertItem(OUTPUT_SLOT, finished, true).isEmpty()) {
         this.inventory.extractItem(INPUT_SLOT, 1, false);
         this.inventory.setStackInSlot(WORKING_SLOT, finished);
-        this.workTicks = 0;
       }
+      this.forceInsert = false;
     }
 
     if(this.isWorking()) {
-      if(this.tankSteam.drain(STEAM_USE_PER_TICK, true).amount >= STEAM_USE_PER_TICK) {
+      final FluidStack steam = this.tankSteam.drain(STEAM_USE_PER_TICK, true);
+
+      if(steam != null && steam.amount >= STEAM_USE_PER_TICK) {
         this.workTicks++;
       }
 
       if(this.isWorkComplete()) {
-        final ItemStack cooked = this.inventory.extractItem(WORKING_SLOT, 1, false);
-        this.inventory.insertItem(OUTPUT_SLOT, cooked, false);
+        final ItemStack processed = this.inventory.extractItem(WORKING_SLOT, this.inventory.getSlotLimit(WORKING_SLOT), false);
+        this.forceInsert = true;
+        this.inventory.insertItem(OUTPUT_SLOT, processed, false);
+        this.forceInsert = false;
       }
     }
   }
@@ -154,7 +182,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
     }
 
     if(capability == FLUID_HANDLER_CAPABILITY) {
-      return FLUID_HANDLER_CAPABILITY.cast(this.tanks);
+      return FLUID_HANDLER_CAPABILITY.cast(this.tankSteam);
     }
 
     return super.getCapability(capability, facing);
@@ -162,8 +190,7 @@ public class TileBronzeGrinder extends TileEntity implements ITickable {
 
   private void sync() {
     if(!this.getWorld().isRemote) {
-      final IBlockState state = this.getWorld().getBlockState(this.getPos());
-      this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+      WorldUtils.notifyUpdate(this.world, this.pos);
       this.markDirty();
     }
   }

@@ -135,7 +135,7 @@ public class TileClayCrucible extends HeatSinker {
   }
 
   @Override
-  protected void tickBeforeCooldown() {
+  protected void tickBeforeCooldown(final float tickScale) {
     if(!this.world.isRemote) {
       this.meltMetal();
     }
@@ -144,7 +144,7 @@ public class TileClayCrucible extends HeatSinker {
   }
 
   @Override
-  protected void tickAfterCooldown() {
+  protected void tickAfterCooldown(final float tickScale) {
     this.updateLight();
   }
 

@@ -1,0 +1,10 @@
+setIcon(<minecraft:wheat>)
+setTitle("Age 2: Agriculture")
+setDescription("Settling down")
+setBackground("minecraft:textures/blocks/farmland_dry.png")
+setShowToast(false)
+setAnnounceToChat(false)
+
+trigger = addCriteria("changed_age", "gradient:changed_age")
+trigger.addCondition(""age": 2")
+setPos(0,18)

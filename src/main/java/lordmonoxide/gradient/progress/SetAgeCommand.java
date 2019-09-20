@@ -72,4 +72,14 @@ public class SetAgeCommand extends CommandBase {
       sender.sendMessage(new TextComponentTranslation("commands.setage.set_other", target.getDisplayName(), age.getDisplayName()));
     }
   }
+
+  @Override
+  public int getRequiredPermissionLevel() {
+    return 2;
+  }
+
+  @Override
+  public boolean isUsernameIndex(final String[] args, final int index) {
+    return index == 1;
+  }
 }

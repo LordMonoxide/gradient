@@ -5,7 +5,7 @@
   "result": {
     "item": "minecraft:cooked_porkchop"
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "minecraft:porkchop"
-  }]
+  }
 }

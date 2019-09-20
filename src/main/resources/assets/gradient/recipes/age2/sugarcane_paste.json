@@ -7,8 +7,8 @@
     "item": "gradient:sugarcane_paste",
     "count": 2
   },
-  "ingredients": [{
+  "ingredient": {
     "type": "forge:ore_dict",
     "ore": "sugarcane"
-  }]
+  }
 }

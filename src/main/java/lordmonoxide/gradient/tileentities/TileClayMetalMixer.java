@@ -148,12 +148,12 @@ public class TileClayMetalMixer extends HeatSinker {
   }
 
   @Override
-  protected void tickBeforeCooldown() {
+  protected void tickBeforeCooldown(final float tickScale) {
 
   }
 
   @Override
-  protected void tickAfterCooldown() {
+  protected void tickAfterCooldown(final float tickScale) {
     if(this.world.isRemote) {
       if(this.isAnimating) {
         this.ticksValue.setValue((float)this.animationTicks / CYCLE_TICKS);

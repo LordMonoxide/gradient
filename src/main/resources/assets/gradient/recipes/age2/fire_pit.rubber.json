@@ -7,8 +7,9 @@
     "item": "ic2:crafting",
     "data": 0
   },
-  "ingredients": [{
-    "item": "ic2:misc_resource",
-    "data": 4
-  }]
+  "ingredient": {
+    "type": "gradient:ic2",
+    "name": "misc_resource",
+    "variant": "resin"
+  }
 }

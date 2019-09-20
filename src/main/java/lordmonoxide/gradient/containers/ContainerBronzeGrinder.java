@@ -2,6 +2,7 @@ package lordmonoxide.gradient.containers;
 
 import lordmonoxide.gradient.tileentities.TileBronzeGrinder;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerBronzeGrinder extends GradientContainer {
   public static final int INPUT_SLOTS_X = 13;
@@ -12,20 +13,8 @@ public class ContainerBronzeGrinder extends GradientContainer {
   public ContainerBronzeGrinder(final InventoryPlayer inventory, final TileBronzeGrinder grinder) {
     super(grinder);
 
-    this.addSlotToContainer(new SlotGrinderInput(this.inventory, TileBronzeGrinder.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y) {
-      @Override public void onSlotChanged() {
-        super.onSlotChanged();
-        grinder.markDirty();
-      }
-    });
-
-    this.addSlotToContainer(new SlotOutput(this.inventory, TileBronzeGrinder.OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y) {
-      @Override public void onSlotChanged() {
-        super.onSlotChanged();
-        grinder.markDirty();
-      }
-    });
-
+    this.addSlotToContainer(new SlotItemHandler(this.inventory, TileBronzeGrinder.INPUT_SLOT, INPUT_SLOTS_X, INPUT_SLOTS_Y));
+    this.addSlotToContainer(new SlotItemHandler(this.inventory, TileBronzeGrinder.OUTPUT_SLOT, OUTPUT_SLOTS_X, OUTPUT_SLOTS_Y));
     this.addPlayerSlots(inventory);
   }
 }

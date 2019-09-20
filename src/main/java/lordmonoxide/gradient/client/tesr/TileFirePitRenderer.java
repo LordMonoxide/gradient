@@ -72,8 +72,23 @@ public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> 
 
       GlStateManager.translate(0.0d, -0.3125d, 0.0d);
       GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
+
+      GlStateManager.pushMatrix();
       GlStateManager.scale(0.5f, 0.5f, 0.5f);
       Minecraft.getMinecraft().getRenderItem().renderItem(input, ItemCameraTransforms.TransformType.GROUND);
+      GlStateManager.popMatrix();
+
+      if(firepit.isCooking()) {
+        GlStateManager.translate(-0.1f, 0.2f, 0.0f);
+        GlStateManager.scale(0.2f * (1.0f - firepit.getCookingPercent()), 0.025f, 1.0f);
+        GlStateManager.disableCull();
+        this.setLightmapDisabled(true);
+        GlStateManager.disableLighting();
+        Gui.drawRect(0, 0, 1, 1, 0xFF1AFF00);
+        GlStateManager.enableLighting();
+        this.setLightmapDisabled(false);
+        GlStateManager.enableCull();
+      }
 
       GlStateManager.popMatrix();
     }

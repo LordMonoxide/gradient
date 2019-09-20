@@ -46,18 +46,21 @@ public class BlockClayCrucibleUnhardened extends GradientBlock {
     return BlockFaceShape.UNDEFINED;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public boolean isOpaqueCube(final IBlockState state) {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public boolean isFullCube(final IBlockState state) {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   @Deprecated
   public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {

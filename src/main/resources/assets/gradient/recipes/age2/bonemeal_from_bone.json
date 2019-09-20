@@ -7,7 +7,7 @@
     "item": "minecraft:dye",
     "data": 15
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "minecraft:bone"
-  }]
+  }
 }

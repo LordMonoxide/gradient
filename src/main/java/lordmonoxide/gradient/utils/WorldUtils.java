@@ -1,10 +1,12 @@
 package lordmonoxide.gradient.utils;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -71,5 +73,14 @@ public final class WorldUtils {
 
   public static EnumFacing getFacingFromSerialized(final long serialized) {
     return EnumFacing.byIndex((int)(serialized >>> FACING_SHIFT));
+  }
+
+  public static void notifyUpdate(final World world, final BlockPos pos, final int flags) {
+    final IBlockState state = world.getBlockState(pos);
+    world.notifyBlockUpdate(pos, state, state, flags);
+  }
+
+  public static void notifyUpdate(final World world, final BlockPos pos) {
+    notifyUpdate(world, pos, 3);
   }
 }

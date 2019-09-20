@@ -1,6 +1,6 @@
 package lordmonoxide.gradient.tileentities;
 
-import net.minecraft.block.state.IBlockState;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -21,10 +21,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileBronzeOven extends TileEntity implements ITickable {
@@ -34,8 +34,6 @@ public class TileBronzeOven extends TileEntity implements ITickable {
   @CapabilityInject(IFluidHandler.class)
   private static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY;
 
-  private final Fluid STEAM = FluidRegistry.getFluid("steam");
-
   public static final int INPUT_SLOT = 0;
   public static final int OUTPUT_SLOT = 1;
   public static final int COOKING_SLOT = 2;
@@ -44,35 +42,60 @@ public class TileBronzeOven extends TileEntity implements ITickable {
   private static final int COOK_TIME = 400;
   private static final int STEAM_USE_PER_TICK = 4;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT);
-
-  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16);
-  private final FluidHandlerFluidMap tanks = new FluidHandlerFluidMap() {
+  private final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS_COUNT) {
     @Override
-    public int fill(final FluidStack resource, final boolean doFill) {
-      final int amount = super.fill(resource, doFill);
-
-      if(amount != 0) {
-        TileBronzeOven.this.sync();
+    public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+      if(slot != INPUT_SLOT) {
+        return false;
       }
 
-      return amount;
+      return super.isItemValid(slot, stack) && !FurnaceRecipes.instance().getSmeltingResult(stack).isEmpty();
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
+      if(!this.isItemValid(slot, stack) && !TileBronzeOven.this.forceInsert) {
+        return stack;
+      }
+
+      return super.insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    protected void onContentsChanged(final int slot) {
+      super.onContentsChanged(slot);
+
+      if(slot == COOKING_SLOT) {
+        if(!this.getStackInSlot(slot).isEmpty()) {
+          TileBronzeOven.this.cookTicks = 0;
+        }
+      }
+
+      TileBronzeOven.this.sync();
+    }
+  };
+
+  public final FluidTank tankSteam = new FluidTank(Fluid.BUCKET_VOLUME * 16) {
+    private final Fluid steam = FluidRegistry.getFluid("steam");
+
+    @Override
+    public boolean canFillFluidType(final FluidStack fluid) {
+      return super.canFillFluidType(fluid) && fluid.getFluid() == this.steam;
+    }
+
+    @Override
+    protected void onContentsChanged() {
+      super.onContentsChanged();
+      TileBronzeOven.this.sync();
     }
   };
 
   private int cookTicks;
-
-  public TileBronzeOven() {
-    this.tanks.addHandler(STEAM, this.tankSteam);
-  }
+  private boolean forceInsert;
 
   public boolean useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
-    if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, side)) {
-      this.sync();
-      return true;
-    }
-
-    return false;
+    return FluidUtil.interactWithFluidHandler(player, hand, world, pos, side);
   }
 
   @Override
@@ -100,11 +123,12 @@ public class TileBronzeOven extends TileEntity implements ITickable {
     if(!this.isCooking() && !this.getInputStack().isEmpty()) {
       final ItemStack cooked = FurnaceRecipes.instance().getSmeltingResult(this.getInputStack()).copy();
 
+      this.forceInsert = true;
       if(this.inventory.insertItem(OUTPUT_SLOT, cooked, true).isEmpty()) {
         this.inventory.extractItem(INPUT_SLOT, 1, false);
         this.inventory.setStackInSlot(COOKING_SLOT, cooked);
-        this.cookTicks = 0;
       }
+      this.forceInsert = false;
     }
 
     if(this.isCooking()) {
@@ -115,8 +139,10 @@ public class TileBronzeOven extends TileEntity implements ITickable {
       }
 
       if(this.isCooked()) {
-        final ItemStack cooked = this.inventory.extractItem(COOKING_SLOT, 1, false);
+        final ItemStack cooked = this.inventory.extractItem(COOKING_SLOT, this.inventory.getSlotLimit(COOKING_SLOT), false);
+        this.forceInsert = true;
         this.inventory.insertItem(OUTPUT_SLOT, cooked, false);
+        this.forceInsert = false;
       }
     }
   }
@@ -156,7 +182,7 @@ public class TileBronzeOven extends TileEntity implements ITickable {
     }
 
     if(capability == FLUID_HANDLER_CAPABILITY) {
-      return FLUID_HANDLER_CAPABILITY.cast(this.tanks);
+      return FLUID_HANDLER_CAPABILITY.cast(this.tankSteam);
     }
 
     return super.getCapability(capability, facing);
@@ -164,8 +190,7 @@ public class TileBronzeOven extends TileEntity implements ITickable {
 
   private void sync() {
     if(!this.getWorld().isRemote) {
-      final IBlockState state = this.getWorld().getBlockState(this.getPos());
-      this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 3);
+      WorldUtils.notifyUpdate(this.world, this.pos);
       this.markDirty();
     }
   }

@@ -44,7 +44,11 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   }
 
   protected void removeHeat(final float heat) {
-    this.heat = Math.max(0, this.heat - heat);
+    this.heat -= heat;
+
+    if(this.heat < 0.1f) {
+      this.heat = 0;
+    }
   }
 
   public void updateSink(final BlockPos pos) {

@@ -1,8 +1,8 @@
 {
   "type": "gradient:grinding",
   "age": 2,
-  "passes": 5,
-  "ticks": 10,
+  "passes": 3,
+  "ticks": 40,
   "result": {
     "item": "minecraft:dye",
     "data": 15

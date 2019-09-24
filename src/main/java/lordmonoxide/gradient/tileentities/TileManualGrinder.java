@@ -2,6 +2,7 @@ package lordmonoxide.gradient.tileentities;
 
 import com.google.common.collect.ImmutableMap;
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.GradientSounds;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
@@ -16,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.animation.TimeValues;
 import net.minecraftforge.common.capabilities.Capability;
@@ -174,6 +176,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     }
 
     if(this.ticks >= this.recipe.ticks) {
+      this.world.playSound(null, this.pos, GradientSounds.GRINDSTONE, SoundCategory.NEUTRAL, 0.8f, this.world.rand.nextFloat() * 0.1f + 0.9f);
       ((WorldServer)this.world).spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.pos.getX() + 0.5d, this.pos.getY() + 0.5d, this.pos.getZ() + 0.5d, 10, 0.1d, 0.1d, 0.1d, 0.01d);
 
       this.ticks = 0;

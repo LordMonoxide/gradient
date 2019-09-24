@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.GradientSounds;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
 import lordmonoxide.gradient.progress.Age;
@@ -20,6 +21,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -28,6 +30,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -137,6 +140,7 @@ public class BlockFirePit extends HeatSinkerBlock {
               held.damageItem(1, player);
             }
 
+            world.playSound(null, pos, GradientSounds.FIRE_STARTER, SoundCategory.NEUTRAL, 1.0f, world.rand.nextFloat() * 0.1f + 0.9f);
             firepit.light();
             return true;
           }
@@ -144,6 +148,7 @@ public class BlockFirePit extends HeatSinkerBlock {
 
         if(Block.getBlockFromItem(held.getItem()) instanceof BlockTorchUnlit) {
           if(firepit.isBurning()) {
+            world.playSound(null, pos, SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.NEUTRAL, 0.15f, world.rand.nextFloat() * 0.1f + 0.9f);
             player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)held.getItem()).getBlock()).lit, held.getCount()));
             return true;
           }
@@ -151,6 +156,7 @@ public class BlockFirePit extends HeatSinkerBlock {
 
         if(Block.getBlockFromItem(held.getItem()) == GradientBlocks.CLAY_FURNACE_HARDENED) {
           if(!state.getValue(HAS_FURNACE)) {
+            world.playSound(null, pos, SoundEvents.BLOCK_STONE_PLACE, SoundCategory.NEUTRAL, 1.0f, world.rand.nextFloat() * 0.1f + 0.9f);
             world.setBlockState(pos, state.withProperty(HAS_FURNACE, true));
 
             // Changing the blockstate replaces the tile entity... swap it
@@ -199,6 +205,10 @@ public class BlockFirePit extends HeatSinkerBlock {
       // Put stuff in
       if(!held.isEmpty()) {
         final ItemStack remaining = firepit.insertItem(held.copy(), player);
+
+        if(remaining.getCount() != held.getCount()) {
+          world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2f, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
+        }
 
         if(!player.isCreative()) {
           player.setHeldItem(hand, remaining);

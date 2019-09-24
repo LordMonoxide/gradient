@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.tileentities.TileDryingRack;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -12,13 +13,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -57,25 +56,21 @@ public class BlockDryingRack extends GradientBlock {
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!player.isSneaking()) {
-      final TileDryingRack te = (TileDryingRack)world.getTileEntity(pos);
+      final TileDryingRack te = WorldUtils.getTileEntity(world, pos, TileDryingRack.class);
 
       if(te == null) {
         return false;
       }
 
+      if(te.hasItem()) {
+        ItemHandlerHelper.giveItemToPlayer(player, te.takeItem());
+        return true;
+      }
+
       final ItemStack held = player.getHeldItem(hand);
 
-      if(held.isEmpty()) {
-        if(te.hasItem()) {
-          ItemHandlerHelper.giveItemToPlayer(player, te.takeItem());
-          return true;
-        }
-      } else {
+      if(!held.isEmpty()) {
         final ItemStack remaining = te.insertItem(held.copy(), player);
-
-        if(remaining.getCount() != held.getCount()) {
-          world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2f, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
-        }
 
         if(!player.isCreative()) {
           player.setHeldItem(hand, remaining);
@@ -90,12 +85,10 @@ public class BlockDryingRack extends GradientBlock {
 
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-    final TileDryingRack te = (TileDryingRack)world.getTileEntity(pos);
+    final TileDryingRack te = WorldUtils.getTileEntity(world, pos, TileDryingRack.class);
 
-    if(te != null) {
-      if(te.hasItem()) {
-        world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), te.getItem()));
-      }
+    if(te != null && te.hasItem()) {
+      world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), te.getItem()));
     }
 
     super.breakBlock(world, pos, state);

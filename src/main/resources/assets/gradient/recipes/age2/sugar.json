@@ -6,7 +6,7 @@
   "result": {
     "item": "minecraft:sugar"
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "gradient:sugarcane_paste"
-  }]
+  }
 }

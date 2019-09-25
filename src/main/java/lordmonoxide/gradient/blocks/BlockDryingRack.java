@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.tileentities.TileDryingRack;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -55,20 +56,20 @@ public class BlockDryingRack extends GradientBlock {
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!player.isSneaking()) {
-      final TileDryingRack te = (TileDryingRack)world.getTileEntity(pos);
+      final TileDryingRack te = WorldUtils.getTileEntity(world, pos, TileDryingRack.class);
 
       if(te == null) {
         return false;
       }
 
+      if(te.hasItem()) {
+        ItemHandlerHelper.giveItemToPlayer(player, te.takeItem());
+        return true;
+      }
+
       final ItemStack held = player.getHeldItem(hand);
 
-      if(held.isEmpty()) {
-        if(te.hasItem()) {
-          ItemHandlerHelper.giveItemToPlayer(player, te.takeItem());
-          return true;
-        }
-      } else {
+      if(!held.isEmpty()) {
         final ItemStack remaining = te.insertItem(held.copy(), player);
 
         if(!player.isCreative()) {
@@ -84,12 +85,10 @@ public class BlockDryingRack extends GradientBlock {
 
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-    final TileDryingRack te = (TileDryingRack)world.getTileEntity(pos);
+    final TileDryingRack te = WorldUtils.getTileEntity(world, pos, TileDryingRack.class);
 
-    if(te != null) {
-      if(te.hasItem()) {
-        world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), te.getItem()));
-      }
+    if(te != null && te.hasItem()) {
+      world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), te.getItem()));
     }
 
     super.breakBlock(world, pos, state);
@@ -140,7 +139,7 @@ public class BlockDryingRack extends GradientBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING, ROOF);
+    return new BlockStateContainer.Builder(this).add(FACING, ROOF).build();
   }
 
   @Override

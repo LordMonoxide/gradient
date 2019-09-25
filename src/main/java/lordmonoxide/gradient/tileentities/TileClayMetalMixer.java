@@ -133,7 +133,7 @@ public class TileClayMetalMixer extends HeatSinker {
   }
 
   private int getTicksForRecipe(final AlloyRecipe recipe) {
-    return recipe.getOutput().amount * 3;
+    return (int)(recipe.getOutput().amount * 1.5f);
   }
 
   @Override
@@ -148,12 +148,12 @@ public class TileClayMetalMixer extends HeatSinker {
   }
 
   @Override
-  protected void tickBeforeCooldown() {
+  protected void tickBeforeCooldown(final float tickScale) {
 
   }
 
   @Override
-  protected void tickAfterCooldown() {
+  protected void tickAfterCooldown(final float tickScale) {
     if(this.world.isRemote) {
       if(this.isAnimating) {
         this.ticksValue.setValue((float)this.animationTicks / CYCLE_TICKS);

@@ -24,6 +24,7 @@ public class HideBedding extends GradientItem {
   public HideBedding() {
     super("hide_bedding", CreativeTabs.TOOLS);
     this.setMaxDamage(4);
+    this.setMaxStackSize(1);
   }
 
   @Override

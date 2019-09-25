@@ -90,9 +90,9 @@ public class BlockClayMetalMixerHardened extends HeatSinkerBlock {
   }
 
   @Override
-  public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<String> tooltip, final ITooltipFlag flagIn) {
-    super.addInformation(stack, worldIn, tooltip, flagIn);
-    tooltip.add(I18n.format("tile.clay_metal_mixer.hardened.tooltip"));
+  public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<String> tooltip, final ITooltipFlag flag) {
+    super.addInformation(stack, worldIn, tooltip, flag);
+    tooltip.add(I18n.format("tile.clay_metal_mixer_hardened.tooltip"));
   }
 
   @Override

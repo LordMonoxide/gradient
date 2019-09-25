@@ -1,13 +1,13 @@
 {
   "type": "gradient:grinding",
   "age": 2,
-  "passes": 5,
-  "ticks": 20,
+  "passes": 2,
+  "ticks": 40,
   "result": {
     "item": "gradient:salt",
     "count": 4
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "gradient:salt_block"
-  }]
+  }
 }

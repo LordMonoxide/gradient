@@ -1,11 +1,13 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.GradientMod;
+import lordmonoxide.gradient.GradientSounds;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.items.FireStarter;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.tileentities.TileFirePit;
 import lordmonoxide.gradient.utils.AgeUtils;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.MapColor;
@@ -19,15 +21,16 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -105,10 +108,10 @@ public class BlockFirePit extends HeatSinkerBlock {
       return other.getLightValue(world, pos);
     }
 
-    final TileEntity te = world.getTileEntity(pos);
+    final TileFirePit te = WorldUtils.getTileEntity(world, pos, TileFirePit.class);
 
-    if(te instanceof TileFirePit) {
-      return ((TileFirePit)te).getLightLevel(state);
+    if(te != null) {
+      return te.getLightLevel(state);
     }
 
     return super.getLightValue(state, world, pos);
@@ -122,7 +125,7 @@ public class BlockFirePit extends HeatSinkerBlock {
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
-      final TileFirePit firepit = (TileFirePit)world.getTileEntity(pos);
+      final TileFirePit firepit = WorldUtils.getTileEntity(world, pos, TileFirePit.class);
 
       if(firepit == null) {
         return false;
@@ -137,6 +140,7 @@ public class BlockFirePit extends HeatSinkerBlock {
               held.damageItem(1, player);
             }
 
+            world.playSound(null, pos, GradientSounds.FIRE_STARTER, SoundCategory.NEUTRAL, 1.0f, world.rand.nextFloat() * 0.1f + 0.9f);
             firepit.light();
             return true;
           }
@@ -144,6 +148,7 @@ public class BlockFirePit extends HeatSinkerBlock {
 
         if(Block.getBlockFromItem(held.getItem()) instanceof BlockTorchUnlit) {
           if(firepit.isBurning()) {
+            world.playSound(null, pos, SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.NEUTRAL, 0.15f, world.rand.nextFloat() * 0.1f + 0.9f);
             player.setHeldItem(hand, new ItemStack(((BlockTorchUnlit)((ItemBlock)held.getItem()).getBlock()).lit, held.getCount()));
             return true;
           }
@@ -151,6 +156,7 @@ public class BlockFirePit extends HeatSinkerBlock {
 
         if(Block.getBlockFromItem(held.getItem()) == GradientBlocks.CLAY_FURNACE_HARDENED) {
           if(!state.getValue(HAS_FURNACE)) {
+            world.playSound(null, pos, SoundEvents.BLOCK_STONE_PLACE, SoundCategory.NEUTRAL, 1.0f, world.rand.nextFloat() * 0.1f + 0.9f);
             world.setBlockState(pos, state.withProperty(HAS_FURNACE, true));
 
             // Changing the blockstate replaces the tile entity... swap it
@@ -198,7 +204,11 @@ public class BlockFirePit extends HeatSinkerBlock {
 
       // Put stuff in
       if(!held.isEmpty()) {
-        final ItemStack remaining = firepit.insertItem(held.copy(), player, state);
+        final ItemStack remaining = firepit.insertItem(held.copy(), player);
+
+        if(remaining.getCount() != held.getCount()) {
+          world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2f, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
+        }
 
         if(!player.isCreative()) {
           player.setHeldItem(hand, remaining);
@@ -236,21 +246,26 @@ public class BlockFirePit extends HeatSinkerBlock {
   }
 
   private static void updateFirePit(final World world, final BlockPos firePitPos, final BlockPos placedPos, final Age age) {
-    final TileEntity te = world.getTileEntity(firePitPos);
+    final TileFirePit te = WorldUtils.getTileEntity(world, firePitPos, TileFirePit.class);
 
-    if(te instanceof TileFirePit) {
-      ((TileFirePit)te).updateHardenable(placedPos, age);
+    if(te != null) {
+      te.updateHardenable(placedPos, age);
     }
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
   }
 
   @Override
   public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+    final TileFirePit te = WorldUtils.getTileEntity(world, pos, TileFirePit.class);
 
-    final TileEntity te = world.getTileEntity(pos);
-
-    if(te instanceof TileFirePit) {
-      ((TileFirePit)te).updateSurroundingHardenables(AgeUtils.getPlayerAge(placer));
+    if(te != null) {
+      te.updateSurroundingHardenables(AgeUtils.getPlayerAge(placer));
     }
   }
 

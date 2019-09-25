@@ -1,7 +1,17 @@
 {
   "bellows_blow": {
-    "category": "block",
+    "category": "neutral",
     "subtitle": "gradient.subtitle.bellows_blow",
     "sounds": ["gradient:bellows_blow"]
+  },
+  "fire_starter": {
+    "category": "neutral",
+    "subtitle": "gradient.subtitle.fire_starter",
+    "sounds": ["gradient:fire_starter"]
+  },
+  "grindstone": {
+    "category": "neutral",
+    "subtitle": "gradient.subtitle.grindstone",
+    "sounds": ["gradient:grindstone"]
   }
 }

@@ -7,6 +7,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import org.lwjgl.Sys;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   private final Map<BlockPos, HeatSinker> sinks = new HashMap<>();
 
   private boolean firstTick = true;
+  private long lastTick;
 
   private float heat;
 
@@ -42,7 +44,11 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
   }
 
   protected void removeHeat(final float heat) {
-    this.heat = Math.max(0, this.heat - heat);
+    this.heat -= heat;
+
+    if(this.heat < 0.1f) {
+      this.heat = 0;
+    }
   }
 
   public void updateSink(final BlockPos pos) {
@@ -68,11 +74,20 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
       return;
     }
 
+    final long now = Sys.getTime();
+
+    if(this.lastTick == 0) {
+      this.lastTick = now - Sys.getTimerResolution() / 20;
+    }
+
+    final float tickScale = (float)(now - this.lastTick) / (Sys.getTimerResolution() / 20);
+    this.lastTick = now;
+
     this.state = this.getWorld().getBlockState(this.getPos());
 
-    this.tickBeforeCooldown();
-    this.coolDown();
-    this.tickAfterCooldown();
+    this.tickBeforeCooldown(tickScale);
+    this.coolDown(tickScale);
+    this.tickAfterCooldown(tickScale);
 
     if(this.firstTick) {
       this.findSurroundingSinks();
@@ -114,11 +129,11 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
     }
   }
 
-  protected abstract void tickBeforeCooldown();
-  protected abstract void tickAfterCooldown();
+  protected abstract void tickBeforeCooldown(final float tickScale);
+  protected abstract void tickAfterCooldown(final float tickScale);
 
-  private void coolDown() {
-    this.removeHeat(this.calculateHeatLoss(this.state) / 20.0f);
+  private void coolDown(final float tickScale) {
+    this.removeHeat(this.calculateHeatLoss(this.state) / 20.0f * tickScale);
   }
 
   protected abstract float calculateHeatLoss(IBlockState state);

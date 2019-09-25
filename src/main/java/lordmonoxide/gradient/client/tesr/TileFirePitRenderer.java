@@ -4,9 +4,11 @@ import lordmonoxide.gradient.blocks.BlockFirePit;
 import lordmonoxide.gradient.tileentities.TileFirePit;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,8 +43,24 @@ public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> 
         GlStateManager.pushMatrix();
         GlStateManager.translate(inputX, -0.4375d, inputZ);
         GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
+
+        GlStateManager.pushMatrix();
         GlStateManager.scale(0.5f, 0.5f, 0.5f);
         Minecraft.getMinecraft().getRenderItem().renderItem(fuel, ItemCameraTransforms.TransformType.GROUND);
+        GlStateManager.popMatrix();
+
+        if(firepit.isBurning(slot)) {
+          GlStateManager.translate(-0.1f, 0.2f, 0.0f);
+          GlStateManager.scale(0.2f * (1.0f - firepit.getBurningFuel(slot).percentBurned()), 0.025f, 1.0f);
+          GlStateManager.disableCull();
+          this.setLightmapDisabled(true);
+          GlStateManager.disableLighting();
+          Gui.drawRect(0, 0, 1, 1, 0xFF1AFF00);
+          GlStateManager.enableLighting();
+          this.setLightmapDisabled(false);
+          GlStateManager.enableCull();
+        }
+
         GlStateManager.popMatrix();
       }
     }
@@ -54,8 +72,23 @@ public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> 
 
       GlStateManager.translate(0.0d, -0.3125d, 0.0d);
       GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
+
+      GlStateManager.pushMatrix();
       GlStateManager.scale(0.5f, 0.5f, 0.5f);
       Minecraft.getMinecraft().getRenderItem().renderItem(input, ItemCameraTransforms.TransformType.GROUND);
+      GlStateManager.popMatrix();
+
+      if(firepit.isCooking()) {
+        GlStateManager.translate(-0.1f, 0.2f, 0.0f);
+        GlStateManager.scale(0.2f * (1.0f - firepit.getCookingPercent()), 0.025f, 1.0f);
+        GlStateManager.disableCull();
+        this.setLightmapDisabled(true);
+        GlStateManager.disableLighting();
+        Gui.drawRect(0, 0, 1, 1, 0xFF1AFF00);
+        GlStateManager.enableLighting();
+        this.setLightmapDisabled(false);
+        GlStateManager.enableCull();
+      }
 
       GlStateManager.popMatrix();
     }
@@ -78,6 +111,12 @@ public class TileFirePitRenderer extends TileEntitySpecialRenderer<TileFirePit> 
       Minecraft.getMinecraft().getRenderItem().renderItem(output, ItemCameraTransforms.TransformType.GROUND);
 
       GlStateManager.popMatrix();
+    }
+
+    final Minecraft mc = Minecraft.getMinecraft();
+
+    if(mc.objectMouseOver != null && mc.objectMouseOver.getBlockPos() != null && mc.objectMouseOver.getBlockPos().equals(firepit.getPos())) {
+      this.drawNameplate(firepit, I18n.format("tile.fire_pit.heat", Math.round(firepit.getHeat())), -0.5d, -0.75d, -0.5d, 8);
     }
 
     GlStateManager.popMatrix();

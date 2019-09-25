@@ -2,6 +2,7 @@ package lordmonoxide.gradient.client.tesr;
 
 import lordmonoxide.gradient.tileentities.TileClayOven;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -24,10 +25,25 @@ public class TileClayOvenRenderer extends TileEntitySpecialRenderer<TileClayOven
 
       GlStateManager.pushMatrix();
 
-      GlStateManager.translate(0.0d, -0.40625d, 0.0d);
+      GlStateManager.translate(0.0d, -0.40625d, -0.25d);
       GlStateManager.rotate(-facing.getHorizontalAngle(), 0.0f, 1.0f, 0.0f);
+
+      GlStateManager.pushMatrix();
       GlStateManager.scale(0.5f, 0.5f, 0.5f);
       Minecraft.getMinecraft().getRenderItem().renderItem(input, ItemCameraTransforms.TransformType.GROUND);
+      GlStateManager.popMatrix();
+
+      if(oven.isCooking()) {
+        GlStateManager.translate(-0.1f, 0.0f, 0.05f);
+        GlStateManager.scale(0.2f * (1.0f - oven.getCookingPercent()), 0.025f, 1.0f);
+        GlStateManager.disableCull();
+        this.setLightmapDisabled(true);
+        GlStateManager.disableLighting();
+        Gui.drawRect(0, 0, 1, 1, 0xFF1AFF00);
+        GlStateManager.enableLighting();
+        this.setLightmapDisabled(false);
+        GlStateManager.enableCull();
+      }
 
       GlStateManager.popMatrix();
     }

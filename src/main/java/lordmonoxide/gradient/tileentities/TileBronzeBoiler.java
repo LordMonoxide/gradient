@@ -55,8 +55,8 @@ public class TileBronzeBoiler extends HeatSinker {
     this.tankWater.setCanDrain(false);
     this.tankSteam.setCanFill(false);
 
-    this.tanks.addHandler(WATER, this.tankWater);
-    this.tanks.addHandler(STEAM, this.tankSteam);
+    this.tanks.addHandler(this.WATER, this.tankWater);
+    this.tanks.addHandler(this.STEAM, this.tankSteam);
   }
 
   public void useBucket(final EntityPlayer player, final EnumHand hand, final World world, final BlockPos pos, final EnumFacing side) {
@@ -77,12 +77,12 @@ public class TileBronzeBoiler extends HeatSinker {
   }
 
   @Override
-  protected void tickBeforeCooldown() {
+  protected void tickBeforeCooldown(final float tickScale) {
 
   }
 
   @Override
-  protected void tickAfterCooldown() {
+  protected void tickAfterCooldown(final float tickScale) {
     this.boilWater();
     this.autoOutput();
   }
@@ -106,7 +106,7 @@ public class TileBronzeBoiler extends HeatSinker {
         final FluidStack water = this.tankWater.drain(Math.max(1, (int)Math.round(drain)), true);
         this.tankWater.setCanDrain(false);
 
-        final FluidStack steam = new FluidStack(STEAM, water.amount);
+        final FluidStack steam = new FluidStack(this.STEAM, water.amount);
 
         this.tankSteam.setCanFill(true);
         this.tankSteam.fill(steam, true);

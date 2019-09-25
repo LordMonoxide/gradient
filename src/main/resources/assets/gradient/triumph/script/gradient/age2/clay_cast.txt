@@ -3,8 +3,25 @@ setTitle("Casting Call")
 setDescription("Make a clay cast to cast your molten metal")
 addParent("gradient:age2/clay_crucible")
 
+setRequirements("any")
+
 criteria1 = addCriteria("hasCast", "minecraft:inventory_changed")
 criteria1.addItem(<gradient:clay_cast.pickaxe.hardened>)
+
+criteria2 = addCriteria("hasCast", "minecraft:inventory_changed")
+criteria2.addItem(<gradient:clay_cast.mattock.hardened>)
+
+criteria3 = addCriteria("hasCast", "minecraft:inventory_changed")
+criteria3.addItem(<gradient:clay_cast.sword.hardened>)
+
+criteria4 = addCriteria("hasCast", "minecraft:inventory_changed")
+criteria4.addItem(<gradient:clay_cast.hammer.hardened>)
+
+criteria5 = addCriteria("hasCast", "minecraft:inventory_changed")
+criteria5.addItem(<gradient:clay_cast.ingot.hardened>)
+
+criteria6 = addCriteria("hasCast", "minecraft:inventory_changed")
+criteria6.addItem(<gradient:clay_cast.block.hardened>)
 
 setRequiresParents()
 setPos(288,-62)

@@ -10,4 +10,5 @@ public final class GradientRecipeCategoryUid {
   public static final String HARDENING = "gradient.hardening";
   public static final String DRYING = "gradient.drying";
   public static final String FUEL = "gradient.fuel";
+  public static final String ALLOY = "gradient.alloy";
 }

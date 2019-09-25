@@ -1,14 +1,11 @@
 package lordmonoxide.gradient.recipes;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JsonUtils;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
@@ -21,17 +18,9 @@ public class GrindingRecipeFactory implements IRecipeFactory {
     final int passes = JsonUtils.getInt(json, "passes");
     final int ticks = JsonUtils.getInt(json, "ticks");
 
-    final NonNullList<Ingredient> ingredients = NonNullList.create();
-    for(final JsonElement element : JsonUtils.getJsonArray(json, "ingredients")) {
-      ingredients.add(CraftingHelper.getIngredient(element, context));
-    }
-
-    if(ingredients.isEmpty()) {
-      throw new JsonParseException("No ingredients for grinding recipe");
-    }
-
+    final Ingredient ingredient = CraftingHelper.getIngredient(JsonUtils.getJsonObject(json, "ingredient"), context);
     final ItemStack output = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
 
-    return new GrindingRecipe(group, age, passes, ticks, output, ingredients);
+    return new GrindingRecipe(group, age, passes, ticks, output, ingredient);
   }
 }

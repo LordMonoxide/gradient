@@ -506,6 +506,7 @@ public final class GradientItems {
     }
 
     OreDictionary.registerOre("dustFlint", DUST_FLINT);
+    OreDictionary.registerOre("sand", new ItemStack(Blocks.SAND, 1, OreDictionary.WILDCARD_VALUE));
 
     // Crops/food
     OreDictionary.registerOre("ingredientFlour", FLOUR);

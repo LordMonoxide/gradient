@@ -115,7 +115,7 @@ tile.pebble.name=Pebble
 tile.fire_pit.name=Fire Pit
 tile.fire_pit.fuel=Fuel
 tile.fire_pit.input=Food
-tile.fire_pit.heat=Heat: %d °C
+tile.fire_pit.heat=%d °C
 tile.bellows.name=Bellows
 tile.bellows.tooltip=Place next to a fire pit or furnace and right click repeatedly to use
 tile.fibre_torch_lit.name=Lit Fibre Torch
@@ -232,6 +232,9 @@ jei.fuel.duration=Burn time: %d seconds
 jei.fuel.ignitionTemp=Ignition temperature: %d °C
 jei.fuel.burnTemp=Max temperature: %d °C
 jei.fuel.heatPerSec=Heat: %d °C/s
+
+jei.alloy.name=Alloy
+jei.alloy.amount=%d mB
 
 # Commands
 commands.setage.usage=/setage <age> [<player>]

@@ -192,9 +192,11 @@ public final class GradientTools {
   }
 
   public static final class ToolBuilder {
+    private static final String[] EMPTY_CLASSES = new String[0];
+
     private final GradientCasts.Cast cast;
 
-    private String[] toolClass;
+    private String[] toolClass = EMPTY_CLASSES;
 
     private double attackDamage;
     private double attackSpeed;

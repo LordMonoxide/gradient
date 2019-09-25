@@ -11,3 +11,5 @@ setFrameType("CHALLENGE")
 
 setRequiresParents()
 setPos(193,81)
+
+addRewardFunction("gradient:set_age_2")

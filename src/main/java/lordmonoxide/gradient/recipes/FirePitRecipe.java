@@ -1,46 +1,31 @@
 package lordmonoxide.gradient.recipes;
 
 import lordmonoxide.gradient.progress.Age;
-import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.RecipeMatcher;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
-  private static final RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
-  private static final List<ItemStack> inputStacks = new ArrayList<>();
-
   private final String group;
   public final Age age;
   public final int ticks;
   public final float temperature;
   private final ItemStack output;
-  private final NonNullList<Ingredient> input;
-  private final boolean isSimple;
+  private final Ingredient input;
+  private final NonNullList<Ingredient> inputs;
 
-  public FirePitRecipe(final String group, final Age age, final int ticks, final float temperature, final ItemStack output, final NonNullList<Ingredient> input) {
+  public FirePitRecipe(final String group, final Age age, final int ticks, final float temperature, final ItemStack output, final Ingredient input) {
     this.group = group;
     this.age = age;
     this.ticks = ticks;
     this.temperature = temperature;
     this.output = output;
     this.input = input;
-
-    boolean isSimple = true;
-    for(final Ingredient ingredient : input) {
-      isSimple &= ingredient.isSimple();
-    }
-
-    this.isSimple = isSimple;
+    this.inputs = NonNullList.from(Ingredient.EMPTY, input);
   }
 
   @Override
@@ -54,38 +39,12 @@ public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
     return false;
   }
 
-  public boolean matches(final IItemHandler inv, final Age age, final int firstSlot, final int lastSlot) {
-    if(age.ordinal() < this.age.ordinal()) {
-      return false;
-    }
+  public boolean matches(final ItemStack input, final Age age) {
+    return age.ordinal() >= this.age.ordinal() && this.matches(input);
+  }
 
-    recipeItemHelper.clear();
-    inputStacks.clear();
-
-    int ingredientCount = 0;
-    for(int slot = firstSlot; slot <= lastSlot; ++slot) {
-      final ItemStack itemstack = inv.getStackInSlot(slot);
-
-      if(!itemstack.isEmpty()) {
-        ++ingredientCount;
-
-        if(this.isSimple) {
-          recipeItemHelper.accountStack(itemstack, 1);
-        } else {
-          inputStacks.add(itemstack);
-        }
-      }
-    }
-
-    if(ingredientCount != this.input.size()) {
-      return false;
-    }
-
-    if(this.isSimple) {
-      return recipeItemHelper.canCraft(this, null);
-    }
-
-    return RecipeMatcher.findMatches(inputStacks, this.input) != null;
+  public boolean matches(final ItemStack input) {
+    return this.input.apply(input);
   }
 
   @Override
@@ -95,7 +54,7 @@ public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
 
   @Override
   public boolean canFit(final int width, final int height) {
-    return width * height >= this.input.size();
+    return width * height >= this.inputs.size();
   }
 
   @Override
@@ -105,6 +64,6 @@ public class FirePitRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
 
   @Override
   public NonNullList<Ingredient> getIngredients() {
-    return this.input;
+    return this.inputs;
   }
 }

@@ -2,6 +2,7 @@ package lordmonoxide.gradient.science.geology;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import lordmonoxide.gradient.GradientCasts;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.recipes.MeltingRecipe;
 import net.minecraft.item.ItemStack;
@@ -13,8 +14,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Collection;
 
 public final class Meltables {
   private Meltables() { }
@@ -41,24 +40,15 @@ public final class Meltables {
       final String uc = StringUtils.capitalize(metal.name);
 
       registry.registerAll(
-        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("ingot" + uc)).setRegistryName(GradientMod.resource("melting/ingot_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime * GradientCasts.INGOT.amountForMetal(metal) / Fluid.BUCKET_VOLUME, metal.meltTemp, new FluidStack(metal.getFluid(), GradientCasts.INGOT.amountForMetal(metal)), new OreIngredient("ingot" + uc)).setRegistryName(GradientMod.resource("melting/ingot_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime / 4.0f, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME / 4), new OreIngredient("nugget" + uc)).setRegistryName(GradientMod.resource("melting/nugget_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("dust" + uc)).setRegistryName(GradientMod.resource("melting/dust_" + metal.name)),
-        new MeltingRecipe(GradientMod.MODID, metal.meltTime * 8.0f, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME * 8), new OreIngredient("block" + uc)).setRegistryName(GradientMod.resource("melting/block_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime * GradientCasts.BLOCK.amountForMetal(metal) / Fluid.BUCKET_VOLUME, metal.meltTemp, new FluidStack(metal.getFluid(), GradientCasts.BLOCK.amountForMetal(metal)), new OreIngredient("block" + uc)).setRegistryName(GradientMod.resource("melting/block_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("crushed" + uc)).setRegistryName(GradientMod.resource("melting/crushed_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("purified" + uc)).setRegistryName(GradientMod.resource("melting/purified_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("plate" + uc)).setRegistryName(GradientMod.resource("melting/plate_" + metal.name))
       );
     }
-
-    registry.registerAll(
-      new MeltingRecipe(GradientMod.MODID, Metals.IRON.meltTime, Metals.IRON.meltTemp, new FluidStack(Metals.IRON.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("ingotIron")),
-
-      new MeltingRecipe(GradientMod.MODID, 8.0f, 1200.0f, new FluidStack(Metals.GLASS.getFluid(), Fluid.BUCKET_VOLUME * 8), new OreIngredient("sand")),
-      new MeltingRecipe(GradientMod.MODID, 8.0f, 1200.0f, new FluidStack(Metals.GLASS.getFluid(), Fluid.BUCKET_VOLUME * 8), new OreIngredient("blockGlass")),
-      new MeltingRecipe(GradientMod.MODID, 8.0f, 1200.0f, new FluidStack(Metals.GLASS.getFluid(), Fluid.BUCKET_VOLUME * 8), new OreIngredient("dustGlass")),
-      new MeltingRecipe(GradientMod.MODID, 2.0f, 1200.0f, new FluidStack(Metals.GLASS.getFluid(), Fluid.BUCKET_VOLUME / 2), new OreIngredient("paneGlass"))
-    );
   }
 
   public static Meltable get(final ItemStack stack) {
@@ -71,9 +61,5 @@ public final class Meltables {
     }
 
     return INVALID_MELTABLE;
-  }
-
-  public static Collection<Meltable> all() {
-    return meltables.values();
   }
 }

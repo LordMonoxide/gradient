@@ -101,6 +101,6 @@ public class BlockHandCrank extends GradientBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING);
+    return new BlockStateContainer.Builder(this).add(FACING).build();
   }
 }

@@ -1,14 +1,14 @@
 {
   "type": "gradient:grinding",
   "age": 2,
-  "passes": 3,
-  "ticks": 20,
+  "passes": 2,
+  "ticks": 40,
   "result": {
     "item": "gradient:sugarcane_paste",
     "count": 2
   },
-  "ingredients": [{
+  "ingredient": {
     "type": "forge:ore_dict",
     "ore": "sugarcane"
-  }]
+  }
 }

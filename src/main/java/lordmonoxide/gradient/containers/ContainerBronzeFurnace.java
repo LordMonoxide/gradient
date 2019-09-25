@@ -1,8 +1,8 @@
 package lordmonoxide.gradient.containers;
 
 import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerBronzeFurnace extends GradientContainer {
   public static final int FUEL_SLOTS_X = 13;
@@ -11,15 +11,8 @@ public class ContainerBronzeFurnace extends GradientContainer {
   public ContainerBronzeFurnace(final InventoryPlayer playerInv, final TileBronzeFurnace furnace) {
     super(furnace);
 
-    for(int i = 0; i < TileBronzeFurnace.FUEL_SLOTS_COUNT; i++) {
-      final int i2 = i;
-
-      this.addSlotToContainer(new SlotFuel(this.inventory, TileBronzeFurnace.FIRST_FUEL_SLOT + i, FUEL_SLOTS_X + i % 3 * (SLOT_X_SPACING + 8), FUEL_SLOTS_Y + i / 3 * (SLOT_Y_SPACING + 2)) {
-        @Override public void onSlotChanged() {
-          furnace.markDirty();
-        }
-        @Override public boolean canTakeStack(final EntityPlayer player) { return !furnace.isBurning(i2); }
-      });
+    for(int slot = 0; slot < TileBronzeFurnace.FUEL_SLOTS_COUNT; slot++) {
+      this.addSlotToContainer(new SlotItemHandler(this.inventory, TileBronzeFurnace.FIRST_FUEL_SLOT + slot, FUEL_SLOTS_X + slot % 3 * (SLOT_X_SPACING + 8), FUEL_SLOTS_Y + slot / 3 * (SLOT_Y_SPACING + 2)));
     }
 
     this.addPlayerSlots(playerInv);

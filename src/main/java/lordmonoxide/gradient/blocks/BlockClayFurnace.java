@@ -85,9 +85,11 @@ public class BlockClayFurnace extends GradientBlock {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-    world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+  @Deprecated
+  public IBlockState getStateForPlacement(final World world, final BlockPos pos, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
   }
 
   @SuppressWarnings("deprecation")
@@ -118,6 +120,6 @@ public class BlockClayFurnace extends GradientBlock {
 
   @Override
   protected BlockStateContainer createBlockState() {
-    return new BlockStateContainer(this, FACING);
+    return new BlockStateContainer.Builder(this).add(FACING).build();
   }
 }

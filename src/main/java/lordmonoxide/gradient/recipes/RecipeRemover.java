@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.recipes;
 
+import ic2.api.item.IC2Items;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.progress.Age;
 import net.minecraft.block.Block;
@@ -15,10 +16,13 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 
 import java.util.ArrayList;
@@ -169,6 +173,10 @@ public final class RecipeRemover {
                 NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(stackLog), new IngredientOre("toolAxe"))
               ).setRegistryName(GradientMod.resource(output.getTranslationKey() + '@' + output.getMetadata() + ".from." + stackLog.getTranslationKey() + '@' + stackLog.getMetadata() + ".with.axe")));
 
+              if(Loader.isModLoaded("ic2")) {
+                addIc2PlanksRecipe(toAdd, stackLog, output);
+              }
+
               toRemove.add(recipe);
 
               break outerLoop;
@@ -193,10 +201,38 @@ public final class RecipeRemover {
       NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), new IngredientOre("toolAxe"))
     ).setRegistryName(GradientMod.resource("sticks.from.planks.with.axe")));
 
+    if(Loader.isModLoaded("ic2")) {
+      addIc2SticksRecipe(registry);
+    }
+
     if(toRemove.isEmpty()) {
       GradientMod.logger.warn("Failed to replace plank recipes!");
     } else {
       GradientMod.logger.info("Replaced {} plank recipes!", toRemove.size());
     }
+  }
+
+  @Optional.Method(modid = "ic2")
+  private static void addIc2PlanksRecipe(final List<IRecipe> toAdd, final ItemStack stackLog, final ItemStack output) {
+    final ItemStack chainsaw = new ItemStack(IC2Items.getItem("chainsaw").getItem(), 1, OreDictionary.WILDCARD_VALUE);
+
+    toAdd.add(new AgeGatedShapelessToolRecipe(
+      GradientMod.MODID,
+      Age.AGE1,
+      new ItemStack(output.getItem(), 2, output.getMetadata()),
+      NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(stackLog), Ingredient.fromStacks(chainsaw))
+    ).setRegistryName(GradientMod.resource(output.getTranslationKey() + '@' + output.getMetadata() + ".from." + stackLog.getTranslationKey() + '@' + stackLog.getMetadata() + ".with.chainsaw")));
+  }
+
+  @Optional.Method(modid = "ic2")
+  private static void addIc2SticksRecipe(final IForgeRegistry<IRecipe> registry) {
+    final ItemStack chainsaw = new ItemStack(IC2Items.getItem("chainsaw").getItem(), 1, OreDictionary.WILDCARD_VALUE);
+
+    registry.register(new AgeGatedShapelessToolRecipe(
+      GradientMod.MODID,
+      Age.AGE1,
+      new ItemStack(Items.STICK, 2),
+      NonNullList.from(Ingredient.EMPTY, new IngredientOre("plankWood"), Ingredient.fromStacks(chainsaw))
+    ).setRegistryName(GradientMod.resource("sticks.from.planks.with.chainsaw")));
   }
 }

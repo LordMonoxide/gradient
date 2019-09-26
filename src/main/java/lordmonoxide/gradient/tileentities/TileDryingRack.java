@@ -25,7 +25,28 @@ public class TileDryingRack extends TileEntity implements ITickable {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
-  private final ItemStackHandler inventory = new ItemStackHandler(1);
+  private final ItemStackHandler inventory = new ItemStackHandler(1) {
+    @Override
+    public int getSlotLimit(final int slot) {
+      return 1;
+    }
+
+    @Override
+    protected void onContentsChanged(final int slot) {
+      super.onContentsChanged(slot);
+
+      final ItemStack stack = this.getStackInSlot(slot);
+
+      if(stack.isEmpty()) {
+        TileDryingRack.this.recipe = null;
+      } else {
+        TileDryingRack.this.updateRecipe();
+      }
+
+      TileDryingRack.this.ticks = 0;
+      TileDryingRack.this.sync();
+    }
+  };
 
   @Nullable
   private DryingRecipe recipe;
@@ -41,11 +62,7 @@ public class TileDryingRack extends TileEntity implements ITickable {
   }
 
   public ItemStack takeItem() {
-    final ItemStack input = this.inventory.extractItem(0, this.inventory.getSlotLimit(0), false);
-    this.recipe = null;
-    this.ticks = 0;
-    this.sync();
-    return input;
+    return this.inventory.extractItem(0, this.inventory.getSlotLimit(0), false);
   }
 
   public ItemStack insertItem(final ItemStack stack, final EntityPlayer player) {
@@ -55,10 +72,6 @@ public class TileDryingRack extends TileEntity implements ITickable {
       final ItemStack input = stack.splitStack(1);
       this.inventory.setStackInSlot(0, input);
 
-      this.updateRecipe();
-      this.ticks = 0;
-
-      this.sync();
       return stack;
     }
 

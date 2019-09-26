@@ -6,7 +6,7 @@
   "result": {
     "item": "gradient:dust.flint"
   },
-  "ingredients": [{
+  "ingredient": {
     "item": "minecraft:flint"
-  }]
+  }
 }

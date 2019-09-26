@@ -55,6 +55,10 @@ public class BlockDryingRack extends GradientBlock {
 
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+    if(world.isRemote) {
+      return true;
+    }
+
     if(!player.isSneaking()) {
       final TileDryingRack te = WorldUtils.getTileEntity(world, pos, TileDryingRack.class);
 

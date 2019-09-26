@@ -236,6 +236,11 @@ jei.fuel.heatPerSec=Heat: %d °C/s
 jei.alloy.name=Alloy
 jei.alloy.amount=%d mB
 
+jei.melting.name=Melting
+jei.melting.amount=%d mB
+jei.melting.meltTime=Melting time: %d ticks
+jei.melting.meltTemp=Meltint temperature: %f °C
+
 # Commands
 commands.setage.usage=/setage <age> [<player>]
 commands.setage.set=Your age is now %s

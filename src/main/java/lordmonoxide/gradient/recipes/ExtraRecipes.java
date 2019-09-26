@@ -169,14 +169,20 @@ public final class ExtraRecipes {
     for(final Metal metal : Metals.all()) {
       final String uc = StringUtils.capitalize(metal.name);
 
+      if(metal.canMakeIngots) {
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime * GradientCasts.INGOT.amountForMetal(metal) / Fluid.BUCKET_VOLUME, metal.meltTemp, new FluidStack(metal.getFluid(), GradientCasts.INGOT.amountForMetal(metal)), new OreIngredient("ingot" + uc)).setRegistryName(GradientMod.resource("melting/ingot_" + metal.name));
+      }
+
+      if(metal.canMakePlates) {
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("plate" + uc)).setRegistryName(GradientMod.resource("melting/plate_" + metal.name));
+      }
+
       registry.registerAll(
-        new MeltingRecipe(GradientMod.MODID, metal.meltTime * GradientCasts.INGOT.amountForMetal(metal) / Fluid.BUCKET_VOLUME, metal.meltTemp, new FluidStack(metal.getFluid(), GradientCasts.INGOT.amountForMetal(metal)), new OreIngredient("ingot" + uc)).setRegistryName(GradientMod.resource("melting/ingot_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime / 4.0f, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME / 4), new OreIngredient("nugget" + uc)).setRegistryName(GradientMod.resource("melting/nugget_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("dust" + uc)).setRegistryName(GradientMod.resource("melting/dust_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime * GradientCasts.BLOCK.amountForMetal(metal) / Fluid.BUCKET_VOLUME, metal.meltTemp, new FluidStack(metal.getFluid(), GradientCasts.BLOCK.amountForMetal(metal)), new OreIngredient("block" + uc)).setRegistryName(GradientMod.resource("melting/block_" + metal.name)),
         new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("crushed" + uc)).setRegistryName(GradientMod.resource("melting/crushed_" + metal.name)),
-        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("purified" + uc)).setRegistryName(GradientMod.resource("melting/purified_" + metal.name)),
-        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("plate" + uc)).setRegistryName(GradientMod.resource("melting/plate_" + metal.name))
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("purified" + uc)).setRegistryName(GradientMod.resource("melting/purified_" + metal.name))
       );
     }
   }

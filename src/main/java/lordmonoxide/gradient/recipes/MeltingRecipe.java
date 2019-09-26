@@ -15,6 +15,7 @@ public class MeltingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
   private final float meltTemp;
   private final FluidStack output;
   private final Ingredient input;
+  private final NonNullList<Ingredient> inputs;
 
   public MeltingRecipe(final String group, final float meltTime, final float meltTemp, final FluidStack output, final Ingredient input) {
     this.group = group;
@@ -22,6 +23,7 @@ public class MeltingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
     this.meltTemp = meltTemp;
     this.output = output;
     this.input = input;
+    this.inputs = NonNullList.from(Ingredient.EMPTY, input);
   }
 
   public float getMeltTime() {
@@ -67,7 +69,7 @@ public class MeltingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
 
   @Override
   public NonNullList<Ingredient> getIngredients() {
-    return NonNullList.create();
+    return this.inputs;
   }
 
   @Override

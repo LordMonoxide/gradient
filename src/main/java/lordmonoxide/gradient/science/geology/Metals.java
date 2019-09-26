@@ -12,7 +12,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -21,7 +20,6 @@ public final class Metals {
   private Metals() { }
 
   private static final Map<String, Metal> metals = new LinkedHashMap<>();
-  private static final Map<Meltable, Metal> meltables = new HashMap<>();
 
   public static final Metal INVALID_METAL = new Metal("invalid", Float.POSITIVE_INFINITY, 0.0f, 0.0f, false, 0, 0, 0, 0, 0, 0, 0, NonNullList.create());
 
@@ -71,10 +69,6 @@ public final class Metals {
     return metals.getOrDefault(fluid.getName(), INVALID_METAL);
   }
 
-  public static Metal get(final Meltable meltable) {
-    return meltables.getOrDefault(meltable, INVALID_METAL);
-  }
-
   public static Collection<Metal> all() {
     return metals.values();
   }
@@ -85,14 +79,6 @@ public final class Metals {
     }
 
     return FluidUtil.getFilledBucket(new FluidStack(GradientFluids.METALS.get(metal), Fluid.BUCKET_VOLUME));
-  }
-
-  public static void addMeltable(final Meltable meltable, final Metal metal) {
-    if(metal == INVALID_METAL) {
-      throw new IllegalStateException("Cannot register meltable for INVALID_METAL");
-    }
-
-    meltables.put(meltable, metal);
   }
 
   public static final class MetalBuilder {

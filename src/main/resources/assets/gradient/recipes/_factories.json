@@ -8,7 +8,8 @@
     "grinding": "lordmonoxide.gradient.recipes.GrindingRecipeFactory",
     "mixing": "lordmonoxide.gradient.recipes.MixingRecipeFactory",
     "drying": "lordmonoxide.gradient.recipes.DryingRecipeFactory",
-    "alloy": "lordmonoxide.gradient.recipes.AlloyRecipeFactory"
+    "alloy": "lordmonoxide.gradient.recipes.AlloyRecipeFactory",
+    "melting": "lordmonoxide.gradient.recipes.MeltingRecipeFactory"
   },
   "ingredients": {
     "cast":      "lordmonoxide.gradient.recipes.IngredientCastFactory",

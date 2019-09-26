@@ -16,6 +16,8 @@ import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.grinding.GrindingRecipeWrapper;
 import lordmonoxide.gradient.integrations.jei.hardening.HardeningRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.hardening.HardeningRecipeWrapper;
+import lordmonoxide.gradient.integrations.jei.melting.MeltingRecipeCategory;
+import lordmonoxide.gradient.integrations.jei.melting.MeltingRecipeWrapper;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeCategory;
 import lordmonoxide.gradient.integrations.jei.mixing.MixingRecipeWrapper;
 import lordmonoxide.gradient.inventory.ContainerPlayer3x3Crafting;
@@ -27,6 +29,7 @@ import lordmonoxide.gradient.recipes.FirePitRecipe;
 import lordmonoxide.gradient.recipes.FuelRecipe;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.recipes.HardeningRecipe;
+import lordmonoxide.gradient.recipes.MeltingRecipe;
 import lordmonoxide.gradient.recipes.MixingRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IModPlugin;
@@ -63,6 +66,7 @@ public class JeiIntegration implements IModPlugin {
     registry.addRecipeCategories(new DryingRecipeCategory(guiHelper));
     registry.addRecipeCategories(new FuelRecipeCategory(guiHelper));
     registry.addRecipeCategories(new AlloyRecipeCategory(guiHelper));
+    registry.addRecipeCategories(new MeltingRecipeCategory(guiHelper));
   }
 
   @Override
@@ -88,6 +92,7 @@ public class JeiIntegration implements IModPlugin {
     registry.handleRecipes(DryingRecipe.class, recipe -> new DryingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.DRYING);
     registry.handleRecipes(FuelRecipe.class, recipe -> new FuelRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.FUEL);
     registry.handleRecipes(AlloyRecipe.class, AlloyRecipeWrapper::new, GradientRecipeCategoryUid.ALLOY);
+    registry.handleRecipes(MeltingRecipe.class, recipe -> new MeltingRecipeWrapper(stackHelper, recipe), GradientRecipeCategoryUid.MELTING);
     registry.addRecipes(filterRecipes(AgeGatedShapedToolRecipe.class), GradientRecipeCategoryUid.CRAFTING);
     registry.addRecipes(filterRecipes(AgeGatedShapelessToolRecipe.class), GradientRecipeCategoryUid.CRAFTING);
     registry.addRecipes(filterRecipes(FirePitRecipe.class), GradientRecipeCategoryUid.FIREPIT);
@@ -97,6 +102,7 @@ public class JeiIntegration implements IModPlugin {
     registry.addRecipes(filterRecipes(DryingRecipe.class), GradientRecipeCategoryUid.DRYING);
     registry.addRecipes(filterRecipes(FuelRecipe.class), GradientRecipeCategoryUid.FUEL);
     registry.addRecipes(filterRecipes(AlloyRecipe.class), GradientRecipeCategoryUid.ALLOY);
+    registry.addRecipes(filterRecipes(MeltingRecipe.class), GradientRecipeCategoryUid.MELTING);
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.FIREPIT);
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.MIXING_BASIN), GradientRecipeCategoryUid.MIXING);
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.MANUAL_GRINDER), GradientRecipeCategoryUid.GRINDING);
@@ -104,6 +110,7 @@ public class JeiIntegration implements IModPlugin {
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.DRYING_RACK), GradientRecipeCategoryUid.DRYING);
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.FIRE_PIT), GradientRecipeCategoryUid.FUEL);
     registry.addRecipeCatalyst(new ItemStack(GradientBlocks.CLAY_METAL_MIXER_HARDENED), GradientRecipeCategoryUid.ALLOY);
+    registry.addRecipeCatalyst(new ItemStack(GradientBlocks.CLAY_CRUCIBLE_HARDENED), GradientRecipeCategoryUid.MELTING);
 
     registry.getRecipeTransferRegistry().addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(VanillaRecipeCategoryUid.CRAFTING));
     registry.getRecipeTransferRegistry().addRecipeTransferHandler(new ContainerPlayer3x3CraftingTransferInfo(GradientRecipeCategoryUid.CRAFTING));

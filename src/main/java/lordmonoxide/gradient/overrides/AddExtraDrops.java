@@ -4,10 +4,10 @@ import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.hacks.FixToolBreakingNotFiringHarvestDropEvents;
 import lordmonoxide.gradient.items.GradientItems;
-import lordmonoxide.gradient.science.geology.Meltable;
-import lordmonoxide.gradient.science.geology.Meltables;
+import lordmonoxide.gradient.recipes.MeltingRecipe;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
+import lordmonoxide.gradient.utils.RecipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
@@ -124,11 +124,11 @@ public final class AddExtraDrops {
       }
 
       final ItemStack metalStack = event.getState().getBlock().getItem(event.getWorld(), event.getPos(), event.getState());
-      final Meltable meltable = Meltables.get(metalStack);
+      final MeltingRecipe meltable = RecipeUtils.findRecipe(MeltingRecipe.class, recipe -> recipe.matches(metalStack));
 
-      if(meltable != Meltables.INVALID_MELTABLE) {
-        final Metal metal = Metals.get(meltable);
-        final int nuggetCount = rand.nextInt(meltable.amount * 4 / 1000 * (event.getFortuneLevel() + 1) + 1) + 2;
+      if(meltable != null) {
+        final Metal metal = Metals.get(meltable.getOutput().getFluid());
+        final int nuggetCount = rand.nextInt(meltable.getOutput().amount * 4 / 1000 * (event.getFortuneLevel() + 1) + 1) + 2;
 
         for(int i = 0; i < nuggetCount; i++) {
           drops.add(new ItemStack(GradientItems.nugget(metal)));

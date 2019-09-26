@@ -12,7 +12,6 @@ import lordmonoxide.gradient.init.IProxy;
 import lordmonoxide.gradient.progress.CapabilityPlayerProgress;
 import lordmonoxide.gradient.progress.SetAgeCommand;
 import lordmonoxide.gradient.recipes.RecipeRemover;
-import lordmonoxide.gradient.science.geology.Meltables;
 import lordmonoxide.gradient.worldgen.DisableVanillaOre;
 import lordmonoxide.gradient.worldgen.GeneratePebbles;
 import lordmonoxide.gradient.worldgen.OreGenerator;
@@ -109,8 +108,6 @@ public class GradientMod {
 
     GameRegistry.registerWorldGenerator(new GeneratePebbles(), 0);
     GameRegistry.registerWorldGenerator(new OreGenerator(), 0);
-
-    Meltables.registerMeltables();
 
     GradientNet.register();
 

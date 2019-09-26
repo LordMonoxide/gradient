@@ -21,6 +21,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
@@ -46,6 +47,7 @@ public final class ExtraRecipes {
     registerCasts(registry);
     registerTools(registry);
     registerNuggets(registry);
+    registerMeltables(registry);
 
     if(Loader.isModLoaded("ic2")) {
       registerOreWashingRecipes();
@@ -150,6 +152,38 @@ public final class ExtraRecipes {
         GradientItems.nugget(metal).getItemStack(4),
         NonNullList.from(Ingredient.EMPTY, new OreIngredient("ingot" + StringUtils.capitalize(metal.name)), Ingredient.fromStacks(pickaxes))
       ).setRegistryName(GradientMod.resource(recipeName)));
+    }
+  }
+
+  private static void registerMeltables(final IForgeRegistry<IRecipe> registry) {
+    GradientMod.logger.info("Registering meltable recipes");
+
+    for(final Ore.Metal ore : Ores.metals()) {
+      final String uc = StringUtils.capitalize(ore.name);
+
+      registry.register(
+        new MeltingRecipe(GradientMod.MODID, ore.basic.meltTime, ore.basic.meltTemp, new FluidStack(ore.basic.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("ore" + uc)).setRegistryName(GradientMod.resource("melting/ore_" + ore.name))
+      );
+    }
+
+    for(final Metal metal : Metals.all()) {
+      final String uc = StringUtils.capitalize(metal.name);
+
+      if(metal.canMakeIngots) {
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime * GradientCasts.INGOT.amountForMetal(metal) / Fluid.BUCKET_VOLUME, metal.meltTemp, new FluidStack(metal.getFluid(), GradientCasts.INGOT.amountForMetal(metal)), new OreIngredient("ingot" + uc)).setRegistryName(GradientMod.resource("melting/ingot_" + metal.name));
+      }
+
+      if(metal.canMakePlates) {
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("plate" + uc)).setRegistryName(GradientMod.resource("melting/plate_" + metal.name));
+      }
+
+      registry.registerAll(
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime / 4.0f, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME / 4), new OreIngredient("nugget" + uc)).setRegistryName(GradientMod.resource("melting/nugget_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("dust" + uc)).setRegistryName(GradientMod.resource("melting/dust_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime * GradientCasts.BLOCK.amountForMetal(metal) / Fluid.BUCKET_VOLUME, metal.meltTemp, new FluidStack(metal.getFluid(), GradientCasts.BLOCK.amountForMetal(metal)), new OreIngredient("block" + uc)).setRegistryName(GradientMod.resource("melting/block_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("crushed" + uc)).setRegistryName(GradientMod.resource("melting/crushed_" + metal.name)),
+        new MeltingRecipe(GradientMod.MODID, metal.meltTime, metal.meltTemp, new FluidStack(metal.getFluid(), Fluid.BUCKET_VOLUME), new OreIngredient("purified" + uc)).setRegistryName(GradientMod.resource("melting/purified_" + metal.name))
+      );
     }
   }
 

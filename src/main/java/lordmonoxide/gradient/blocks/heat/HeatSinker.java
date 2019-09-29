@@ -7,7 +7,6 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import org.lwjgl.Sys;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,13 +73,13 @@ public abstract class HeatSinker extends TileEntity implements ITickable {
       return;
     }
 
-    final long now = Sys.getTime();
+    final long now = System.nanoTime();
 
     if(this.lastTick == 0) {
-      this.lastTick = now - Sys.getTimerResolution() / 20;
+      this.lastTick = now - 50000000;
     }
 
-    final float tickScale = (float)(now - this.lastTick) / (Sys.getTimerResolution() / 20);
+    final float tickScale = (now - this.lastTick) / 50000000.0f;
     this.lastTick = now;
 
     this.state = this.getWorld().getBlockState(this.getPos());

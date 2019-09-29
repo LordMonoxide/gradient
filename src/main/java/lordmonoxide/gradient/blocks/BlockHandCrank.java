@@ -50,15 +50,20 @@ public class BlockHandCrank extends GradientBlock {
       return true;
     }
 
-    for(final AbstractHorse horse : world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(pos.getX() - 7.0D, pos.getY() - 7.0D, pos.getZ() - 7.0D, pos.getX() + 7.0D, pos.getY() + 7.0D, pos.getZ() + 7.0D))) {
+    boolean leashed = false;
+    for(final AbstractHorse horse : world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(pos.getX() - 10.0d, pos.getY() - 10.0d, pos.getZ() - 10.0d, pos.getX() + 10.0d, pos.getY() + 10.0d, pos.getZ() + 10.0d))) {
       if(horse.getLeashed() && horse.getLeashHolder() == player) {
-        crank.attachWorker(player, horse);
-        return true;
+        crank.attachWorker(horse);
+        leashed = true;
       }
     }
 
+    if(leashed) {
+      return true;
+    }
+
     if(crank.hasWorker()) {
-      crank.detachWorker(player);
+      crank.detachWorkers(player);
       return true;
     }
 

@@ -10,18 +10,15 @@ import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
+import java.util.LinkedList;
 
 public class TileHandCrank extends TileEntity implements ITickable {
   @CapabilityInject(IKineticEnergyStorage.class)
@@ -30,12 +27,12 @@ public class TileHandCrank extends TileEntity implements ITickable {
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
+  private static final int MAX_WORKERS = 4;
+  private static final double WORKER_DISTANCE = 3.0d;
+
   private final IKineticEnergyStorage storage = new KineticEnergyStorage(5.0f, 0.0f, 5.0f);
 
-  @Nullable
-  private EntityAnimal worker;
-  private float workerTargetTheta;
-  private BlockPos workerTargetPos;
+  private final LinkedList<WorkerData> workers = new LinkedList<>();
 
   private int crankTicks;
   private boolean cranking;
@@ -58,30 +55,32 @@ public class TileHandCrank extends TileEntity implements ITickable {
   }
 
   public boolean hasWorker() {
-    return this.worker != null;
+    return !this.workers.isEmpty();
   }
 
-  public void attachWorker(final EntityPlayer attacher, final EntityAnimal worker) {
-    if(this.hasWorker()) {
-      ItemHandlerHelper.giveItemToPlayer(attacher, new ItemStack(Items.LEAD));
-      this.detachWorker(attacher);
+  public void attachWorker(final EntityAnimal worker) {
+    if(this.workers.size() >= MAX_WORKERS) {
+      return;
     }
-
-    this.worker = worker;
 
     worker.clearLeashed(true, false);
     worker.setHomePosAndDistance(this.pos, 3);
+
+    this.workers.push(new WorkerData(worker));
   }
 
-  public void detachWorker(final EntityPlayer detacher) {
-    if(this.worker == null) {
+  public void detachWorkers(final EntityPlayer detacher) {
+    if(this.workers.isEmpty()) {
       GradientMod.logger.error("Attempted to detach worker, but no worker present ({})", this.pos);
       return;
     }
 
-    this.worker.detachHome();
-    this.worker.setLeashHolder(detacher, true);
-    this.worker = null;
+    for(final WorkerData worker : this.workers) {
+      worker.worker.detachHome();
+      worker.worker.setLeashHolder(detacher, true);
+    }
+
+    this.workers.clear();
   }
 
   @Override
@@ -90,12 +89,15 @@ public class TileHandCrank extends TileEntity implements ITickable {
       return;
     }
 
-    if(this.worker != null) {
-      final double x = this.pos.getX() + MathHelper.cos(this.workerTargetTheta) * 3.0d;
-      final double z = this.pos.getZ() + MathHelper.sin(this.workerTargetTheta) * 3.0d;
+    int workerIndex = 0;
+    for(final WorkerData worker : this.workers) {
+      final double x = this.pos.getX() + worker.getTargetX(this.workers.size(), workerIndex);
+      final double z = this.pos.getZ() + worker.getTargetZ(this.workers.size(), workerIndex);
       final double y = this.pos.getY();
 
-      this.worker.getNavigator().tryMoveToXYZ(x, y, z, 1.0d);
+      worker.worker.getNavigator().tryMoveToXYZ(x, y, z, 1.0d);
+
+      workerIndex++;
     }
 
     if(this.cranking) {
@@ -137,5 +139,23 @@ public class TileHandCrank extends TileEntity implements ITickable {
     }
 
     return super.getCapability(capability, facing);
+  }
+
+  private static class WorkerData {
+    private final EntityAnimal worker;
+    private float targetTheta;
+    private BlockPos targetPos;
+
+    private WorkerData(final EntityAnimal worker) {
+      this.worker = worker;
+    }
+
+    private double getTargetX(final int workerCount, final int workerIndex) {
+      return Math.cos(this.targetTheta + Math.PI * 2.0d / workerCount * workerIndex) * WORKER_DISTANCE;
+    }
+
+    private double getTargetZ(final int workerCount, final int workerIndex) {
+      return Math.sin(this.targetTheta + Math.PI * 2.0d / workerCount * workerIndex) * WORKER_DISTANCE;
+    }
   }
 }

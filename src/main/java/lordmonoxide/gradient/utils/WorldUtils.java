@@ -9,6 +9,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 public final class WorldUtils {
   private WorldUtils() { }
@@ -17,6 +18,14 @@ public final class WorldUtils {
   public static <T extends TileEntity> T getTileEntity(final IBlockAccess world, final BlockPos pos, final Class<T> clazz) {
     final TileEntity te = world.getTileEntity(pos);
     return clazz.isInstance(te) ? clazz.cast(te) : null;
+  }
+
+  public static <T extends TileEntity> void callTileEntity(final IBlockAccess world, final BlockPos pos, final Class<T> clazz, final Consumer<T> callback) {
+    final T te = getTileEntity(world, pos, clazz);
+
+    if(te != null) {
+      callback.accept(te);
+    }
   }
 
   @Nullable

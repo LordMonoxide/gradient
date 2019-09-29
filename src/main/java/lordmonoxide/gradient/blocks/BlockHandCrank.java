@@ -1,33 +1,24 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.tileentities.TileHandCrank;
-import lordmonoxide.gradient.energy.EnergyNetworkManager;
-import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
-import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class BlockHandCrank extends GradientBlock {
-  @CapabilityInject(IKineticEnergyStorage.class)
-  private static Capability<IKineticEnergyStorage> STORAGE;
-
-  @CapabilityInject(IKineticEnergyTransfer.class)
-  private static Capability<IKineticEnergyTransfer> TRANSFER;
-
   public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
   public BlockHandCrank() {
@@ -39,7 +30,12 @@ public class BlockHandCrank extends GradientBlock {
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
     super.breakBlock(world, pos, state);
-    EnergyNetworkManager.getManager(world, STORAGE, TRANSFER).disconnect(pos);
+
+    if(world.isRemote) {
+      return;
+    }
+
+    WorldUtils.callTileEntity(world, pos, TileHandCrank.class, TileHandCrank::remove);
   }
 
   @Override
@@ -48,13 +44,25 @@ public class BlockHandCrank extends GradientBlock {
       return true;
     }
 
-    final TileEntity te = world.getTileEntity(pos);
+    final TileHandCrank crank = WorldUtils.getTileEntity(world, pos, TileHandCrank.class);
 
-    if(!(te instanceof TileHandCrank)) {
+    if(crank == null) {
       return true;
     }
 
-    ((TileHandCrank)te).crank();
+    for(final AbstractHorse horse : world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(pos.getX() - 7.0D, pos.getY() - 7.0D, pos.getZ() - 7.0D, pos.getX() + 7.0D, pos.getY() + 7.0D, pos.getZ() + 7.0D))) {
+      if(horse.getLeashed() && horse.getLeashHolder() == player) {
+        crank.attachWorker(player, horse);
+        return true;
+      }
+    }
+
+    if(crank.hasWorker()) {
+      crank.detachWorker(player);
+      return true;
+    }
+
+    crank.crank();
     return true;
   }
 

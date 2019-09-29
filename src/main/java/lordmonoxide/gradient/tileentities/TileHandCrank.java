@@ -13,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -28,11 +28,12 @@ public class TileHandCrank extends TileEntity implements ITickable {
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
   private static final int MAX_WORKERS = 4;
-  private static final double WORKER_DISTANCE = 3.0d;
+  private static final double WORKER_DISTANCE = 4.0d;
 
   private final IKineticEnergyStorage storage = new KineticEnergyStorage(5.0f, 0.0f, 5.0f);
 
   private final LinkedList<WorkerData> workers = new LinkedList<>();
+  private float workerTargetTheta;
 
   private int crankTicks;
   private boolean cranking;
@@ -67,6 +68,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
     worker.setHomePosAndDistance(this.pos, 3);
 
     this.workers.push(new WorkerData(worker));
+    this.updateWorkerPositionsForce();
   }
 
   public void detachWorkers(final EntityPlayer detacher) {
@@ -83,24 +85,34 @@ public class TileHandCrank extends TileEntity implements ITickable {
     this.workers.clear();
   }
 
+  private void updateWorkerPositionsForce() {
+    int workerIndex = 0;
+    for(final WorkerData worker : this.workers) {
+      worker.moveToTarget(workerIndex);
+      workerIndex++;
+    }
+  }
+
+  private void updateWorkerPositions() {
+    int workerIndex = 0;
+    for(final WorkerData worker : this.workers) {
+      if(!worker.isAtTarget()) {
+        worker.moveToTarget(workerIndex);
+      }
+
+      workerIndex++;
+    }
+  }
+
   @Override
   public void update() {
     if(this.world.isRemote) {
       return;
     }
 
-    int workerIndex = 0;
-    for(final WorkerData worker : this.workers) {
-      final double x = this.pos.getX() + worker.getTargetX(this.workers.size(), workerIndex);
-      final double z = this.pos.getZ() + worker.getTargetZ(this.workers.size(), workerIndex);
-      final double y = this.pos.getY();
+    this.updateWorkerPositions();
 
-      worker.worker.getNavigator().tryMoveToXYZ(x, y, z, 1.0d);
-
-      workerIndex++;
-    }
-
-    if(this.cranking) {
+    if(!this.hasWorker() && this.cranking) {
       this.crankTicks++;
 
       if(this.crankTicks >= 4) {
@@ -141,21 +153,37 @@ public class TileHandCrank extends TileEntity implements ITickable {
     return super.getCapability(capability, facing);
   }
 
-  private static class WorkerData {
+  private class WorkerData {
     private final EntityAnimal worker;
-    private float targetTheta;
-    private BlockPos targetPos;
+    private Vec3d targetPos;
 
     private WorkerData(final EntityAnimal worker) {
       this.worker = worker;
     }
 
-    private double getTargetX(final int workerCount, final int workerIndex) {
-      return Math.cos(this.targetTheta + Math.PI * 2.0d / workerCount * workerIndex) * WORKER_DISTANCE;
+    private double getTargetX(final int workerIndex) {
+      return Math.cos(TileHandCrank.this.workerTargetTheta + Math.PI * 2.0d / TileHandCrank.this.workers.size() * workerIndex) * WORKER_DISTANCE;
     }
 
-    private double getTargetZ(final int workerCount, final int workerIndex) {
-      return Math.sin(this.targetTheta + Math.PI * 2.0d / workerCount * workerIndex) * WORKER_DISTANCE;
+    private double getTargetZ(final int workerIndex) {
+      return Math.sin(TileHandCrank.this.workerTargetTheta + Math.PI * 2.0d / TileHandCrank.this.workers.size() * workerIndex) * WORKER_DISTANCE;
+    }
+
+    private void moveToTarget(final int workerIndex) {
+      final double x = TileHandCrank.this.pos.getX() + this.getTargetX(workerIndex);
+      final double z = TileHandCrank.this.pos.getZ() + this.getTargetZ(workerIndex);
+      final double y = TileHandCrank.this.pos.getY();
+
+      this.worker.getNavigator().tryMoveToXYZ(x, y, z, 1.0d);
+      this.targetPos = new Vec3d(x, y, z);
+    }
+
+    private boolean isAtTarget() {
+      if(this.targetPos == null) {
+        return true;
+      }
+
+      return this.worker.getEntityBoundingBox().intersectsWithXZ(this.targetPos);
     }
   }
 }

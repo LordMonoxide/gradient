@@ -1,5 +1,7 @@
 package lordmonoxide.gradient.energy;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 public interface IEnergyStorage extends IEnergyNode {
   /**
    * Adds energy to the storage. Returns quantity of energy that was accepted.
@@ -56,4 +58,18 @@ public interface IEnergyStorage extends IEnergyNode {
 
     return Math.min(this.getMaxSink(), space);
   }
+
+  default NBTTagCompound serializeNbt() {
+    final NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setFloat("Energy", this.getEnergy());
+    return nbt;
+  }
+
+  default void deserializeNbt(final NBTTagCompound nbt) {
+    this.setEnergy(nbt.getFloat("Energy"));
+    this.onLoad();
+  }
+
+  default void onEnergyChanged() { }
+  default void onLoad() { }
 }

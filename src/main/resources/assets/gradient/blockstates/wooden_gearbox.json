@@ -1,8 +1,10 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "model": "gradient:wooden_gearbox"
+  },
   "variants": {
-    "facing=north": { "model": "gradient:wooden_gearbox" },
-    "facing=east":  { "model": "gradient:wooden_gearbox", "y":  90 },
-    "facing=south": { "model": "gradient:wooden_gearbox", "y": 180 },
-    "facing=west":  { "model": "gradient:wooden_gearbox", "y": 270 }
+    "normal": [{}],
+    "inventory": [{}]
   }
 }

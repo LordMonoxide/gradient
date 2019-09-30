@@ -8,11 +8,13 @@ import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -68,7 +70,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
     worker.setHomePosAndDistance(this.pos, 3);
 
     this.workers.push(new WorkerData(worker));
-    this.updateWorkerPositionsForce();
+    this.updateTargets();
   }
 
   public void detachWorkers(final EntityPlayer detacher) {
@@ -85,22 +87,40 @@ public class TileHandCrank extends TileEntity implements ITickable {
     this.workers.clear();
   }
 
-  private void updateWorkerPositionsForce() {
+  private boolean areWorkersAtTargets() {
+    for(final WorkerData worker : this.workers) {
+      if(!worker.isAtTarget()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private void moveToTargets() {
+    for(final WorkerData worker : this.workers) {
+      if(!worker.isAtTarget()) {
+        worker.moveToTarget();
+      }
+    }
+  }
+
+  private void updateTargets() {
     int workerIndex = 0;
     for(final WorkerData worker : this.workers) {
-      worker.moveToTarget(workerIndex);
+      worker.updateTarget(workerIndex);
       workerIndex++;
     }
   }
 
-  private void updateWorkerPositions() {
-    int workerIndex = 0;
+  private void preventEating() {
     for(final WorkerData worker : this.workers) {
-      if(!worker.isAtTarget()) {
-        worker.moveToTarget(workerIndex);
+      if(worker.worker instanceof AbstractHorse) {
+        final AbstractHorse horse = (AbstractHorse)worker.worker;
+        if(horse.isEatingHaystack()) {
+          horse.setEatingHaystack(false);
+        }
       }
-
-      workerIndex++;
     }
   }
 
@@ -110,9 +130,16 @@ public class TileHandCrank extends TileEntity implements ITickable {
       return;
     }
 
-    this.updateWorkerPositions();
+    if(this.hasWorker()) {
+      this.preventEating();
+      this.moveToTargets();
 
-    if(!this.hasWorker() && this.cranking) {
+      if(this.areWorkersAtTargets()) {
+        this.storage.addEnergy(0.25f * this.workers.size(), false);
+        this.workerTargetTheta += Math.PI / 4;
+        this.updateTargets();
+      }
+    } else if(this.cranking) {
       this.crankTicks++;
 
       if(this.crankTicks >= 4) {
@@ -153,9 +180,10 @@ public class TileHandCrank extends TileEntity implements ITickable {
     return super.getCapability(capability, facing);
   }
 
-  private class WorkerData {
+  private final class WorkerData {
     private final EntityAnimal worker;
     private Vec3d targetPos;
+    private AxisAlignedBB targetBb;
 
     private WorkerData(final EntityAnimal worker) {
       this.worker = worker;
@@ -169,21 +197,24 @@ public class TileHandCrank extends TileEntity implements ITickable {
       return Math.sin(TileHandCrank.this.workerTargetTheta + Math.PI * 2.0d / TileHandCrank.this.workers.size() * workerIndex) * WORKER_DISTANCE;
     }
 
-    private void moveToTarget(final int workerIndex) {
+    private void updateTarget(final int workerIndex) {
       final double x = TileHandCrank.this.pos.getX() + this.getTargetX(workerIndex);
       final double z = TileHandCrank.this.pos.getZ() + this.getTargetZ(workerIndex);
       final double y = TileHandCrank.this.pos.getY();
-
-      this.worker.getNavigator().tryMoveToXYZ(x, y, z, 1.0d);
       this.targetPos = new Vec3d(x, y, z);
+      this.targetBb = new AxisAlignedBB(x - 0.5d, y - 0.5d, z - 0.5d, x + 0.5d, y + 0.5d, z + 0.5d);
+    }
+
+    private void moveToTarget() {
+      this.worker.getNavigator().tryMoveToXYZ(this.targetPos.x, this.targetPos.y, this.targetPos.z, 1.0d);
     }
 
     private boolean isAtTarget() {
-      if(this.targetPos == null) {
+      if(this.targetBb == null) {
         return true;
       }
 
-      return this.worker.getEntityBoundingBox().intersectsWithXZ(this.targetPos);
+      return this.worker.getEntityBoundingBox().intersects(this.targetBb);
     }
   }
 }

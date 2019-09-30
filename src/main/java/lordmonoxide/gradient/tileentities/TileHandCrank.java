@@ -11,6 +11,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -18,9 +21,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 public class TileHandCrank extends TileEntity implements ITickable {
   @CapabilityInject(IKineticEnergyStorage.class)
@@ -32,10 +38,18 @@ public class TileHandCrank extends TileEntity implements ITickable {
   private static final int MAX_WORKERS = 4;
   private static final double WORKER_DISTANCE = 4.0d;
 
-  private final IKineticEnergyStorage storage = new KineticEnergyStorage(5.0f, 0.0f, 5.0f);
+  private final IKineticEnergyStorage energy = new KineticEnergyStorage(5.0f, 0.0f, 5.0f) {
+    @Override
+    public void onEnergyChanged() {
+      TileHandCrank.this.markDirty();
+    }
+  };
 
   private final LinkedList<WorkerData> workers = new LinkedList<>();
   private float workerTargetTheta;
+
+  @Nullable
+  private NBTTagList workersDeferredNbt;
 
   private int crankTicks;
   private boolean cranking;
@@ -71,6 +85,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
 
     this.workers.push(new WorkerData(worker));
     this.updateTargets();
+    this.markDirty();
   }
 
   public void detachWorkers(final EntityPlayer detacher) {
@@ -85,6 +100,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
     }
 
     this.workers.clear();
+    this.markDirty();
   }
 
   private boolean areWorkersAtTargets() {
@@ -130,14 +146,20 @@ public class TileHandCrank extends TileEntity implements ITickable {
       return;
     }
 
+    if(this.workersDeferredNbt != null) {
+      this.loadWorkers(this.workersDeferredNbt);
+      this.workersDeferredNbt = null;
+    }
+
     if(this.hasWorker()) {
       this.preventEating();
       this.moveToTargets();
 
       if(this.areWorkersAtTargets()) {
-        this.storage.addEnergy(0.25f * this.workers.size(), false);
+        this.energy.addEnergy(0.25f * this.workers.size(), false);
         this.workerTargetTheta += Math.PI / 4;
         this.updateTargets();
+        this.markDirty();
       }
     } else if(this.cranking) {
       this.crankTicks++;
@@ -145,7 +167,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
       if(this.crankTicks >= 4) {
         this.cranking = false;
         this.crankTicks = 0;
-        this.storage.addEnergy(1.0f, false);
+        this.energy.addEnergy(1.0f, false);
         this.markDirty();
       }
     }
@@ -172,12 +194,61 @@ public class TileHandCrank extends TileEntity implements ITickable {
 
       if(state.getBlock() == GradientBlocks.HAND_CRANK) {
         if(facing == state.getValue(BlockHandCrank.FACING)) {
-          return STORAGE.cast(this.storage);
+          return STORAGE.cast(this.energy);
         }
       }
     }
 
     return super.getCapability(capability, facing);
+  }
+
+  @Override
+  public NBTTagCompound writeToNBT(final NBTTagCompound nbt) {
+    nbt.setTag("Energy", this.energy.serializeNbt());
+
+    final NBTTagList workers = new NBTTagList();
+    for(final WorkerData worker : this.workers) {
+      workers.appendTag(NBTUtil.createUUIDTag(worker.worker.getUniqueID()));
+    }
+    nbt.setTag("Workers", workers);
+
+    nbt.setFloat("Theta", this.workerTargetTheta);
+    nbt.setInteger("CrankTicks", this.crankTicks);
+    nbt.setBoolean("Cranking", this.cranking);
+
+    return super.writeToNBT(nbt);
+  }
+
+  @Override
+  public void readFromNBT(final NBTTagCompound nbt) {
+    this.workers.clear();
+
+    final NBTTagCompound energy = nbt.getCompoundTag("Energy");
+    this.energy.deserializeNbt(energy);
+
+    final NBTTagList workers = nbt.getTagList("Workers", Constants.NBT.TAG_COMPOUND);
+    if(this.world != null) {
+      this.loadWorkers(workers);
+    } else {
+      this.workersDeferredNbt = workers;
+    }
+
+    this.workerTargetTheta = nbt.getFloat("Theta");
+    this.crankTicks = nbt.getInteger("CrankTicks");
+    this.cranking = nbt.getBoolean("Cranking");
+
+    super.readFromNBT(nbt);
+  }
+
+  private void loadWorkers(final NBTTagList workers) {
+    for(int i = 0; i < workers.tagCount(); i++) {
+      final UUID uuid = NBTUtil.getUUIDFromTag(workers.getCompoundTagAt(i));
+      final List<EntityAnimal> animals = this.world.getEntitiesWithinAABB(EntityAnimal.class, new AxisAlignedBB(this.pos.getX() - 15.0d, this.pos.getY() - 15.0d, this.pos.getZ() - 15.0d, this.pos.getX() + 15.0d, this.pos.getY() + 15.0d, this.pos.getZ() + 15.0d), e -> e.getUniqueID().equals(uuid));
+
+      if(!animals.isEmpty()) {
+        this.attachWorker(animals.get(0));
+      }
+    }
   }
 
   private final class WorkerData {

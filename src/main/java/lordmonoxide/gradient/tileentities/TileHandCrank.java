@@ -64,6 +64,10 @@ public class TileHandCrank extends TileEntity implements ITickable {
   }
 
   public void remove() {
+    if(this.world.isRemote) {
+      return;
+    }
+
     EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).disconnect(this.pos);
   }
 

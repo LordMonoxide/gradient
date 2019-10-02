@@ -5,30 +5,25 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber(modid = GradientMod.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = GradientMod.MODID)
+@GameRegistry.ObjectHolder(GradientMod.MODID)
 public final class GradientSounds {
   private GradientSounds() { }
 
-  public static SoundEvent BELLOWS_BLOW;
-  public static SoundEvent FIRE_STARTER;
-  public static SoundEvent GRINDSTONE;
+  public static final SoundEvent BELLOWS_BLOW = null;
+  public static final SoundEvent FIRE_STARTER = null;
+  public static final SoundEvent GRINDSTONE = null;
 
   @SubscribeEvent
   public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
     GradientMod.logger.info("Registering sounds");
 
-    BELLOWS_BLOW = sound("bellows_blow");
-    FIRE_STARTER = sound("fire_starter");
-    GRINDSTONE   = sound("grindstone");
-
     event.getRegistry().registerAll(
-      BELLOWS_BLOW,
-      FIRE_STARTER,
-      GRINDSTONE
+      sound("bellows_blow"),
+      sound("fire_starter"),
+      sound("grindstone")
     );
   }
 

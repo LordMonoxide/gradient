@@ -2,6 +2,7 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.tileentities.TileWoodenConveyorBeltDriver;
 import lordmonoxide.gradient.utils.WorldUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class BlockWoodenConveyorBeltDriver extends GradientBlock {
-  private static final PropertyDirection FACING = PropertyDirection.create("facing");
+  public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
   public BlockWoodenConveyorBeltDriver() {
     super("wooden_conveyor_belt_driver", CreativeTabs.TRANSPORTATION, Material.WOOD);
@@ -33,6 +34,26 @@ public class BlockWoodenConveyorBeltDriver extends GradientBlock {
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
     super.breakBlock(world, pos, state);
     WorldUtils.callTileEntity(world, pos, TileWoodenConveyorBeltDriver.class, TileWoodenConveyorBeltDriver::remove);
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  @Deprecated
+  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbour) {
+    super.neighborChanged(state, world, pos, block, neighbour);
+
+    final TileWoodenConveyorBeltDriver driver = WorldUtils.getTileEntity(world, pos, TileWoodenConveyorBeltDriver.class);
+
+    if(driver != null) {
+      final EnumFacing side = WorldUtils.getBlockFacing(pos, neighbour);
+      if(side.getAxis().isHorizontal()) {
+        if(world.getBlockState(neighbour).getBlock() == GradientBlocks.WOODEN_CONVEYOR_BELT) {
+          driver.addBelt(side);
+        } else {
+          driver.removeBelt(side);
+        }
+      }
+    }
   }
 
   @Nullable

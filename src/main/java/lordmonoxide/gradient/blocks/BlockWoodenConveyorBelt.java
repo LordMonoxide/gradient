@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 
 public class BlockWoodenConveyorBelt extends GradientBlock {
   private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0d, 0.0d, 0.0d, 1.0d, 0.25d, 1.0d);
-  private static final PropertyDirection FACING = BlockHorizontal.FACING;
+  public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
   public BlockWoodenConveyorBelt() {
     super("wooden_conveyor_belt", CreativeTabs.TRANSPORTATION, Material.WOOD);

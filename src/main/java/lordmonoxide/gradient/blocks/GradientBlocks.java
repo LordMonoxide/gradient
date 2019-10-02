@@ -223,6 +223,7 @@ public final class GradientBlocks {
     GameRegistry.registerTileEntity(TileFlywheel.class, FLYWHEEL.getRegistryName());
     GameRegistry.registerTileEntity(TileWoodenAxle.class, WOODEN_AXLE.getRegistryName());
     GameRegistry.registerTileEntity(TileWoodenGearbox.class, WOODEN_GEARBOX.getRegistryName());
+    GameRegistry.registerTileEntity(TileWoodenConveyorBelt.class, WOODEN_CONVEYOR_BELT.getRegistryName());
     GameRegistry.registerTileEntity(TileWoodenConveyorBeltDriver.class, WOODEN_CONVEYOR_BELT_DRIVER.getRegistryName());
 
     GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());

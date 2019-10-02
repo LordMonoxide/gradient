@@ -8,10 +8,14 @@ import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
 import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -22,7 +26,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class TileWoodenConveyorBeltDriver extends TileEntity {
+public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickable {
   @CapabilityInject(IKineticEnergyStorage.class)
   private static Capability<IKineticEnergyStorage> STORAGE;
 
@@ -31,7 +35,8 @@ public class TileWoodenConveyorBeltDriver extends TileEntity {
 
   private final IKineticEnergyStorage node = new KineticEnergyStorage(1.0f, 1.0f, 0.0f);
 
-  private final Map<EnumFacing, List<IBlockState>> belts = new EnumMap<>(EnumFacing.class);
+  private final Map<EnumFacing, List<TileWoodenConveyorBelt>> belts = new EnumMap<>(EnumFacing.class);
+  private final Map<EnumFacing, AxisAlignedBB> movingBoxes = new EnumMap<>(EnumFacing.class);
 
   @Override
   public void onLoad() {
@@ -61,31 +66,119 @@ public class TileWoodenConveyorBeltDriver extends TileEntity {
 
     BlockPos beltPos = this.pos.offset(side);
     IBlockState belt = this.world.getBlockState(beltPos);
-    final EnumFacing beltFacing = belt.getValue(BlockWoodenConveyorBelt.FACING);
-    final List<IBlockState> beltParts = this.belts.computeIfAbsent(side, key -> new ArrayList<>());
+    TileWoodenConveyorBelt te = WorldUtils.getTileEntity(this.world, beltPos, TileWoodenConveyorBelt.class);
 
-    while(belt.getBlock() == GradientBlocks.WOODEN_CONVEYOR_BELT && belt.getValue(BlockWoodenConveyorBelt.FACING) == beltFacing) {
-      beltParts.add(belt);
+    final EnumFacing beltFacing = belt.getValue(BlockWoodenConveyorBelt.FACING);
+    final List<TileWoodenConveyorBelt> beltParts = this.belts.computeIfAbsent(side, key -> new ArrayList<>());
+
+    double minX = Double.MAX_VALUE;
+    double maxX = -Double.MAX_VALUE;
+    double minZ = Double.MAX_VALUE;
+    double maxZ = -Double.MAX_VALUE;
+
+    while(te != null && belt.getBlock() == GradientBlocks.WOODEN_CONVEYOR_BELT && belt.getValue(BlockWoodenConveyorBelt.FACING) == beltFacing) {
+      final AxisAlignedBB collisionBox = belt.getCollisionBoundingBox(this.world, beltPos);
+
+      if(minX > collisionBox.minX + beltPos.getX()) {
+        minX = collisionBox.minX + beltPos.getX();
+      }
+
+      if(maxX < collisionBox.maxX + beltPos.getX()) {
+        maxX = collisionBox.maxX + beltPos.getX();
+      }
+
+      if(minZ > collisionBox.minZ + beltPos.getZ()) {
+        minZ = collisionBox.minZ + beltPos.getZ();
+      }
+
+      if(maxZ < collisionBox.maxZ + beltPos.getZ()) {
+        maxZ = collisionBox.maxZ + beltPos.getZ();
+      }
+
+      beltParts.add(te);
+      te.addDriver(this);
       GradientMod.logger.info("Added {}", beltPos);
       beltPos = beltPos.offset(beltFacing);
       belt = this.world.getBlockState(beltPos);
+      te = WorldUtils.getTileEntity(this.world, beltPos, TileWoodenConveyorBelt.class);
+      GradientMod.logger.info("Next {} {} {}", beltPos, belt, te);
     }
 
     beltPos = this.pos.offset(side).offset(beltFacing.getOpposite());
     belt = this.world.getBlockState(beltPos);
+    te = WorldUtils.getTileEntity(this.world, beltPos, TileWoodenConveyorBelt.class);
 
-    while(belt.getBlock() == GradientBlocks.WOODEN_CONVEYOR_BELT && belt.getValue(BlockWoodenConveyorBelt.FACING) == beltFacing) {
-      beltParts.add(belt);
+    while(te != null && belt.getBlock() == GradientBlocks.WOODEN_CONVEYOR_BELT && belt.getValue(BlockWoodenConveyorBelt.FACING) == beltFacing) {
+      final AxisAlignedBB collisionBox = belt.getCollisionBoundingBox(this.world, beltPos);
+
+      if(minX > collisionBox.minX + beltPos.getX()) {
+        minX = collisionBox.minX + beltPos.getX();
+      }
+
+      if(maxX < collisionBox.maxX + beltPos.getX()) {
+        maxX = collisionBox.maxX + beltPos.getX();
+      }
+
+      if(minZ > collisionBox.minZ + beltPos.getZ()) {
+        minZ = collisionBox.minZ + beltPos.getZ();
+      }
+
+      if(maxZ < collisionBox.maxZ + beltPos.getZ()) {
+        maxZ = collisionBox.maxZ + beltPos.getZ();
+      }
+
+      beltParts.add(te);
+      te.addDriver(this);
       GradientMod.logger.info("Added {}", beltPos);
       beltPos = beltPos.offset(beltFacing.getOpposite());
       belt = this.world.getBlockState(beltPos);
+      te = WorldUtils.getTileEntity(this.world, beltPos, TileWoodenConveyorBelt.class);
+      GradientMod.logger.info("Next {} {} {}", beltPos, belt, te);
+    }
+
+    if(!beltParts.isEmpty()) {
+      this.movingBoxes.put(side, new AxisAlignedBB(minX, this.pos.getY(), minZ, maxX, this.pos.getY() + 1.0d, maxZ));
+
+      GradientMod.logger.info("Setting bb for {} to {}", side, this.movingBoxes.get(side));
     }
   }
 
   public void removeBelt(final EnumFacing side) {
-    this.belts.computeIfAbsent(side, key -> new ArrayList<>()).clear();
+    final List<TileWoodenConveyorBelt> belts = this.belts.computeIfAbsent(side, key -> new ArrayList<>());
+
+    for(final TileWoodenConveyorBelt belt : belts) {
+      belt.removeDriver(this);
+    }
+
+    belts.clear();
 
     GradientMod.logger.info("Removed {}", side);
+  }
+
+  @Override
+  public void update() {
+    for(final EnumFacing side : EnumFacing.HORIZONTALS) {
+      final List<TileWoodenConveyorBelt> belts = this.belts.computeIfAbsent(side, key -> new ArrayList<>());
+
+      if(!belts.isEmpty()) {
+        final TileWoodenConveyorBelt belt = belts.get(0);
+        final EnumFacing beltFacing = belt.getFacing();
+
+        for(final Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.movingBoxes.get(side))) {
+          if(beltFacing.getXOffset() != 0) {
+            entity.motionX = beltFacing.getXOffset() * 0.05d;
+            entity.velocityChanged = true;
+            GradientMod.logger.info("Setting {} motionX to {}", entity, entity.motionX);
+          }
+
+          if(beltFacing.getZOffset() != 0) {
+            entity.motionZ = beltFacing.getZOffset() * 0.05d;
+            entity.velocityChanged = true;
+            GradientMod.logger.info("Setting {} motionZ to {}", entity, entity.motionZ);
+          }
+        }
+      }
+    }
   }
 
   @Override

@@ -27,7 +27,7 @@ public final class MeltableTooltips {
     cache.clear();
   }
 
-  @SubscribeEvent
+//  @SubscribeEvent
   public static void addMeltableInfoToTooltips(final ItemTooltipEvent event) {
     final ItemStack stack = event.getItemStack();
 

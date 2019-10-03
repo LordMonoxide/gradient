@@ -33,10 +33,16 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
   @CapabilityInject(IKineticEnergyTransfer.class)
   private static Capability<IKineticEnergyTransfer> TRANSFER;
 
-  private final IKineticEnergyStorage node = new KineticEnergyStorage(1.0f, 1.0f, 0.0f);
+  private final IKineticEnergyStorage node = new KineticEnergyStorage(1.0f, 1.0f, 0.0f) {
+    @Override
+    public void onEnergyChanged() {
+      GradientMod.logger.info("New energy: {}", this.getEnergy());
+    }
+  };
 
   private final Map<EnumFacing, List<TileWoodenConveyorBelt>> belts = new EnumMap<>(EnumFacing.class);
   private final Map<EnumFacing, AxisAlignedBB> movingBoxes = new EnumMap<>(EnumFacing.class);
+  private int beltCount;
 
   @Override
   public void onLoad() {
@@ -53,7 +59,7 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
     }
   }
 
-  public void remove() {
+  public void onRemove() {
     if(this.world.isRemote) {
       return;
     }
@@ -137,6 +143,7 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
     }
 
     if(!beltParts.isEmpty()) {
+      this.beltCount += beltParts.size();
       this.movingBoxes.put(side, new AxisAlignedBB(minX, this.pos.getY(), minZ, maxX, this.pos.getY() + 1.0d, maxZ));
 
       GradientMod.logger.info("Setting bb for {} to {}", side, this.movingBoxes.get(side));
@@ -150,6 +157,7 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
       belt.removeDriver(this);
     }
 
+    this.beltCount -= belts.size();
     belts.clear();
 
     GradientMod.logger.info("Removed {}", side);
@@ -157,6 +165,20 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
 
   @Override
   public void update() {
+    if(this.world.isRemote) {
+      return;
+    }
+
+    if(this.node.getEnergy() < 0.0001f) {
+      return;
+    }
+
+    final float neededEnergy = 0.005f * this.beltCount;
+    final float extractedEnergy = this.node.removeEnergy(neededEnergy, false);
+    final double beltSpeedModifier = extractedEnergy / neededEnergy;
+
+    GradientMod.logger.info("{}/{}: {}", extractedEnergy, neededEnergy, beltSpeedModifier);
+
     for(final EnumFacing side : EnumFacing.HORIZONTALS) {
       final List<TileWoodenConveyorBelt> belts = this.belts.computeIfAbsent(side, key -> new ArrayList<>());
 
@@ -166,13 +188,13 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
 
         for(final Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.movingBoxes.get(side))) {
           if(beltFacing.getXOffset() != 0) {
-            entity.motionX = beltFacing.getXOffset() * 0.05d;
+            entity.motionX = beltFacing.getXOffset() * 0.05d * beltSpeedModifier;
             entity.velocityChanged = true;
             GradientMod.logger.info("Setting {} motionX to {}", entity, entity.motionX);
           }
 
           if(beltFacing.getZOffset() != 0) {
-            entity.motionZ = beltFacing.getZOffset() * 0.05d;
+            entity.motionZ = beltFacing.getZOffset() * 0.05d * beltSpeedModifier;
             entity.velocityChanged = true;
             GradientMod.logger.info("Setting {} motionZ to {}", entity, entity.motionZ);
           }

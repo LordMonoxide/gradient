@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.tileentities.TileWoodenConveyorBelt;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -31,6 +32,15 @@ public class BlockWoodenConveyorBelt extends GradientBlock {
     this.setLightOpacity(0);
     this.setResistance(5.0f);
     this.setHardness(1.0f);
+  }
+
+  @Override
+  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+    final TileWoodenConveyorBelt belt = WorldUtils.getTileEntity(world, pos, TileWoodenConveyorBelt.class);
+
+    if(belt != null) {
+      belt.onRemove();
+    }
   }
 
   @SuppressWarnings("deprecation")

@@ -33,7 +33,7 @@ public class BlockWoodenConveyorBeltDriver extends GradientBlock {
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
     super.breakBlock(world, pos, state);
-    WorldUtils.callTileEntity(world, pos, TileWoodenConveyorBeltDriver.class, TileWoodenConveyorBeltDriver::remove);
+    WorldUtils.callTileEntity(world, pos, TileWoodenConveyorBeltDriver.class, TileWoodenConveyorBeltDriver::onRemove);
   }
 
   @SuppressWarnings("deprecation")

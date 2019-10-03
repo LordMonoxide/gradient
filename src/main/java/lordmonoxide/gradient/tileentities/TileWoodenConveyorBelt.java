@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.tileentities;
 
 import lordmonoxide.gradient.blocks.BlockWoodenConveyorBelt;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -13,15 +14,14 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-//TODO: still need to allow adding more at runtime
 public class TileWoodenConveyorBelt extends TileEntity {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
-  private final Set<TileWoodenConveyorBeltDriver> drivers = new HashSet<>();
+  private final Map<TileWoodenConveyorBeltDriver, EnumFacing> drivers = new HashMap<>();
   private EnumFacing facing;
 
   private final IItemHandler inv = new DummyItemHandler();
@@ -30,8 +30,8 @@ public class TileWoodenConveyorBelt extends TileEntity {
     return this.facing;
   }
 
-  public void addDriver(final TileWoodenConveyorBeltDriver driver) {
-    this.drivers.add(driver);
+  public void addDriver(final TileWoodenConveyorBeltDriver driver, final EnumFacing side) {
+    this.drivers.put(driver, side);
   }
 
   public void removeDriver(final TileWoodenConveyorBeltDriver driver) {
@@ -43,13 +43,29 @@ public class TileWoodenConveyorBelt extends TileEntity {
     super.onLoad();
 
     this.facing = this.world.getBlockState(this.pos).getValue(BlockWoodenConveyorBelt.FACING);
+
+    for(final EnumFacing side : EnumFacing.HORIZONTALS) {
+      final TileWoodenConveyorBelt other = WorldUtils.getTileEntity(this.world, this.pos.offset(side), TileWoodenConveyorBelt.class);
+
+      if(other != null && this.facing == other.getFacing()) {
+        for(final Map.Entry<TileWoodenConveyorBeltDriver, EnumFacing> entry : other.drivers.entrySet()) {
+          final TileWoodenConveyorBeltDriver driver = entry.getKey();
+          final EnumFacing driverSide = entry.getValue();
+
+          driver.removeBelt(driverSide);
+          driver.addBelt(driverSide);
+        }
+      }
+    }
   }
 
   public void onRemove() {
-    for(final TileWoodenConveyorBeltDriver driver : this.drivers) {
-      //TODO
-//      driver.removeBelt();
-//      driver.addBelt();
+    for(final Map.Entry<TileWoodenConveyorBeltDriver, EnumFacing> entry : this.drivers.entrySet()) {
+      final TileWoodenConveyorBeltDriver driver = entry.getKey();
+      final EnumFacing driverSide = entry.getValue();
+
+      driver.removeBelt(driverSide);
+      driver.addBelt(driverSide);
     }
   }
 

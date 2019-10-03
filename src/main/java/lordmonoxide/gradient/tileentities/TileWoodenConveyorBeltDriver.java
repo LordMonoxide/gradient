@@ -102,7 +102,7 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
       }
 
       beltParts.add(te);
-      te.addDriver(this);
+      te.addDriver(this, side);
       GradientMod.logger.info("Added {}", beltPos);
       beltPos = beltPos.offset(beltFacing);
       belt = this.world.getBlockState(beltPos);
@@ -134,7 +134,7 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
       }
 
       beltParts.add(te);
-      te.addDriver(this);
+      te.addDriver(this, side);
       GradientMod.logger.info("Added {}", beltPos);
       beltPos = beltPos.offset(beltFacing.getOpposite());
       belt = this.world.getBlockState(beltPos);

@@ -178,7 +178,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
 
       this.actualTicks++;
 
-      if(this.lastTicks != 0) {
+      if(this.lastTicks != 0 && this.actualTicks < this.lastTicks + 20) {
         final float energy = this.lastTicks / 20000.0f * this.workers.size();
         this.energy.addEnergy(energy, false);
         GradientMod.logger.info("Generated {}", energy);

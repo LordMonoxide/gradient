@@ -70,6 +70,10 @@ public class TileHandCrank extends TileEntity implements ITickable {
     }
 
     EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).disconnect(this.pos);
+
+    for(final WorkerData worker : this.workers) {
+      worker.worker.detachHome();
+    }
   }
 
   public void crank() {

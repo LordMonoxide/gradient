@@ -36,6 +36,10 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
   private final IKineticEnergyStorage node = new KineticEnergyStorage(1.0f, 1.0f, 0.0f) {
     @Override
     public void onEnergyChanged() {
+      if(TileWoodenConveyorBeltDriver.this.world != null && TileWoodenConveyorBeltDriver.this.world.isRemote) {
+        return;
+      }
+
       GradientMod.logger.info("New energy: {}", this.getEnergy());
     }
   };

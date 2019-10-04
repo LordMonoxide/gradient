@@ -4,7 +4,7 @@
     "particle": "gradient:blocks/clay_seared_gradient",
     "down":  "gradient:blocks/clay_seared_gradient",
     "up":    "gradient:blocks/clay_seared_gradient",
-    "north": "gradient:blocks/clay_seared",
+    "north": "gradient:blocks/wooden_gearbox",
     "south": "gradient:blocks/clay_seared_gradient",
     "west":  "gradient:blocks/clay_seared_gradient",
     "east":  "gradient:blocks/clay_seared_gradient"

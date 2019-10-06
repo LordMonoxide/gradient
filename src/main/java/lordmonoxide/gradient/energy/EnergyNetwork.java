@@ -9,6 +9,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,7 +141,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       }
 
       if(GradientConfig.enet.enableNodeDebug) {
-        GradientMod.logger.info("Found TE {} @ {} ({})", worldTe, networkPos, facing);
+        GradientMod.logger.info("Found adjacent TE {} @ {} ({})", worldTe, networkPos, facing);
       }
 
       final EnumFacing opposite = facing.getOpposite();
@@ -212,6 +213,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         final EnergyNetworkSegment<STORAGE, TRANSFER> otherNetwork = otherEntry.getValue();
 
         if(firstNetwork == otherNetwork) {
+          if(GradientConfig.enet.enableNodeDebug) {
+            GradientMod.logger.info("Skipping merge - same network");
+          }
+
           it.remove();
           continue;
         }
@@ -224,6 +229,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
           this.networks.remove(otherNetwork);
           added.put(otherFacing, firstNetwork);
           it.remove();
+
+          if(GradientConfig.enet.enableNodeDebug) {
+            GradientMod.logger.info("There are now {} networks", this.size());
+          }
         }
       }
     }
@@ -238,16 +247,24 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       network.connect(newNodePos, newTe);
       this.networks.add(network);
       added.put(null, network);
+
+      if(GradientConfig.enet.enableNodeDebug) {
+        GradientMod.logger.info("There are now {} networks", this.size());
+      }
     }
 
     this.allNodes.put(newNodePos, newTe);
+
+    if(this.getNetworksForBlock(newNodePos).isEmpty()) {
+      FMLLog.bigWarning("MISSING ADD {}", newNodePos);
+    }
 
     return added;
   }
 
   private void addToOrCreateNetwork(final BlockPos newNodePos, final TileEntity newTe, final BlockPos networkPos, final TileEntity worldTe, final Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> added) {
     if(GradientConfig.enet.enableNodeDebug) {
-      GradientMod.logger.info("Trying to add new TE {} @ {} to existing networks at {}", newTe, newNodePos, networkPos);
+      GradientMod.logger.info("Trying to add new TE {} @ {} to existing networks at {} ({})", newTe, newNodePos, networkPos, this.getNetworksForBlock(networkPos));
     }
 
     boolean connected = false;
@@ -277,7 +294,20 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
       network.connect(networkPos, worldTe);
       network.connect(newNodePos, newTe);
       this.networks.add(network);
+
+      if(this.getNetworksForBlock(networkPos).isEmpty()) {
+        FMLLog.bigWarning("MISSING NETWORKPOS {}", networkPos);
+      }
+
+      if(this.getNetworksForBlock(newNodePos).isEmpty()) {
+        FMLLog.bigWarning("MISSING NEWNODEPOS {}", newNodePos);
+      }
+
       added.put(WorldUtils.getBlockFacing(newNodePos, networkPos), network);
+
+      if(GradientConfig.enet.enableNodeDebug) {
+        GradientMod.logger.info("There are now {} networks", this.size());
+      }
     }
   }
 
@@ -334,6 +364,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     }
 
     if(this.extractNetworks.isEmpty()) {
+      if(GradientConfig.enet.enableTickDebug) {
+        GradientMod.logger.info("Failed to get energy from any network");
+      }
+
       return 0.0f;
     }
 

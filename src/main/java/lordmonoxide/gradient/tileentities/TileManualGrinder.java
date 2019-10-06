@@ -163,9 +163,10 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     if(this.ticks >= this.recipe.ticks && this.passes >= this.recipe.passes) {
       this.passes = 0;
 
+      final ItemStack output = this.recipe.getRecipeOutput().copy();
       this.inventory.extractItem(INPUT_SLOT, 1, false);
       this.forceInsert = true;
-      this.inventory.insertItem(OUTPUT_SLOT, this.recipe.getRecipeOutput().copy(), false);
+      this.inventory.insertItem(OUTPUT_SLOT, output, false);
       this.forceInsert = false;
     }
   }

@@ -99,7 +99,6 @@ public class TileDryingRack extends TileEntity implements ITickable {
 
     if(this.ticks >= this.recipe.ticks) {
       this.inventory.setStackInSlot(0, this.recipe.getRecipeOutput().copy());
-      this.recipe = null;
       this.sync();
     }
   }

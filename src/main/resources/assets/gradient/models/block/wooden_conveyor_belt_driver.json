@@ -1,12 +1,12 @@
 {
   "parent": "block/cube_directional",
   "textures": {
-    "particle": "gradient:blocks/clay_seared_gradient",
-    "down":  "gradient:blocks/clay_seared_gradient",
-    "up":    "gradient:blocks/clay_seared_gradient",
+    "particle": "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "down":  "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "up":    "gradient:blocks/wooden_conveyor_belt_driver_side",
     "north": "gradient:blocks/wooden_gearbox",
-    "south": "gradient:blocks/clay_seared_gradient",
-    "west":  "gradient:blocks/clay_seared_gradient",
-    "east":  "gradient:blocks/clay_seared_gradient"
+    "south": "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "west":  "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "east":  "gradient:blocks/wooden_conveyor_belt_driver_side"
   }
 }

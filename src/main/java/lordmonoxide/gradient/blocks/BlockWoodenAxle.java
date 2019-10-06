@@ -88,5 +88,10 @@ public class BlockWoodenAxle extends BlockRotatedPillar {
 
     return AABB_Y;
   }
+
+  @Override
+  public boolean isPassable(final IBlockAccess world, final BlockPos pos) {
+    return false;
+  }
 }
 

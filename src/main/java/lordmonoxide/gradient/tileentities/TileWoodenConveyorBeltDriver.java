@@ -76,6 +76,11 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
 
     BlockPos beltPos = this.pos.offset(side);
     IBlockState belt = this.world.getBlockState(beltPos);
+
+    if(belt.getBlock() != GradientBlocks.WOODEN_CONVEYOR_BELT) {
+      return;
+    }
+
     TileWoodenConveyorBelt te = WorldUtils.getTileEntity(this.world, beltPos, TileWoodenConveyorBelt.class);
 
     final EnumFacing beltFacing = belt.getValue(BlockWoodenConveyorBelt.FACING);
@@ -173,7 +178,7 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
       return;
     }
 
-    if(this.node.getEnergy() < 0.0001f) {
+    if(this.beltCount == 0 || this.node.getEnergy() < 0.0001f) {
       return;
     }
 

@@ -225,8 +225,10 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         final EnergyNetworkSegment.EnergyNode otherNode = otherNetwork.getNode(newNodePos);
 
         if(firstNode.te.getCapability(this.transfer, firstFacing) == otherNode.te.getCapability(this.transfer, otherFacing)) {
-          firstNetwork.merge(otherNetwork);
           this.networks.remove(otherNetwork);
+          otherNetwork.invalidate();
+
+          firstNetwork.merge(otherNetwork);
           added.put(otherFacing, firstNetwork);
           it.remove();
 
@@ -326,6 +328,7 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
         }
 
         this.networks.remove(network);
+        network.invalidate();
 
         for(final EnergyNetworkSegment.EnergyNode node : network.nodes.values()) {
           this.connect(node.pos, node.te);

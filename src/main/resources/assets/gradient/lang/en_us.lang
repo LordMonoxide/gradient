@@ -221,6 +221,7 @@ jei.firepit.ticks=%d ticks
 
 jei.mixer.passes=%d stirs
 jei.mixer.ticks=%d ticks
+jei.mixer.amount=%d mB
 
 jei.grinder.passes=%d grinds
 jei.grinder.ticks=%d ticks

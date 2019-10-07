@@ -1,28 +1,31 @@
 package lordmonoxide.gradient.blocks;
 
-import lordmonoxide.gradient.tileentities.TileHandCrank;
+import lordmonoxide.gradient.tileentities.TileWoodenConveyorBeltDriver;
 import lordmonoxide.gradient.utils.WorldUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockHandCrank extends GradientBlock {
+import javax.annotation.Nullable;
+
+public class BlockWoodenConveyorBeltDriver extends GradientBlock {
   public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
-  public BlockHandCrank() {
-    super("hand_crank", CreativeTabs.TOOLS, Material.CIRCUITS);
+  public BlockWoodenConveyorBeltDriver() {
+    super("wooden_conveyor_belt_driver", CreativeTabs.TRANSPORTATION, Material.WOOD);
+    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+    this.setLightOpacity(0);
     this.setResistance(5.0f);
     this.setHardness(1.0f);
   }
@@ -30,45 +33,33 @@ public class BlockHandCrank extends GradientBlock {
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
     super.breakBlock(world, pos, state);
-    WorldUtils.callTileEntity(world, pos, TileHandCrank.class, TileHandCrank::remove);
+    WorldUtils.callTileEntity(world, pos, TileWoodenConveyorBeltDriver.class, TileWoodenConveyorBeltDriver::onRemove);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
-    if(world.isRemote) {
-      return true;
-    }
+  @Deprecated
+  public void neighborChanged(final IBlockState state, final World world, final BlockPos pos, final Block block, final BlockPos neighbour) {
+    super.neighborChanged(state, world, pos, block, neighbour);
 
-    final TileHandCrank crank = WorldUtils.getTileEntity(world, pos, TileHandCrank.class);
+    final TileWoodenConveyorBeltDriver driver = WorldUtils.getTileEntity(world, pos, TileWoodenConveyorBeltDriver.class);
 
-    if(crank == null) {
-      return true;
-    }
-
-    boolean leashed = false;
-    for(final AbstractHorse horse : world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(pos.getX() - 15.0d, pos.getY() - 15.0d, pos.getZ() - 15.0d, pos.getX() + 15.0d, pos.getY() + 15.0d, pos.getZ() + 15.0d))) {
-      if(horse.getLeashed() && horse.getLeashHolder() == player) {
-        crank.attachWorker(horse);
-        leashed = true;
+    if(driver != null) {
+      final EnumFacing side = WorldUtils.getBlockFacing(pos, neighbour);
+      if(side.getAxis().isHorizontal()) {
+        if(world.getBlockState(neighbour).getBlock() == GradientBlocks.WOODEN_CONVEYOR_BELT) {
+          driver.addBelt(side);
+        } else {
+          driver.removeBelt(side);
+        }
       }
     }
-
-    if(leashed) {
-      return true;
-    }
-
-    if(crank.hasWorker()) {
-      crank.detachWorkers(player);
-      return true;
-    }
-
-    crank.crank();
-    return true;
   }
 
+  @Nullable
   @Override
-  public TileHandCrank createTileEntity(final World world, final IBlockState state) {
-    return new TileHandCrank();
+  public TileEntity createTileEntity(final World world, final IBlockState state) {
+    return new TileWoodenConveyorBeltDriver();
   }
 
   @Override
@@ -85,7 +76,8 @@ public class BlockHandCrank extends GradientBlock {
   @Override
   @Deprecated
   public IBlockState getStateFromMeta(final int meta) {
-    return this.getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta));
+    final EnumFacing facing = EnumFacing.byIndex(meta);
+    return this.getDefaultState().withProperty(FACING, facing);
   }
 
   @Override

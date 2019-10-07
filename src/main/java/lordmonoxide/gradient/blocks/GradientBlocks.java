@@ -70,6 +70,10 @@ public final class GradientBlocks {
   public static final BlockFlywheel      FLYWHEEL       = new BlockFlywheel();
   public static final BlockWoodenAxle    WOODEN_AXLE    = new BlockWoodenAxle();
   public static final BlockWoodenGearbox WOODEN_GEARBOX = new BlockWoodenGearbox();
+  @GameRegistry.ObjectHolder("gradient:wooden_conveyor_belt_driver")
+  public static final BlockWoodenConveyorBeltDriver WOODEN_CONVEYOR_BELT_DRIVER = null;
+  @GameRegistry.ObjectHolder("gradient:wooden_conveyor_belt")
+  public static final BlockWoodenConveyorBelt WOODEN_CONVEYOR_BELT = null;
 
   public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
@@ -178,6 +182,8 @@ public final class GradientBlocks {
     registry.register(FLYWHEEL);
     registry.register(WOODEN_AXLE);
     registry.register(WOODEN_GEARBOX);
+    registry.register(new BlockWoodenConveyorBeltDriver());
+    registry.register(new BlockWoodenConveyorBelt());
 
     registry.register(CLAY_FURNACE_UNHARDENED);
     registry.register(CLAY_FURNACE_HARDENED);
@@ -206,25 +212,27 @@ public final class GradientBlocks {
   }
 
   public static void registerTileEntities() {
-    GameRegistry.registerTileEntity(TileFirePit.class,       FIRE_PIT.getRegistryName());
-    GameRegistry.registerTileEntity(TileBellows.class,       BELLOWS.getRegistryName());
+    GameRegistry.registerTileEntity(TileFirePit.class, FIRE_PIT.getRegistryName());
+    GameRegistry.registerTileEntity(TileBellows.class, BELLOWS.getRegistryName());
     GameRegistry.registerTileEntity(TileManualGrinder.class, MANUAL_GRINDER.getRegistryName());
-    GameRegistry.registerTileEntity(TileMixingBasin.class,   MIXING_BASIN.getRegistryName());
+    GameRegistry.registerTileEntity(TileMixingBasin.class, MIXING_BASIN.getRegistryName());
 
     GameRegistry.registerTileEntity(TileDryingRack.class, DRYING_RACK.getRegistryName());
 
-    GameRegistry.registerTileEntity(TileHandCrank.class,     HAND_CRANK.getRegistryName());
-    GameRegistry.registerTileEntity(TileFlywheel.class,      FLYWHEEL.getRegistryName());
-    GameRegistry.registerTileEntity(TileWoodenAxle.class,    WOODEN_AXLE.getRegistryName());
+    GameRegistry.registerTileEntity(TileHandCrank.class, HAND_CRANK.getRegistryName());
+    GameRegistry.registerTileEntity(TileFlywheel.class, FLYWHEEL.getRegistryName());
+    GameRegistry.registerTileEntity(TileWoodenAxle.class, WOODEN_AXLE.getRegistryName());
     GameRegistry.registerTileEntity(TileWoodenGearbox.class, WOODEN_GEARBOX.getRegistryName());
+    GameRegistry.registerTileEntity(TileWoodenConveyorBelt.class, WOODEN_CONVEYOR_BELT.getRegistryName());
+    GameRegistry.registerTileEntity(TileWoodenConveyorBeltDriver.class, WOODEN_CONVEYOR_BELT_DRIVER.getRegistryName());
 
-    GameRegistry.registerTileEntity(TileClayCrucible.class,   CLAY_CRUCIBLE_HARDENED.getRegistryName());
-    GameRegistry.registerTileEntity(TileClayOven.class,       CLAY_OVEN_HARDENED.getRegistryName());
+    GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
+    GameRegistry.registerTileEntity(TileClayOven.class, CLAY_OVEN_HARDENED.getRegistryName());
     GameRegistry.registerTileEntity(TileClayMetalMixer.class, CLAY_METAL_MIXER_HARDENED.getRegistryName());
 
     GameRegistry.registerTileEntity(TileBronzeFurnace.class, BRONZE_FURNACE.getRegistryName());
-    GameRegistry.registerTileEntity(TileBronzeBoiler.class,  BRONZE_BOILER.getRegistryName());
-    GameRegistry.registerTileEntity(TileBronzeOven.class,    BRONZE_OVEN.getRegistryName());
+    GameRegistry.registerTileEntity(TileBronzeBoiler.class, BRONZE_BOILER.getRegistryName());
+    GameRegistry.registerTileEntity(TileBronzeOven.class, BRONZE_OVEN.getRegistryName());
     GameRegistry.registerTileEntity(TileBronzeGrinder.class, BRONZE_GRINDER.getRegistryName());
   }
 }

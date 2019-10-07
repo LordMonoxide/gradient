@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube_directional",
+  "textures": {
+    "particle": "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "down":  "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "up":    "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "north": "gradient:blocks/wooden_gearbox",
+    "south": "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "west":  "gradient:blocks/wooden_conveyor_belt_driver_side",
+    "east":  "gradient:blocks/wooden_conveyor_belt_driver_side"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "gradient:age_gated_shaped",
+  "age": 2,
+  "result": {
+    "item": "gradient:wooden_conveyor_belt_driver"
+  },
+  "pattern": [
+    "PAP",
+    "GGG",
+    "APA"
+  ],
+  "key": {
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    },
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "axleWood"
+    },
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "gearWood"
+    }
+  }
+}

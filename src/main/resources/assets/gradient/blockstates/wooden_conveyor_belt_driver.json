@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "gradient:wooden_conveyor_belt_driver"
+  },
+  "variants": {
+    "facing": {
+      "down":  { "x":  90 },
+      "up":    { "x": 270 },
+      "north": { },
+      "east":  { "y":  90 },
+      "south": { "y": 180 },
+      "west":  { "y": 270 }
+    },
+    "inventory": [{}]
+  }
+}

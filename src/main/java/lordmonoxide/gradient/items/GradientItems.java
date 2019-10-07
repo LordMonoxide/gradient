@@ -152,6 +152,10 @@ public final class GradientItems {
   public static final Item WOODEN_GEAR = new GradientItem("wooden_gear", CreativeTabs.MATERIALS);
   public static final Item WOODEN_AXLE = new ItemBlock(GradientBlocks.WOODEN_AXLE).setRegistryName(GradientBlocks.WOODEN_AXLE.getRegistryName());
   public static final Item WOODEN_GEARBOX = new ItemBlock(GradientBlocks.WOODEN_GEARBOX).setRegistryName(GradientBlocks.WOODEN_GEARBOX.getRegistryName());
+  @GameRegistry.ObjectHolder("gradient:wooden_conveyor_belt_driver")
+  public static final Item WOODEN_CONVEYOR_BELT_DRIVER = null;
+  @GameRegistry.ObjectHolder("gradient:wooden_conveyor_belt")
+  public static final Item WOODEN_CONVEYOR_BELT = null;
   public static final Item HAND_CRANK = new ItemBlock(GradientBlocks.HAND_CRANK).setRegistryName(GradientBlocks.HAND_CRANK.getRegistryName());
   public static final Item FLYWHEEL = new ItemFlywheel(GradientBlocks.FLYWHEEL).setRegistryName(GradientBlocks.FLYWHEEL.getRegistryName());
 
@@ -376,6 +380,8 @@ public final class GradientItems {
     registry.register(WOODEN_GEAR);
     registry.register(WOODEN_AXLE);
     registry.register(WOODEN_GEARBOX);
+    registry.register(new ItemBlock(GradientBlocks.WOODEN_CONVEYOR_BELT_DRIVER).setRegistryName(GradientBlocks.WOODEN_CONVEYOR_BELT_DRIVER.getRegistryName()));
+    registry.register(new ItemBlock(GradientBlocks.WOODEN_CONVEYOR_BELT).setRegistryName(GradientBlocks.WOODEN_CONVEYOR_BELT.getRegistryName()));
     registry.register(HAND_CRANK);
     registry.register(FLYWHEEL);
 

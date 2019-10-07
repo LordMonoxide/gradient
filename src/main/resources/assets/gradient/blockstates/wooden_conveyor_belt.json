@@ -1,0 +1,15 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "gradient:wooden_conveyor_belt"
+  },
+  "variants": {
+    "facing": {
+      "north": { },
+      "east":  { "y":  90 },
+      "south": { "y": 180 },
+      "west":  { "y": 270 }
+    },
+    "inventory": [{}]
+  }
+}

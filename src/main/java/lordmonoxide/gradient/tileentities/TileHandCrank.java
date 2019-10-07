@@ -47,6 +47,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
 
   private final LinkedList<WorkerData> workers = new LinkedList<>();
   private float workerTargetTheta;
+  private int workerRotationSegments;
 
   @Nullable
   private NBTTagList workersDeferredNbt;
@@ -64,7 +65,15 @@ public class TileHandCrank extends TileEntity implements ITickable {
   }
 
   public void remove() {
+    if(this.world.isRemote) {
+      return;
+    }
+
     EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).disconnect(this.pos);
+
+    for(final WorkerData worker : this.workers) {
+      worker.worker.detachHome();
+    }
   }
 
   public void crank() {
@@ -84,6 +93,11 @@ public class TileHandCrank extends TileEntity implements ITickable {
     worker.setHomePosAndDistance(this.pos, 3);
 
     this.workers.push(new WorkerData(worker));
+    this.lastTicks = 0;
+    this.actualTicks = 0;
+    this.workerTargetTheta = 0.0f;
+    this.workerRotationSegments = 0;
+
     this.updateTargets();
     this.markDirty();
   }
@@ -100,7 +114,16 @@ public class TileHandCrank extends TileEntity implements ITickable {
     }
 
     this.workers.clear();
+    this.lastTicks = 0;
+    this.actualTicks = 0;
+    this.workerTargetTheta = 0.0f;
+    this.workerRotationSegments = 0;
+
     this.markDirty();
+  }
+
+  private void removeInvalidWorkers() {
+    this.workers.removeIf(worker -> worker.worker.isDead || worker.worker.getLeashed());
   }
 
   private boolean areWorkersAtTargets() {
@@ -140,6 +163,9 @@ public class TileHandCrank extends TileEntity implements ITickable {
     }
   }
 
+  private int lastTicks;
+  private int actualTicks;
+
   @Override
   public void update() {
     if(this.world.isRemote) {
@@ -152,12 +178,30 @@ public class TileHandCrank extends TileEntity implements ITickable {
     }
 
     if(this.hasWorker()) {
+      this.removeInvalidWorkers();
+
+      this.actualTicks++;
+
+      if(this.lastTicks != 0 && this.actualTicks < this.lastTicks + 20) {
+        final float energy = this.lastTicks / 20000.0f * this.workers.size();
+        this.energy.addEnergy(energy, false);
+        GradientMod.logger.info("Generated {}", energy);
+      }
+
       this.preventEating();
       this.moveToTargets();
 
       if(this.areWorkersAtTargets()) {
-        this.energy.addEnergy(0.25f * this.workers.size(), false);
-        this.workerTargetTheta += Math.PI / 4;
+        this.workerTargetTheta += Math.PI / 4.0d;
+        this.workerRotationSegments++;
+
+        if(this.workerRotationSegments >= 8) {
+          this.workerTargetTheta = 0.0f;
+          this.workerRotationSegments = 0;
+          this.lastTicks = this.actualTicks;
+          this.actualTicks = 0;
+        }
+
         this.updateTargets();
         this.markDirty();
       }
@@ -213,8 +257,11 @@ public class TileHandCrank extends TileEntity implements ITickable {
     nbt.setTag("Workers", workers);
 
     nbt.setFloat("Theta", this.workerTargetTheta);
+    nbt.setInteger("RotationSegments", this.workerRotationSegments);
     nbt.setInteger("CrankTicks", this.crankTicks);
     nbt.setBoolean("Cranking", this.cranking);
+    nbt.setInteger("LastTicks", this.lastTicks);
+    nbt.setInteger("ActualTicks", this.actualTicks);
 
     return super.writeToNBT(nbt);
   }
@@ -234,8 +281,11 @@ public class TileHandCrank extends TileEntity implements ITickable {
     }
 
     this.workerTargetTheta = nbt.getFloat("Theta");
+    this.workerRotationSegments = nbt.getInteger("RotationSegments");
     this.crankTicks = nbt.getInteger("CrankTicks");
     this.cranking = nbt.getBoolean("Cranking");
+    this.lastTicks = nbt.getInteger("LastTicks");
+    this.actualTicks = nbt.getInteger("ActualTicks");
 
     super.readFromNBT(nbt);
   }

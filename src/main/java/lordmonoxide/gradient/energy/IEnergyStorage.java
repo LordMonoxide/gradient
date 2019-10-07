@@ -42,6 +42,12 @@ public interface IEnergyStorage extends IEnergyNode {
   float addEnergy(float amount, final boolean simulate);
 
   /**
+   * Remove energy from the storage, bypassing source restrictions (used by things
+   * like machines which don't source power, but still need an internal power buffer)
+   */
+  float removeEnergy(float amount, final boolean simulate);
+
+  /**
    * Returns the maximum amount of energy that can be stored.
    */
   float getCapacity();

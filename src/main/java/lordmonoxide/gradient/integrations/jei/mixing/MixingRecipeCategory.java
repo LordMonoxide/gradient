@@ -2,14 +2,16 @@ package lordmonoxide.gradient.integrations.jei.mixing;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.GradientBlocks;
-import lordmonoxide.gradient.tileentities.TileMixingBasin;
 import lordmonoxide.gradient.integrations.jei.GradientRecipeCategoryUid;
 import lordmonoxide.gradient.integrations.jei.JeiRecipeCategory;
+import lordmonoxide.gradient.tileentities.TileMixingBasin;
 import mezz.jei.api.IGuiHelper;
+import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -27,6 +29,7 @@ public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipeWrapper>
   @Override
   public void setRecipe(final IRecipeLayout recipeLayout, final MixingRecipeWrapper recipeWrapper, final IIngredients ingredients) {
     final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
+    final IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
     final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
 
     for(int slot = 0; slot < Math.min(TileMixingBasin.INPUT_SIZE, inputs.size()); slot++) {
@@ -34,7 +37,12 @@ public class MixingRecipeCategory extends JeiRecipeCategory<MixingRecipeWrapper>
       guiItemStacks.set(slot, inputs.get(slot));
     }
 
-    guiItemStacks.init(TileMixingBasin.INPUT_SIZE + 1, true, 121, 25);
+    guiItemStacks.init(TileMixingBasin.INPUT_SIZE + 1, true, 143, 25);
     guiItemStacks.set(TileMixingBasin.INPUT_SIZE + 1, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
+
+    guiFluidStacks.init(0, true, 106, 26);
+    guiFluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
+
+    guiFluidStacks.addTooltipCallback((slot, input, fluid, tooltip) -> tooltip.add(I18n.format("jei.mixer.amount", fluid.amount)));
   }
 }

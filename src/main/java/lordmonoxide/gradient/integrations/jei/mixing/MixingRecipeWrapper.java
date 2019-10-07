@@ -34,5 +34,7 @@ public class MixingRecipeWrapper implements IRecipeWrapper {
   public void getIngredients(final IIngredients ingredients) {
     ingredients.setInputLists(VanillaTypes.ITEM, this.stackHelper.expandRecipeItemStackInputs(this.recipe.getIngredients()));
     ingredients.setOutput(VanillaTypes.ITEM, this.recipe.getRecipeOutput());
+
+    ingredients.setInput(VanillaTypes.FLUID, this.recipe.getFluid());
   }
 }

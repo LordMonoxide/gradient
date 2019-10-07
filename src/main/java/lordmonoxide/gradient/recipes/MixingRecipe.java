@@ -109,6 +109,10 @@ public class MixingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
     return width * height >= this.input.size();
   }
 
+  public FluidStack getFluid() {
+    return this.fluid;
+  }
+
   @Override
   public ItemStack getRecipeOutput() {
     return this.output;

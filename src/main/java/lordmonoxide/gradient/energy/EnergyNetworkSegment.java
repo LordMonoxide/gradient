@@ -44,41 +44,27 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
   }
 
   public int size() {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
-
+    this.checkValidity();
     return this.nodes.size();
   }
 
   public boolean isEmpty() {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
-
+    this.checkValidity();
     return this.nodes.isEmpty();
   }
 
   public boolean contains(final BlockPos pos) {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
-
+    this.checkValidity();
     return this.nodes.containsKey(pos);
   }
 
   public boolean connect(final BlockPos newNodePos, final TileEntity te) {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
-
+    this.checkValidity();
     return this.connect(newNodePos, te, false);
   }
 
   private boolean connect(final BlockPos newNodePos, final TileEntity te, final boolean force) {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
+    this.checkValidity();
 
     if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("Adding node {} to enet {} @ {}", te, this, newNodePos);
@@ -234,9 +220,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
    * @return true if this network needs to be rebuilt or deleted (i.e. empty) by the manager
    */
   public boolean disconnect(final BlockPos pos) {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
+    this.checkValidity();
 
     if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("Removing {} from {}", pos, this);
@@ -314,9 +298,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
   private final Set<STORAGE> availableEnergySources = new HashSet<>();
 
   public float getAvailableEnergy() {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
+    this.checkValidity();
 
     float available = 0.0f;
 
@@ -341,9 +323,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
   private final Map<STORAGE, List<BlockPos>> extractEnergySources = new HashMap<>();
 
   public float requestEnergy(final BlockPos sink, final EnumFacing sinkSide, final float amount) {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
+    this.checkValidity();
 
     // Find all of the energy sources
     for(final EnergyNode node : this.nodes.values()) {
@@ -438,9 +418,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
   private final Object2IntMap<Tuple<BlockPos, EnumFacing>> fScore = new Object2IntLinkedOpenHashMap<>();
 
   public List<BlockPos> pathFind(final BlockPos start, final EnumFacing startFacing, final BlockPos goal, final EnumFacing goalFacing) {
-    if(this.invalidated) {
-      throw new RuntimeException("Trying to use invalidated energy network");
-    }
+    this.checkValidity();
 
     this.closed.clear();
     this.open.clear();
@@ -613,6 +591,12 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     return pos;
   }
 
+  private void checkValidity() {
+    if(this.invalidated) {
+      throw new RuntimeException("Trying to use invalidated energy network " + this);
+    }
+  }
+
   @Override
   public String toString() {
     return super.toString() + " (" + this.nodes.size() + " nodes)";
@@ -649,7 +633,7 @@ public class EnergyNetworkSegment<STORAGE extends IEnergyStorage, TRANSFER exten
     }
 
     if(GradientConfig.enet.enableNodeDebug) {
-      GradientMod.logger.info("Merging networks {} into {}", other, this);
+      GradientMod.logger.info("Merging network {} into {}", other, this);
     }
 
     for(final Map.Entry<BlockPos, EnergyNode> node : other.nodes.entrySet()) {

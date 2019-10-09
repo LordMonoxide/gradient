@@ -54,7 +54,7 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
       return;
     }
 
-    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).connect(this.pos, this);
+    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).queueConnection(this.pos, this);
 
     for(final EnumFacing side : EnumFacing.HORIZONTALS) {
       if(this.world.getBlockState(this.pos.offset(side)).getBlock() == GradientBlocks.WOODEN_CONVEYOR_BELT) {
@@ -68,7 +68,7 @@ public class TileWoodenConveyorBeltDriver extends TileEntity implements ITickabl
       return;
     }
 
-    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).disconnect(this.pos);
+    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).queueDisconnection(this.pos);
   }
 
   public void addBelt(final EnumFacing side) {

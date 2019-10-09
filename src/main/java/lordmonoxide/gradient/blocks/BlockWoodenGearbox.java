@@ -28,7 +28,7 @@ public class BlockWoodenGearbox extends GradientBlock {
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
     super.breakBlock(world, pos, state);
-    EnergyNetworkManager.getManager(world, STORAGE, TRANSFER).disconnect(pos);
+    EnergyNetworkManager.getManager(world, STORAGE, TRANSFER).queueDisconnection(pos);
   }
 
   @Override

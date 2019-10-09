@@ -29,7 +29,7 @@ public class TileFlywheel extends TileEntity {
       return;
     }
 
-    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).connect(this.pos, this);
+    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).queueConnection(this.pos, this);
   }
 
   public float getEnergy() {

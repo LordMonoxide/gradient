@@ -2,8 +2,8 @@ package lordmonoxide.gradient.energy;
 
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.config.GradientConfig;
-import lordmonoxide.gradient.utils.WorldUtils;
 import lordmonoxide.gradient.utils.Tuple;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -11,6 +11,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLLog;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEnergyTransfer> {
   final Capability<STORAGE> storage;
@@ -26,6 +28,8 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
   private final List<EnergyNetworkSegment<STORAGE, TRANSFER>> networks = new ArrayList<>();
   public final int dimension;
   private final IBlockAccess world;
+
+  private final ConcurrentLinkedDeque<QueuedAction> nodeQueue = new ConcurrentLinkedDeque<>();
 
   private final Map<BlockPos, TileEntity> allNodes = new HashMap<>();
 
@@ -44,6 +48,19 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
   private final Set<TRANSFER> tickTransferNodes = new HashSet<>();
 
   public EnergyNetworkState tick() {
+    QueuedAction queue;
+    while((queue = this.nodeQueue.pollFirst()) != null) {
+      switch(queue.action) {
+        case CONNECT:
+          this.connect(queue.pos, queue.te);
+        break;
+
+        case DISCONNECT:
+          this.disconnect(queue.pos);
+        break;
+      }
+    }
+
     if(GradientConfig.enet.enableTickDebug) {
       GradientMod.logger.info("Ticking {}", this);
     }
@@ -123,7 +140,31 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     return networks;
   }
 
+  private boolean inConnectMethod;
+
+  public void queueConnection(final BlockPos newNodePos, final TileEntity newTe) {
+    if(GradientConfig.enet.enableNodeDebug) {
+      GradientMod.logger.info("Adding {} @ {} to connection queue", newTe, newNodePos);
+    }
+
+    this.nodeQueue.addLast(new QueuedAction(Action.CONNECT, newNodePos, newTe));
+  }
+
+  public void queueDisconnection(final BlockPos newNodePos) {
+    if(GradientConfig.enet.enableNodeDebug) {
+      GradientMod.logger.info("Adding {} to disconnection queue", newNodePos);
+    }
+
+    this.nodeQueue.addLast(new QueuedAction(Action.DISCONNECT, newNodePos));
+  }
+
   public Map<EnumFacing, EnergyNetworkSegment<STORAGE, TRANSFER>> connect(final BlockPos newNodePos, final TileEntity newTe) {
+    if(this.inConnectMethod) {
+      throw new RuntimeException("Attempting to re-enter connect method! " + newTe + " @ " + newNodePos);
+    }
+
+    this.inConnectMethod = true;
+
     if(GradientConfig.enet.enableNodeDebug) {
       GradientMod.logger.info("Attempting to add {} @ {} to a network...", newTe, newNodePos);
     }
@@ -260,6 +301,12 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     if(this.getNetworksForBlock(newNodePos).isEmpty()) {
       FMLLog.bigWarning("MISSING ADD {}", newNodePos);
     }
+
+    if(GradientConfig.enet.enableNodeDebug) {
+      GradientMod.logger.info("Finished adding {} @ {}", newTe, newNodePos);
+    }
+
+    this.inConnectMethod = false;
 
     return added;
   }
@@ -405,5 +452,28 @@ public class EnergyNetwork<STORAGE extends IEnergyStorage, TRANSFER extends IEne
     this.extractNetworks.clear();
 
     return total;
+  }
+
+  private enum Action {
+    CONNECT, DISCONNECT
+  }
+
+  private static final class QueuedAction {
+    private final Action action;
+    private final BlockPos pos;
+    @Nullable
+    private final TileEntity te;
+
+    private QueuedAction(final Action action, final BlockPos pos, final TileEntity te) {
+      this.action = action;
+      this.pos = pos;
+      this.te = te;
+    }
+
+    private QueuedAction(final Action action, final BlockPos pos) {
+      this.action = action;
+      this.pos = pos;
+      this.te = null;
+    }
   }
 }

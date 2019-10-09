@@ -61,7 +61,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
       return;
     }
 
-    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).connect(this.pos, this);
+    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).queueConnection(this.pos, this);
   }
 
   public void remove() {
@@ -69,7 +69,7 @@ public class TileHandCrank extends TileEntity implements ITickable {
       return;
     }
 
-    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).disconnect(this.pos);
+    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).queueDisconnection(this.pos);
 
     for(final WorkerData worker : this.workers) {
       worker.worker.detachHome();

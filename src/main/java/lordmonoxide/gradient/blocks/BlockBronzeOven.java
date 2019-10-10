@@ -60,6 +60,12 @@ public class BlockBronzeOven extends GradientBlock {
     return true;
   }
 
+  @Override
+  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+    WorldUtils.dropItemsInTileEntity(world, pos);
+    super.breakBlock(world, pos, state);
+  }
+
   @SuppressWarnings("deprecation")
   @Override
   @Deprecated

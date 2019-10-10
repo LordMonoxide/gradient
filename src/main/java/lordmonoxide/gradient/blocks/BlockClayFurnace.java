@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.blocks;
 
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -40,6 +41,15 @@ public class BlockClayFurnace extends GradientBlock {
     this.setResistance(hardened ? 5.0f : 2.0f);
     this.setHardness(1.0f);
     this.hardened = hardened;
+  }
+
+  @Override
+  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+    if(this.hardened) {
+      WorldUtils.dropItemsInTileEntity(world, pos);
+    }
+
+    super.breakBlock(world, pos, state);
   }
 
   @Override

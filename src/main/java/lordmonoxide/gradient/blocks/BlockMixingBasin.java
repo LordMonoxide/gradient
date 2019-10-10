@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.tileentities.TileMixingBasin;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -10,7 +11,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -38,7 +38,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class BlockMixingBasin extends GradientBlock {
   public static IUnlistedProperty<Boolean> HAS_WATER = Properties.toUnlisted(PropertyBool.create("HAS_WATER"));
@@ -148,21 +147,7 @@ public class BlockMixingBasin extends GradientBlock {
 
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-    final TileEntity tile = world.getTileEntity(pos);
-
-    if(!(tile instanceof TileMixingBasin)) {
-      return;
-    }
-
-    final TileMixingBasin mixer = (TileMixingBasin)tile;
-    final ItemStackHandler inv = (ItemStackHandler)mixer.getCapability(ITEM_HANDLER_CAPABILITY, null);
-
-    for(int i = 0; i < inv.getSlots(); i++) {
-      if(!inv.getStackInSlot(i).isEmpty()) {
-        world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i)));
-      }
-    }
-
+    WorldUtils.dropItemsInTileEntity(world, pos);
     super.breakBlock(world, pos, state);
   }
 

@@ -2,6 +2,7 @@ package lordmonoxide.gradient.blocks;
 
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.tileentities.TileClayOven;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
@@ -132,6 +133,12 @@ public class BlockClayOvenHardened extends HeatSinkerBlock {
     }
 
     return true;
+  }
+
+  @Override
+  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+    WorldUtils.dropItemsInTileEntity(world, pos);
+    super.breakBlock(world, pos, state);
   }
 
   @SuppressWarnings("deprecation")

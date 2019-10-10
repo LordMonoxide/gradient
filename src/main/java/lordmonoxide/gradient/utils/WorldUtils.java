@@ -1,5 +1,6 @@
 package lordmonoxide.gradient.utils;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -7,6 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -25,6 +28,24 @@ public final class WorldUtils {
 
     if(te != null) {
       callback.accept(te);
+    }
+  }
+
+  public static void dropItemsInTileEntity(final World world, final BlockPos pos) {
+    final TileEntity te = world.getTileEntity(pos);
+
+    if(te == null) {
+      return;
+    }
+
+    final IItemHandler inv = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+    if(inv == null) {
+      return;
+    }
+
+    for(int i = 0; i < inv.getSlots(); i++) {
+      Block.spawnAsEntity(world, pos, inv.extractItem(i, inv.getSlotLimit(i), false));
     }
   }
 

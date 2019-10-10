@@ -4,6 +4,7 @@ import lordmonoxide.gradient.GradientGuiHandler;
 import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.blocks.heat.HeatSinkerBlock;
 import lordmonoxide.gradient.tileentities.TileBronzeFurnace;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -11,7 +12,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
@@ -37,10 +37,10 @@ public class BlockBronzeFurnace extends HeatSinkerBlock {
       return other.getLightValue(world, pos);
     }
 
-    final TileEntity te = world.getTileEntity(pos);
+    final TileBronzeFurnace te = WorldUtils.getTileEntity(world, pos, TileBronzeFurnace.class);
 
-    if(te instanceof TileBronzeFurnace) {
-      return ((TileBronzeFurnace)te).getLightLevel();
+    if(te != null) {
+      return te.getLightLevel();
     }
 
     return state.getLightValue(world, pos);
@@ -60,6 +60,12 @@ public class BlockBronzeFurnace extends HeatSinkerBlock {
     }
 
     return true;
+  }
+
+  @Override
+  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+    WorldUtils.dropItemsInTileEntity(world, pos);
+    super.breakBlock(world, pos, state);
   }
 
   @SuppressWarnings("deprecation")

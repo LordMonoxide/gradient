@@ -107,6 +107,20 @@ public class TileFirePit extends HeatProducer {
       return super.insertItem(slot, stack, simulate);
     }
 
+    @Nonnull
+    @Override
+    public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+      if(slot < FUEL_SLOTS_COUNT && TileFirePit.this.isBurning(slot)) {
+        return ItemStack.EMPTY;
+      }
+
+      if(slot < FIRST_OUTPUT_SLOT && TileFirePit.this.isCooking()) {
+        return ItemStack.EMPTY;
+      }
+
+      return super.extractItem(slot, amount, simulate);
+    }
+
     @Override
     protected void onContentsChanged(final int slot) {
       final ItemStack stack = this.getStackInSlot(slot);
@@ -181,7 +195,7 @@ public class TileFirePit extends HeatProducer {
   }
 
   public boolean isCooking() {
-    return this.recipe != null;
+    return this.recipe != null && this.ticks != 0;
   }
 
   public float getCookingPercent() {

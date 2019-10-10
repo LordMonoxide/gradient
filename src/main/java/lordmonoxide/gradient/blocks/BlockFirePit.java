@@ -221,6 +221,12 @@ public class BlockFirePit extends HeatSinkerBlock {
     return true;
   }
 
+  @Override
+  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+    WorldUtils.dropItemsInTileEntity(world, pos);
+    super.breakBlock(world, pos, state);
+  }
+
   private static final BlockPos.MutableBlockPos blockPlacedPos = new BlockPos.MutableBlockPos();
 
   @SubscribeEvent

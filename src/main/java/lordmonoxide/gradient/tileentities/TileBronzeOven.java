@@ -62,6 +62,16 @@ public class TileBronzeOven extends TileEntity implements ITickable {
       return super.insertItem(slot, stack, simulate);
     }
 
+    @Nonnull
+    @Override
+    public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+      if(slot == COOKING_SLOT) {
+        return ItemStack.EMPTY;
+      }
+
+      return super.extractItem(slot, amount, simulate);
+    }
+
     @Override
     protected void onContentsChanged(final int slot) {
       super.onContentsChanged(slot);

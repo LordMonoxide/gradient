@@ -9,6 +9,7 @@ import lordmonoxide.gradient.items.ItemClayCastUnhardened;
 import lordmonoxide.gradient.science.geology.Metal;
 import lordmonoxide.gradient.science.geology.Metals;
 import lordmonoxide.gradient.tileentities.TileClayCrucible;
+import lordmonoxide.gradient.utils.WorldUtils;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -198,6 +199,12 @@ public class BlockClayCrucibleHardened extends HeatSinkerBlock {
     }
 
     return true;
+  }
+
+  @Override
+  public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+    WorldUtils.dropItemsInTileEntity(world, pos);
+    super.breakBlock(world, pos, state);
   }
 
   @Override

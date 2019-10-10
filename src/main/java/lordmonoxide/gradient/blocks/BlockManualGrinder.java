@@ -10,7 +10,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -32,7 +31,6 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class BlockManualGrinder extends GradientBlock {
   @CapabilityInject(IItemHandler.class)
@@ -121,20 +119,7 @@ public class BlockManualGrinder extends GradientBlock {
 
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-    final TileManualGrinder grinder = WorldUtils.getTileEntity(world, pos, TileManualGrinder.class);
-
-    if(grinder == null) {
-      return;
-    }
-
-    final ItemStackHandler inv = (ItemStackHandler)grinder.getCapability(ITEM_HANDLER_CAPABILITY, null);
-
-    for(int i = 0; i < inv.getSlots(); i++) {
-      if(!inv.getStackInSlot(i).isEmpty()) {
-        world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i)));
-      }
-    }
-
+    WorldUtils.dropItemsInTileEntity(world, pos);
     super.breakBlock(world, pos, state);
   }
 

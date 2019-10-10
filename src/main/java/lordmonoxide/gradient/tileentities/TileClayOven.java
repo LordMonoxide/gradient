@@ -60,6 +60,16 @@ public class TileClayOven extends HeatSinker {
       return super.insertItem(slot, stack, simulate);
     }
 
+    @Nonnull
+    @Override
+    public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+      if(slot == INPUT_SLOT && TileClayOven.this.isCooking()) {
+        return ItemStack.EMPTY;
+      }
+
+      return super.extractItem(slot, amount, simulate);
+    }
+
     @Override
     protected void onContentsChanged(final int slot) {
       final ItemStack stack = this.getStackInSlot(slot);

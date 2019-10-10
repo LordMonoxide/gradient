@@ -11,7 +11,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -89,12 +88,7 @@ public class BlockDryingRack extends GradientBlock {
 
   @Override
   public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-    final TileDryingRack te = WorldUtils.getTileEntity(world, pos, TileDryingRack.class);
-
-    if(te != null && te.hasItem()) {
-      world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), te.getItem()));
-    }
-
+    WorldUtils.dropItemsInTileEntity(world, pos);
     super.breakBlock(world, pos, state);
   }
 

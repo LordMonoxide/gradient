@@ -1,8 +1,10 @@
 package lordmonoxide.gradient.tileentities;
 
-import com.google.common.collect.ImmutableMap;
-import lordmonoxide.gradient.GradientMod;
 import lordmonoxide.gradient.GradientSounds;
+import lordmonoxide.gradient.energy.EnergyNetworkManager;
+import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
+import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
+import lordmonoxide.gradient.energy.kinetic.KineticEnergyStorage;
 import lordmonoxide.gradient.progress.Age;
 import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
@@ -19,25 +21,28 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.animation.TimeValues;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.model.animation.IAnimationStateMachine;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileManualGrinder extends TileEntity implements ITickable {
+public class TileAutomaticGrindstone extends TileEntity implements ITickable {
   @CapabilityInject(IItemHandler.class)
   private static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY;
 
-  @CapabilityInject(IAnimationStateMachine.class)
-  private static Capability<IAnimationStateMachine> ANIMATION_CAPABILITY;
+  @CapabilityInject(IKineticEnergyStorage.class)
+  private static Capability<IKineticEnergyStorage> STORAGE;
+
+  @CapabilityInject(IKineticEnergyTransfer.class)
+  private static Capability<IKineticEnergyTransfer> TRANSFER;
 
   private static final int INPUT_SLOT = 0;
   private static final int OUTPUT_SLOT = 1;
+
+  private final IKineticEnergyStorage node = new KineticEnergyStorage(1.0f, 1.0f, 0.0f);
 
   private final ItemStackHandler inventory = new ItemStackHandler(2) {
     @Override
@@ -52,7 +57,7 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     @Nonnull
     @Override
     public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate) {
-      if(!this.isItemValid(slot, stack) && !TileManualGrinder.this.forceInsert) {
+      if(!this.isItemValid(slot, stack) && !TileAutomaticGrindstone.this.forceInsert) {
         return stack;
       }
 
@@ -65,29 +70,25 @@ public class TileManualGrinder extends TileEntity implements ITickable {
         final ItemStack stack = this.getStackInSlot(slot);
 
         if(!stack.isEmpty()) {
-          if(TileManualGrinder.this.recipe == null) {
-            TileManualGrinder.this.passes = 0;
-            TileManualGrinder.this.ticks = 0;
-            TileManualGrinder.this.updateRecipe();
+          if(TileAutomaticGrindstone.this.recipe == null) {
+            TileAutomaticGrindstone.this.passes = 0;
+            TileAutomaticGrindstone.this.ticks = 0;
+            TileAutomaticGrindstone.this.updateRecipe();
 
-            if(TileManualGrinder.this.recipe != null) {
-              TileManualGrinder.this.ticks = TileManualGrinder.this.recipe.ticks;
+            if(TileAutomaticGrindstone.this.recipe != null) {
+              TileAutomaticGrindstone.this.ticks = TileAutomaticGrindstone.this.recipe.ticks;
             }
           }
         } else {
-          TileManualGrinder.this.recipe = null;
-          TileManualGrinder.this.passes = 0;
-          TileManualGrinder.this.ticks = 0;
+          TileAutomaticGrindstone.this.recipe = null;
+          TileAutomaticGrindstone.this.passes = 0;
+          TileAutomaticGrindstone.this.ticks = 0;
         }
       }
 
-      TileManualGrinder.this.sync();
+      TileAutomaticGrindstone.this.sync();
     }
   };
-
-  @Nullable
-  private final IAnimationStateMachine asm;
-  private final TimeValues.VariableValue ticksValue = new TimeValues.VariableValue(0.0f);
 
   @Nullable
   private GrindingRecipe recipe;
@@ -95,10 +96,6 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   private int passes;
   private int ticks;
   private boolean forceInsert;
-
-  public TileManualGrinder() {
-    this.asm = GradientMod.proxy.loadAsm(GradientMod.resource("asms/block/manual_grinder.json"), ImmutableMap.of("spinning_cycle", this.ticksValue));
-  }
 
   public boolean hasInput() {
     return !this.inventory.getStackInSlot(INPUT_SLOT).isEmpty();
@@ -134,6 +131,15 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   }
 
   @Override
+  public void onLoad() {
+    if(this.world.isRemote) {
+      return;
+    }
+
+    EnergyNetworkManager.getManager(this.world, STORAGE, TRANSFER).queueConnection(this.pos, this);
+  }
+
+  @Override
   public void update() {
     if(this.recipe == null) {
       return;
@@ -142,22 +148,6 @@ public class TileManualGrinder extends TileEntity implements ITickable {
     if(this.ticks < this.recipe.ticks) {
       this.ticks++;
       this.markDirty();
-    }
-
-    if(this.world.isRemote) {
-      if(this.ticks < this.recipe.ticks) {
-        if("idle".equals(this.asm.currentState())) {
-          this.asm.transition("spinning");
-        }
-
-        this.ticksValue.setValue((float)this.ticks / this.recipe.ticks);
-      } else {
-        if("spinning".equals(this.asm.currentState())) {
-          this.asm.transition("idle");
-        }
-      }
-
-      return;
     }
 
     if(this.ticks >= this.recipe.ticks && this.passes >= this.recipe.passes) {
@@ -219,7 +209,6 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
     return
       capability == ITEM_HANDLER_CAPABILITY ||
-      capability == ANIMATION_CAPABILITY ||
       super.hasCapability(capability, facing);
   }
 
@@ -228,10 +217,6 @@ public class TileManualGrinder extends TileEntity implements ITickable {
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
-    }
-
-    if(capability == ANIMATION_CAPABILITY) {
-      return ANIMATION_CAPABILITY.cast(this.asm);
     }
 
     return super.getCapability(capability, facing);

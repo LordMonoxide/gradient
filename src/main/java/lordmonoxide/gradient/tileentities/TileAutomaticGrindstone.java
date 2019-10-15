@@ -1,6 +1,7 @@
 package lordmonoxide.gradient.tileentities;
 
-import lordmonoxide.gradient.GradientSounds;
+import lordmonoxide.gradient.blocks.BlockWoodenConveyorBeltDriver;
+import lordmonoxide.gradient.blocks.GradientBlocks;
 import lordmonoxide.gradient.energy.EnergyNetworkManager;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyStorage;
 import lordmonoxide.gradient.energy.kinetic.IKineticEnergyTransfer;
@@ -10,6 +11,7 @@ import lordmonoxide.gradient.recipes.GrindingRecipe;
 import lordmonoxide.gradient.utils.AgeUtils;
 import lordmonoxide.gradient.utils.RecipeUtils;
 import lordmonoxide.gradient.utils.WorldUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,10 +19,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.IItemHandler;
@@ -71,17 +70,15 @@ public class TileAutomaticGrindstone extends TileEntity implements ITickable {
 
         if(!stack.isEmpty()) {
           if(TileAutomaticGrindstone.this.recipe == null) {
-            TileAutomaticGrindstone.this.passes = 0;
             TileAutomaticGrindstone.this.ticks = 0;
             TileAutomaticGrindstone.this.updateRecipe();
 
             if(TileAutomaticGrindstone.this.recipe != null) {
-              TileAutomaticGrindstone.this.ticks = TileAutomaticGrindstone.this.recipe.ticks;
+              TileAutomaticGrindstone.this.maxTicks = TileAutomaticGrindstone.this.recipe.ticks * TileAutomaticGrindstone.this.recipe.passes * 0.9f;
             }
           }
         } else {
           TileAutomaticGrindstone.this.recipe = null;
-          TileAutomaticGrindstone.this.passes = 0;
           TileAutomaticGrindstone.this.ticks = 0;
         }
       }
@@ -93,8 +90,8 @@ public class TileAutomaticGrindstone extends TileEntity implements ITickable {
   @Nullable
   private GrindingRecipe recipe;
   private Age age = Age.AGE1;
-  private int passes;
-  private int ticks;
+  private float ticks;
+  private float maxTicks;
   private boolean forceInsert;
 
   public boolean hasInput() {
@@ -141,18 +138,22 @@ public class TileAutomaticGrindstone extends TileEntity implements ITickable {
 
   @Override
   public void update() {
-    if(this.recipe == null) {
+    if(this.world.isRemote) {
       return;
     }
 
-    if(this.ticks < this.recipe.ticks) {
+    if(this.recipe == null || this.node.getEnergy() < 0.0001f) {
+      return;
+    }
+
+    //TODO use energy
+
+    if(this.ticks < this.maxTicks) {
       this.ticks++;
       this.markDirty();
     }
 
-    if(this.ticks >= this.recipe.ticks && this.passes >= this.recipe.passes) {
-      this.passes = 0;
-
+    if(this.ticks >= this.maxTicks) {
       final ItemStack output = this.recipe.getRecipeOutput().copy();
       this.inventory.extractItem(INPUT_SLOT, 1, false);
       this.forceInsert = true;
@@ -161,52 +162,47 @@ public class TileAutomaticGrindstone extends TileEntity implements ITickable {
     }
   }
 
-  public void crank() {
-    if(this.recipe == null) {
-      return;
-    }
-
-    if(this.ticks >= this.recipe.ticks) {
-      this.world.playSound(null, this.pos, GradientSounds.GRINDSTONE, SoundCategory.NEUTRAL, 0.8f, this.world.rand.nextFloat() * 0.1f + 0.9f);
-      ((WorldServer)this.world).spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.pos.getX() + 0.5d, this.pos.getY() + 0.5d, this.pos.getZ() + 0.5d, 10, 0.1d, 0.1d, 0.1d, 0.01d);
-
-      this.ticks = 0;
-      this.passes++;
-
-      this.sync();
-    }
-  }
-
   private void updateRecipe() {
     this.recipe = RecipeUtils.findRecipe(GrindingRecipe.class, recipe -> recipe.matches(this.getInput(), this.age));
   }
 
   @Override
-  public NBTTagCompound writeToNBT(final NBTTagCompound compound) {
-    compound.setTag("inventory", this.inventory.serializeNBT());
-    compound.setInteger("passes", this.passes);
-    compound.setInteger("ticks", this.ticks);
-    compound.setInteger("player_age", this.age.value());
+  public NBTTagCompound writeToNBT(final NBTTagCompound nbt) {
+    nbt.setTag("Energy", this.node.serializeNbt());
+    nbt.setTag("Inventory", this.inventory.serializeNBT());
+    nbt.setFloat("Ticks", this.ticks);
+    nbt.setInteger("PlayerAge", this.age.value());
 
-    return super.writeToNBT(compound);
+    return super.writeToNBT(nbt);
   }
 
   @Override
-  public void readFromNBT(final NBTTagCompound compound) {
-    final NBTTagCompound inv = compound.getCompoundTag("inventory");
+  public void readFromNBT(final NBTTagCompound nbt) {
+    final NBTTagCompound energy = nbt.getCompoundTag("Energy");
+    this.node.deserializeNbt(energy);
+
+    final NBTTagCompound inv = nbt.getCompoundTag("Inventory");
     inv.removeTag("Size");
     this.inventory.deserializeNBT(inv);
-    this.passes = compound.getInteger("passes");
-    this.ticks = compound.getInteger("ticks");
-    this.age = Age.get(compound.getInteger("player_age"));
+
+    this.ticks = nbt.getFloat("Ticks");
+    this.age = Age.get(nbt.getInteger("PlayerAge"));
 
     this.updateRecipe();
 
-    super.readFromNBT(compound);
+    super.readFromNBT(nbt);
   }
 
   @Override
   public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+    if(capability == STORAGE) {
+      final IBlockState state = this.world.getBlockState(this.pos);
+
+      if(state.getBlock() == GradientBlocks.WOODEN_CONVEYOR_BELT_DRIVER && state.getValue(BlockWoodenConveyorBeltDriver.FACING) == facing) {
+        return true;
+      }
+    }
+
     return
       capability == ITEM_HANDLER_CAPABILITY ||
       super.hasCapability(capability, facing);
@@ -215,6 +211,10 @@ public class TileAutomaticGrindstone extends TileEntity implements ITickable {
   @Nullable
   @Override
   public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+    if(capability == STORAGE && this.hasCapability(capability, facing)) {
+      return STORAGE.cast(this.node);
+    }
+
     if(capability == ITEM_HANDLER_CAPABILITY) {
       return ITEM_HANDLER_CAPABILITY.cast(this.inventory);
     }

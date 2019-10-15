@@ -169,6 +169,13 @@ tile.manual_grinder.name=Grindstone
 tile.mixing_basin.name=Mixing Basin
 tile.drying_rack.name=Drying Rack
 
+tile.wooden_axle.name=Wooden Axle
+item.wooden_gear.name=Wooden Gear
+tile.wooden_gearbox.name=Wooden Gearbox
+tile.wooden_conveyor_belt.name=Wooden Conveyor Belt
+tile.wooden_conveyor_belt_driver.name=Wooden Conveyor Belt Driver
+tile.automatic_grindstone.name=Automatic Grindstone
+
 tile.bronze_machine_hull.name=Bronze Machine Hull
 tile.bronze_furnace.name=Bronze Furnace
 tile.bronze_furnace.fuel=Fuel
@@ -195,12 +202,6 @@ item.sugarcane_paste.name=Sugarcane Paste
 item.salt.name=Salt
 item.flour.name=Flour
 item.dough.name=Dough
-
-tile.wooden_axle.name=Wooden Axle
-item.wooden_gear.name=Wooden Gear
-tile.wooden_gearbox.name=Wooden Gearbox
-tile.wooden_conveyor_belt.name=Wooden Conveyor Belt
-tile.wooden_conveyor_belt_driver.name=Wooden Conveyor Belt Driver
 
 # Meltables
 meltable.melt_temp=Melting Point: %f °C

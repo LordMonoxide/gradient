@@ -74,6 +74,8 @@ public final class GradientBlocks {
   public static final BlockWoodenConveyorBeltDriver WOODEN_CONVEYOR_BELT_DRIVER = null;
   @GameRegistry.ObjectHolder("gradient:wooden_conveyor_belt")
   public static final BlockWoodenConveyorBelt WOODEN_CONVEYOR_BELT = null;
+  @GameRegistry.ObjectHolder("gradient:automatic_grindstone")
+  public static final BlockAutomaticGrindstone AUTOMATIC_GRINDSTONE = null;
 
   public static final BlockClayFurnace            CLAY_FURNACE_UNHARDENED  = BlockClayFurnace.unhardened();
   public static final BlockClayFurnace            CLAY_FURNACE_HARDENED    = BlockClayFurnace.hardened();
@@ -184,6 +186,7 @@ public final class GradientBlocks {
     registry.register(WOODEN_GEARBOX);
     registry.register(new BlockWoodenConveyorBeltDriver());
     registry.register(new BlockWoodenConveyorBelt());
+    registry.register(new BlockAutomaticGrindstone());
 
     registry.register(CLAY_FURNACE_UNHARDENED);
     registry.register(CLAY_FURNACE_HARDENED);
@@ -225,6 +228,7 @@ public final class GradientBlocks {
     GameRegistry.registerTileEntity(TileWoodenGearbox.class, WOODEN_GEARBOX.getRegistryName());
     GameRegistry.registerTileEntity(TileWoodenConveyorBelt.class, WOODEN_CONVEYOR_BELT.getRegistryName());
     GameRegistry.registerTileEntity(TileWoodenConveyorBeltDriver.class, WOODEN_CONVEYOR_BELT_DRIVER.getRegistryName());
+    GameRegistry.registerTileEntity(TileAutomaticGrindstone.class, AUTOMATIC_GRINDSTONE.getRegistryName());
 
     GameRegistry.registerTileEntity(TileClayCrucible.class, CLAY_CRUCIBLE_HARDENED.getRegistryName());
     GameRegistry.registerTileEntity(TileClayOven.class, CLAY_OVEN_HARDENED.getRegistryName());

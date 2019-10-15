@@ -128,6 +128,8 @@ public final class GradientItems {
   public static final ItemBlock CLAY_METAL_MIXER_UNHARDENED = null;
   @GameRegistry.ObjectHolder("gradient:clay_metal_mixer_hardened")
   public static final ItemBlock CLAY_METAL_MIXER_HARDENED = null;
+  @GameRegistry.ObjectHolder("gradient:automatic_grindstone")
+  public static final ItemBlock AUTOMATIC_GRINDSTONE = null;
 
   private static final Map<GradientCasts.Cast, Item> CLAY_CAST_UNHARDENED = new LinkedHashMap<>();
   private static final Map<GradientCasts.Cast, Item> CLAY_CAST_HARDENED   = new LinkedHashMap<>();
@@ -368,6 +370,7 @@ public final class GradientItems {
     registry.register(CLAY_OVEN_HARDENED);
     registry.register(new ItemBlock(GradientBlocks.CLAY_METAL_MIXER_UNHARDENED).setRegistryName(GradientBlocks.CLAY_METAL_MIXER_UNHARDENED.getRegistryName()));
     registry.register(new ItemBlock(GradientBlocks.CLAY_METAL_MIXER_HARDENED).setRegistryName(GradientBlocks.CLAY_METAL_MIXER_HARDENED.getRegistryName()));
+    registry.register(new ItemBlock(GradientBlocks.AUTOMATIC_GRINDSTONE).setRegistryName(GradientBlocks.AUTOMATIC_GRINDSTONE.getRegistryName()));
     CLAY_CAST_UNHARDENED.values().forEach(registry::register);
     CLAY_CAST_HARDENED.values().forEach(registry::register);
     registry.register(CLAY_BUCKET_UNHARDENED);

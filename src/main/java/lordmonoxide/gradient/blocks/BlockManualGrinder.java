@@ -13,7 +13,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -62,13 +61,11 @@ public class BlockManualGrinder extends GradientBlock {
   @Override
   public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
     if(!world.isRemote) {
-      final TileEntity tile = world.getTileEntity(pos);
+      final TileManualGrinder grinder = WorldUtils.getTileEntity(world, pos, TileManualGrinder.class);
 
-      if(!(tile instanceof TileManualGrinder)) {
+      if(grinder == null) {
         return false;
       }
-
-      final TileManualGrinder grinder = (TileManualGrinder)tile;
 
       // Remove input
       if(player.isSneaking()) {

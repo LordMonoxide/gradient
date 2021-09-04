@@ -146,10 +146,12 @@ public class TileAutomaticGrindstone extends TileEntity implements ITickable {
       return;
     }
 
-    //TODO use energy
-
     if(this.ticks < this.maxTicks) {
-      this.ticks++;
+      final float neededEnergy = 0.5f;
+      final float extractedEnergy = this.node.removeEnergy(neededEnergy, false);
+      final float speedModifier = extractedEnergy / neededEnergy;
+
+      this.ticks += speedModifier;
       this.markDirty();
     }
 
